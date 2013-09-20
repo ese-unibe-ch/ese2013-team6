@@ -25,7 +25,7 @@ public class MainActivity extends Activity {
         return true;
     }
     
-    /** Called when the user clicks the Send button */
+    /** Called when the user clicks the Send button TEST */
     public void sendMessage(View view) {
         Intent intent = new Intent(this, DisplayMessageActivity.class);
         EditText editText = (EditText) findViewById(R.id.edit_message);

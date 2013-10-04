@@ -3,3 +3,12 @@ http://www.softicons.com/free-icons/toolbar-icons/twg-retina-icons-by-the-workin
 
 google maps.png
 http://www.softicons.com/free-icons/system-icons/windows-8-metro-invert-icons-by-dakirby309/google-maps-icon
+
+Fav.png
+http://www.softicons.com/free-icons/toolbar-icons/koloria-icon-set-by-andy-gongea/fav-icon
+
+Fav_Empty.png
+http://www.softicons.com/free-icons/toolbar-icons/koloria-icon-set-by-andy-gongea/fav-empty-icon
+
+Rating.png
+http://www.softicons.com/free-icons/toolbar-icons/koloria-icon-set-by-andy-gongea/rating-icon

@@ -1,4 +1,7 @@
+#ignore some android specific files
 bin/
+gen/
+
 
 # Java compiled code
 *.class

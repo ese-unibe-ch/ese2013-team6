@@ -10,16 +10,17 @@ import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
-public class HomeViewFragment extends Fragment {
+public class MenusByMensaViewFragment extends Fragment {
 	private SectionsPagerAdapter mSectionsPagerAdapter;
 	private ViewPager mViewPager;
 	
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 		super.onCreateView(inflater, container, savedInstanceState); //is this needed?
-		View view = inflater.inflate(R.layout.fragment_home_view, container, false);
+		View view = inflater.inflate(R.layout.fragment_menusbymensa_view, container, false);
 		
 	    // Create the adapter that will return a fragment for each of the three primary sections of the app.
         mSectionsPagerAdapter = new SectionsPagerAdapter(getChildFragmentManager());
@@ -45,9 +46,9 @@ public class HomeViewFragment extends Fragment {
             // getItem is called to instantiate the fragment for the given page.
             // Return a DummySectionFragment (defined as a static inner class
             // below) with the page number as its lone argument.
-            Fragment fragment = new DummySectionFragment();
+            Fragment fragment = new WeeklyPlanFragment();
             Bundle args = new Bundle();
-            args.putInt(DummySectionFragment.ARG_SECTION_NUMBER, position + 1);
+            args.putInt(WeeklyPlanFragment.ARG_SECTION_NUMBER, position + 1);
             fragment.setArguments(args);
             return fragment;
         }
@@ -60,14 +61,13 @@ public class HomeViewFragment extends Fragment {
 
         @Override
         public CharSequence getPageTitle(int position) {
-            Locale l = Locale.getDefault();
             switch (position) {
                 case 0:
-                    return getString(R.string.title_section1).toUpperCase(l);
+                    return getString(R.string.title_section1);
                 case 1:
-                    return getString(R.string.title_section2).toUpperCase(l);
+                    return getString(R.string.title_section2);
                 case 2:
-                    return getString(R.string.title_section3).toUpperCase(l);
+                    return getString(R.string.title_section3);
             }
             return null;
         }
@@ -77,14 +77,14 @@ public class HomeViewFragment extends Fragment {
      * A dummy fragment representing a section of the app, but that simply
      * displays dummy text.
      */
-    public static class DummySectionFragment extends Fragment {
+    public static class WeeklyPlanFragment extends Fragment {
         /**
          * The fragment argument representing the section number for this
          * fragment.
          */
         public static final String ARG_SECTION_NUMBER = "section_number";
 
-        public DummySectionFragment() {
+        public WeeklyPlanFragment() {
         }
 
         @Override
@@ -93,6 +93,15 @@ public class HomeViewFragment extends Fragment {
             View rootView = inflater.inflate(R.layout.fragment_home_dummy, container, false);
             TextView dummyTextView = (TextView) rootView.findViewById(R.id.section_label);
             dummyTextView.setText(Integer.toString(getArguments().getInt(ARG_SECTION_NUMBER)));
+            LinearLayout layout = (LinearLayout) rootView.findViewById(R.id.section_linear_layout);
+            layout.addView(new MenuView(container.getContext(), "NATÜRLICH VEGI", "Muskatkürbis-Törtchen\nReis mit Tomatenwürfeli\nCHF 6.60 / 12.60"));
+            layout.addView(new MenuView(container.getContext(), "EINFACH GUT", "Maispoulardenbrust an Lauchsauce\nSpiralen\nPeperonate\nFleisch: Frankreich\nCHF 6.60 / 12.60"));
+            layout.addView(new MenuView(container.getContext(), "voll anders", "Pizza mit Belag nach Wahl\nMenüsalat\nFleisch: Schweiz\nCHF 9.90"));
+           
+            layout.addView(new MenuView(container.getContext(), "NATÜRLICH VEGI", "Muskatkürbis-Törtchen\nReis mit Tomatenwürfeli\nCHF 6.60 / 12.60"));
+            layout.addView(new MenuView(container.getContext(), "EINFACH GUT", "Maispoulardenbrust an Lauchsauce\nSpiralen\nPeperonate\nFleisch: Frankreich\nCHF 6.60 / 12.60"));
+            layout.addView(new MenuView(container.getContext(), "voll anders", "Pizza mit Belag nach Wahl\nMenüsalat\nFleisch: Schweiz\nCHF 9.90"));
+            
             return rootView;
         }
     }

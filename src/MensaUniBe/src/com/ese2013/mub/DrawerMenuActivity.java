@@ -78,7 +78,7 @@ public class DrawerMenuActivity extends FragmentActivity {
     	Fragment frag; 
     	switch (position) {
     	case 0:
-    		frag = new HomeViewFragment();
+    		frag = new MenusByMensaViewFragment();
             setDisplayedFragment(frag);
     		break;
     	case 1:

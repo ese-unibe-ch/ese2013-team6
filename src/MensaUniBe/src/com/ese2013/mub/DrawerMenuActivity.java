@@ -82,6 +82,8 @@ public class DrawerMenuActivity extends FragmentActivity {
             setDisplayedFragment(frag);
     		break;
     	case 1:
+    		frag = new MensaListFragment();
+            setDisplayedFragment(frag);
     		break;
     	case 2:
     		break;

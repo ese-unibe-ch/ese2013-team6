@@ -3,6 +3,7 @@ package com.ese2013.mub;
 import java.util.Locale;
 
 import android.content.Context;
+import android.util.AttributeSet;
 import android.view.Gravity;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -18,6 +19,14 @@ public class MenuView extends LinearLayout {
 
 		addTitle(menuTitle);
 		addDescription(menuDesc);
+	}
+
+	public MenuView(Context context) {
+		super(context);
+	}
+
+	public MenuView(Context context, AttributeSet attrs) {
+		super(context, attrs);
 	}
 
 	private void addDescription(String menuDesc) {
@@ -41,6 +50,7 @@ public class MenuView extends LinearLayout {
 		this.addView(menuTitleText);
 	}
 
+	//TODO there should be a cleaner way to map titles to colors
 	private int getTitleColor(String title) {
 		if (title.equals("NATÜRLICH VEGI"))
 			return getResources().getColor(R.color.menu_view_color_green);

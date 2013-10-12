@@ -4,7 +4,7 @@ import java.util.Locale;
 
 import android.content.Context;
 import android.util.AttributeSet;
-import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -15,10 +15,12 @@ public class MenuView extends LinearLayout {
 		setOrientation(VERTICAL);
 		setPadding(0, 0, 0, dimToPixels(R.dimen.menu_view_bottom_margin));
 
-		menuTitle = menuTitle.toUpperCase(Locale.getDefault());
+		LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+		inflater.inflate(R.layout.menu_view, this);
 
-		addTitle(menuTitle);
-		addDescription(menuDesc);
+		menuTitle = menuTitle.toUpperCase(Locale.getDefault());
+		setTitle(menuTitle);
+		setDescription(menuDesc);
 	}
 
 	public MenuView(Context context) {
@@ -29,36 +31,26 @@ public class MenuView extends LinearLayout {
 		super(context, attrs);
 	}
 
-	private void addDescription(String menuDesc) {
-		TextView menuDescView = new TextView(getContext());
-		menuDescView.setText(menuDesc);
-		menuDescView.setBackgroundColor(0xFFFFFFFF);
-		menuDescView.setGravity(Gravity.CENTER);
-		int sidePadding = dimToPixels(R.dimen.menu_desc_side_padding);
-		int verticalPadding = dimToPixels(R.dimen.menu_desc_vertical_padding);
-		menuDescView.setPadding(sidePadding, verticalPadding, sidePadding, verticalPadding);
-		this.addView(menuDescView);
-	}
-
-	private void addTitle(String menuTitle) {
-		TextView menuTitleText = new TextView(getContext());
+	private void setTitle(String menuTitle) {
+		TextView menuTitleText = (TextView) getChildAt(0);
 		menuTitleText.setText(menuTitle);
-		menuTitleText.setTextColor(0xFFFFFFFF);
 		menuTitleText.setBackgroundColor(getTitleColor(menuTitle));
-		int titlePadding = dimToPixels((R.dimen.menu_view_title_padding));
-		menuTitleText.setPadding(titlePadding, titlePadding, titlePadding, titlePadding);
-		this.addView(menuTitleText);
+	}
+	
+	private void setDescription(String menuDesc) {
+		TextView menuDescView = (TextView) getChildAt(1);
+		menuDescView.setText(menuDesc);
 	}
 
-	//TODO there should be a cleaner way to map titles to colors
+	// TODO there should be a cleaner way to map titles to colors
 	private int getTitleColor(String title) {
 		if (title.equals("NATÜRLICH VEGI"))
-			return getResources().getColor(R.color.menu_view_color_green);
+			return getResources().getColor(R.color.green);
 
 		if (title.equals("EINFACH GUT"))
-			return getResources().getColor(R.color.menu_view_color_yellow);
+			return getResources().getColor(R.color.yellow);
 
-		return getResources().getColor(R.color.menu_view_color_blue);
+		return getResources().getColor(R.color.blue);
 	}
 
 	private int dimToPixels(int dim) {

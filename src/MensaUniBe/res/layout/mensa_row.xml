@@ -19,7 +19,11 @@
     android:layout_height="wrap_content"
     android:orientation="vertical"
     android:gravity="center_horizontal"
-    android:background="@color/white" />
+    android:background="@color/white"
+    android:paddingBottom="@dimen/menu_desc_vertical_padding"
+    android:paddingLeft="@dimen/menu_desc_side_padding"
+    android:paddingRight="@dimen/menu_desc_side_padding"
+    android:paddingTop="@dimen/menu_desc_vertical_padding" />
     
 
 </LinearLayout>

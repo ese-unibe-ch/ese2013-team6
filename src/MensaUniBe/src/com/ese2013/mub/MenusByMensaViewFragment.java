@@ -1,6 +1,6 @@
 package com.ese2013.mub;
 
-import java.util.Locale;
+import java.util.ArrayList;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -13,17 +13,15 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.ese2013.mub.model.DailyMenuplan;
+import com.ese2013.mub.model.Mensa;
+import com.ese2013.mub.model.Menu;
+import com.ese2013.mub.model.Model;
+
 public class MenusByMensaViewFragment extends Fragment {
 	private SectionsPagerAdapter sectionsPagerAdapter;
 	private ViewPager viewPager;
-
-	private DummyMensa[] mensas = {
-			new DummyMensa("Mensa Gesellschaftsstrasse"),
-			new DummyMensa("Mensa Unitobler"),			
-			new DummyMensa("Cafeteria Maximum"),
-			new DummyMensa("UNIESS - Bar Lounge"),
-			new DummyMensa("UNIESS - Bistro"),
-			new DummyMensa("Mensa und Cafeteria von Roll")};
+	private ArrayList<Mensa> mensas = Model.getInstance().getMensas();
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -49,17 +47,17 @@ public class MenusByMensaViewFragment extends Fragment {
          */
         @Override
         public Fragment getItem(int position) {
-            return WeeklyPlanFragment.newInstance(mensas[position]);
+            return WeeklyPlanFragment.newInstance(mensas.get(position));
         }
 
         @Override
         public int getCount() {
-            return mensas.length;
+            return mensas.size();
         }
 
         @Override
         public CharSequence getPageTitle(int position) {
-        	return mensas[position].name;
+        	return mensas.get(position).getName();
         }
     }
     
@@ -74,7 +72,7 @@ public class MenusByMensaViewFragment extends Fragment {
          */
         public static final String ARG_SECTION_NUMBER = "section_number";
         
-        private DummyMensa mensa;
+        private Mensa mensa;
 
         public WeeklyPlanFragment() {
         }
@@ -82,11 +80,11 @@ public class MenusByMensaViewFragment extends Fragment {
         /**
          * Maybe it would be better to send the mensa via a Bundle. Depends on the implementation of the mensa class.
          */
-        public void setMensa(DummyMensa mensa) {
+        public void setMensa(Mensa mensa) {
         	this.mensa = mensa;
         }
        
-        public static WeeklyPlanFragment newInstance(DummyMensa mensa) {
+        public static WeeklyPlanFragment newInstance(Mensa mensa) {
         	WeeklyPlanFragment frag = new WeeklyPlanFragment();
         	frag.setMensa(mensa);
         	return frag;
@@ -99,56 +97,17 @@ public class MenusByMensaViewFragment extends Fragment {
             View rootView = inflater.inflate(R.layout.fragment_home_scrollable_content, container, false);
             LinearLayout layout = (LinearLayout) rootView.findViewById(R.id.section_linear_layout);
             
-            for (java.util.Calendar day : mensa.menuPlans.keySet()) {
+            
+            for (DailyMenuplan d : mensa.getMenuplan()) {
             	TextView text = new TextView(container.getContext());
-            	java.text.SimpleDateFormat dateFormat = new java.text.SimpleDateFormat("EEEE, dd. MMMM yyyy", Locale.getDefault());
-            	text.setText(dateFormat.format(day.getTime()));
+            	text.setText(d.getDateString());
             	layout.addView(text);
             	
-            	for (DummyMenu menu : mensa.menuPlans.get(day)) {
-            		layout.addView(new MenuView(container.getContext(), menu.title, menu.desc));
-            	}
+            	for (Menu menu : d.getMenus()) {
+            		layout.addView(new MenuView(container.getContext(), menu.getTitle(), menu.getDescription()));
+            	}           	
             }
             return rootView;
         }
-    }
-    
-    /**
-     * THESE TWO CLASSES NEED TO BE REPLACED AS SOON AS POSSIBLE BY THE REAL IMPLEMENTATION
-     */
-    public class DummyMensa {
-    	String name;
-    	
-    	DummyMenu[] mondayMenus = {new DummyMenu("natürlich vegi", "Muskatkürbis-Törtchen\nReis mit Tomatenwürfeli\nCHF 6.60 / 12.60"),
-    							   new DummyMenu("einfach gut", "Maispoulardenbrust an Lauchsauce\nSpiralen\nPeperonate\nFleisch: Frankreich\nCHF 6.60 / 12.60"),
-    							   new DummyMenu("voll anders", "Pizza mit Belag nach Wahl\nMenüsalat\nFleisch: Schweiz\nCHF 9.90")};
-    	java.util.LinkedHashMap<java.util.Calendar, DummyMenu[]> menuPlans = new java.util.LinkedHashMap<java.util.Calendar, DummyMenu[]>();
-    	DummyMensa(String name) {
-    		this.name = name;
-    		java.util.Calendar monday = new java.util.GregorianCalendar();
-    		monday.set(2013, 9, 14);
-    		menuPlans.put(monday, mondayMenus);
-    		
-    		java.util.Calendar tuesday = new java.util.GregorianCalendar();
-    		tuesday.set(2013, 9, 15);
-    		menuPlans.put(tuesday, mondayMenus); //they have the same food all the time ;)
-    		
-    		java.util.Calendar wednesday = new java.util.GregorianCalendar();
-    		wednesday.set(2013, 9, 16);
-    		menuPlans.put(wednesday, mondayMenus); //they have the same food all the time ;)
-    		
-    		java.util.Calendar thursday = new java.util.GregorianCalendar();
-    		thursday.set(2013, 9, 17);
-    		menuPlans.put(thursday, mondayMenus); //they have the same food all the time ;)
-    	}
-    	
-    }
-    
-    public class DummyMenu {
-    	String title, desc;
-    	DummyMenu(String title, String desc) {
-    		this.title = title;
-    		this.desc = desc;
-    	}
     }
 }

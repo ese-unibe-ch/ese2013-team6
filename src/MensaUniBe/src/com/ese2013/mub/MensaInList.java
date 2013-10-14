@@ -1,11 +1,11 @@
 package com.ese2013.mub;
 
 import android.content.Context;
-
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+
+import com.ese2013.mub.model.Mensa;
 
 public class MensaInList extends LinearLayout {
 	String name;
@@ -16,7 +16,7 @@ public class MensaInList extends LinearLayout {
 		LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 		inflater.inflate(R.layout.mensa_in_list, this);
 		this.mensa = mensa;
-		addDescription(mensa.getAdress());
+		addDescription(mensa.getStreet());
 		addTitle(mensa.getName());
 	}
 	private void addTitle(String menuTitle) {
@@ -25,6 +25,6 @@ public class MensaInList extends LinearLayout {
 	}
 	private void addDescription(String menuDesc) {
 		TextView adressText = (TextView) findViewById(R.id.mensa_adress_view);
-		adressText.setText(mensa.getAdress());
+		adressText.setText(mensa.getStreet());
 	}
 }

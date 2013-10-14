@@ -28,8 +28,8 @@ public class Model {
 	public ArrayList<Mensa> mensas;
 
 	public Model(Activity activity){
-		AsyncTask<String, Void, ArrayList<Mensa>> task = new MensaDataRequest(activity).execute();
-		try {
+		 task = new MensaDataRequest(activity).execute();
+		try {AsyncTask<String, Void, ArrayList<Mensa>>
 			mensas = task.get();
 		} catch (InterruptedException e) {
 			// TODO Auto-generated catch block

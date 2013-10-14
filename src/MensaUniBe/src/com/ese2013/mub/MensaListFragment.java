@@ -1,7 +1,6 @@
 package com.ese2013.mub;
 
-import java.util.*;// not sure which data structure yet, for test purpose only
-import com.ese2013.mub.Mensa.MensaBuilder;
+import java.util.List;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -10,10 +9,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 
+import com.ese2013.mub.model.Mensa;
+import com.ese2013.mub.model.Model;
+// not sure which data structure yet, for test purpose only
 
 public class MensaListFragment extends Fragment {
-
-	private static List<Mensa> list; // dummy List, data structure?
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -40,13 +40,7 @@ public class MensaListFragment extends Fragment {
 	 * @return
 	 */
 	private static List<Mensa> getMensas() {
-		list = new LinkedList<Mensa>();
-
-		list.add(new MensaBuilder().setName("Mensa Gesellschaftsstrasse")
-				.setAdress("Dummy adress\nadsfasdf\ndsfgafadg").build());
-		list.add(new MensaBuilder().setName("Mensa UniTobler")
-				.setAdress("Dummy adress\nadsfasdf\ndsfgafadg").build());
-		return list;
+		return Model.getInstance().getMensas();
 	}
 
 }

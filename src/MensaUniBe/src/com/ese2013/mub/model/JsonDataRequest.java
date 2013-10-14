@@ -6,7 +6,6 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 
 import org.apache.http.HttpResponse;
-import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.json.JSONException;
@@ -18,7 +17,7 @@ import android.os.AsyncTask;
 
 public class JsonDataRequest extends AsyncTask<String, Void, JSONObject> {
 
-	String serviceUri;
+	private String serviceUri;
 
 	public JsonDataRequest(String uri) {
 		this.serviceUri = uri;
@@ -35,8 +34,6 @@ public class JsonDataRequest extends AsyncTask<String, Void, JSONObject> {
 			InputStream is = response.getEntity().getContent();
 			String inputStream = this.convertInputStreamToString(is);
 			return new JSONObject(inputStream);
-		} catch (ClientProtocolException e) {
-			e.printStackTrace();
 		} catch (IOException e) {
 			e.printStackTrace();
 		} catch (JSONException e) {
@@ -47,6 +44,7 @@ public class JsonDataRequest extends AsyncTask<String, Void, JSONObject> {
 
 	private String convertInputStreamToString(InputStream is)
 			throws IOException {
+		//return new Scanner(is,"UTF-8").useDelimiter("\\A").next();
 		BufferedReader bf = new BufferedReader(new InputStreamReader(is));
 		String line;
 		StringBuilder sb = new StringBuilder();

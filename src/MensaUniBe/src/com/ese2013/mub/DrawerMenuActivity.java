@@ -1,13 +1,10 @@
 package com.ese2013.mub;
 
-import com.ese2013.mub.model.Model;
-
 import android.os.Bundle;
 import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.view.Menu;
@@ -16,6 +13,8 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+
+import com.ese2013.mub.model.Model;
 
 /**
  * This class is the main activity for the mub app. Everything else to be displayed 

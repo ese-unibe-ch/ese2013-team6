@@ -42,4 +42,9 @@ public class Menu {
 	public Date getDate() {
 		return date;
 	}
+	
+	public String getDateString() {
+		return new java.text.SimpleDateFormat("EEEE, dd. MMMM yyyy",
+				Locale.getDefault()).format(date);
+	}
 }

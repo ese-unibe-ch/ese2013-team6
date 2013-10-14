@@ -1,6 +1,5 @@
 package com.ese2013.mub.model;
 
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.LinkedHashMap;

@@ -3,17 +3,15 @@ package com.ese2013.mub;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.ese2013.mub.model.Mensa;
-import com.ese2013.mub.model.MensaFactory;
-import com.ese2013.mub.model.Model;
-
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
+
+import com.ese2013.mub.model.Mensa;
+import com.ese2013.mub.model.Model;
 
 public class MensaListAdapter extends BaseAdapter{
 	private Context context;
@@ -53,5 +51,4 @@ public class MensaListAdapter extends BaseAdapter{
 	public void fill(){
 		menus = Model.getInstance().getMensas();
 	}
-
 }

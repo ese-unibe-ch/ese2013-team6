@@ -1,20 +1,38 @@
 <?xml version="1.0" encoding="utf-8"?>
-<merge xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:background="@color/light_grey" >
-    <TextView
-    android:id="@+id/mensa_name_view"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:orientation="vertical"
-    android:background="@color/light_grey"
-    android:paddingBottom="@dimen/menu_view_title_padding"
-    android:paddingLeft="@dimen/menu_view_title_padding"
-    android:paddingRight="@dimen/menu_view_title_padding"
-    android:paddingTop="@dimen/menu_view_title_padding"
-    android:gravity="left|bottom"/>
+    <RelativeLayout
+        android:id="@+id/title_bar"
+        android:layout_width="match_parent"
+    	android:layout_height="match_parent"
+    	android:orientation="horizontal">
+     
+    	<TextView
+    	android:id="@+id/mensa_name_view"
+    	android:layout_width="wrap_content"
+    	android:layout_height="wrap_content"
+    	android:orientation="vertical"
+    	android:background="@color/light_grey"
+    	android:paddingBottom="@dimen/menu_view_title_padding"
+    	android:paddingLeft="@dimen/menu_view_title_padding"
+    	android:paddingRight="@dimen/menu_view_title_padding"
+    	android:paddingTop="@dimen/menu_view_title_padding"
+    	android:gravity="left|bottom"
+    	/>
+    	<ImageButton
+         android:id="@+id/button_favorite"
+         android:src="@drawable/ic_launcher"
+         android:contentDescription="@string/favorite"
+         android:layout_width="wrap_content"
+    	 android:layout_height="wrap_content"
+    	 android:layout_alignParentRight="true"/>
+         		
+    </RelativeLayout>
+    
     <TextView
     android:id="@+id/mensa_adress_view"
     android:layout_width="match_parent"
@@ -25,7 +43,8 @@
     android:paddingBottom="@dimen/menu_desc_vertical_padding"
     android:paddingLeft="@dimen/menu_desc_side_padding"
     android:paddingRight="@dimen/menu_desc_side_padding"
-    android:paddingTop="@dimen/menu_desc_vertical_padding" />
+    
+     />
     
 
-</merge>
+</LinearLayout>

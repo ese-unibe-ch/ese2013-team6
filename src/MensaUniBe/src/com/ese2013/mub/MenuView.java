@@ -44,10 +44,10 @@ public class MenuView extends LinearLayout {
 
 	// TODO there should be a cleaner way to map titles to colors
 	private int getTitleColor(String title) {
-		if (title.equals("NATÜRLICH VEGI"))
+		if (title.contains("VEGI") || title.contains("VEGETARISCH"))
 			return getResources().getColor(R.color.green);
 
-		if (title.equals("EINFACH GUT"))
+		if (title.contains("EINFACH GUT") || title.contains("TAGESGERICHT") || title.contains("WARMES SCHÜSSELGERICHT"))
 			return getResources().getColor(R.color.yellow);
 
 		return getResources().getColor(R.color.blue);

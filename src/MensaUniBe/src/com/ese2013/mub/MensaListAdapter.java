@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -47,6 +48,7 @@ public class MensaListAdapter extends BaseAdapter{
             public void onClick(View viewIn) {
             	//TODO: implement goto Menusbymensa_view on Tab id this Mensa..
             	// needs feedback!
+            	
             	}});
             
 		return view;

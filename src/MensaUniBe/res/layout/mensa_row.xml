@@ -4,12 +4,17 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:background="@color/light_grey" >
+    android:background="@color/light_grey"
+    android:paddingLeft="6dp"
+    android:paddingRight="6dp" >
+    
     <RelativeLayout
         android:id="@+id/title_bar"
         android:layout_width="match_parent"
     	android:layout_height="match_parent"
-    	android:orientation="horizontal">
+    	android:orientation="horizontal"
+    	android:paddingTop="3dp"
+    	android:paddingBottom="3dp">
      
     	<TextView
     	android:id="@+id/mensa_name_view"
@@ -17,29 +22,27 @@
     	android:layout_height="wrap_content"
     	android:orientation="vertical"
     	android:background="@color/light_grey"
-    	android:paddingBottom="@dimen/menu_view_title_padding"
-    	android:paddingLeft="@dimen/menu_view_title_padding"
-    	android:paddingRight="@dimen/menu_view_title_padding"
-    	android:paddingTop="@dimen/menu_view_title_padding"
     	android:gravity="left|bottom"
     	/>
     	<ImageButton
          android:id="@+id/button_favorite"
-         android:src="@drawable/ic_launcher"
+         android:src="@drawable/fav"
          android:contentDescription="@string/favorite_button"
          android:layout_width="wrap_content"
     	 android:layout_height="wrap_content"
-    	 android:layout_alignParentRight="true"
+    	 android:layout_toLeftOf="@+id/button_map"
     	 android:background="?android:attr/selectableItemBackground"/>
     	
     	<ImageButton
          android:id="@+id/button_map"
-         android:src="@drawable/ic_launcher"
+         android:src="@drawable/maps"
          android:contentDescription="@string/map_button"
          android:layout_width="wrap_content"
     	 android:layout_height="wrap_content"
-    	 android:layout_toLeftOf="@+id/button_favorite"
+    	 android:layout_alignParentRight="true"
     	 android:background="?android:attr/selectableItemBackground"
+    	     
+    	     
     	 />
     </RelativeLayout>
     
@@ -48,12 +51,11 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    android:gravity="center_horizontal"
-    android:background="@color/white"
-    android:paddingBottom="@dimen/menu_desc_vertical_padding"
-    android:paddingLeft="@dimen/menu_desc_side_padding"
-    android:paddingRight="@dimen/menu_desc_side_padding"
-    
+    android:gravity="center"
+    android:background="@drawable/adress_view_selector"  
+    android:clickable="true"
+    android:paddingTop="10dp"
+    android:paddingBottom="10dp"
      />
     
 

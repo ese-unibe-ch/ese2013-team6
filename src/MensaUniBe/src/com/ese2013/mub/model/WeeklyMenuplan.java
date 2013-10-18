@@ -3,6 +3,7 @@ package com.ese2013.mub.model;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
+import java.util.Set;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -34,5 +35,9 @@ public class WeeklyMenuplan implements Iterable<DailyMenuplan> {
 	@Override
 	public Iterator<DailyMenuplan> iterator() {
 		return dailymenus.values().iterator();
+	}
+	
+	public Set<Date> getDays() {
+		return dailymenus.keySet();
 	}
 }

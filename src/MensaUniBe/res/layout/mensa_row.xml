@@ -1,12 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    
+    android:id="@+id/row"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:background="@color/light_grey"
     android:paddingLeft="6dp"
-    android:paddingRight="6dp" >
+    android:paddingRight="6dp"
+    android:layout_marginBottom="6dp"
+    android:clickable="true" >
     
     <RelativeLayout
         android:id="@+id/title_bar"
@@ -54,8 +56,9 @@
     android:gravity="center"
     android:background="@drawable/adress_view_selector"  
     android:clickable="true"
-    android:paddingTop="10dp"
-    android:paddingBottom="10dp"
+    android:paddingTop="15dp"
+    android:paddingBottom="15dp"
+    
      />
     
 

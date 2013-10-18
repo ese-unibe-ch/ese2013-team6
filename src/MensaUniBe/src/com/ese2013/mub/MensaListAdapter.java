@@ -1,10 +1,7 @@
 package com.ese2013.mub;
 
 import java.util.ArrayList;
-import java.util.List;
-
 import android.content.Context;
-import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -12,13 +9,14 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageButton;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.ese2013.mub.model.Mensa;
 import com.ese2013.mub.model.Model;
 
 public class MensaListAdapter extends BaseAdapter{
 	private Context context;
-	private List<Mensa> menus = new ArrayList<Mensa>();
+	private ArrayList<Mensa> menus = new ArrayList<Mensa>();
 	private LayoutInflater inflater;
 
 	public MensaListAdapter(Context context, int resource) {
@@ -31,27 +29,47 @@ public class MensaListAdapter extends BaseAdapter{
         	inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         
         view = inflater.inflate(R.layout.mensa_row, null);
-        ImageButton favorites = (ImageButton) view.findViewById(R.id.button_favorite);
-        favorites.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View viewIn) {
-            	//TODO: implement Button functionality
-            	}});
+        setFavoriteButtonListener(view);
+        setMapButtonListener(view);
         
         TextView titleView = (TextView) view.findViewById(R.id.mensa_name_view);
         TextView adressView = (TextView) view.findViewById(R.id.mensa_adress_view);
         Mensa mensa = menus.get(position);
         titleView.setText(mensa.getName());
         adressView.setText(mensa.getName() + "\n" + mensa.getStreet() + "\n" + mensa.getZip());
-        adressView.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View viewIn) {
-            	//TODO: implement goto Menusbymensa_view on Tab id this Mensa..
-            	// needs feedback!
-            	
-            	}});
+        setTextViewListener(adressView);
+      
             
 		return view;
+	}
+	public void setMapButtonListener(View view){
+		ImageButton mapButton = (ImageButton) view.findViewById(R.id.button_map);
+        mapButton.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View viewIn) {
+            	//TODO: implement Button functionality
+            	Toast t = Toast.makeText(context, "Not yet Implemented!", Toast.LENGTH_SHORT);
+            	t.show();
+            	}});
+	}
+	public void setFavoriteButtonListener(View view){
+		  ImageButton favorites = (ImageButton) view.findViewById(R.id.button_favorite);
+	        favorites.setOnClickListener(new OnClickListener() {
+	            @Override
+	            public void onClick(View viewIn) {
+	            	//TODO: implement Button functionality
+	            	Toast t = Toast.makeText(context, "Not yet Implemented!", Toast.LENGTH_SHORT);
+	            	t.show();
+	            	}});
+	}
+	public void setTextViewListener(View view){
+		view.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View viewIn) {
+            	//TODO: implement goto Menusbymensa_view on Tab this.Mensa..+
+            	Toast t = Toast.makeText(context, "Not yet Implemented!", Toast.LENGTH_SHORT);
+            	t.show();
+            	}});
 	}
 	@Override
 	public int getCount() {

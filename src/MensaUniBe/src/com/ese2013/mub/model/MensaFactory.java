@@ -1,7 +1,6 @@
 package com.ese2013.mub.model;
 
 import java.util.ArrayList;
-import java.util.concurrent.ExecutionException;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -9,14 +8,12 @@ import org.json.JSONObject;
 
 public class MensaFactory {
 
-	public ArrayList<Mensa> createMensas() {
-		JsonDataRequest request = new JsonDataRequest(ServiceUri.GET_MENSAS);
-		request.execute();
-		JSONObject json;
+	public ArrayList<Mensa> createMensaList() {
 		MenuFactory menuFac = new MenuFactory();
 		try {
-			json = request.get();
-			JSONArray content = json.getJSONObject("result").getJSONArray("content");
+			JSONArray content = DataManager.getSingleton().loadJsonArray("mensaList");
+			
+			
 			ArrayList<Mensa> mensas = new ArrayList<Mensa>();
 			for (int i = 0; i < content.length(); i++) {
 				JSONObject mensaJsonObject = content.getJSONObject(i);
@@ -26,10 +23,6 @@ public class MensaFactory {
 				mensa.setMenuplan(menuFac.createMenuplans(mensa));
 			}
 			return mensas;
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		} catch (ExecutionException e) {
-			e.printStackTrace();
 		} catch (JSONException e) {
 			e.printStackTrace();
 		}

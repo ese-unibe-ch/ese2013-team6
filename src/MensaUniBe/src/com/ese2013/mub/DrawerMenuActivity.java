@@ -30,9 +30,8 @@ public class DrawerMenuActivity extends FragmentActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         
-        new Model();
-        
-        
+        new Model(this);
+
         setContentView(R.layout.activity_drawer_menu);
 
         String[] menuItemNames = {"Home", "Mensa List", "Map", "Invites", "Settings"};

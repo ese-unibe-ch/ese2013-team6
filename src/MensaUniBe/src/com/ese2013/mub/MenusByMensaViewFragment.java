@@ -6,7 +6,9 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,8 +19,9 @@ import com.ese2013.mub.model.DailyMenuplan;
 import com.ese2013.mub.model.Mensa;
 import com.ese2013.mub.model.Menu;
 import com.ese2013.mub.model.Model;
+import com.ese2013.mub.model.Observer;
 
-public class MenusByMensaViewFragment extends Fragment {
+public class MenusByMensaViewFragment extends Fragment{
 	private SectionsPagerAdapter sectionsPagerAdapter;
 	private ViewPager viewPager;
 	private ArrayList<Mensa> mensas = Model.getInstance().getMensas();
@@ -31,15 +34,15 @@ public class MenusByMensaViewFragment extends Fragment {
         viewPager.setAdapter(sectionsPagerAdapter);
 		return view;
 	}
-
     /**
      * A {@link FragmentPagerAdapter} that returns a fragment corresponding to
      * one of the sections/tabs/pages.
      */
-    public class SectionsPagerAdapter extends FragmentPagerAdapter {
+    public class SectionsPagerAdapter extends FragmentStatePagerAdapter implements Observer{
 
         public SectionsPagerAdapter(FragmentManager fm) {
             super(fm);
+            Model.getInstance().addObserver(this);
         }
 
         /**
@@ -48,6 +51,11 @@ public class MenusByMensaViewFragment extends Fragment {
         @Override
         public Fragment getItem(int position) {
             return WeeklyPlanFragment.newInstance(mensas.get(position));
+        }
+        
+        @Override
+        public int getItemPosition(Object object) {
+        	return POSITION_NONE;
         }
 
         @Override
@@ -59,6 +67,14 @@ public class MenusByMensaViewFragment extends Fragment {
         public CharSequence getPageTitle(int position) {
         	return mensas.get(position).getName();
         }
+
+		@Override
+		public void onNotifyChanges() {
+			notifyDataSetChanged();
+			Log.d("items", "" + this.getCount());
+			
+		}
+
     }
     
 
@@ -70,8 +86,6 @@ public class MenusByMensaViewFragment extends Fragment {
          * The fragment argument representing the section number for this
          * fragment.
          */
-        public static final String ARG_SECTION_NUMBER = "section_number";
-        
         private Mensa mensa;
 
         public WeeklyPlanFragment() {
@@ -90,13 +104,11 @@ public class MenusByMensaViewFragment extends Fragment {
         	return frag;
         }
         
-
         @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
                 Bundle savedInstanceState) {
             View rootView = inflater.inflate(R.layout.fragment_home_scrollable_content, container, false);
             LinearLayout layout = (LinearLayout) rootView.findViewById(R.id.section_linear_layout);
-            
             
             for (DailyMenuplan d : mensa.getMenuplan()) {
             	TextView text = new TextView(container.getContext());

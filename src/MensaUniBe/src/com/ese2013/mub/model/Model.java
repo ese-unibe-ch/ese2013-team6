@@ -25,7 +25,7 @@ public class Model extends Observable implements LoaderManager.LoaderCallbacks<L
 	private void init() {
 		activity.getSupportLoaderManager().initLoader(LOADER_ID, null, this);
 
-		LocalDataUpdater updater = new LocalDataUpdater();
+		LocalDataUpdaterTask updater = new LocalDataUpdaterTask();
 		updater.execute();
 
 	}
@@ -34,8 +34,8 @@ public class Model extends Observable implements LoaderManager.LoaderCallbacks<L
 		return mensas;
 	}
 
+	// TODO the toasts shouldnt be handled here!
 	public void onWebContentRetrieved(boolean success) {
-		// TODO the toasts shouldnt be handled here!
 		if (success) {
 			activity.getSupportLoaderManager().getLoader(LOADER_ID).onContentChanged();
 			Toast.makeText(activity, "Downloaded new data", Toast.LENGTH_LONG).show();

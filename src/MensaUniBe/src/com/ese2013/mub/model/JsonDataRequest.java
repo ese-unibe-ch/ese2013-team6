@@ -8,7 +8,6 @@ import java.io.InputStreamReader;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.DefaultHttpClient;
-import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.net.Uri;
@@ -23,21 +22,19 @@ public class JsonDataRequest {
 	}
 
 	public JSONObject execute() {
-		DefaultHttpClient client = new DefaultHttpClient();
-		Uri serviceURI = Uri.parse(serviceUri);
-		Builder uriBuilder = serviceURI.buildUpon();
-		HttpGet httpGet = new HttpGet(uriBuilder.build().toString());
 		try {
+			DefaultHttpClient client = new DefaultHttpClient();
+			Uri serviceURI = Uri.parse(serviceUri);
+			Builder uriBuilder = serviceURI.buildUpon();
+			HttpGet httpGet = new HttpGet(uriBuilder.build().toString());
 			HttpResponse response = client.execute(httpGet);
 			InputStream is = response.getEntity().getContent();
 			String inputStream = inputStreamToString(is);
 			return new JSONObject(inputStream);
-		} catch (IOException e) {
+		} catch (Exception e) {
 			e.printStackTrace();
-		} catch (JSONException e) {
-			e.printStackTrace();
+			return null;
 		}
-		return null;
 	}
 
 	public static String inputStreamToString(InputStream is) throws IOException {

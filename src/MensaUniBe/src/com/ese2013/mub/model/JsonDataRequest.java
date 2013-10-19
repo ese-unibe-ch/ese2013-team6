@@ -13,9 +13,8 @@ import org.json.JSONObject;
 
 import android.net.Uri;
 import android.net.Uri.Builder;
-import android.os.AsyncTask;
 
-public class JsonDataRequest extends AsyncTask<String, Void, JSONObject> {
+public class JsonDataRequest {
 
 	private String serviceUri;
 
@@ -23,8 +22,7 @@ public class JsonDataRequest extends AsyncTask<String, Void, JSONObject> {
 		this.serviceUri = uri;
 	}
 
-	@Override
-	protected JSONObject doInBackground(String... params) {
+	public JSONObject execute() {
 		DefaultHttpClient client = new DefaultHttpClient();
 		Uri serviceURI = Uri.parse(serviceUri);
 		Builder uriBuilder = serviceURI.buildUpon();
@@ -42,9 +40,7 @@ public class JsonDataRequest extends AsyncTask<String, Void, JSONObject> {
 		return null;
 	}
 
-	public static String inputStreamToString(InputStream is)
-			throws IOException {
-		//return new Scanner(is,"UTF-8").useDelimiter("\\A").next();
+	public static String inputStreamToString(InputStream is) throws IOException {
 		BufferedReader bf = new BufferedReader(new InputStreamReader(is));
 		String line;
 		StringBuilder sb = new StringBuilder();

@@ -13,7 +13,7 @@ import android.os.AsyncTask;
 public class LocalDataUpdater extends AsyncTask<Void, Void, Void> {
 	@Override
 	protected Void doInBackground(Void... params) {
-		SyncJsonDataRequest request = new SyncJsonDataRequest(ServiceUri.GET_MENSAS);
+		JsonDataRequest request = new JsonDataRequest(ServiceUri.GET_MENSAS);
 
 		JSONArray content;
 		try {
@@ -22,7 +22,7 @@ public class LocalDataUpdater extends AsyncTask<Void, Void, Void> {
 			for (int i = 0; i < content.length(); i++) {
 				JSONObject mensaJsonObject = content.getJSONObject(i);
 				int mensaId = mensaJsonObject.getInt("id");
-				SyncJsonDataRequest menuRequest = new SyncJsonDataRequest(ServiceUri.GET_WEEKLY_MENUPLAN.replaceFirst(":id",
+				JsonDataRequest menuRequest = new JsonDataRequest(ServiceUri.GET_WEEKLY_MENUPLAN.replaceFirst(":id",
 						"" + mensaId));
 				DataManager.getSingleton().storeJsonObject(menuRequest.execute(), "WEEKLY_MENUPLAN_" + mensaId);
 			}

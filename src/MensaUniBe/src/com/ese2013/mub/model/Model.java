@@ -9,32 +9,37 @@ import android.support.v4.app.LoaderManager;
 import android.support.v4.content.Loader;
 import android.widget.Toast;
 
+/**
+ * Manages the loading and storing of the whole model. This class holds the list
+ * of all Mensas. It also initializes and updates this list. If the list of
+ * Mensas is updated, all Observers are notified (e.g. GUI classes).
+ */
 public class Model extends Observable implements LoaderManager.LoaderCallbacks<List<Mensa>> {
 	private ArrayList<Mensa> mensas = new ArrayList<Mensa>();
 	private static Model instance;
 	private FragmentActivity activity;
 	private static final int LOADER_ID = 1;
 
+	private LocalDataUpdaterTask updater;
+	private boolean localDataFresh = false;
+
 	public Model(FragmentActivity activity) {
 		Model.instance = this;
 		this.activity = activity;
 		new DataManager(activity);
-		init();
-	}
-
-	private void init() {
 		activity.getSupportLoaderManager().initLoader(LOADER_ID, null, this);
-
-		LocalDataUpdaterTask updater = new LocalDataUpdaterTask();
-		updater.execute();
-
 	}
 
 	public ArrayList<Mensa> getMensas() {
 		return mensas;
 	}
 
-	// TODO the toasts shouldnt be handled here!
+	public void destroy() {
+		updater.cancel(true);
+		activity.getSupportLoaderManager().destroyLoader(LOADER_ID);
+	}
+
+	// TODO the toasts shouldn't be handled here!
 	public void onWebContentRetrieved(boolean success) {
 		if (success) {
 			activity.getSupportLoaderManager().getLoader(LOADER_ID).onContentChanged();
@@ -45,21 +50,38 @@ public class Model extends Observable implements LoaderManager.LoaderCallbacks<L
 	}
 
 	@Override
-	public Loader<List<Mensa>> onCreateLoader(int arg0, Bundle arg1) {
+	public Loader<List<Mensa>> onCreateLoader(int id, Bundle args) {
 		return new ModelLoader(activity);
 	}
 
 	@Override
 	public void onLoadFinished(Loader<List<Mensa>> loader, List<Mensa> mensas) {
+		if (mensas == null) {// TODO Loader should handle failed loading.
+			updateLocalData();
+			return;
+		}
 		this.mensas = new ArrayList<Mensa>(mensas);
+		if (!localDataFresh) {
+			updateLocalData();
+		}
 		notifyChanges();
 	}
 
 	@Override
-	public void onLoaderReset(Loader<List<Mensa>> arg0) {
+	public void onLoaderReset(Loader<List<Mensa>> loader) {
 	}
 
 	public static Model getInstance() {
 		return instance;
+	}
+
+	public boolean noMensasLoaded() {
+		return mensas.size() == 0;
+	}
+
+	private void updateLocalData() {
+		updater = new LocalDataUpdaterTask();
+		updater.execute();
+		localDataFresh = true;
 	}
 }

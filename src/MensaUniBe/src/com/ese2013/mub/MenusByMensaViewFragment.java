@@ -107,6 +107,11 @@ public class MenusByMensaViewFragment extends Fragment {
 		public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 			View rootView = inflater.inflate(R.layout.fragment_home_scrollable_content, container, false);
 			LinearLayout layout = (LinearLayout) rootView.findViewById(R.id.section_linear_layout);
+			if (Model.getInstance().noMensasLoaded())
+				return rootView; // hacky fix for the case when app is recreated
+									// due screen rotation, needs to be handled
+									// through proper state management and so
+									// on.
 
 			for (DailyMenuplan d : mensa.getMenuplan()) {
 				TextView text = new TextView(container.getContext());

@@ -29,7 +29,6 @@ public class DrawerMenuActivity extends FragmentActivity {
 	@Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        
         new Model(this);
 
         setContentView(R.layout.activity_drawer_menu);
@@ -41,7 +40,6 @@ public class DrawerMenuActivity extends FragmentActivity {
 
         // Set the adapter for the list view
         mDrawerList.setAdapter(new ArrayAdapter<String>(this, R.layout.drawer_list_item, menuItemNames));
-        
         
         // enable ActionBar app icon to behave as action to toggle nav drawer
         getActionBar().setDisplayHomeAsUpEnabled(true);
@@ -65,6 +63,12 @@ public class DrawerMenuActivity extends FragmentActivity {
 		// Set the list's click listener
 		mDrawerList.setOnItemClickListener(new DrawerItemClickListener());
     }
+	
+	@Override
+	public void onDestroy() {
+		super.onDestroy();
+		Model.getInstance().destroy();
+	}
 	
     /**
      * ClickListener for the Drawer List. Handles selecting list items in the

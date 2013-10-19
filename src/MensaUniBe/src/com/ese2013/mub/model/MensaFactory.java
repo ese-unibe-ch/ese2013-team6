@@ -9,11 +9,9 @@ import org.json.JSONObject;
 public class MensaFactory {
 
 	public ArrayList<Mensa> createMensaList() {
-		MenuFactory menuFac = new MenuFactory();
 		try {
+			MenuFactory menuFac = new MenuFactory();
 			JSONArray content = DataManager.getSingleton().loadJsonArray("mensaList");
-			
-			
 			ArrayList<Mensa> mensas = new ArrayList<Mensa>();
 			for (int i = 0; i < content.length(); i++) {
 				JSONObject mensaJsonObject = content.getJSONObject(i);

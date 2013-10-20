@@ -27,17 +27,17 @@ public class MensaListAdapter extends BaseAdapter{
         View view = convertView;
         if (view == null) 
         	inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        
+        Mensa mensa = menus.get(position);
         view = inflater.inflate(R.layout.mensa_row, null);
-        setFavoriteButtonListener(view);
+        setFavoriteButtonListener(view, mensa);
         setMapButtonListener(view);
         
         TextView titleView = (TextView) view.findViewById(R.id.mensa_name_view);
         TextView adressView = (TextView) view.findViewById(R.id.mensa_adress_view);
-        Mensa mensa = menus.get(position);
+        
         titleView.setText(mensa.getName());
         adressView.setText(mensa.getName() + "\n" + mensa.getStreet() + "\n" + mensa.getZip());
-        setTextViewListener(adressView);
+        setTextViewListener(adressView, mensa);
       
             
 		return view;
@@ -52,24 +52,12 @@ public class MensaListAdapter extends BaseAdapter{
             	t.show();
             	}});
 	}
-	public void setFavoriteButtonListener(View view){
+	public void setFavoriteButtonListener(View view, Mensa mensa){
 		  ImageButton favorites = (ImageButton) view.findViewById(R.id.button_favorite);
-	        favorites.setOnClickListener(new OnClickListener() {
-	            @Override
-	            public void onClick(View viewIn) {
-	            	//TODO: implement Button functionality
-	            	Toast t = Toast.makeText(context, "Not yet Implemented!", Toast.LENGTH_SHORT);
-	            	t.show();
-	            	}});
+	        favorites.setOnClickListener(new FavoriteButtonListener(mensa));
 	}
-	public void setTextViewListener(View view){
-		view.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View viewIn) {
-            	//TODO: implement goto Menusbymensa_view on Tab this.Mensa..+
-            	Toast t = Toast.makeText(context, "Not yet Implemented!", Toast.LENGTH_SHORT);
-            	t.show();
-            	}});
+	public void setTextViewListener(View view, Mensa mensa){
+		view.setOnClickListener(new AddressTextListener(mensa,context));
 	}
 	@Override
 	public int getCount() {

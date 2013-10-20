@@ -23,7 +23,7 @@ public class MensaFactory {
 			ArrayList<Mensa> mensas = new ArrayList<Mensa>();
 			for (int i = 0; i < content.length(); i++) {
 				JSONObject mensaJsonObject = content.getJSONObject(i);
-				Mensa mensa = parseJson(mensaJsonObject);
+				Mensa mensa = createMensa(mensaJsonObject);
 				mensas.add(mensa);
 				mensa.setMenuplan(menuFac.createMenuplans(mensa));
 			}
@@ -34,10 +34,12 @@ public class MensaFactory {
 		}
 	}
 
-	private Mensa parseJson(JSONObject json) throws JSONException {
+	private Mensa createMensa(JSONObject json) throws JSONException {
 		Mensa.MensaBuilder builder = new Mensa.MensaBuilder();
-		builder.setId(json.getInt("id")).setName(json.getString("mensa")).setStreet(json.getString("street"))
-				.setZip(json.getString("plz")).setLongitude(json.getDouble("lon")).setLatitude(json.getDouble("lat"));
+		int mensaId = json.getInt("id");
+		builder.setId(mensaId).setName(json.getString("mensa")).setStreet(json.getString("street"))
+				.setZip(json.getString("plz")).setLongitude(json.getDouble("lon")).setLatitude(json.getDouble("lat"))
+				.setIsFavorite(DataManager.getSingleton().isInFavorites(mensaId));
 		return builder.build();
 	}
 }

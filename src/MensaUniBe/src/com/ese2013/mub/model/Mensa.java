@@ -6,11 +6,10 @@ package com.ese2013.mub.model;
  * 
  */
 public class Mensa {
-	private String name;
-	private String street;
-	private String zip;
+	private String name, street, zip;
 	private double longitude, latitude;
 	private int id;
+	private boolean isFavorite;
 	private WeeklyMenuplan menuplan;
 
 	/**
@@ -28,6 +27,7 @@ public class Mensa {
 		this.zip = builder.zip;
 		this.longitude = builder.longitude;
 		this.latitude = builder.latitude;
+		this.isFavorite = builder.isFavorite;
 	}
 
 	public int getId() {
@@ -54,6 +54,21 @@ public class Mensa {
 		return latitude;
 	}
 
+	public boolean isFavorite() {
+		return isFavorite;
+	}
+
+	/**
+	 * Sets if a mensa is favorite or not. This is the only property of a mensa
+	 * which can change at runtime.
+	 * 
+	 * @param isFavorite
+	 *            true if the mensa should be a favorite mensa, false otherwise
+	 */
+	public void setIsFavorite(boolean isFavorite) {
+		this.isFavorite = isFavorite;
+	}
+
 	/**
 	 * Sets the current WeeklyMenuplan for a mensa.
 	 * 
@@ -74,6 +89,7 @@ public class Mensa {
 	 * a Mensa object.
 	 */
 	public static class MensaBuilder {
+		public boolean isFavorite = false;
 		private static final String DEFAULT = "N//A";
 		private String name = DEFAULT, street = DEFAULT, zip = DEFAULT;
 		private double longitude, latitude;
@@ -106,6 +122,11 @@ public class Mensa {
 
 		public MensaBuilder setLatitude(double latitude) {
 			this.latitude = latitude;
+			return this;
+		}
+
+		public MensaBuilder setIsFavorite(boolean isFavorite) {
+			this.isFavorite = isFavorite;
 			return this;
 		}
 

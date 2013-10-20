@@ -26,8 +26,8 @@ public class DataManager {
 	private static DataManager instance;
 	private Activity activity;
 
-	private static final String WEEKLYPLAN_PATH = "WEEKLY_MENUPLAN_";
-	private static final String MENSALIST_PATH = "MENSA_LIST";
+	private static final String WEEKLYPLAN_PATH = "WEEKLY_MENUPLAN_", MENSALIST_PATH = "MENSA_LIST",
+			MENSA_FAV = "MENSA_FAVORIT_";
 
 	public DataManager(Activity activity) {
 		this.activity = activity;
@@ -100,6 +100,11 @@ public class DataManager {
 			e.printStackTrace();
 			return null;
 		}
+	}
+
+	public boolean isInFavorites(int mensaId) {
+		SharedPreferences prefs = activity.getPreferences(Activity.MODE_PRIVATE);
+		return prefs.getBoolean(MENSA_FAV + mensaId, false);
 	}
 
 }

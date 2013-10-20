@@ -34,6 +34,14 @@ public class Model extends Observable implements LoaderManager.LoaderCallbacks<L
 		return mensas;
 	}
 
+	public ArrayList<Mensa> getFavoriteMensas() {
+		ArrayList<Mensa> ret = new ArrayList<Mensa>(3);
+		for (Mensa m : mensas)
+			if (m.isFavorite())
+				ret.add(m);
+		return ret;
+	}
+
 	public void destroy() {
 		updater.cancel(true);
 		activity.getSupportLoaderManager().destroyLoader(LOADER_ID);

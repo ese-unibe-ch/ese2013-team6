@@ -1,5 +1,10 @@
 package com.ese2013.mub.model;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.ObjectOutput;
+import java.io.ObjectOutputStream;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -32,6 +37,14 @@ public class DataManager {
 	public static DataManager getSingleton() {
 		// TODO assert not null?
 		return instance;
+	}
+	
+	public boolean doesWeeklyMenuplanExist(int i){
+		return (loadWeeklyMenuplan(i) != null);		
+	}
+	
+	public boolean doesMensaListExist(JSONArray json){
+		return (loadMensaList() != json);
 	}
 
 	public JSONObject loadWeeklyMenuplan(int i) {
@@ -68,6 +81,11 @@ public class DataManager {
 	}
 
 	private void storeJsonArray(JSONArray json, String path) {
+		
+//		ObjectOutput out = new ObjectOutputStream(new FileOutputStream(new File(getCacheDir(),"")+path+".json"));
+//		out.writeObject( json );
+//		out.close();
+		
 		SharedPreferences.Editor editor = activity.getPreferences(Activity.MODE_PRIVATE).edit();
 		editor.putString(path, json.toString());
 		editor.commit();

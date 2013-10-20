@@ -20,7 +20,7 @@ import com.ese2013.mub.model.Menu;
 import com.ese2013.mub.model.Model;
 import com.ese2013.mub.model.Observer;
 
-public class MenusByMensaViewFragment extends Fragment {
+public class MenusByMensaViewFragment extends Fragment implements Observer {
 	private SectionsPagerAdapter sectionsPagerAdapter;
 	private ViewPager viewPager;
 
@@ -30,19 +30,30 @@ public class MenusByMensaViewFragment extends Fragment {
 		sectionsPagerAdapter = new SectionsPagerAdapter(getChildFragmentManager());
 		viewPager = (ViewPager) view.findViewById(R.id.pager);
 		viewPager.setAdapter(sectionsPagerAdapter);
+		Model.getInstance().addObserver(this);
 		return view;
+	}
+	
+	@Override
+	public void onNotifyChanges() {
+		sectionsPagerAdapter.notifyDataSetChanged();
+	}
+	
+	@Override
+	public void onDestroy() {
+		super.onDestroy();
+		Model.getInstance().removeObserver(this);
 	}
 
 	/**
 	 * A {@link FragmentPagerAdapter} that returns a fragment corresponding to
 	 * one of the sections/tabs/pages.
 	 */
-	public class SectionsPagerAdapter extends FragmentStatePagerAdapter implements Observer {
+	public class SectionsPagerAdapter extends FragmentStatePagerAdapter {
 		private ArrayList<Mensa> mensas = Model.getInstance().getMensas();
 
 		public SectionsPagerAdapter(FragmentManager fm) {
 			super(fm);
-			Model.getInstance().addObserver(this);
 		}
 
 		/**
@@ -69,9 +80,9 @@ public class MenusByMensaViewFragment extends Fragment {
 		}
 
 		@Override
-		public void onNotifyChanges() {
+		public void notifyDataSetChanged() {
 			mensas = Model.getInstance().getMensas();
-			notifyDataSetChanged();
+			super.notifyDataSetChanged();
 		}
 
 	}

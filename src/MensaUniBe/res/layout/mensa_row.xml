@@ -28,7 +28,7 @@
     	/>
     	<ImageButton
          android:id="@+id/button_favorite"
-         android:src="@drawable/fav"
+         android:src="@drawable/ic_fav"
          android:contentDescription="@string/favorite_button"
          android:layout_width="wrap_content"
     	 android:layout_height="wrap_content"
@@ -37,7 +37,7 @@
     	
     	<ImageButton
          android:id="@+id/button_map"
-         android:src="@drawable/maps"
+         android:src="@drawable/ic_map"
          android:contentDescription="@string/map_button"
          android:layout_width="wrap_content"
     	 android:layout_height="wrap_content"

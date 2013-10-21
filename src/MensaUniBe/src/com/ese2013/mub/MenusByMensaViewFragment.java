@@ -185,15 +185,15 @@ public class MenusByMensaViewFragment extends Fragment implements Observer {
 	        int numberOfWeek = c.get(Calendar.DAY_OF_WEEK);
 	        String dayOfWeek = "";
 	        switch(numberOfWeek){
-		        case 1 : dayOfWeek = "Monday";
+		        case 2 : dayOfWeek = "Monday";
 		        break;
-		        case 2 : dayOfWeek = "Tuesday";
+		        case 3 : dayOfWeek = "Tuesday";
 		        break;
-		        case 3 : dayOfWeek = "Wednesday";
+		        case 4 : dayOfWeek = "Wednesday";
 		        break;
-		        case 4 : dayOfWeek = "Thursday";
+		        case 5 : dayOfWeek = "Thursday";
 		        break;
-		        case 5 : dayOfWeek = "Friday";
+		        case 6 : dayOfWeek = "Friday";
 		        break;
 		        default : dayOfWeek = "";
 		        break;
@@ -237,11 +237,6 @@ public class MenusByMensaViewFragment extends Fragment implements Observer {
 									// through proper state management and so
 									// on.
 			Log.d("CALL", "BEFORE LOOP");
-			
-			/* Date of the displayed day in Favorites View */
-			TextView textDateOfDayOfWeek = new TextView(container.getContext());
-			textDateOfDayOfWeek.setText(day.toString());
-			
 			for (Mensa mensa : mensas) {
 					DailyMenuplan d = mensa.getMenuplan().getDailymenuplan(day);
 					TextView text = new TextView(container.getContext());

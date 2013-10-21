@@ -64,12 +64,12 @@ public class DrawerMenuActivity extends FragmentActivity {
 		// Set the list's click listener
 		mDrawerList.setOnItemClickListener(new DrawerItemClickListener());
 		
-		if(getIntent() != null){
+		/*if(getIntent() != null){
 			Intent intent = getIntent();
 			MenusByMensaViewFragment frag = new MenusByMensaViewFragment();
 			frag.goToPage(intent.getIntExtra(MensaListFragment.POSITION, 0));
             setDisplayedFragment(frag);
-		}
+		}*/
     }
 	
 	@Override 

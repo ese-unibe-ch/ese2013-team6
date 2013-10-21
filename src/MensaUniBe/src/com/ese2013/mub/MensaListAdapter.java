@@ -54,7 +54,11 @@ public class MensaListAdapter extends BaseAdapter{
 	}
 	public void setFavoriteButtonListener(View view, Mensa mensa){
 		  ImageButton favorites = (ImageButton) view.findViewById(R.id.button_favorite);
-	        favorites.setOnClickListener(new FavoriteButtonListener(mensa));
+		  if(mensa.isFavorite())
+			  favorites.setBackgroundResource(R.drawable.ic_fav);
+		  else
+			  favorites.setBackgroundResource(R.drawable.ic_fav_grey);
+	        favorites.setOnClickListener(new FavoriteButtonListener(mensa, favorites));
 	}
 	public void setTextViewListener(View view, Mensa mensa){
 		view.setOnClickListener(new AddressTextListener(mensa,context));

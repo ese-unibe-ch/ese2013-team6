@@ -1,24 +1,28 @@
 package com.ese2013.mub;
 
+import com.ese2013.mub.model.Mensa;
+
 import android.content.Context;
 import android.util.AttributeSet;
 import android.widget.ImageButton;
 
 public class FavoriteButton extends ImageButton{
-
-	public FavoriteButton(Context context, AttributeSet attrs, int defStyle) {
+	private Mensa mensa;
+	public FavoriteButton(Context context, AttributeSet attrs, int defStyle ) {
 		super(context, attrs, defStyle);
 		// TODO Auto-generated constructor stub
 	}
 
 	public FavoriteButton(Context context) {
-		this(context,null,0);
+		super(context);
 		// TODO Auto-generated constructor stub
 	}
 
 	public FavoriteButton(Context context, AttributeSet attrs) {
-		this(context, attrs,0);
+		super(context, attrs);
 		// TODO Auto-generated constructor stub
 	}
-
+	public void setMensa(Mensa mensa){
+		this.mensa = mensa;
+	}
 }

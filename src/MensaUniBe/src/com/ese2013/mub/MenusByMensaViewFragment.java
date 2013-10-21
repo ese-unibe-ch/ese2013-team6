@@ -1,8 +1,10 @@
 package com.ese2013.mub;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Locale;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -140,6 +142,7 @@ public class MenusByMensaViewFragment extends Fragment implements Observer {
 				text.setBackgroundDrawable(getResources().getDrawable(R.drawable.section_list_item_selector));
 				text.setPadding(0, 6, 0, 6);
 				text.setHeight(10);
+				//text.setGravity(TextView.);
 				
 				layout.addView(text);
 				LinearLayout menuLayout = new LinearLayout(container.getContext());
@@ -148,7 +151,12 @@ public class MenusByMensaViewFragment extends Fragment implements Observer {
 					menuLayout.addView(new MenuView(container.getContext(), menu.getTitle(), menu.getDescription()));
 				}
 				text.setOnClickListener(new ToggleListener(menuLayout, text, getActivity()));
-				menuLayout.setVisibility(View.GONE);
+				
+				Date date = Calendar.getInstance().getTime();
+				if(d.getDateString().equals(new SimpleDateFormat("EEEE, dd. MMMM yyyy", Locale.getDefault()).format(date)))
+					menuLayout.setVisibility(View.VISIBLE);
+				else
+					menuLayout.setVisibility(View.GONE);
 				layout.addView(menuLayout);
 			}
 			return rootView;

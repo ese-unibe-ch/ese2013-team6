@@ -1,6 +1,7 @@
 package com.ese2013.mub;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 
 import android.os.Bundle;
@@ -176,7 +177,25 @@ public class MenusByMensaViewFragment extends Fragment implements Observer {
 
 		@Override
 		public CharSequence getPageTitle(int position) {
-			return days.get(position).toString();
+	        Calendar c = Calendar.getInstance();
+	        c.setTime(days.get(position));
+	        int numberOfWeek = c.get(Calendar.DAY_OF_WEEK);
+	        String dayOfWeek = "";
+	        switch(numberOfWeek){
+		        case 1 : dayOfWeek = "Monday";
+		        break;
+		        case 2 : dayOfWeek = "Tuesday";
+		        break;
+		        case 3 : dayOfWeek = "Wednesday";
+		        break;
+		        case 4 : dayOfWeek = "Thursday";
+		        break;
+		        case 5 : dayOfWeek = "Friday";
+		        break;
+		        default : dayOfWeek = "";
+		        break;
+	        }
+			return dayOfWeek;
 		}
 
 		@Override
@@ -215,6 +234,11 @@ public class MenusByMensaViewFragment extends Fragment implements Observer {
 									// through proper state management and so
 									// on.
 			Log.d("CALL", "BEFORE LOOP");
+			
+			/* Date of the displayed day in Favorites View */
+			TextView textDateOfDayOfWeek = new TextView(container.getContext());
+			textDateOfDayOfWeek.setText(day.toString());
+			
 			for (Mensa mensa : mensas) {
 					DailyMenuplan d = mensa.getMenuplan().getDailymenuplan(day);
 					TextView text = new TextView(container.getContext());

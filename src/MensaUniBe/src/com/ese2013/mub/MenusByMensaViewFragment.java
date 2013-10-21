@@ -136,11 +136,14 @@ public class MenusByMensaViewFragment extends Fragment implements Observer {
 			for (DailyMenuplan d : mensa.getMenuplan()) {
 				TextView text = new TextView(container.getContext());
 				text.setText(d.getDateString());
+				
 				layout.addView(text);
 
 				for (Menu menu : d.getMenus()) {
 					layout.addView(new MenuView(container.getContext(), menu.getTitle(), menu.getDescription()));
 				}
+				text.setOnClickListener(new toggleListener(layout, text));
+				layout.setVisibility(View.GONE);
 			}
 			return rootView;
 		}

@@ -1,6 +1,7 @@
 package com.ese2013.mub;
 
 import java.util.ArrayList;
+import java.util.Date;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -8,6 +9,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,24 +23,30 @@ import com.ese2013.mub.model.Model;
 import com.ese2013.mub.model.Observer;
 
 public class MenusByMensaViewFragment extends Fragment implements Observer {
-	private SectionsPagerAdapter sectionsPagerAdapter;
+	private FragmentStatePagerAdapter sectionsPagerAdapter;
 	private ViewPager viewPager;
+
+	private boolean showByDay = true;
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 		View view = inflater.inflate(R.layout.fragment_menusbymensa_view, container, false);
-		sectionsPagerAdapter = new SectionsPagerAdapter(getChildFragmentManager());
+		if (showByDay) {
+			sectionsPagerAdapter = new MenuSectionsPagerAdapter(getChildFragmentManager());
+		} else {
+			sectionsPagerAdapter = new MensaSectionsPagerAdapter(getChildFragmentManager());
+		}
 		viewPager = (ViewPager) view.findViewById(R.id.pager);
 		viewPager.setAdapter(sectionsPagerAdapter);
 		Model.getInstance().addObserver(this);
 		return view;
 	}
-	
+
 	@Override
 	public void onNotifyChanges() {
 		sectionsPagerAdapter.notifyDataSetChanged();
 	}
-	
+
 	@Override
 	public void onDestroy() {
 		super.onDestroy();
@@ -49,10 +57,10 @@ public class MenusByMensaViewFragment extends Fragment implements Observer {
 	 * A {@link FragmentPagerAdapter} that returns a fragment corresponding to
 	 * one of the sections/tabs/pages.
 	 */
-	public class SectionsPagerAdapter extends FragmentStatePagerAdapter {
+	public class MensaSectionsPagerAdapter extends FragmentStatePagerAdapter {
 		private ArrayList<Mensa> mensas = Model.getInstance().getMensas();
 
-		public SectionsPagerAdapter(FragmentManager fm) {
+		public MensaSectionsPagerAdapter(FragmentManager fm) {
 			super(fm);
 		}
 
@@ -132,6 +140,90 @@ public class MenusByMensaViewFragment extends Fragment implements Observer {
 				for (Menu menu : d.getMenus()) {
 					layout.addView(new MenuView(container.getContext(), menu.getTitle(), menu.getDescription()));
 				}
+			}
+			return rootView;
+		}
+	}
+
+	public class MenuSectionsPagerAdapter extends FragmentStatePagerAdapter {
+		private ArrayList<Date> days;
+		
+		public MenuSectionsPagerAdapter(FragmentManager fm) {
+			super(fm);
+			if (Model.getInstance().noMensasLoaded())
+				days = new ArrayList<Date>();
+			else
+				days = new ArrayList<Date>(Model.getInstance().getMensas().get(0).getMenuplan().getDays());
+		}
+
+		/**
+		 * Instantiates to fragment which is currently displayed
+		 */
+		@Override
+		public Fragment getItem(int position) {
+			return DailyPlanFragment.newInstance(days.get(position));
+		}
+
+		@Override
+		public int getItemPosition(Object object) {
+			return POSITION_NONE;
+		}
+
+		@Override
+		public int getCount() {
+			return days.size();
+		}
+
+		@Override
+		public CharSequence getPageTitle(int position) {
+			return days.get(position).toString();
+		}
+
+		@Override
+		public void notifyDataSetChanged() {
+			days = new ArrayList<Date>(Model.getInstance().getMensas().get(0).getMenuplan().getDays());
+			super.notifyDataSetChanged();
+		}
+
+	}
+
+	public static class DailyPlanFragment extends Fragment {
+		private Date day;
+		private ArrayList<Mensa> mensas;
+
+		public DailyPlanFragment() {
+		}
+
+		public void setDay(Date day) {
+			this.day = day;
+		}
+
+		public static DailyPlanFragment newInstance(Date day) {
+			DailyPlanFragment frag = new DailyPlanFragment();
+			frag.setDay(day);
+			return frag;
+		}
+
+		@Override
+		public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+			mensas = Model.getInstance().getFavoriteMensas();
+			View rootView = inflater.inflate(R.layout.fragment_home_scrollable_content, container, false);
+			LinearLayout layout = (LinearLayout) rootView.findViewById(R.id.section_linear_layout);
+			if (Model.getInstance().noMensasLoaded())
+				return rootView; // hacky fix for the case when app is recreated
+									// due screen rotation, needs to be handled
+									// through proper state management and so
+									// on.
+			Log.d("CALL", "BEFORE LOOP");
+			for (Mensa mensa : mensas) {
+					DailyMenuplan d = mensa.getMenuplan().getDailymenuplan(day);
+					TextView text = new TextView(container.getContext());
+					text.setText(mensa.getName());
+					layout.addView(text);
+					Log.d("CALL", "IN SE LOOP");
+					for (Menu menu : d.getMenus()) {
+						layout.addView(new MenuView(container.getContext(), menu.getTitle(), menu.getDescription()));
+					}
 			}
 			return rootView;
 		}

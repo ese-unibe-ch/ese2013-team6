@@ -18,6 +18,10 @@ public class WeeklyMenuplan implements Iterable<DailyMenuplan> {
 			dailymenus.put(date, plan);
 		}
 	}
+	
+	public DailyMenuplan getDailymenuplan(Date date) {
+		return dailymenus.get(date);
+	}
 
 	@Override
 	public Iterator<DailyMenuplan> iterator() {

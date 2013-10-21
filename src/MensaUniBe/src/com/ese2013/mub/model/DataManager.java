@@ -1,10 +1,5 @@
 package com.ese2013.mub.model;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.ObjectOutput;
-import java.io.ObjectOutputStream;
-
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -70,6 +65,30 @@ public class DataManager {
 	}
 
 	private JSONObject loadJsonObject(String path) {
+		
+//		try {
+//			ObjectInputStream in = new ObjectInputStream(new FileInputStream(new File(new File(activity.getCacheDir(),"")+"cacheFile.srl")));
+//			JSONObject jsonObject = (JSONObject) in.readObject();
+//			in.close();
+//			return jsonObject;
+//		} catch (StreamCorruptedException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		} catch (OptionalDataException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		} catch (FileNotFoundException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		} catch (IOException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		} catch (ClassNotFoundException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
+//		return null;
+		
 		SharedPreferences prefs = activity.getPreferences(Activity.MODE_PRIVATE);
 		String restoredText = prefs.getString(path, null);
 		try {
@@ -82,9 +101,17 @@ public class DataManager {
 
 	private void storeJsonArray(JSONArray json, String path) {
 		
-//		ObjectOutput out = new ObjectOutputStream(new FileOutputStream(new File(getCacheDir(),"")+path+".json"));
-//		out.writeObject( json );
-//		out.close();
+//		try {
+//			ObjectOutput out = new ObjectOutputStream(new FileOutputStream(new File(activity.getCacheDir(),"")+path+".json"));
+//			out.writeObject( json );
+//			out.close();
+//		} catch (FileNotFoundException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		} catch (IOException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
 		
 		SharedPreferences.Editor editor = activity.getPreferences(Activity.MODE_PRIVATE).edit();
 		editor.putString(path, json.toString());
@@ -92,6 +119,30 @@ public class DataManager {
 	}
 
 	private JSONArray loadJsonArray(String path) {
+		
+//		try {
+//			ObjectInputStream in = new ObjectInputStream(new FileInputStream(new File(new File(activity.getCacheDir(),"")+path+".json")));
+//			JSONArray jsonArray = (JSONArray) in.readObject();
+//			in.close();
+//			return jsonArray;
+//		} catch (StreamCorruptedException e1) {
+//			// TODO Auto-generated catch block
+//			e1.printStackTrace();
+//		} catch (OptionalDataException e1) {
+//			// TODO Auto-generated catch block
+//			e1.printStackTrace();
+//		} catch (FileNotFoundException e1) {
+//			// TODO Auto-generated catch block
+//			e1.printStackTrace();
+//		} catch (IOException e1) {
+//			// TODO Auto-generated catch block
+//			e1.printStackTrace();
+//		} catch (ClassNotFoundException e1) {
+//			// TODO Auto-generated catch block
+//			e1.printStackTrace();
+//		}
+//		return null;
+		
 		SharedPreferences prefs = activity.getPreferences(Activity.MODE_PRIVATE);
 		String restoredText = prefs.getString(path, null);
 		try {

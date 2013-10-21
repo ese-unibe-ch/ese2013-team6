@@ -64,6 +64,12 @@ public class DrawerMenuActivity extends FragmentActivity {
 		mDrawerList.setOnItemClickListener(new DrawerItemClickListener());
     }
 	
+	@Override 
+	public void onPause() {
+		super.onPause();
+		Model.getInstance().saveLocalData();
+	}
+	
 	@Override
 	public void onDestroy() {
 		super.onDestroy();

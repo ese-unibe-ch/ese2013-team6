@@ -123,6 +123,7 @@ public class MenusByMensaViewFragment extends Fragment implements Observer {
 			return frag;
 		}
 
+		@SuppressWarnings("deprecation")//because the our min api is lower than 14 and setBackground(drawable) needs 16
 		@Override
 		public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 			View rootView = inflater.inflate(R.layout.fragment_home_scrollable_content, container, false);
@@ -136,6 +137,9 @@ public class MenusByMensaViewFragment extends Fragment implements Observer {
 			for (DailyMenuplan d : mensa.getMenuplan()) {
 				TextView text = new TextView(container.getContext());
 				text.setText(d.getDateString());
+				text.setBackgroundDrawable(getResources().getDrawable(R.drawable.section_list_item_selector));
+				text.setPadding(0, 6, 0, 6);
+				text.setHeight(10);
 				
 				layout.addView(text);
 				LinearLayout menuLayout = new LinearLayout(container.getContext());

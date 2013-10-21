@@ -27,7 +27,7 @@ public class MenusByMensaViewFragment extends Fragment implements Observer {
 	private FragmentStatePagerAdapter sectionsPagerAdapter;
 	private ViewPager viewPager;
 
-	private boolean showByDay = true;
+	private boolean showByDay = false;
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -138,12 +138,14 @@ public class MenusByMensaViewFragment extends Fragment implements Observer {
 				text.setText(d.getDateString());
 				
 				layout.addView(text);
-
+				LinearLayout menuLayout = new LinearLayout(container.getContext());
+				menuLayout.setOrientation(LinearLayout.VERTICAL);
 				for (Menu menu : d.getMenus()) {
-					layout.addView(new MenuView(container.getContext(), menu.getTitle(), menu.getDescription()));
+					menuLayout.addView(new MenuView(container.getContext(), menu.getTitle(), menu.getDescription()));
 				}
-				text.setOnClickListener(new toggleListener(layout, text));
-				layout.setVisibility(View.GONE);
+				text.setOnClickListener(new ToggleListener(menuLayout, text, getActivity()));
+				menuLayout.setVisibility(View.GONE);
+				layout.addView(menuLayout);
 			}
 			return rootView;
 		}

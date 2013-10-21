@@ -1,21 +1,30 @@
 package com.ese2013.mub;
 
+import android.content.Context;
 import android.view.View;
 import android.view.View.OnClickListener;
 
-public class toggleListener implements OnClickListener {
+public class ToggleListener implements OnClickListener {
 	private View toToggle;
+	private Context ctx;
 	//private View title;
-	public toggleListener(View toToggle, View title){
+	public ToggleListener(View toToggle, View title, Context ctx){
 		this.toToggle = toToggle;
+		this.ctx = ctx;
 		//this.title = title;
 	}
 	@Override
 	public void onClick(View v) {
-		toToggle.setVisibility( toToggle.isShown()
-				? View.GONE
-				: View.VISIBLE );
-
+		
+		if(toToggle.isShown()){
+			 ToggleAnimation.slide_up(ctx, toToggle);
+			 toToggle.setVisibility(View.GONE);
+		}
+		else{
+			ToggleAnimation.slide_down(ctx, toToggle);
+			 toToggle.setVisibility(View.VISIBLE);
+		}
+			
 	}
 
 }

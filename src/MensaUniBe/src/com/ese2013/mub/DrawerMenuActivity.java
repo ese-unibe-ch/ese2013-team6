@@ -1,5 +1,6 @@
 package com.ese2013.mub;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.app.Fragment;
@@ -62,6 +63,13 @@ public class DrawerMenuActivity extends FragmentActivity {
 
 		// Set the list's click listener
 		mDrawerList.setOnItemClickListener(new DrawerItemClickListener());
+		
+		if(getIntent() != null){
+			Intent intent = getIntent();
+			MenusByMensaViewFragment frag = new MenusByMensaViewFragment();
+			frag.goToPage(intent.getIntExtra(MensaListFragment.POSITION, 0));
+            setDisplayedFragment(frag);
+		}
     }
 	
 	@Override 

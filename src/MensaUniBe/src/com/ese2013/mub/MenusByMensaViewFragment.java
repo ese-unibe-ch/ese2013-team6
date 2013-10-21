@@ -55,6 +55,9 @@ public class MenusByMensaViewFragment extends Fragment implements Observer {
 		super.onDestroy();
 		Model.getInstance().removeObserver(this);
 	}
+	public void goToPage(int pos){
+		viewPager.setCurrentItem(pos);
+	}
 
 	/**
 	 * A {@link FragmentPagerAdapter} that returns a fragment corresponding to

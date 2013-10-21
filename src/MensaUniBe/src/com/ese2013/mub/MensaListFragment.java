@@ -1,6 +1,9 @@
 package com.ese2013.mub;
 
 
+import com.ese2013.mub.model.Mensa;
+
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -13,10 +16,12 @@ import android.widget.ListView;
 public class MensaListFragment extends Fragment {
 	private MensaListAdapter adapter;
 	private ListView mensaListView;
+	public static final String POSITION = "com.ese2013.mub.MensaToMenuIntent";
+
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
-		adapter = new MensaListAdapter(getActivity(), android.R.layout.simple_list_item_1);
+		adapter = new MensaListAdapter(getActivity(), android.R.layout.simple_list_item_1, this);
 
 		View view = inflater.inflate(R.layout.fragment_mensa_list, container,
 				false);
@@ -26,5 +31,10 @@ public class MensaListFragment extends Fragment {
 		adapter.fill();
 
 		return view;
+	}
+	public void sendListToMenusIntent(Mensa mensa){
+		Intent intent = new Intent(getActivity(), DrawerMenuActivity.class);
+		intent.putExtra(POSITION, mensa.getId());
+		getActivity().startActivity(intent);
 	}
 }

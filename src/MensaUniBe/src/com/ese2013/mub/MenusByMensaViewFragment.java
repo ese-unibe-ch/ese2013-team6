@@ -210,7 +210,7 @@ public class MenusByMensaViewFragment extends Fragment implements Observer {
 
 		@Override
 		public CharSequence getPageTitle(int position) {
-		SimpleDateFormat df = new SimpleDateFormat( "EEEE" );
+		SimpleDateFormat df = new SimpleDateFormat( "EEEE", Locale.getDefault());
 		String dayOfWeek = df.format(days.get(position));
 		return dayOfWeek;
 		}
@@ -256,7 +256,7 @@ public class MenusByMensaViewFragment extends Fragment implements Observer {
 									// on.
 			
 			/* Date of the displayed day in Favorites View */
-			SimpleDateFormat df = new SimpleDateFormat( "dd. MMMM yyyy" );
+			SimpleDateFormat df = new SimpleDateFormat( "dd. MMMM yyyy", Locale.getDefault());
 			TextView textDateOfDayOfWeek = new TextView(container.getContext());
 			textDateOfDayOfWeek.setText(df.format(day));
 			

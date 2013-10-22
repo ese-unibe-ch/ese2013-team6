@@ -29,14 +29,18 @@ public class MenusByMensaViewFragment extends Fragment implements Observer {
 	private FragmentStatePagerAdapter sectionsPagerAdapter;
 	private ViewPager viewPager;
 
-	private boolean showFavorites = true;			// if true, Spinner should be on favorites list
+	private static boolean showFavorites = true;	// if true, Spinner should be on favorites list
 	private static boolean showAllByDay = false;	// if true, Spinner should be on list of all menus of one day
 													// else Spinner is on list of all menus of one mensa
 	public static boolean getShowAllByDay(){
 		return showAllByDay;
 	}
 	
-	public static void setShowAllByDay(boolean bool){
+	public void setFavorites(boolean bool) {
+		showFavorites = bool;
+	}
+	
+	public void setShowAllByDay(boolean bool){
 		showAllByDay = bool;
 	}
 

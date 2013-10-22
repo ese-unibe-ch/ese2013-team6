@@ -1,5 +1,6 @@
 package com.ese2013.mub;
 
+import android.app.ActionBar;
 import android.os.Bundle;
 import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.app.Fragment;
@@ -13,7 +14,6 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
-
 import com.ese2013.mub.model.Model;
 
 /**
@@ -45,7 +45,51 @@ public class DrawerMenuActivity extends FragmentActivity {
         
         getActionBar().setDisplayHomeAsUpEnabled(true);
         getActionBar().setHomeButtonEnabled(true);
-        // TODO create spinner here      
+        
+        /* spinner */
+        
+        // Set up the action bar to show a dropdown list.
+        final ActionBar actionBar = getActionBar(); 
+        actionBar.setDisplayShowTitleEnabled(false); 
+        actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_LIST);
+        
+        // Specify a SpinnerAdapter to populate the dropdown list.
+        //SpinnerAdapter
+        ArrayAdapter<CharSequence> spinnerAdapter = ArrayAdapter.createFromResource(this, R.array.spinner_list,
+                android.R.layout.simple_spinner_dropdown_item);
+         
+		spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+	
+		// Set up the dropdown list navigation in the action bar.
+		ActionBar.OnNavigationListener spinnerNavigationListener = new ActionBar.OnNavigationListener() {
+			@Override
+			public boolean onNavigationItemSelected(int position, long itemId) {
+				MenusByMensaViewFragment frag = new MenusByMensaViewFragment();
+				switch(position) {
+				case 0: {
+					frag.setFavorites(true);
+					frag.setShowAllByDay(false);
+		            setDisplayedFragment(frag);
+		            return true;
+				}
+				case 1: { 
+					frag.setFavorites(false);
+					frag.setShowAllByDay(false);
+					setDisplayedFragment(frag);
+					return true;
+				}
+				case 2: {
+					frag.setFavorites(true);
+					frag.setShowAllByDay(true);
+					setDisplayedFragment(frag);
+					return true;
+				}
+				default: { return false; }
+				}
+			}
+		};
+		actionBar.setListNavigationCallbacks(spinnerAdapter, spinnerNavigationListener);
+		/* end of spinner */
         
         selectItem(0);
 

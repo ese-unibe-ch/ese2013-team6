@@ -45,7 +45,7 @@ public class DrawerMenuActivity extends FragmentActivity {
         
         getActionBar().setDisplayHomeAsUpEnabled(true);
         getActionBar().setHomeButtonEnabled(true);
-        // spinner       
+        // TODO create spinner here      
         
         selectItem(0);
 
@@ -64,7 +64,20 @@ public class DrawerMenuActivity extends FragmentActivity {
 
 		// Set the list's click listener
 		mDrawerList.setOnItemClickListener(new DrawerItemClickListener());
+		
+		/*if(getIntent() != null){
+			Intent intent = getIntent();
+			MenusByMensaViewFragment frag = new MenusByMensaViewFragment();
+			frag.goToPage(intent.getIntExtra(MensaListFragment.POSITION, 0));
+            setDisplayedFragment(frag);
+		}*/
     }
+	
+	@Override 
+	public void onPause() {
+		super.onPause();
+		Model.getInstance().saveLocalData();
+	}
 	
 	@Override
 	public void onDestroy() {

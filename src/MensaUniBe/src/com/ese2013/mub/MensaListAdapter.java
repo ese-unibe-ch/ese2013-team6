@@ -2,6 +2,8 @@ package com.ese2013.mub;
 
 import java.util.ArrayList;
 import android.content.Context;
+import android.content.Intent;
+import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -15,13 +17,15 @@ import com.ese2013.mub.model.Mensa;
 import com.ese2013.mub.model.Model;
 
 public class MensaListAdapter extends BaseAdapter{
-	private Context context;
+	private static Context context;
 	private ArrayList<Mensa> menus = new ArrayList<Mensa>();
 	private LayoutInflater inflater;
-
-	public MensaListAdapter(Context context, int resource) {
+	private MensaListFragment target;
+	
+	public MensaListAdapter(Context ctx, int resource, MensaListFragment target) {
 		super();
-		this.context = context;
+		context = ctx;
+		this.target = target;
 	}
 	public View getView(int position, View convertView, ViewGroup parent) {
         View view = convertView;
@@ -54,10 +58,14 @@ public class MensaListAdapter extends BaseAdapter{
 	}
 	public void setFavoriteButtonListener(View view, Mensa mensa){
 		  ImageButton favorites = (ImageButton) view.findViewById(R.id.button_favorite);
-	        favorites.setOnClickListener(new FavoriteButtonListener(mensa));
+		  if(mensa.isFavorite())
+			  favorites.setBackgroundResource(R.drawable.ic_fav);
+		  else
+			  favorites.setBackgroundResource(R.drawable.ic_fav_grey);
+	        favorites.setOnClickListener(new FavoriteButtonListener(mensa, favorites));
 	}
 	public void setTextViewListener(View view, Mensa mensa){
-		view.setOnClickListener(new AddressTextListener(mensa,context));
+		view.setOnClickListener(new AddressTextListener(mensa, this));
 	}
 	@Override
 	public int getCount() {
@@ -73,5 +81,9 @@ public class MensaListAdapter extends BaseAdapter{
 	}
 	public void fill(){
 		menus = Model.getInstance().getMensas();
+	}
+	public void sendListToMenusIntent(Mensa mensa) {
+		target.sendListToMenusIntent(mensa);
+		
 	}
 }

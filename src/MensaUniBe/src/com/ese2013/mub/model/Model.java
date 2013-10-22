@@ -92,4 +92,8 @@ public class Model extends Observable implements LoaderManager.LoaderCallbacks<L
 		updater.execute();
 		localDataFresh = true;
 	}
+
+	public void saveLocalData() {
+		DataManager.getSingleton().storeFavorites(mensas);
+	}
 }

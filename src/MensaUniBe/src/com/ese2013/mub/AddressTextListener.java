@@ -9,17 +9,19 @@ import com.ese2013.mub.model.Mensa;
 
 public class AddressTextListener implements OnClickListener{
 private Mensa mensa;
-private Context context;
-private final String POSITION = "com.ese2013.mub.AdressTextListener";
+private MensaListAdapter adapt;
+
+
 	
-	public AddressTextListener(Mensa mensa, Context context) {
+	public AddressTextListener(Mensa mensa, MensaListAdapter adapt) {
 		this.mensa = mensa;
-		this.context = context;
+		this.adapt = adapt;
 	}
 	@Override
 	public void onClick(View viewIn) {
-		Intent intent = new Intent(context, MenusByMensaViewFragment.class);
-		intent.putExtra(POSITION, mensa.getId());
+		
+		adapt.sendListToMenusIntent(mensa);
+		
 		//MenusByMensaViewFragment fragment = new ();
 		//fragment.getActivity().setD;
 		//Toast.makeText(, mensa.getName() + "is favorite now is: " + mensa.isFavorite(), Toast.LENGTH_SHORT).show();

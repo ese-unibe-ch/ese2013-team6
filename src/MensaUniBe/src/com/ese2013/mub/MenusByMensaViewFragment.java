@@ -2,7 +2,9 @@ package com.ese2013.mub;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
+import java.util.Locale;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -61,6 +63,9 @@ public class MenusByMensaViewFragment extends Fragment implements Observer {
 	public void onDestroy() {
 		super.onDestroy();
 		Model.getInstance().removeObserver(this);
+	}
+	public void goToPage(int pos){
+		viewPager.setCurrentItem(pos);
 	}
 
 	/**
@@ -132,6 +137,7 @@ public class MenusByMensaViewFragment extends Fragment implements Observer {
 			return frag;
 		}
 
+		@SuppressWarnings("deprecation")//because the our min api is lower than 14 and setBackground(drawable) needs 16
 		@Override
 		public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 			View rootView = inflater.inflate(R.layout.fragment_home_scrollable_content, container, false);
@@ -145,14 +151,25 @@ public class MenusByMensaViewFragment extends Fragment implements Observer {
 			for (DailyMenuplan d : mensa.getMenuplan()) {
 				TextView text = new TextView(container.getContext());
 				text.setText(d.getDateString());
+				text.setBackgroundDrawable(getResources().getDrawable(R.drawable.section_list_item_selector));
+				text.setPadding(0, 6, 0, 6);
+				text.setHeight(10);
+				//text.setGravity(TextView.);
 				
 				layout.addView(text);
-
+				LinearLayout menuLayout = new LinearLayout(container.getContext());
+				menuLayout.setOrientation(LinearLayout.VERTICAL);
 				for (Menu menu : d.getMenus()) {
-					layout.addView(new MenuView(container.getContext(), menu.getTitle(), menu.getDescription()));
+					menuLayout.addView(new MenuView(container.getContext(), menu.getTitle(), menu.getDescription()));
 				}
-				text.setOnClickListener(new toggleListener(layout, text));
-				layout.setVisibility(View.GONE);
+				text.setOnClickListener(new ToggleListener(menuLayout, text, getActivity()));
+				
+				Date date = Calendar.getInstance().getTime();
+				if(d.getDateString().equals(new SimpleDateFormat("EEEE, dd. MMMM yyyy", Locale.getDefault()).format(date)))
+					menuLayout.setVisibility(View.VISIBLE);
+				else
+					menuLayout.setVisibility(View.GONE);
+				layout.addView(menuLayout);
 			}
 			return rootView;
 		}

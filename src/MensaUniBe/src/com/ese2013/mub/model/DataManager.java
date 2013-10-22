@@ -1,5 +1,7 @@
 package com.ese2013.mub.model;
 
+import java.util.ArrayList;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -156,6 +158,14 @@ public class DataManager {
 	public boolean isInFavorites(int mensaId) {
 		SharedPreferences prefs = activity.getPreferences(Activity.MODE_PRIVATE);
 		return prefs.getBoolean(MENSA_FAV + mensaId, false);
+	}
+
+	public void storeFavorites(ArrayList<Mensa> mensas) {
+		for (Mensa m : mensas) {
+			SharedPreferences.Editor prefs = activity.getPreferences(Activity.MODE_PRIVATE).edit();
+			prefs.putBoolean(MENSA_FAV + m.getId(), m.isFavorite());
+			prefs.commit();
+		}
 	}
 
 }

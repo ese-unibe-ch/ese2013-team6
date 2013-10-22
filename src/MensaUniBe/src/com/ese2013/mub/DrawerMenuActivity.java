@@ -42,8 +42,10 @@ public class DrawerMenuActivity extends FragmentActivity {
         mDrawerList.setAdapter(new ArrayAdapter<String>(this, R.layout.drawer_list_item, menuItemNames));
         
         // enable ActionBar app icon to behave as action to toggle nav drawer
+        
         getActionBar().setDisplayHomeAsUpEnabled(true);
         getActionBar().setHomeButtonEnabled(true);
+        // spinner       
         
         selectItem(0);
 

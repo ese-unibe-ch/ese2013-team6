@@ -1,7 +1,7 @@
 package com.ese2013.mub;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
 
 import android.os.Bundle;
@@ -27,12 +27,21 @@ public class MenusByMensaViewFragment extends Fragment implements Observer {
 	private FragmentStatePagerAdapter sectionsPagerAdapter;
 	private ViewPager viewPager;
 
-	private boolean showByDay = true;
+	private boolean showFavorites = true;			// if true, Spinner should be on favorites list
+	private static boolean showAllByDay = false;	// if true, Spinner should be on list of all menus of one day
+													// else Spinner is on list of all menus of one mensa
+	public static boolean getShowAllByDay(){
+		return showAllByDay;
+	}
+	
+	public static void setShowAllByDay(boolean bool){
+		showAllByDay = bool;
+	}
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 		View view = inflater.inflate(R.layout.fragment_menusbymensa_view, container, false);
-		if (showByDay) {
+		if (showFavorites) {
 			sectionsPagerAdapter = new MenuSectionsPagerAdapter(getChildFragmentManager());
 		} else {
 			sectionsPagerAdapter = new MensaSectionsPagerAdapter(getChildFragmentManager());
@@ -180,25 +189,9 @@ public class MenusByMensaViewFragment extends Fragment implements Observer {
 
 		@Override
 		public CharSequence getPageTitle(int position) {
-	        Calendar c = Calendar.getInstance();
-	        c.setTime(days.get(position));
-	        int numberOfWeek = c.get(Calendar.DAY_OF_WEEK);
-	        String dayOfWeek = "";
-	        switch(numberOfWeek){
-		        case 2 : dayOfWeek = "Monday";
-		        break;
-		        case 3 : dayOfWeek = "Tuesday";
-		        break;
-		        case 4 : dayOfWeek = "Wednesday";
-		        break;
-		        case 5 : dayOfWeek = "Thursday";
-		        break;
-		        case 6 : dayOfWeek = "Friday";
-		        break;
-		        default : dayOfWeek = "";
-		        break;
-	        }
-			return dayOfWeek;
+		SimpleDateFormat df = new SimpleDateFormat( "EEEE" );
+		String dayOfWeek = df.format(days.get(position));
+		return dayOfWeek;
 		}
 
 		@Override
@@ -228,7 +221,11 @@ public class MenusByMensaViewFragment extends Fragment implements Observer {
 
 		@Override
 		public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-			mensas = Model.getInstance().getFavoriteMensas();
+			if (getShowAllByDay()) {
+				mensas = Model.getInstance().getMensas();
+			} else {
+				mensas = Model.getInstance().getFavoriteMensas();
+			}
 			View rootView = inflater.inflate(R.layout.fragment_home_scrollable_content, container, false);
 			LinearLayout layout = (LinearLayout) rootView.findViewById(R.id.section_linear_layout);
 			if (Model.getInstance().noMensasLoaded())
@@ -236,6 +233,14 @@ public class MenusByMensaViewFragment extends Fragment implements Observer {
 									// due screen rotation, needs to be handled
 									// through proper state management and so
 									// on.
+			
+			/* Date of the displayed day in Favorites View */
+			SimpleDateFormat df = new SimpleDateFormat( "dd. MMMM yyyy" );
+			TextView textDateOfDayOfWeek = new TextView(container.getContext());
+			textDateOfDayOfWeek.setText(df.format(day));
+			
+			layout.addView(textDateOfDayOfWeek);
+			
 			Log.d("CALL", "BEFORE LOOP");
 			for (Mensa mensa : mensas) {
 					DailyMenuplan d = mensa.getMenuplan().getDailymenuplan(day);

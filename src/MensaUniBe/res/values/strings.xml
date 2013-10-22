@@ -7,5 +7,10 @@
     <string name="drawer_close">Closes the navigation drawer</string>
     <string name="favorite_button">Select as Favorite</string>
     <string name="map_button">Goto Map</string>
+    <string-array name="spinner_list">
+        <item>Favorites</item>
+        <item>ByMensa</item>
+        <item>ByDay</item>
+    </string-array>
 
 </resources>

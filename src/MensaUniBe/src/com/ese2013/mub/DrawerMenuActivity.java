@@ -153,6 +153,8 @@ public class DrawerMenuActivity extends FragmentActivity {
             setDisplayedFragment(frag);
     		break;
     	case 2:
+    		frag = new MapFragment();
+    		setDisplayedFragment(frag);
     		break;
     	case 3:
     		break;

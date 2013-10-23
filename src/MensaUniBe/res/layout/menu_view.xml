@@ -7,7 +7,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:paddingBottom="@dimen/menu_view_title_padding"
-        android:paddingLeft="@dimen/menu_view_title_padding"
+        android:paddingLeft="4dp"
         android:paddingRight="@dimen/menu_view_title_padding"
         android:paddingTop="@dimen/menu_view_title_padding"
         android:textColor="@color/white" />

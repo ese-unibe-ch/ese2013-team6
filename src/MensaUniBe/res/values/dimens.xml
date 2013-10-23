@@ -4,7 +4,7 @@
     <dimen name="menu_scroll_layout_horizontal_margin">8dp</dimen>
     <dimen name="menu_scroll_layout_vertical_margin">8dp</dimen>
     <dimen name="menu_view_bottom_margin">6dp</dimen>
-    <dimen name="menu_view_title_padding">6dp</dimen>
+    <dimen name="menu_view_title_padding">1dp</dimen>
     <dimen name="menu_desc_side_padding">3dp</dimen>
     <dimen name="menu_desc_vertical_padding">6dp</dimen>
 

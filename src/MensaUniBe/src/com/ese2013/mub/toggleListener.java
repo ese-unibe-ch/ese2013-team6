@@ -8,7 +8,7 @@ public class ToggleListener implements OnClickListener {
 	private View toToggle;
 	private Context ctx;
 	//private View title;
-	public ToggleListener(View toToggle, View title, Context ctx){
+	public ToggleListener(View toToggle, Context ctx){
 		this.toToggle = toToggle;
 		this.ctx = ctx;
 		//this.title = title;

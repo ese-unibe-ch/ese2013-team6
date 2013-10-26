@@ -64,7 +64,7 @@ public class DrawerMenuActivity extends FragmentActivity {
 		ActionBar.OnNavigationListener spinnerNavigationListener = new ActionBar.OnNavigationListener() {
 			@Override
 			public boolean onNavigationItemSelected(int position, long itemId) {
-				MenusByMensaViewFragment frag = new MenusByMensaViewFragment();
+				HomeFragment frag = new HomeFragment();
 				switch(position) {
 				case 0: {
 					frag.setFavorites(true);
@@ -120,15 +120,9 @@ public class DrawerMenuActivity extends FragmentActivity {
 	@Override 
 	public void onPause() {
 		super.onPause();
-		Model.getInstance().saveLocalData();
+		Model.getInstance().saveFavorites();
 	}
-	
-	@Override
-	public void onDestroy() {
-		super.onDestroy();
-		Model.getInstance().destroy();
-	}
-	
+
     /**
      * ClickListener for the Drawer List. Handles selecting list items in the
      * Drawer menu.
@@ -145,7 +139,7 @@ public class DrawerMenuActivity extends FragmentActivity {
     	Fragment frag; 
     	switch (position) {
     	case 0:
-    		frag = new MenusByMensaViewFragment();
+    		frag = new HomeFragment();
             setDisplayedFragment(frag);
     		break;
     	case 1:

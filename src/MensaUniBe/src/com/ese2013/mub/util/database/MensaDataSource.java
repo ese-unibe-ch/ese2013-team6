@@ -1,4 +1,4 @@
-package com.ese2013.mub.util;
+package com.ese2013.mub.util.database;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -13,6 +13,11 @@ import org.json.JSONObject;
 import com.ese2013.mub.model.Mensa;
 import com.ese2013.mub.model.Menu;
 import com.ese2013.mub.model.WeeklyMenuplan;
+import com.ese2013.mub.util.DataManager;
+import com.ese2013.mub.util.database.tables.FavoritesTable;
+import com.ese2013.mub.util.database.tables.MensasTable;
+import com.ese2013.mub.util.database.tables.MenusMensasTable;
+import com.ese2013.mub.util.database.tables.MenusTable;
 
 import android.content.ContentValues;
 import android.content.Context;
@@ -39,33 +44,35 @@ public class MensaDataSource {
 		dbHelper.close();
 	}
 
-	public void storeMensaList(JSONArray content) throws JSONException {
-		for (int i = 0; i < content.length(); i++) {
-			JSONObject mensaJsonObject = content.getJSONObject(i);
-			storeMensa(mensaJsonObject);
+	public void storeMensaList(JSONArray mensaListJson, JSONArray updateStatusJson) throws JSONException {
+		for (int i = 0; i < mensaListJson.length(); i++) {
+			JSONObject mensaJsonObject = mensaListJson.getJSONObject(i);
+			JSONObject mensaStatusObject = updateStatusJson.getJSONObject(i);
+			storeMensa(mensaJsonObject, mensaStatusObject);
 		}
 	}
 
-	private void storeMensa(JSONObject json) throws JSONException {
+	private void storeMensa(JSONObject mensaJson, JSONObject statusJson) throws JSONException {
 		ContentValues values = new ContentValues();
-		values.put(SqlDatabaseHelper.COL_ID, json.getInt("id"));
-		values.put(SqlDatabaseHelper.COL_NAME, json.getString("mensa"));
-		values.put(SqlDatabaseHelper.COL_STREET, json.getString("street"));
-		values.put(SqlDatabaseHelper.COL_ZIP, json.getString("plz"));
-		values.put(SqlDatabaseHelper.COL_LON, json.getDouble("lon"));
-		values.put(SqlDatabaseHelper.COL_LAT, json.getDouble("lat"));
-		database.replace(SqlDatabaseHelper.TABLE_MENSAS, null, values);
+		values.put(MensasTable.COL_ID, mensaJson.getInt("id"));
+		values.put(MensasTable.COL_NAME, mensaJson.getString("mensa"));
+		values.put(MensasTable.COL_STREET, mensaJson.getString("street"));
+		values.put(MensasTable.COL_ZIP, mensaJson.getString("plz"));
+		values.put(MensasTable.COL_LON, mensaJson.getDouble("lon"));
+		values.put(MensasTable.COL_LAT, mensaJson.getDouble("lat"));
+		values.put(MensasTable.COL_TIMESTAMP, statusJson.getInt("timestamp"));
+		database.replace(MensasTable.TABLE_MENSAS, null, values);
 	}
 
 	public List<Mensa> loadMensaList() {
 		List<Mensa> mensas = new ArrayList<Mensa>();
-		Cursor c = database.rawQuery("SELECT * FROM " + SqlDatabaseHelper.TABLE_MENSAS, null);
-		final int POS_ID = c.getColumnIndex(SqlDatabaseHelper.COL_ID);
-		final int POS_NAME = c.getColumnIndex(SqlDatabaseHelper.COL_NAME);
-		final int POS_STREET = c.getColumnIndex(SqlDatabaseHelper.COL_STREET);
-		final int POS_ZIP = c.getColumnIndex(SqlDatabaseHelper.COL_ZIP);
-		final int POS_LON = c.getColumnIndex(SqlDatabaseHelper.COL_LON);
-		final int POS_LAT = c.getColumnIndex(SqlDatabaseHelper.COL_LON);
+		Cursor c = database.rawQuery("SELECT * FROM " + MensasTable.TABLE_MENSAS, null);
+		final int POS_ID = c.getColumnIndex(MensasTable.COL_ID);
+		final int POS_NAME = c.getColumnIndex(MensasTable.COL_NAME);
+		final int POS_STREET = c.getColumnIndex(MensasTable.COL_STREET);
+		final int POS_ZIP = c.getColumnIndex(MensasTable.COL_ZIP);
+		final int POS_LON = c.getColumnIndex(MensasTable.COL_LON);
+		final int POS_LAT = c.getColumnIndex(MensasTable.COL_LAT);
 		c.moveToFirst();
 		do {
 			Mensa.MensaBuilder builder = new Mensa.MensaBuilder();
@@ -99,21 +106,21 @@ public class MensaDataSource {
 
 		ContentValues values = new ContentValues();
 		int hash = json.getInt("hash");
-		values.put(SqlDatabaseHelper.COL_HASH, hash);
-		values.put(SqlDatabaseHelper.COL_TITLE, json.getString("title"));
-		values.put(SqlDatabaseHelper.COL_DESC, description);
+		values.put(MenusTable.COL_HASH, hash);
+		values.put(MenusTable.COL_TITLE, json.getString("title"));
+		values.put(MenusTable.COL_DESC, description);
 		String dateString = json.getString("date");
 
 		if (!stringIsDate(dateString))
 			throw new ParseException("Unable to parse Date", 0);
 
-		values.put(SqlDatabaseHelper.COL_DATE, json.getString("date"));
-		database.replace(SqlDatabaseHelper.TABLE_MENUS, null, values);
+		values.put(MenusTable.COL_DATE, json.getString("date"));
+		database.replace(MenusTable.TABLE_MENUS, null, values);
 
 		ContentValues values2 = new ContentValues();
-		values2.put(SqlDatabaseHelper.COL_HASH, hash);
-		values2.put(SqlDatabaseHelper.COL_ID, mensaId);
-		database.replace(SqlDatabaseHelper.TABLE_MENUS_MENSAS, null, values2);
+		values2.put(MenusTable.COL_HASH, hash);
+		values2.put(MensasTable.COL_ID, mensaId);
+		database.replace(MenusMensasTable.TABLE_MENUS_MENSAS, null, values2);
 	}
 
 	private boolean stringIsDate(String dateString) {
@@ -126,15 +133,15 @@ public class MensaDataSource {
 	}
 
 	public WeeklyMenuplan loadMenuplan(int mensaId) {
-		String query = "select * from " + SqlDatabaseHelper.TABLE_MENUS + " inner join "
-				+ SqlDatabaseHelper.TABLE_MENUS_MENSAS + " on " + SqlDatabaseHelper.TABLE_MENUS + "."
-				+ SqlDatabaseHelper.COL_HASH + " = " + SqlDatabaseHelper.TABLE_MENUS_MENSAS + "."
-				+ SqlDatabaseHelper.COL_HASH + " where " + SqlDatabaseHelper.TABLE_MENUS_MENSAS + "."
-				+ SqlDatabaseHelper.COL_ID + " = " + mensaId + " ;";
+		String query = "select * from " + MenusTable.TABLE_MENUS + " inner join "
+				+ MenusMensasTable.TABLE_MENUS_MENSAS + " on " + MenusTable.TABLE_MENUS + "."
+				+ MenusTable.COL_HASH + " = " + MenusMensasTable.TABLE_MENUS_MENSAS + "."
+				+ MenusTable.COL_HASH + " where " + MenusMensasTable.TABLE_MENUS_MENSAS + "."
+				+ MensasTable.COL_ID + " = " + mensaId + " ;";
 		Cursor c = database.rawQuery(query, null);
-		final int POS_TITLE = c.getColumnIndex(SqlDatabaseHelper.COL_TITLE);
-		final int POS_DESC = c.getColumnIndex(SqlDatabaseHelper.COL_DESC);
-		final int POS_DATE = c.getColumnIndex(SqlDatabaseHelper.COL_DATE);
+		final int POS_TITLE = c.getColumnIndex(MenusTable.COL_TITLE);
+		final int POS_DESC = c.getColumnIndex(MenusTable.COL_DESC);
+		final int POS_DATE = c.getColumnIndex(MenusTable.COL_DATE);
 		WeeklyMenuplan p = new WeeklyMenuplan();
 		c.moveToFirst();
 		do {
@@ -155,19 +162,26 @@ public class MensaDataSource {
 	}
 
 	public boolean isInFavorites(int mensaId) {
-		Cursor c = database.rawQuery("select * from " + SqlDatabaseHelper.TABLE_FAV_MENSAS + " where "
-				+ SqlDatabaseHelper.COL_ID + "=" + mensaId, null);
+		Cursor c = database.rawQuery("select * from " + FavoritesTable.TABLE_FAV_MENSAS + " where "
+				+ MensasTable.COL_ID + "=" + mensaId, null);
 		return c.getCount() != 0;
 	}
 
 	public void storeFavorites(List<Mensa> mensas) {
-		database.delete(SqlDatabaseHelper.TABLE_FAV_MENSAS, null, null);
+		database.delete(FavoritesTable.TABLE_FAV_MENSAS, null, null);
 		for (Mensa m : mensas) {
 			if (m.isFavorite()) {
 				ContentValues values = new ContentValues();
-				values.put(SqlDatabaseHelper.COL_ID, m.getId());
-				database.insert(SqlDatabaseHelper.TABLE_FAV_MENSAS, null, values);
+				values.put(MensasTable.COL_ID, m.getId());
+				database.insert(FavoritesTable.TABLE_FAV_MENSAS, null, values);
 			}
 		}
+	}
+
+	public int getMensaTimestamp(int mensaId) {
+		Cursor c = database.rawQuery("select " + MensasTable.COL_TIMESTAMP + " from " + MensasTable.TABLE_MENSAS + " where "
+				+ MensasTable.COL_ID + "=" + mensaId, null);
+		c.moveToFirst();
+		return c.getInt(0);
 	}
 }

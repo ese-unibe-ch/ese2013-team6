@@ -7,15 +7,16 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import android.app.Activity;
+
 import com.ese2013.mub.model.Mensa;
 import com.ese2013.mub.model.WeeklyMenuplan;
-
-import android.app.Activity;
+import com.ese2013.mub.util.database.MensaDataSource;
 
 public class DataManager {
 	private MensaDataSource datasource;
 	private static DataManager instance;
-
+	
 	public DataManager(Activity activity) {
 		datasource = new MensaDataSource(activity);
 		instance = this;
@@ -25,9 +26,9 @@ public class DataManager {
 		return instance;
 	}
 
-	public void storeMensaList(JSONArray content) throws JSONException {
+	public void storeMensaList(JSONArray mensaListJson, JSONArray updateStatusJson) throws JSONException {
 		datasource.open();
-		datasource.storeMensaList(content);
+		datasource.storeMensaList(mensaListJson, updateStatusJson);
 		datasource.close();
 	}
 
@@ -66,5 +67,12 @@ public class DataManager {
 
 	public void closeOpenResources() {
 		datasource.close();
+	}
+	
+	public int getMensaTimestamp(int mensaId) {
+		datasource.open();
+		int timestamp = datasource.getMensaTimestamp(mensaId);
+		datasource.close();
+		return timestamp;
 	}
 }

@@ -20,7 +20,7 @@ import com.ese2013.mub.model.Mensa;
 import com.ese2013.mub.model.Model;
 import com.ese2013.mub.util.Observer;
 
-public class MenusByMensaViewFragment extends Fragment implements Observer {
+public class HomeFragment extends Fragment implements Observer {
 	
 	private FragmentStatePagerAdapter sectionsPagerAdapter;
 	private static ViewPager viewPager;
@@ -42,7 +42,7 @@ public class MenusByMensaViewFragment extends Fragment implements Observer {
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-		View view = inflater.inflate(R.layout.fragment_menusbymensa_view, container, false);
+		View view = inflater.inflate(R.layout.fragment_home, container, false);
 		
 		//name of the boolean seems queer
 		if (showFavorites) {

@@ -6,7 +6,6 @@ import java.util.List;
 import java.util.Locale;
 
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -41,7 +40,7 @@ public class DailyPlanFragment extends PlanFragment {
 		View rootView = inflater.inflate(R.layout.fragment_home_scrollable_content, container, false);
 		LinearLayout layout = (LinearLayout) rootView.findViewById(R.id.section_linear_layout);
 		
-		if (MenusByMensaViewFragment.getShowAllByDay()) {
+		if (HomeFragment.getShowAllByDay()) {
 			mensas = Model.getInstance().getMensas();
 		} else {
 			mensas = Model.getInstance().getFavoriteMensas();
@@ -62,7 +61,6 @@ public class DailyPlanFragment extends PlanFragment {
 		
 		layout.addView(textDateOfDayOfWeek);
 		
-		Log.d("CALL", "BEFORE LOOP");
 		for (Mensa mensa : mensas) {
 			
 				TextView text = getTextView(mensa.getName());
@@ -73,10 +71,11 @@ public class DailyPlanFragment extends PlanFragment {
 				menuLayout.setOrientation(LinearLayout.VERTICAL);
 				
 				//MenusByMensaViewFragment.getViewPager().setCurrentItem(3);//TODO change stub, crashes!
-				Log.d("CALL", "IN SE LOOP");
 				for (Menu menu : d.getMenus()) {
 					menuLayout.addView(new MenuView(container.getContext(), menu.getTitle(), menu.getDescription()));
 				}
+				if (HomeFragment.getShowAllByDay()) 
+					menuLayout.setVisibility(View.GONE);
 				
 				text.setOnClickListener(new ToggleListener(menuLayout, container.getContext()));
 				

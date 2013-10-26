@@ -25,14 +25,11 @@ public class Model extends Observable implements LoaderManager.LoaderCallbacks<L
 	private FragmentActivity activity;
 	private static final int LOADER_ID = 1;
 
-	private LocalDataUpdaterTask updater;
-	private boolean localDataFresh = false;
-
 	public Model(FragmentActivity activity) {
 		Model.instance = this;
 		this.activity = activity;
 		new DataManager(activity);
-		activity.getSupportLoaderManager().initLoader(LOADER_ID, null, this);
+		updateLocalData();
 	}
 
 	public List<Mensa> getMensas() {
@@ -47,18 +44,17 @@ public class Model extends Observable implements LoaderManager.LoaderCallbacks<L
 		return ret;
 	}
 
-	public void destroy() {
-		updater.cancel(true);
-		activity.getSupportLoaderManager().destroyLoader(LOADER_ID);
-	}
-
 	// TODO the toasts shouldn't be handled here!
-	public void onWebContentRetrieved(boolean success) {
+	public void onLocalDataUpdateFinished(boolean success, boolean downloadedNewData) {
+		activity.getSupportLoaderManager().initLoader(LOADER_ID, null, this);
+		activity.getSupportLoaderManager().getLoader(LOADER_ID).onContentChanged();
 		if (success) {
-			activity.getSupportLoaderManager().getLoader(LOADER_ID).onContentChanged();
-			Toast.makeText(activity, "Downloaded new data", Toast.LENGTH_LONG).show();
+			if (downloadedNewData)
+				Toast.makeText(activity, "Downloaded new menus!", Toast.LENGTH_LONG).show();
+			else
+				Toast.makeText(activity, "Menus up to date.", Toast.LENGTH_LONG).show();
 		} else {
-			Toast.makeText(activity, "Could not download new data", Toast.LENGTH_LONG).show();
+			Toast.makeText(activity, "No new menus were downloaded", Toast.LENGTH_LONG).show();
 		}
 	}
 
@@ -70,13 +66,10 @@ public class Model extends Observable implements LoaderManager.LoaderCallbacks<L
 	@Override
 	public void onLoadFinished(Loader<List<Mensa>> loader, List<Mensa> mensas) {
 		if (mensas == null) {// TODO Loader should handle failed loading.
-			updateLocalData();
+			//updateLocalData();
 			return;
 		}
-		this.mensas = new ArrayList<Mensa>(mensas);
-		if (!localDataFresh) {
-			updateLocalData();
-		}
+		this.mensas = mensas;
 		notifyChanges();
 	}
 
@@ -93,12 +86,11 @@ public class Model extends Observable implements LoaderManager.LoaderCallbacks<L
 	}
 
 	private void updateLocalData() {
-		updater = new LocalDataUpdaterTask();
+		LocalDataUpdaterTask updater = new LocalDataUpdaterTask();
 		updater.execute();
-		localDataFresh = true;
 	}
 
-	public void saveLocalData() {
+	public void saveFavorites() {
 		DataManager.getSingleton().storeFavorites(mensas);
 	}
 }

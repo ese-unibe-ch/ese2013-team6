@@ -1,4 +1,4 @@
-package com.ese2013.mub.model;
+package com.ese2013.mub.util;
 
 import java.util.ArrayList;
 

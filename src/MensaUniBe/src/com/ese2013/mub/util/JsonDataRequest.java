@@ -1,4 +1,4 @@
-package com.ese2013.mub.model;
+package com.ese2013.mub.util;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -6,8 +6,10 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 
 import org.apache.http.HttpResponse;
+import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.DefaultHttpClient;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.net.Uri;
@@ -21,7 +23,7 @@ import android.net.Uri.Builder;
  * another thread (i.e. a asynchronous download thread).
  */
 public class JsonDataRequest {
-
+	public static final int CODE_SUCCESS = 200;
 	private String serviceUri;
 
 	/**
@@ -42,21 +44,19 @@ public class JsonDataRequest {
 	 *         anything went wrong: this means either that no connection could
 	 *         be established or the response of the http server was no valid
 	 *         JSON string.
+	 * @throws IOException 
+	 * @throws ClientProtocolException 
+	 * @throws JSONException 
 	 */
-	public JSONObject execute() {
-		try {
-			DefaultHttpClient client = new DefaultHttpClient();
-			Uri serviceURI = Uri.parse(serviceUri);
-			Builder uriBuilder = serviceURI.buildUpon();
-			HttpGet httpGet = new HttpGet(uriBuilder.build().toString());
-			HttpResponse response = client.execute(httpGet);
-			InputStream is = response.getEntity().getContent();
-			String inputStream = inputStreamToString(is);
-			return new JSONObject(inputStream);
-		} catch (Exception e) {
-			e.printStackTrace();
-			return null;
-		}
+	public JSONObject execute() throws ClientProtocolException, IOException, JSONException {
+		DefaultHttpClient client = new DefaultHttpClient();
+		Uri serviceURI = Uri.parse(serviceUri);
+		Builder uriBuilder = serviceURI.buildUpon();
+		HttpGet httpGet = new HttpGet(uriBuilder.build().toString());
+		HttpResponse response = client.execute(httpGet);
+		InputStream is = response.getEntity().getContent();
+		String inputStream = inputStreamToString(is);
+		return new JSONObject(inputStream);
 	}
 
 	/**

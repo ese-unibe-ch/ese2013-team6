@@ -3,6 +3,11 @@ package com.ese2013.mub.model;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.ese2013.mub.util.DataManager;
+import com.ese2013.mub.util.LocalDataUpdaterTask;
+import com.ese2013.mub.util.ModelLoader;
+import com.ese2013.mub.util.Observable;
+
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.LoaderManager;

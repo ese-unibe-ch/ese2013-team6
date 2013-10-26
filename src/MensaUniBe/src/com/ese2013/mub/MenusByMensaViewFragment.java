@@ -24,7 +24,7 @@ import com.ese2013.mub.model.DailyMenuplan;
 import com.ese2013.mub.model.Mensa;
 import com.ese2013.mub.model.Menu;
 import com.ese2013.mub.model.Model;
-import com.ese2013.mub.model.Observer;
+import com.ese2013.mub.util.Observer;
 
 public class MenusByMensaViewFragment extends Fragment implements Observer {
 	private FragmentStatePagerAdapter sectionsPagerAdapter;

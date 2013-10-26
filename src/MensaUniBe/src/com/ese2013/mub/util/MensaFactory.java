@@ -1,6 +1,9 @@
-package com.ese2013.mub.model;
+package com.ese2013.mub.util;
 
 import java.util.List;
+
+import com.ese2013.mub.model.Mensa;
+import com.ese2013.mub.model.WeeklyMenuplan;
 
 public class MensaFactory {
 

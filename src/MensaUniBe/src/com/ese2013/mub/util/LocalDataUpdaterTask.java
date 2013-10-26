@@ -1,8 +1,14 @@
-package com.ese2013.mub.model;
+package com.ese2013.mub.util;
 
+import java.io.IOException;
+import java.text.ParseException;
+
+import org.apache.http.client.ClientProtocolException;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import com.ese2013.mub.model.Model;
 
 import android.os.AsyncTask;
 
@@ -11,8 +17,7 @@ import android.os.AsyncTask;
  * stores it locally on the phone using the DataManager class.
  */
 public class LocalDataUpdaterTask extends AsyncTask<Void, Void, Void> {
-	private boolean success = false;
-	private static final int CODE_SUCCESS = 200;
+	private boolean success;
 
 	/**
 	 * Downloads all menus and mensas from the web service. Does not provide a
@@ -23,8 +28,8 @@ public class LocalDataUpdaterTask extends AsyncTask<Void, Void, Void> {
 		try {
 			JsonDataRequest request = new JsonDataRequest(ServiceUri.GET_MENSAS);
 			JSONObject result = request.execute();
-			if (result == null || result.getJSONObject("result").getInt("code") != CODE_SUCCESS)
-				return null;
+			if (result.getJSONObject("result").getInt("code") != JsonDataRequest.CODE_SUCCESS)
+				success = false;
 
 			JSONArray content = result.getJSONObject("result").getJSONArray("content");
 			DataManager.getSingleton().storeMensaList(content);
@@ -37,14 +42,23 @@ public class LocalDataUpdaterTask extends AsyncTask<Void, Void, Void> {
 			}
 			success = true;
 		} catch (JSONException e) {
-			e.printStackTrace();
+			success = false;
+		} catch (ClientProtocolException e) {
+			success = false;
+		} catch (IOException e) {
+			success = false;
+		} catch (ParseException e) {
+			success = false;
+		} finally {
+			DataManager.getSingleton().closeOpenResources();
 		}
 		return null;
 	}
 
 	/**
 	 * Called after the task has been executed, informs the Model of the content
-	 * changes and also tells if anything went wrong during download.
+	 * changes and also tells if anything went wrong during download. (Runs in
+	 * the main thread again)
 	 */
 	@Override
 	protected void onPostExecute(Void v) {

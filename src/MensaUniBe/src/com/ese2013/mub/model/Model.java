@@ -15,7 +15,7 @@ import android.widget.Toast;
  * Mensas is updated, all Observers are notified (e.g. GUI classes).
  */
 public class Model extends Observable implements LoaderManager.LoaderCallbacks<List<Mensa>> {
-	private ArrayList<Mensa> mensas = new ArrayList<Mensa>();
+	private List<Mensa> mensas = new ArrayList<Mensa>();
 	private static Model instance;
 	private FragmentActivity activity;
 	private static final int LOADER_ID = 1;
@@ -30,12 +30,12 @@ public class Model extends Observable implements LoaderManager.LoaderCallbacks<L
 		activity.getSupportLoaderManager().initLoader(LOADER_ID, null, this);
 	}
 
-	public ArrayList<Mensa> getMensas() {
+	public List<Mensa> getMensas() {
 		return mensas;
 	}
 
-	public ArrayList<Mensa> getFavoriteMensas() {
-		ArrayList<Mensa> ret = new ArrayList<Mensa>(3);
+	public List<Mensa> getFavoriteMensas() {
+		List<Mensa> ret = new ArrayList<Mensa>(3);
 		for (Mensa m : mensas)
 			if (m.isFavorite())
 				ret.add(m);

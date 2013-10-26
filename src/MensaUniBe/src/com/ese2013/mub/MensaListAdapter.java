@@ -1,9 +1,9 @@
 package com.ese2013.mub;
 
 import java.util.ArrayList;
+import java.util.List;
+
 import android.content.Context;
-import android.content.Intent;
-import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -18,7 +18,7 @@ import com.ese2013.mub.model.Model;
 
 public class MensaListAdapter extends BaseAdapter{
 	private static Context context;
-	private ArrayList<Mensa> menus = new ArrayList<Mensa>();
+	private List<Mensa> menus = new ArrayList<Mensa>();
 	private LayoutInflater inflater;
 	private MensaListFragment target;
 	

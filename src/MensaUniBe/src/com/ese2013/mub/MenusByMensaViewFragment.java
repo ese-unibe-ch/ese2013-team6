@@ -4,6 +4,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 import java.util.Locale;
 
 import android.os.Bundle;
@@ -77,7 +78,7 @@ public class MenusByMensaViewFragment extends Fragment implements Observer {
 	 * one of the sections/tabs/pages.
 	 */
 	public class MensaSectionsPagerAdapter extends FragmentStatePagerAdapter {
-		private ArrayList<Mensa> mensas = Model.getInstance().getMensas();
+		private List<Mensa> mensas = Model.getInstance().getMensas();
 
 		public MensaSectionsPagerAdapter(FragmentManager fm) {
 			super(fm);
@@ -225,7 +226,7 @@ public class MenusByMensaViewFragment extends Fragment implements Observer {
 
 	public static class DailyPlanFragment extends Fragment {
 		private Date day;
-		private ArrayList<Mensa> mensas;
+		private List<Mensa> mensas;
 
 		public DailyPlanFragment() {
 		}

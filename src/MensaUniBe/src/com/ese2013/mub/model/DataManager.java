@@ -1,6 +1,7 @@
 package com.ese2013.mub.model;
 
-import java.util.ArrayList;
+import java.text.ParseException;
+import java.util.List;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -9,25 +10,15 @@ import org.json.JSONObject;
 import android.app.Activity;
 import android.content.SharedPreferences;
 
-/**
- * This class is just a stub to handle local files. Should be improved as soon
- * as possible. Also not quite sure if this should really be singleton, but
- * seams to easiest way...
- * 
- * Also: does not check if data even exist. There should be a way to check that
- * and also return that to the model so that the model knows it needs to
- * download data first.
- */
-
 public class DataManager {
-	private static DataManager instance;
+	private MensaDataSource datasource;
 	private Activity activity;
-
-	private static final String WEEKLYPLAN_PATH = "WEEKLY_MENUPLAN_", MENSALIST_PATH = "MENSA_LIST",
-			MENSA_FAV = "MENSA_FAVORIT_";
+	private static DataManager instance;
+	private static final String MENSA_FAV = "MENSA_FAVORIT_";
 
 	public DataManager(Activity activity) {
 		this.activity = activity;
+		datasource = new MensaDataSource(activity);
 		instance = this;
 	}
 
@@ -35,124 +26,48 @@ public class DataManager {
 		// TODO assert not null?
 		return instance;
 	}
-	
-	public boolean doesWeeklyMenuplanExist(int i){
-		return (loadWeeklyMenuplan(i) != null);		
-	}
-	
-	public boolean doesMensaListExist(JSONArray json){
-		return (loadMensaList() != json);
-	}
-
-	public JSONObject loadWeeklyMenuplan(int i) {
-		return loadJsonObject(WEEKLYPLAN_PATH + i);
-	}
-
-	public JSONArray loadMensaList() {
-		return loadJsonArray(MENSALIST_PATH);
-	}
 
 	public void storeMensaList(JSONArray content) {
-		storeJsonArray(content, MENSALIST_PATH);
+		datasource.open();
+		try {
+			datasource.storeMensaList(content);
+		} catch (JSONException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		datasource.close();
+
 	}
 
 	public void storeWeeklyMenuplan(JSONObject json, int mensaId) {
-		storeJsonObject(json, WEEKLYPLAN_PATH + mensaId);
-	}
-
-	private void storeJsonObject(JSONObject json, String path) {
-		SharedPreferences.Editor editor = activity.getPreferences(Activity.MODE_PRIVATE).edit();
-		editor.putString(path, json.toString());
-		editor.commit();
-	}
-
-	private JSONObject loadJsonObject(String path) {
-		
-//		try {
-//			ObjectInputStream in = new ObjectInputStream(new FileInputStream(new File(new File(activity.getCacheDir(),"")+"cacheFile.srl")));
-//			JSONObject jsonObject = (JSONObject) in.readObject();
-//			in.close();
-//			return jsonObject;
-//		} catch (StreamCorruptedException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		} catch (OptionalDataException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		} catch (FileNotFoundException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		} catch (IOException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		} catch (ClassNotFoundException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		}
-//		return null;
-		
-		SharedPreferences prefs = activity.getPreferences(Activity.MODE_PRIVATE);
-		String restoredText = prefs.getString(path, null);
+		datasource.open();
 		try {
-			return new JSONObject(restoredText);
+			datasource.storeMenuplan(json.getJSONObject("result").getJSONObject("content").getJSONArray("menus"), mensaId);
 		} catch (JSONException e) {
+			// TODO Auto-generated catch block
 			e.printStackTrace();
-			return null;
 		}
+		datasource.close();
 	}
 
-	private void storeJsonArray(JSONArray json, String path) {
-		
-//		try {
-//			ObjectOutput out = new ObjectOutputStream(new FileOutputStream(new File(activity.getCacheDir(),"")+path+".json"));
-//			out.writeObject( json );
-//			out.close();
-//		} catch (FileNotFoundException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		} catch (IOException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		}
-		
-		SharedPreferences.Editor editor = activity.getPreferences(Activity.MODE_PRIVATE).edit();
-		editor.putString(path, json.toString());
-		editor.commit();
+	public List<Mensa> loadMensaList() {
+		datasource.open();
+		List<Mensa> mensas = datasource.loadMensaList();
+		datasource.close();
+		return mensas;
 	}
 
-	private JSONArray loadJsonArray(String path) {
-		
-//		try {
-//			ObjectInputStream in = new ObjectInputStream(new FileInputStream(new File(new File(activity.getCacheDir(),"")+path+".json")));
-//			JSONArray jsonArray = (JSONArray) in.readObject();
-//			in.close();
-//			return jsonArray;
-//		} catch (StreamCorruptedException e1) {
-//			// TODO Auto-generated catch block
-//			e1.printStackTrace();
-//		} catch (OptionalDataException e1) {
-//			// TODO Auto-generated catch block
-//			e1.printStackTrace();
-//		} catch (FileNotFoundException e1) {
-//			// TODO Auto-generated catch block
-//			e1.printStackTrace();
-//		} catch (IOException e1) {
-//			// TODO Auto-generated catch block
-//			e1.printStackTrace();
-//		} catch (ClassNotFoundException e1) {
-//			// TODO Auto-generated catch block
-//			e1.printStackTrace();
-//		}
-//		return null;
-		
-		SharedPreferences prefs = activity.getPreferences(Activity.MODE_PRIVATE);
-		String restoredText = prefs.getString(path, null);
+	public WeeklyMenuplan loadWeeklyMenuplan(int mensaId) {
+		datasource.open();
+		WeeklyMenuplan p = null;
 		try {
-			return new JSONArray(restoredText);
-		} catch (JSONException e) {
+			p = datasource.loadMenuplan(mensaId);
+		} catch (ParseException e) {
+			// TODO Auto-generated catch block
 			e.printStackTrace();
-			return null;
 		}
+		datasource.close();
+		return p;
 	}
 
 	public boolean isInFavorites(int mensaId) {
@@ -160,12 +75,11 @@ public class DataManager {
 		return prefs.getBoolean(MENSA_FAV + mensaId, false);
 	}
 
-	public void storeFavorites(ArrayList<Mensa> mensas) {
+	public void storeFavorites(List<Mensa> mensas) {
 		for (Mensa m : mensas) {
 			SharedPreferences.Editor prefs = activity.getPreferences(Activity.MODE_PRIVATE).edit();
 			prefs.putBoolean(MENSA_FAV + m.getId(), m.isFavorite());
 			prefs.commit();
 		}
 	}
-
 }

@@ -21,8 +21,9 @@ import com.ese2013.mub.model.Model;
 import com.ese2013.mub.model.Observer;
 
 public class MenusByMensaViewFragment extends Fragment implements Observer {
+	
 	private FragmentStatePagerAdapter sectionsPagerAdapter;
-	private ViewPager viewPager;
+	private static ViewPager viewPager;
 
 	private static boolean showFavorites = true;	// if true, Spinner should be on favorites list
 	private static boolean showAllByDay = false;	// if true, Spinner should be on list of all menus of one day
@@ -42,11 +43,14 @@ public class MenusByMensaViewFragment extends Fragment implements Observer {
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 		View view = inflater.inflate(R.layout.fragment_menusbymensa_view, container, false);
+		
+		//name of the boolean seems queer
 		if (showFavorites) {
 			sectionsPagerAdapter = new MenuSectionsPagerAdapter(getChildFragmentManager());
 		} else {
 			sectionsPagerAdapter = new MensaSectionsPagerAdapter(getChildFragmentManager());
 		}
+		
 		viewPager = (ViewPager) view.findViewById(R.id.pager);
 		viewPager.setAdapter(sectionsPagerAdapter);
 		Model.getInstance().addObserver(this);
@@ -65,6 +69,9 @@ public class MenusByMensaViewFragment extends Fragment implements Observer {
 	}
 	public void goToPage(int pos){
 		viewPager.setCurrentItem(pos);
+	}
+	public static ViewPager getViewPager(){
+		return viewPager;
 	}
 
 	/**

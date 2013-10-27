@@ -109,12 +109,6 @@ public class DrawerMenuActivity extends FragmentActivity {
 		// Set the list's click listener
 		mDrawerList.setOnItemClickListener(new DrawerItemClickListener());
 		
-		/*if(getIntent() != null){
-			Intent intent = getIntent();
-			MenusByMensaViewFragment frag = new MenusByMensaViewFragment();
-			frag.goToPage(intent.getIntExtra(MensaListFragment.POSITION, 0));
-            setDisplayedFragment(frag);
-		}*/
     }
 	
 	@Override 
@@ -213,4 +207,15 @@ public class DrawerMenuActivity extends FragmentActivity {
         getMenuInflater().inflate(R.menu.home, menu);
         return true;
     }
+
+	public void launchByMensaAtGivenPage(int position) {
+		HomeFragment frag = new HomeFragment();
+		frag.setFavorites(false);
+		frag.setShowAllByDay(true);
+		
+		frag.goToPage(position);
+		
+        setDisplayedFragment(frag);
+		
+	}
 }

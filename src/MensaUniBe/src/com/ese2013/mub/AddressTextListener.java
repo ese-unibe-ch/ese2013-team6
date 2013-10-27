@@ -19,9 +19,5 @@ private MensaListAdapter adapt;
 	public void onClick(View viewIn) {
 		
 		adapt.sendListToMenusIntent(mensa);
-		
-		//MenusByMensaViewFragment fragment = new ();
-		//fragment.getActivity().setD;
-		//Toast.makeText(, mensa.getName() + "is favorite now is: " + mensa.isFavorite(), Toast.LENGTH_SHORT).show();
 	}
 }

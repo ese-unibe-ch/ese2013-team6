@@ -2,6 +2,7 @@ package com.ese2013.mub;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
@@ -23,7 +24,7 @@ import com.ese2013.mub.util.Observer;
 public class HomeFragment extends Fragment implements Observer {
 	
 	private FragmentStatePagerAdapter sectionsPagerAdapter;
-	private static ViewPager viewPager;
+	private ViewPager viewPager;
 
 	private static boolean showFavorites = true;	// if true, Spinner should be on favorites list
 	private static boolean showAllByDay = false;	// if true, Spinner should be on list of all menus of one day
@@ -44,15 +45,25 @@ public class HomeFragment extends Fragment implements Observer {
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 		View view = inflater.inflate(R.layout.fragment_home, container, false);
 		
-		//name of the boolean seems queer
+		Date date = Calendar.getInstance().getTime();
+		SimpleDateFormat sdf = new SimpleDateFormat("F", Locale.getDefault());
+		int dayOfWeek = Integer.parseInt(sdf.format(date));
+		
 		if (showFavorites) {
 			sectionsPagerAdapter = new MenuSectionsPagerAdapter(getChildFragmentManager());
+			
 		} else {
 			sectionsPagerAdapter = new MensaSectionsPagerAdapter(getChildFragmentManager());
 		}
 		
 		viewPager = (ViewPager) view.findViewById(R.id.pager);
+		
+		
 		viewPager.setAdapter(sectionsPagerAdapter);
+		
+		if(showFavorites)
+			viewPager.setCurrentItem(dayOfWeek);
+		
 		Model.getInstance().addObserver(this);
 		return view;
 	}
@@ -68,9 +79,9 @@ public class HomeFragment extends Fragment implements Observer {
 		Model.getInstance().removeObserver(this);
 	}
 	public void goToPage(int pos){
-		viewPager.setCurrentItem(pos);
+		//viewPager.setCurrentItem(pos); crashes badly!!
 	}
-	public static ViewPager getViewPager(){
+	public ViewPager getViewPager(){
 		return viewPager;
 	}
 

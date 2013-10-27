@@ -1,15 +1,14 @@
 package com.ese2013.mub;
 
 
-import com.ese2013.mub.model.Mensa;
-
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
+
+import com.ese2013.mub.model.Mensa;
 
 
 
@@ -33,8 +32,9 @@ public class MensaListFragment extends Fragment {
 		return view;
 	}
 	public void sendListToMenusIntent(Mensa mensa){
-		Intent intent = new Intent(getActivity(), DrawerMenuActivity.class);
-		intent.putExtra(POSITION, mensa.getId());
-		getActivity().startActivity(intent);
+//		Intent intent = new Intent(getActivity(), DrawerMenuActivity.class);
+//		intent.putExtra(POSITION, mensa.getId());
+//		getActivity().startActivity(intent);
+		((DrawerMenuActivity) getActivity()).launchByMensaAtGivenPage(mensa.getId());
 	}
 }

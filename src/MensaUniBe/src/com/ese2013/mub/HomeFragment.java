@@ -64,8 +64,10 @@ public class HomeFragment extends Fragment implements Observer {
 		
 		if(getArguments() != null){
 			Bundle bundle = getArguments();//TODO change in DrawerMenu form goTopage to setArguments();
-			bundle.getInt("POSITION", 0);
+			int pos = bundle.getInt("POSITION", 0);
+			viewPager.setCurrentItem(pos-1);
 		}
+		
 		
 		Model.getInstance().addObserver(this);
 		getActivity().getActionBar().setDisplayShowCustomEnabled(true);
@@ -84,10 +86,7 @@ public class HomeFragment extends Fragment implements Observer {
 		getActivity().getActionBar().setDisplayShowCustomEnabled(false);
 		Model.getInstance().removeObserver(this);
 	}
-	public void goToPage(int pos){
-		
-		//viewPager.setCurrentItem(pos-1); //crashes badly!!
-	}
+	
 
 	/**
 	 * A {@link FragmentPagerAdapter} that returns a fragment corresponding to
@@ -174,4 +173,12 @@ public class HomeFragment extends Fragment implements Observer {
 		}
 
 	}
+
+//	public void procedureArguments() {
+//		if(getArguments() != null && !showFavorites){
+//			Bundle bundle = getArguments();//TODO change in DrawerMenu form goTopage to setArguments();
+//			int pos = bundle.getInt("POSITION", 0);
+//			viewPager.setCurrentItem(pos);
+//		}
+//	}
 }

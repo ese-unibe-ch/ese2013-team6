@@ -8,7 +8,7 @@ package com.ese2013.mub.model;
 public class Mensa {
 	private String name, street, zip;
 	private double longitude, latitude;
-	private int id;
+	private int id, timestamp;
 	private boolean isFavorite;
 	private WeeklyMenuplan menuplan;
 
@@ -28,6 +28,7 @@ public class Mensa {
 		this.longitude = builder.longitude;
 		this.latitude = builder.latitude;
 		this.isFavorite = builder.isFavorite;
+		this.timestamp = builder.timestamp;
 	}
 
 	public int getId() {
@@ -56,6 +57,10 @@ public class Mensa {
 
 	public boolean isFavorite() {
 		return isFavorite;
+	}
+	
+	public int getTimestamp() {
+		return timestamp;
 	}
 
 	/**
@@ -93,7 +98,7 @@ public class Mensa {
 		private static final String DEFAULT = "N//A";
 		private String name = DEFAULT, street = DEFAULT, zip = DEFAULT;
 		private double longitude, latitude;
-		private int id;
+		private int id, timestamp;
 
 		public MensaBuilder setId(int id) {
 			this.id = id;
@@ -124,7 +129,12 @@ public class Mensa {
 			this.latitude = latitude;
 			return this;
 		}
-
+		
+		public MensaBuilder setTimestamp(int timestamp) {
+			this.timestamp = timestamp;
+			return this;
+		}
+		
 		public MensaBuilder setIsFavorite(boolean isFavorite) {
 			this.isFavorite = isFavorite;
 			return this;

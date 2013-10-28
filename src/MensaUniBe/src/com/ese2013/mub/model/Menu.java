@@ -11,6 +11,7 @@ import java.util.Locale;
 public class Menu {
 	private String title, description;
 	private Date date;
+	private int hash;
 
 	/**
 	 * Creates a Menu from a given MenuBuilder. Is private to ensure that Menus
@@ -24,6 +25,7 @@ public class Menu {
 		this.title = builder.title;
 		this.description = builder.description;
 		this.date = builder.date;
+		this.hash = builder.hash;
 	}
 
 	public String getTitle() {
@@ -36,6 +38,10 @@ public class Menu {
 
 	public Date getDate() {
 		return date;
+	}
+	
+	public int getHash() {
+		return hash;
 	}
 
 	/**
@@ -55,6 +61,7 @@ public class Menu {
 	public static class MenuBuilder {
 		private String title, description;
 		private Date date;
+		private int hash;
 
 		public MenuBuilder setTitle(String title) {
 			this.title = title;
@@ -68,6 +75,11 @@ public class Menu {
 
 		public MenuBuilder setDate(Date date) {
 			this.date = date;
+			return this;
+		}
+		
+		public MenuBuilder setHash(int hash) {
+			this.hash = hash;
 			return this;
 		}
 

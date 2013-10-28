@@ -1,11 +1,6 @@
 package com.ese2013.mub.util;
 
-import java.text.ParseException;
 import java.util.List;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import android.app.Activity;
 
@@ -25,19 +20,7 @@ public class DataManager {
 	public static DataManager getSingleton() {
 		return instance;
 	}
-
-	public void storeMensaList(JSONArray mensaListJson, JSONArray updateStatusJson) throws JSONException {
-		datasource.open();
-		datasource.storeMensaList(mensaListJson, updateStatusJson);
-		datasource.close();
-	}
-
-	public void storeWeeklyMenuplan(JSONObject json, int mensaId) throws JSONException, ParseException {
-		datasource.open();
-		datasource.storeMenuplan(json.getJSONObject("result").getJSONObject("content").getJSONArray("menus"), mensaId);
-		datasource.close();
-	}
-
+	
 	public List<Mensa> loadMensaList() {
 		datasource.open();
 		List<Mensa> mensas = datasource.loadMensaList();
@@ -74,5 +57,23 @@ public class DataManager {
 		int timestamp = datasource.getMensaTimestamp(mensaId);
 		datasource.close();
 		return timestamp;
+	}
+
+	public void deleteLocalMenus() {
+		datasource.open();
+		datasource.deleteMenus();
+		datasource.close();
+	}
+
+	public void storeMensaList(List<Mensa> mensas) {
+		datasource.open();
+		datasource.storeMensaList(mensas);
+		datasource.close();
+	}
+
+	public void storeWeeklyMenuplan(Mensa m) {
+		datasource.open();
+		datasource.storeWeeklyMenuplan(m);
+		datasource.close();
 	}
 }

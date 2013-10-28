@@ -70,7 +70,7 @@ public class DailyPlanFragment extends PlanFragment {
 				LinearLayout menuLayout = new LinearLayout(container.getContext());
 				menuLayout.setOrientation(LinearLayout.VERTICAL);
 				
-				//MenusByMensaViewFragment.getViewPager().setCurrentItem(3);//TODO change stub, crashes!
+				
 				for (Menu menu : d.getMenus()) {
 					menuLayout.addView(new MenuView(container.getContext(), menu.getTitle(), menu.getDescription()));
 				}

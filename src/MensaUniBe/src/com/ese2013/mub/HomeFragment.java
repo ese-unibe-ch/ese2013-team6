@@ -45,10 +45,8 @@ public class HomeFragment extends Fragment implements Observer {
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 		View view = inflater.inflate(R.layout.fragment_home, container, false);
 		
-		Date date = Calendar.getInstance().getTime();
-		SimpleDateFormat sdf = new SimpleDateFormat("F", Locale.getDefault());
-		int dayOfWeek = Integer.parseInt(sdf.format(date));
-		
+		int dayOfWeek = Calendar.getInstance().get(Calendar.DAY_OF_WEEK);
+	
 		if (showFavorites) {
 			sectionsPagerAdapter = new MenuSectionsPagerAdapter(getChildFragmentManager());
 			
@@ -61,8 +59,13 @@ public class HomeFragment extends Fragment implements Observer {
 		
 		viewPager.setAdapter(sectionsPagerAdapter);
 		
-		if(showFavorites)
-			viewPager.setCurrentItem(dayOfWeek);
+		if(showFavorites && dayOfWeek < 6 && dayOfWeek > 1)
+			viewPager.setCurrentItem(dayOfWeek-2);
+		
+		if(getArguments() != null){
+			Bundle bundle = getArguments();//TODO change in DrawerMenu form goTopage to setArguments();
+			bundle.getInt("POSITION", 0);
+		}
 		
 		Model.getInstance().addObserver(this);
 		getActivity().getActionBar().setDisplayShowCustomEnabled(true);
@@ -82,10 +85,8 @@ public class HomeFragment extends Fragment implements Observer {
 		Model.getInstance().removeObserver(this);
 	}
 	public void goToPage(int pos){
-		//viewPager.setCurrentItem(pos); crashes badly!!
-	}
-	public ViewPager getViewPager(){
-		return viewPager;
+		
+		//viewPager.setCurrentItem(pos-1); //crashes badly!!
 	}
 
 	/**

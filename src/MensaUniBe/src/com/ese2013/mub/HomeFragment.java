@@ -65,6 +65,8 @@ public class HomeFragment extends Fragment implements Observer {
 			viewPager.setCurrentItem(dayOfWeek);
 		
 		Model.getInstance().addObserver(this);
+		getActivity().getActionBar().setDisplayShowCustomEnabled(true);
+		
 		return view;
 	}
 
@@ -76,6 +78,7 @@ public class HomeFragment extends Fragment implements Observer {
 	@Override
 	public void onDestroy() {
 		super.onDestroy();
+		getActivity().getActionBar().setDisplayShowCustomEnabled(false);
 		Model.getInstance().removeObserver(this);
 	}
 	public void goToPage(int pos){

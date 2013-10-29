@@ -30,7 +30,9 @@ public class MapFragment extends Fragment {
 		for (Mensa m : mensaList) {
 			LatLng mensaLocation = new LatLng(m.getLatitude(), m.getLongitude());
 			map.addMarker(new MarkerOptions().position(mensaLocation).title(m.getName()));
-			map.moveCamera(CameraUpdateFactory.newLatLngZoom(mensaLocation, 15));
+			if (m.isFavorite()){
+				map.moveCamera(CameraUpdateFactory.newLatLngZoom(mensaLocation, 15));
+			}
 		}
 		return view;
 	}

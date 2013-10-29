@@ -5,11 +5,15 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
+import android.widget.RelativeLayout.LayoutParams;
 import android.widget.TextView;
 
 import com.ese2013.mub.model.DailyMenuplan;
@@ -45,7 +49,7 @@ public class DailyPlanFragment extends PlanFragment {
 		} else {
 			mensas = Model.getInstance().getFavoriteMensas();
 		}
-	
+		
 		
 		if (Model.getInstance().noMensasLoaded())
 			return rootView; // hacky fix for the case when app is recreated
@@ -58,18 +62,24 @@ public class DailyPlanFragment extends PlanFragment {
 		SimpleDateFormat df = new SimpleDateFormat( "dd. MMMM yyyy", Locale.getDefault());
 		TextView textDateOfDayOfWeek = new TextView(container.getContext());
 		textDateOfDayOfWeek.setText(df.format(day));
-		
+		LayoutInflater inf = (LayoutInflater)getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 		layout.addView(textDateOfDayOfWeek);
-		
+		//RelativeLayout rel = (RelativeLayout) rootView.findViewById(R.id.section_title_bar);
 		for (Mensa mensa : mensas) {
 			
+				RelativeLayout rel = (RelativeLayout)inf.inflate(R.layout.daily_section_title_bar, null);
 				TextView text = getTextView(mensa.getName());
-				
+
 				DailyMenuplan d = mensa.getMenuplan().getDailymenuplan(day);
 				
 				LinearLayout menuLayout = new LinearLayout(container.getContext());
 				menuLayout.setOrientation(LinearLayout.VERTICAL);
 				
+				ImageButton favorite = (ImageButton) inflater.inflate(R.layout.favorite_button, null);
+				if(mensa.isFavorite())
+					favorite.setImageResource(R.drawable.ic_fav);
+				else
+					favorite.setImageResource(R.drawable.ic_fav_grey);
 				
 				for (Menu menu : d.getMenus()) {
 					menuLayout.addView(new MenuView(container.getContext(), menu.getTitle(), menu.getDescription()));
@@ -77,9 +87,15 @@ public class DailyPlanFragment extends PlanFragment {
 				if (HomeFragment.getShowAllByDay()) 
 					menuLayout.setVisibility(View.GONE);
 				
-				text.setOnClickListener(new ToggleListener(menuLayout, container.getContext()));
+				rel.setOnClickListener(new ToggleListener(menuLayout, container.getContext()));
 				
-				layout.addView(text);
+				rel.addView(text);
+				rel.addView(favorite);
+				RelativeLayout.LayoutParams param = new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
+				favorite.setOnClickListener(new FavoriteButtonListener(mensa, favorite));
+				param.addRule(RelativeLayout.ALIGN_RIGHT);
+				favorite.setLayoutParams(param);
+				layout.addView(rel);
 				layout.addView(menuLayout);
 		}
 		return rootView;

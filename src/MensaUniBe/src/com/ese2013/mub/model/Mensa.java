@@ -30,6 +30,12 @@ public class Mensa {
 		this.isFavorite = builder.isFavorite;
 		this.timestamp = builder.timestamp;
 	}
+	
+	public Mensa(String name, double latitude, double longitude){
+		this.name=name;
+		this.latitude=latitude;
+		this.longitude=longitude;
+	}
 
 	public int getId() {
 		return id;
@@ -87,6 +93,11 @@ public class Mensa {
 	public WeeklyMenuplan getMenuplan() {
 		return menuplan;
 	}
+	
+	@Override
+	 public String toString() {
+	  return name;
+	 }
 
 	/**
 	 * Standard builder class used to construct Mensa objects. All fields have

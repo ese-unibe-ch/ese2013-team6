@@ -4,6 +4,11 @@
     android:layout_height="match_parent"
     android:orientation="vertical" >
 
+    <Spinner
+        android:id="@+id/focus_spinner"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
     <fragment
         android:id="@+id/map"
         android:layout_width="match_parent"

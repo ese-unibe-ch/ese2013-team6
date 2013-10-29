@@ -175,12 +175,4 @@ public class HomeFragment extends Fragment implements Observer {
 		}
 
 	}
-
-//	public void procedureArguments() {
-//		if(getArguments() != null && !showFavorites){
-//			Bundle bundle = getArguments();//TODO change in DrawerMenu form goTopage to setArguments();
-//			int pos = bundle.getInt("POSITION", 0);
-//			viewPager.setCurrentItem(pos);
-//		}
-//	}
 }

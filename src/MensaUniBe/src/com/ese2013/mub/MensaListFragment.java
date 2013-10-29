@@ -32,9 +32,6 @@ public class MensaListFragment extends Fragment {
 		return view;
 	}
 	public void sendListToMenusIntent(Mensa mensa){
-//		Intent intent = new Intent(getActivity(), DrawerMenuActivity.class);
-//		intent.putExtra(POSITION, mensa.getId());
-//		getActivity().startActivity(intent);
 		((DrawerMenuActivity) getActivity()).launchByMensaAtGivenPage(mensa.getId());
 	}
 }

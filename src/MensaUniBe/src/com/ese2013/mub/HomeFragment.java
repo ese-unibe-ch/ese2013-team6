@@ -173,6 +173,5 @@ public class HomeFragment extends Fragment implements Observer {
 			days = new ArrayList<Date>(Model.getInstance().getMensas().get(0).getMenuplan().getDays());
 			super.notifyDataSetChanged();
 		}
-
 	}
 }

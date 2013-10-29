@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -57,7 +58,15 @@ public class WeeklyPlanFragment extends PlanFragment {
 								// due screen rotation, needs to be handled
 								// through proper state management and so
 								// on.
-
+		ImageButton favorite = (ImageButton) rootView.findViewById(R.id.weekly_title_fav_button);
+		
+		if(mensa.isFavorite())
+			favorite.setImageResource(R.drawable.ic_fav);
+		else
+			favorite.setImageResource(R.drawable.ic_fav_grey);
+		
+			favorite.setOnClickListener(new FavoriteButtonListener(mensa, favorite));
+		
 		for (DailyMenuplan d : mensa.getMenuplan()) {
 			
 			TextView text = getTextView(d.getDateString());

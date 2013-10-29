@@ -34,7 +34,12 @@
            		android:layout_toRightOf="@id/weekly_title_fav_button"
             />
           <!--android:src="@drawable/ic_map"-->
-                
+             <TextView 
+                 android:id="@+id/weekly_title_text"
+                 android:layout_height="wrap_content"
+           		 android:layout_width="wrap_content"
+           		 android:layout_toLeftOf="@id/weekly_title_fav_button"
+                 />
             </RelativeLayout>
     </LinearLayout>
 

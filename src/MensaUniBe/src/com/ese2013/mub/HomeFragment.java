@@ -59,11 +59,13 @@ public class HomeFragment extends Fragment implements Observer {
 		
 		viewPager.setAdapter(sectionsPagerAdapter);
 		
+		this.onAttach(getActivity());
+		
 		if(showFavorites && dayOfWeek < 6 && dayOfWeek > 1)
 			viewPager.setCurrentItem(dayOfWeek-2);
 		
 		if(getArguments() != null){
-			Bundle bundle = getArguments();//TODO change in DrawerMenu form goTopage to setArguments();
+			Bundle bundle = getArguments();
 			int pos = bundle.getInt("POSITION", 0);
 			viewPager.setCurrentItem(pos-1);
 		}

@@ -28,6 +28,7 @@ public class DrawerMenuActivity extends FragmentActivity {
 	private ActionBarDrawerToggle mDrawerToggle;
 	private DrawerLayout mDrawerLayout;
 	private ListView mDrawerList;
+	private Spinner spinner;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -96,7 +97,7 @@ public class DrawerMenuActivity extends FragmentActivity {
 		};
 		navigationSpinner.setOnItemSelectedListener(spinnerNavigationListener);
 		actionBar.setDisplayShowCustomEnabled(false);
-
+		spinner = navigationSpinner;
 		/* end of spinner */
 
 		selectItem(0);
@@ -231,12 +232,9 @@ public class DrawerMenuActivity extends FragmentActivity {
 		Bundle args = new Bundle();
 		args.putInt("POSITION", position);
 		frag.setArguments(args);
-		//frag.procedureArguments();
 		frag.setFavorites(false);
 		frag.setShowAllByDay(true);
-
-		//frag.goToPage(position);
-
+		spinner.setSelection(1);
 		setDisplayedFragment(frag);
 
 	}

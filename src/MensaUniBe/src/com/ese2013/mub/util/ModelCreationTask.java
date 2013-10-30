@@ -16,7 +16,7 @@ import com.ese2013.mub.model.Model;
  */
 public class ModelCreationTask extends AsyncTask<Void, Void, Void> {
 	private JSONArray updateStatusJson;
-	private DataManager dataManager = DataManager.getSingleton();
+	private DataManager dataManager = DataManager.getInstance();
 	private List<Mensa> mensas;
 	private boolean successful, downloadedNewData;
 

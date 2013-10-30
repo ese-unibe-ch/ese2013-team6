@@ -54,7 +54,7 @@ public class Model extends Observable {
 	}
 
 	public void saveFavorites() {
-		DataManager.getSingleton().storeFavorites(mensas);
+		DataManager.getInstance().storeFavorites(mensas);
 	}
 
 	public void onCreationFinished(ModelCreationTask task) {

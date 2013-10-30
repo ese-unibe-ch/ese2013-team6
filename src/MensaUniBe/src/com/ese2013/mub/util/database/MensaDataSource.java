@@ -59,7 +59,7 @@ public class MensaDataSource {
 			builder.setZip(c.getString(POS_ZIP));
 			builder.setLongitude(c.getDouble(POS_LON));
 			builder.setLatitude(c.getDouble(POS_LAT));
-			builder.setIsFavorite(DataManager.getSingleton().isInFavorites(mensaId));
+			builder.setIsFavorite(DataManager.getInstance().isInFavorites(mensaId));
 			builder.setTimestamp(c.getInt(POS_TIMESTAMP));
 			mensas.add(builder.build());
 		} while (c.moveToNext());

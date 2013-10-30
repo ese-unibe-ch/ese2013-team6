@@ -6,7 +6,7 @@ import com.ese2013.mub.model.Mensa;
 import com.ese2013.mub.model.WeeklyMenuplan;
 
 public class MensaFromLocalFactory extends AbstractMensaFactory {
-	private DataManager dataManager = DataManager.getSingleton();
+	private DataManager dataManager = DataManager.getInstance();
 
 	@Override
 	public List<Mensa> createMensaList() throws MensaLoadException {

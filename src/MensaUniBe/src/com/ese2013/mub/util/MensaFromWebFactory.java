@@ -16,7 +16,7 @@ import com.ese2013.mub.model.WeeklyMenuplan;
 
 public class MensaFromWebFactory extends AbstractMensaFactory {
 
-	private DataManager dataManager = DataManager.getSingleton();
+	private DataManager dataManager = DataManager.getInstance();
 	private static SimpleDateFormat fm = new SimpleDateFormat("yyyy-MM-dd", Locale.GERMAN);
 	private JSONArray updateStatusJson;
 
@@ -36,9 +36,7 @@ public class MensaFromWebFactory extends AbstractMensaFactory {
 					JSONObject mensaJsonObject = content.getJSONObject(i);
 					JSONObject mensaJsonUpdate = updateStatusJson.getJSONObject(i);
 					Mensa mensa = parseMensaJson(mensaJsonObject, mensaJsonUpdate);
-					int mensaId = mensa.getId();
 					mensa.setMenuplan(createWeeklyMenuplan(mensa));
-					mensa.setIsFavorite(dataManager.isInFavorites(mensaId));
 					mensas.add(mensa);
 				}
 				return mensas;
@@ -60,7 +58,7 @@ public class MensaFromWebFactory extends AbstractMensaFactory {
 		builder.setZip(mensaJson.getString("plz"));
 		builder.setLongitude(mensaJson.getDouble("lon"));
 		builder.setLatitude(mensaJson.getDouble("lat"));
-		builder.setIsFavorite(DataManager.getSingleton().isInFavorites(mensaId));
+		builder.setIsFavorite(dataManager.isInFavorites(mensaId));
 		builder.setTimestamp(mensaJsonUpdate.getInt("timestamp"));
 		return builder.build();
 	}

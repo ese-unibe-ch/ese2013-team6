@@ -58,8 +58,8 @@ public class Model extends Observable {
 	}
 
 	public void onCreationFinished(ModelCreationTask task) {
-		this.mensas = task.getMensas();
 		if (task.wasSuccessful()) {
+			this.mensas = task.getMensas();
 			if (task.hasDownloadedNewData()) {
 				Toast.makeText(activity, "Downloaded new menus!", Toast.LENGTH_LONG).show();
 				saveModel();
@@ -67,7 +67,7 @@ public class Model extends Observable {
 				Toast.makeText(activity, "Menus up to date.", Toast.LENGTH_LONG).show();
 			}
 		} else {
-			Toast.makeText(activity, "No new menus were downloaded", Toast.LENGTH_LONG).show();
+			Toast.makeText(activity, "Could not load Menus.", Toast.LENGTH_LONG).show();
 		}
 		this.notifyChanges();
 	}

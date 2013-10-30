@@ -36,11 +36,13 @@ public class ModelCreationTask extends AsyncTask<Void, Void, Void> {
 		try {
 			mensas = fac.createMensaList();
 		} catch (MensaDownloadException e) {
-			// TODO Auto-generated catch block
+			successful = false;
 			e.printStackTrace();
+			return null;
 		} catch (MensaLoadException e) {
-			// TODO Auto-generated catch block
+			successful = false;
 			e.printStackTrace();
+			return null;
 		}
 		successful = true;
 		return null;

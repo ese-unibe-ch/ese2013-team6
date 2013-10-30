@@ -134,6 +134,7 @@ public class HomeFragment extends Fragment implements Observer {
 
 	public class MenuSectionsPagerAdapter extends FragmentStatePagerAdapter {
 		private ArrayList<Date> days;
+		private Model model = Model.getInstance();
 		
 		public MenuSectionsPagerAdapter(FragmentManager fm) {
 			super(fm);
@@ -163,14 +164,16 @@ public class HomeFragment extends Fragment implements Observer {
 
 		@Override
 		public CharSequence getPageTitle(int position) {
-		SimpleDateFormat df = new SimpleDateFormat( "EEEE", Locale.getDefault());
-		String dayOfWeek = df.format(days.get(position));
-		return dayOfWeek;
+			SimpleDateFormat df = new SimpleDateFormat("EEEE",
+					Locale.getDefault());
+			String dayOfWeek = df.format(days.get(position));
+			return dayOfWeek;
 		}
 
 		@Override
 		public void notifyDataSetChanged() {
-			days = new ArrayList<Date>(Model.getInstance().getMensas().get(0).getMenuplan().getDays());
+			if (!model.noMensasLoaded())
+				days = new ArrayList<Date>(Model.getInstance().getMensas().get(0).getMenuplan().getDays());
 			super.notifyDataSetChanged();
 		}
 	}

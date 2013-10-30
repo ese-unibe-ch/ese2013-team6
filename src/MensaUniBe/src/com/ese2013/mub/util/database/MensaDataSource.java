@@ -162,5 +162,6 @@ public class MensaDataSource {
 
 	public void deleteMenus() {
 		database.delete(MenusTable.TABLE_MENUS, null, null);
+		database.delete(MenusMensasTable.TABLE_MENUS_MENSAS, null, null);
 	}
 }

@@ -27,11 +27,10 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 public class MapFragment extends Fragment {
-	private static final int INIT_ZOOM = 14;
+	//private static final int INIT_ZOOM = 14;
 	protected static final float DETAIL_ZOOM = 17;
 	private GoogleMap map;
 	List<Mensa> mensaList;
@@ -123,7 +122,7 @@ public class MapFragment extends Fragment {
 			LatLng mensaLocation = new LatLng(m.getLatitude(), m.getLongitude());
 			
 
-			Marker marker = map.addMarker(new MarkerOptions().position(mensaLocation).title(m.getName()));
+			map.addMarker(new MarkerOptions().position(mensaLocation).title(m.getName()));
 			
 			if (m.isFavorite()){
 				favouriteMensa = m;
@@ -139,16 +138,15 @@ public class MapFragment extends Fragment {
 		
 		for (Mensa m : mensaList) {
 			LatLng mensaLocation = new LatLng(m.getLatitude(), m.getLongitude());
-			Marker marker;
 			if (m==closest){
-				 marker = map.addMarker(new MarkerOptions()
+				 map.addMarker(new MarkerOptions()
 				.position(mensaLocation)
 				.snippet("Lat:" + location.getLatitude() + "Lng:"+ location.getLongitude())
 				.title(m.getName())
 				.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN)));
 //				 drawRouteFromTo(m, closest);
 			}else{
-				marker = map.addMarker(new MarkerOptions().position(mensaLocation).title(m.getName()));
+				map.addMarker(new MarkerOptions().position(mensaLocation).title(m.getName()));
 			}
 			if (m.isFavorite()){
 				favouriteMensa = m;
@@ -223,7 +221,7 @@ public class MapFragment extends Fragment {
 		map.clear();
 		LatLng currentPosition = new LatLng(location.getLatitude(),
 		location.getLongitude());
-		Marker marker = map.addMarker(new MarkerOptions()
+		map.addMarker(new MarkerOptions()
 		.position(currentPosition)
 		.snippet("Lat:" + location.getLatitude() + "Lng:"+ location.getLongitude())
 		.title("Your Location")

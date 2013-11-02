@@ -45,14 +45,15 @@ public class DailyMenuplan {
 			return true;
 		if (other instanceof DailyMenuplan) {
 			DailyMenuplan otherPlan = (DailyMenuplan) other;
-			if (!otherPlan.getDateString().equals(this.getDateString()))
-				return false;
-			if (!otherPlan.getMenus().equals(this.menus))
-				return false;
-			return true;
+			return otherPlan.getMenus().equals(this.menus);
 		} else {
 			return false;
 		}
+	}
+	
+	@Override
+	public int hashCode() {
+		return menus.hashCode();
 	}
 	
 	@Override

@@ -1,8 +1,5 @@
 package com.ese2013.mub.model;
 
-import java.text.SimpleDateFormat;
-import java.util.Locale;
-
 import com.ese2013.mub.util.Day;
 
 /**
@@ -53,7 +50,7 @@ public class Menu {
 	 *         "Monday, 14. October 2013").
 	 */
 	public String getDateString() {
-		return date.format(new SimpleDateFormat("EEEE, dd. MMMM yyyy", Locale.getDefault()));
+		return date.toString();
 	}
 
 	@Override
@@ -64,7 +61,7 @@ public class Menu {
 			Menu otherMenu = (Menu) other;
 			if (otherMenu.getHash() != this.hash)
 				return false;
-			if (!otherMenu.getDate().equals(this.date))
+			if (otherMenu.getDate() == null ? this.date != null : !otherMenu.getDate().equals(this.date))
 				return false;
 			if (!otherMenu.getTitle().equals(this.title))
 				return false;
@@ -77,6 +74,11 @@ public class Menu {
 	}
 
 	@Override
+	public int hashCode() {
+		return hash;
+	}
+
+	@Override
 	public String toString() {
 		return "Menu " + hash + " { \n" + "  Title: " + title + "\n  Description: " + description + "\n  Date: "
 				+ getDateString() + " \n }";
@@ -86,7 +88,8 @@ public class Menu {
 	 * Standard builder class used to construct Menu objects.
 	 */
 	public static class MenuBuilder {
-		private String title, description;
+		private static final String DEFAULT = "N//A";
+		private String title = DEFAULT, description = DEFAULT;
 		private Day date;
 		private int hash;
 

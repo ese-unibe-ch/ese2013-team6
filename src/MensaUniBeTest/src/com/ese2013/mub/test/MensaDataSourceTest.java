@@ -35,20 +35,10 @@ public class MensaDataSourceTest extends AndroidTestCase {
 	public void testStoreAndLoadMensas() {
 		List<Mensa> mensas = createMensaList();
 		dataSource.storeMensaList(mensas);
-
 		List<Mensa> loadedMensas = dataSource.loadMensaList();
-		assertTrue("Loaded mensas should be the same as stored", mensaListEquals(loadedMensas, mensas));
+		assertEquals("Loaded mensas should be the same as stored", loadedMensas, mensas);
 	}
-
-	private boolean mensaListEquals(List<Mensa> list1, List<Mensa> list2) {
-		if (list1.size() != list2.size())
-			return false;
-		for (int i = 0; i < list1.size(); i++)
-			if (!list1.get(i).equals(list2.get(i)))
-				return true;
-		return true;
-	}
-
+	
 	public void testStoreAndLoadFavorites() {
 		List<Mensa> mensas = createMensaList();
 
@@ -99,15 +89,6 @@ public class MensaDataSourceTest extends AndroidTestCase {
 		m2.setMenuplan(plans.get(1));
 		dataSource.storeWeeklyMenuplan(m1);
 		dataSource.storeWeeklyMenuplan(m2);
-
-		// Set<Date> daysLoaded = dataSource.loadMenuplan(m1.getId()).getDays();
-		// for (Date d : daysLoaded) {
-		// System.out.println(d.getTime());
-		// }
-		// System.out.println("ORIGINAL");
-		// for (Date d : m1.getMenuplan().getDays()) {
-		// System.out.println(d.getTime());
-		// }
 
 		assertEquals(m1.getMenuplan(), dataSource.loadMenuplan(m1.getId()));
 		assertEquals(m2.getMenuplan(), dataSource.loadMenuplan(m2.getId()));

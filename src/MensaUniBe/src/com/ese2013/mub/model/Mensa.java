@@ -30,11 +30,11 @@ public class Mensa {
 		this.isFavorite = builder.isFavorite;
 		this.timestamp = builder.timestamp;
 	}
-	
-	public Mensa(String name, double latitude, double longitude){
-		this.name=name;
-		this.latitude=latitude;
-		this.longitude=longitude;
+
+	public Mensa(String name, double latitude, double longitude) {
+		this.name = name;
+		this.latitude = latitude;
+		this.longitude = longitude;
 	}
 
 	public int getId() {
@@ -64,7 +64,7 @@ public class Mensa {
 	public boolean isFavorite() {
 		return isFavorite;
 	}
-	
+
 	public int getTimestamp() {
 		return timestamp;
 	}
@@ -103,7 +103,7 @@ public class Mensa {
 	public boolean equals(Object other) {
 		if (this == other)
 			return true;
-		
+
 		if (other instanceof Mensa) {
 			Mensa otherMensa = (Mensa) other;
 			if (otherMensa.getId() != this.id)
@@ -122,10 +122,29 @@ public class Mensa {
 				return false;
 			if (otherMensa.isFavorite() != this.isFavorite)
 				return false;
+			if (otherMensa.getMenuplan() == null ? this.menuplan != null : !otherMensa.getMenuplan().equals(this.menuplan))
+				return false;
 			return true;
 		} else {
 			return false;
 		}
+	}
+
+	@Override
+	public int hashCode() {
+		int result = 17;
+		result = 31 * result + id;
+		result = 31 * result + name.hashCode();
+		result = 31 * result + street.hashCode();
+		result = 31 * result + zip.hashCode();
+		result = 31 * result + timestamp;
+		result = 31 * result + (isFavorite ? 1 : 0);
+		result = 31 * result + (menuplan == null ? 0 : menuplan.hashCode());
+		long latLong = Double.doubleToLongBits(latitude);
+		result = 31 * result + (int) (latLong ^ (latLong >>> 32));
+		long lonLong = Double.doubleToLongBits(longitude);
+		result = 31 * result + (int) (lonLong ^ (lonLong >>> 32));
+		return result;
 	}
 
 	/**
@@ -169,12 +188,12 @@ public class Mensa {
 			this.latitude = latitude;
 			return this;
 		}
-		
+
 		public MensaBuilder setTimestamp(int timestamp) {
 			this.timestamp = timestamp;
 			return this;
 		}
-		
+
 		public MensaBuilder setIsFavorite(boolean isFavorite) {
 			this.isFavorite = isFavorite;
 			return this;

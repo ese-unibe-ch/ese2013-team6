@@ -1,10 +1,8 @@
 package com.ese2013.mub;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
-import java.util.Locale;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;

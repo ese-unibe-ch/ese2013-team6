@@ -37,23 +37,19 @@ public class WeeklyMenuplan implements Iterable<DailyMenuplan> {
 	public boolean equals(Object other) {
 		if (this == other)
 			return true;
-
 		if (other instanceof WeeklyMenuplan) {
 			WeeklyMenuplan otherPlan = (WeeklyMenuplan) other;
-			Set<Day> days = this.getDays();
-			Set<Day> otherDays = otherPlan.getDays();
-			if (!days.equals(otherDays))
-				return false;
-
-			for (Day d : days)
-				if (!otherPlan.getDailymenuplan(d).equals(this.getDailymenuplan(d)))
-					return false;
-			return true;
+			return otherPlan.dailymenus.equals(this.dailymenus);
 		} else {
 			return false;
 		}
 	}
-	
+
+	@Override
+	public int hashCode() {
+		return dailymenus.hashCode();
+	}
+
 	@Override
 	public String toString() {
 		String result = "";

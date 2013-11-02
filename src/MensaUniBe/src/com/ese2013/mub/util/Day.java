@@ -30,8 +30,12 @@ public class Day {
 	}
 	
 	public String getDayOfWeekString() {
-		SimpleDateFormat df = new SimpleDateFormat("EEEE", Locale.getDefault());
-		return format(df);
+		return format(new SimpleDateFormat("EEEE", Locale.getDefault()));
+	}
+	
+	@Override 
+	public String toString() {
+		return format(new SimpleDateFormat("EEEE, dd. MMMM yyyy", Locale.getDefault()));
 	}
 
 	@Override

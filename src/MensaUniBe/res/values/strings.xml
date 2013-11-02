@@ -1,4 +1,3 @@
-<?xml version="1.0" encoding="utf-8"?>
 <resources>
     
     <string name="app_name">MensaUniBe</string>
@@ -12,5 +11,6 @@
         <item>ByMensa</item>
         <item>ByDay</item>
     </string-array>
+    <string name="no_favorite_mensa">\nChoose your favorite mensas in the \'Mensa List\' by tipping on the stars.</string>
 
 </resources>

@@ -16,7 +16,6 @@ import com.ese2013.mub.model.DailyMenuplan;
 import com.ese2013.mub.model.Mensa;
 import com.ese2013.mub.model.Menu;
 import com.ese2013.mub.model.WeeklyMenuplan;
-import com.ese2013.mub.util.DataManager;
 import com.ese2013.mub.util.database.tables.FavoritesTable;
 import com.ese2013.mub.util.database.tables.MensasTable;
 import com.ese2013.mub.util.database.tables.MenusMensasTable;
@@ -26,9 +25,15 @@ public class MensaDataSource {
 	private SQLiteDatabase database;
 	private SqlDatabaseHelper dbHelper;
 	private static SimpleDateFormat fm = new SimpleDateFormat("yyyy-MM-dd", Locale.GERMAN);
+	private static MensaDataSource instance;
 
 	public MensaDataSource(Context context) {
 		dbHelper = new SqlDatabaseHelper(context);
+		instance = this;
+	}
+
+	public static MensaDataSource getInstance() {
+		return instance;
 	}
 
 	public void open() throws SQLException {
@@ -59,7 +64,7 @@ public class MensaDataSource {
 			builder.setZip(c.getString(POS_ZIP));
 			builder.setLongitude(c.getDouble(POS_LON));
 			builder.setLatitude(c.getDouble(POS_LAT));
-			builder.setIsFavorite(DataManager.getInstance().isInFavorites(mensaId));
+			builder.setIsFavorite(isInFavorites(mensaId));
 			builder.setTimestamp(c.getInt(POS_TIMESTAMP));
 			mensas.add(builder.build());
 		} while (c.moveToNext());
@@ -68,11 +73,10 @@ public class MensaDataSource {
 	}
 
 	public WeeklyMenuplan loadMenuplan(int mensaId) {
-		String query = "select * from " + MenusTable.TABLE_MENUS + " inner join "
-				+ MenusMensasTable.TABLE_MENUS_MENSAS + " on " + MenusTable.TABLE_MENUS + "."
-				+ MenusTable.COL_HASH + " = " + MenusMensasTable.TABLE_MENUS_MENSAS + "."
-				+ MenusTable.COL_HASH + " where " + MenusMensasTable.TABLE_MENUS_MENSAS + "."
-				+ MensasTable.COL_ID + " = " + mensaId + " ;";
+		String query = "select * from " + MenusTable.TABLE_MENUS + " inner join " + MenusMensasTable.TABLE_MENUS_MENSAS
+				+ " on " + MenusTable.TABLE_MENUS + "." + MenusTable.COL_HASH + " = " + MenusMensasTable.TABLE_MENUS_MENSAS
+				+ "." + MenusTable.COL_HASH + " where " + MenusMensasTable.TABLE_MENUS_MENSAS + "." + MensasTable.COL_ID
+				+ " = " + mensaId + " ;";
 		Cursor c = database.rawQuery(query, null);
 		final int POS_TITLE = c.getColumnIndex(MenusTable.COL_TITLE);
 		final int POS_DESC = c.getColumnIndex(MenusTable.COL_DESC);
@@ -137,12 +141,13 @@ public class MensaDataSource {
 	}
 
 	public boolean isInFavorites(int mensaId) {
-		Cursor c = database.rawQuery("select * from " + FavoritesTable.TABLE_FAV_MENSAS + " where "
-				+ MensasTable.COL_ID + "=" + mensaId, null);
+		Cursor c = database.rawQuery("select * from " + FavoritesTable.TABLE_FAV_MENSAS + " where " + MensasTable.COL_ID
+				+ "=" + mensaId, null);
 		return c.getCount() != 0;
 	}
 
 	public void storeFavorites(List<Mensa> mensas) {
+		open();
 		database.delete(FavoritesTable.TABLE_FAV_MENSAS, null, null);
 		for (Mensa m : mensas) {
 			if (m.isFavorite()) {
@@ -151,6 +156,7 @@ public class MensaDataSource {
 				database.insert(FavoritesTable.TABLE_FAV_MENSAS, null, values);
 			}
 		}
+		close();
 	}
 
 	public int getMensaTimestamp(int mensaId) {

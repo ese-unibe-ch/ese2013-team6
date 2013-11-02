@@ -6,7 +6,6 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 
 import org.apache.http.HttpResponse;
-import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.json.JSONException;
@@ -27,36 +26,49 @@ public class JsonDataRequest {
 	private String serviceUri;
 
 	/**
-	 * Creates a JsonDataRequest given a uri.
+	 * Creates a JsonDataRequest given a URI.
 	 * 
 	 * @param uri
 	 *            String containing the address to be accessed. Must not be null
-	 *            and should be a valid http address.
+	 *            and should be a valid HTTP address.
 	 */
 	public JsonDataRequest(String uri) {
 		this.serviceUri = uri;
 	}
 
 	/**
-	 * Performs the http request.
+	 * Performs the HTTP request.
 	 * 
 	 * @return JSONObject which contains the result of the request. Is null if
 	 *         anything went wrong: this means either that no connection could
-	 *         be established or the response of the http server was no valid
+	 *         be established or the response of the HTTP server was no valid
 	 *         JSON string.
-	 * @throws IOException 
-	 * @throws ClientProtocolException 
-	 * @throws JSONException 
+	 * @throws IOException
+	 *             If download did not succeed or web service did not provide a
+	 *             valid JSON file or the web service reported an error using
+	 *             the error code.
 	 */
-	public JSONObject execute() throws ClientProtocolException, IOException, JSONException {
-		DefaultHttpClient client = new DefaultHttpClient();
-		Uri serviceURI = Uri.parse(serviceUri);
-		Builder uriBuilder = serviceURI.buildUpon();
-		HttpGet httpGet = new HttpGet(uriBuilder.build().toString());
-		HttpResponse response = client.execute(httpGet);
-		InputStream is = response.getEntity().getContent();
-		String inputStream = inputStreamToString(is);
-		return new JSONObject(inputStream);
+	public JSONObject execute() throws IOException {
+		try {
+			DefaultHttpClient client = new DefaultHttpClient();
+			Uri serviceURI = Uri.parse(serviceUri);
+			Builder uriBuilder = serviceURI.buildUpon();
+			HttpGet httpGet = new HttpGet(uriBuilder.build().toString());
+			HttpResponse response = client.execute(httpGet);
+			InputStream is = response.getEntity().getContent();
+			String inputStream = inputStreamToString(is);
+			JSONObject json = new JSONObject(inputStream);
+			int errorCode = json.getJSONObject("result").getInt("code");
+			if (errorCode == CODE_SUCCESS) {
+				return new JSONObject(inputStream);
+			} else {
+				throw new IOException("Failed downloading: exit with error code: " + errorCode);
+			}
+		} catch (JSONException e) {
+			throw new IOException(e);
+		} catch (IllegalStateException e) {
+			throw new IOException(e);
+		}
 	}
 
 	/**

@@ -4,23 +4,25 @@ import java.util.List;
 
 import com.ese2013.mub.model.Mensa;
 import com.ese2013.mub.model.WeeklyMenuplan;
+import com.ese2013.mub.util.database.MensaDataSource;
 
 public class MensaFromLocalFactory extends AbstractMensaFactory {
-	private DataManager dataManager = DataManager.getInstance();
+	private MensaDataSource dataSource = MensaDataSource.getInstance();
 
 	@Override
 	public List<Mensa> createMensaList() throws MensaLoadException {
 		try {
-			List<Mensa> mensas = dataManager.loadMensaList();
+			dataSource.open();
+			List<Mensa> mensas = dataSource.loadMensaList();
 			for (Mensa m : mensas) {
-				WeeklyMenuplan p = dataManager.loadWeeklyMenuplan(m.getId());
+				WeeklyMenuplan p = dataSource.loadMenuplan(m.getId());
 				m.setMenuplan(p);
 			}
 			return mensas;
 		} catch (Exception e) {
 			throw new MensaLoadException(e);
 		} finally {
-			dataManager.closeOpenResources();
+			dataSource.close();
 		}
 	}
 }

@@ -47,7 +47,8 @@ public class MensaListAdapter extends BaseAdapter{
 		return view;
 	}
 	public void setMapButtonListener(View view){
-		ImageButton mapButton = (ImageButton) view.findViewById(R.id.map_button);
+		ImageButton mapButton = (ImageButton) view.findViewById(R.id.mensa_list_map_button);
+		mapButton.setImageResource(R.drawable.ic_map);
         mapButton.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View viewIn) {

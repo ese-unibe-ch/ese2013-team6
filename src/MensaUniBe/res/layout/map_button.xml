@@ -5,7 +5,6 @@
            		android:layout_width="wrap_content"
            		android:contentDescription="@string/map_button"
            		android:background="?android:attr/selectableItemBackground"
-           		android:layout_centerHorizontal="true"
            		android:layout_toRightOf="@layout/favorite_button"
     >
 </ImageButton>

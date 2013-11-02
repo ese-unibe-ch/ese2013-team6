@@ -47,7 +47,7 @@ public class MensaListAdapter extends BaseAdapter{
 		return view;
 	}
 	public void setMapButtonListener(View view){
-		ImageButton mapButton = (ImageButton) view.findViewById(R.id.button_map);
+		ImageButton mapButton = (ImageButton) view.findViewById(R.id.map_button);
         mapButton.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View viewIn) {
@@ -57,7 +57,7 @@ public class MensaListAdapter extends BaseAdapter{
             	}});
 	}
 	public void setFavoriteButtonListener(View view, Mensa mensa){
-		  ImageButton favorites = (ImageButton) view.findViewById(R.id.button_favorite);
+		  ImageButton favorites = (ImageButton) view.findViewById(R.id.mensa_list_fav_button);
 		  if(mensa.isFavorite())
 			  favorites.setBackgroundResource(R.drawable.ic_fav);
 		  else

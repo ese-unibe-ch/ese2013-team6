@@ -26,26 +26,14 @@
     	android:background="@color/light_grey"
     	android:gravity="left|bottom"
     	/>
-    	<ImageButton
-         android:id="@+id/button_favorite"
-       
-         android:contentDescription="@string/favorite_button"
-         android:layout_width="wrap_content"
-    	 android:layout_height="wrap_content"
-    	 android:layout_toLeftOf="@+id/button_map"
-    	 android:background="?android:attr/selectableItemBackground"/>
+    	<include layout="@layout/favorite_button"
+    	    android:id="@+id/mensa_list_fav_button"
+    	    android:layout_width="wrap_content"
+    	    android:layout_height="wrap_content"
+    	    android:layout_alignParentRight="true"/>
     	 <!--android:src="@drawable/ic_fav"-->
-    	<ImageButton
-         android:id="@+id/button_map"
-         android:src="@drawable/ic_map"
-         android:contentDescription="@string/map_button"
-         android:layout_width="wrap_content"
-    	 android:layout_height="wrap_content"
-    	 android:layout_alignParentRight="true"
-    	 android:background="?android:attr/selectableItemBackground"
-    	     
-    	     
-    	 />
+    	<include layout="@layout/map_button"
+    	    android:layout_alignParentRight="true"/>
     </RelativeLayout>
     
     <TextView

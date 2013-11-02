@@ -1,7 +1,6 @@
 package com.ese2013.mub;
 
 import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
@@ -19,19 +18,20 @@ import com.ese2013.mub.model.DailyMenuplan;
 import com.ese2013.mub.model.Mensa;
 import com.ese2013.mub.model.Menu;
 import com.ese2013.mub.model.Model;
+import com.ese2013.mub.util.Day;
 
 public class DailyPlanFragment extends PlanFragment {
-	private Date day;
+	private Day day;
 	private List<Mensa> mensas;
 
 	public DailyPlanFragment() {
 	}
 
-	public void setDay(Date day) {
+	public void setDay(Day day) {
 		this.day = day;
 	}
 
-	public static DailyPlanFragment newInstance(Date day) {
+	public static DailyPlanFragment newInstance(Day day) {
 		DailyPlanFragment frag = new DailyPlanFragment();
 		frag.setDay(day);
 		return frag;
@@ -60,7 +60,7 @@ public class DailyPlanFragment extends PlanFragment {
 		
 		SimpleDateFormat df = new SimpleDateFormat( "dd. MMMM yyyy", Locale.getDefault());
 		TextView textDateOfDayOfWeek = new TextView(container.getContext());
-		textDateOfDayOfWeek.setText(df.format(day));
+		textDateOfDayOfWeek.setText(day.format(df));
 		LayoutInflater inf = (LayoutInflater)getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 		layout.addView(textDateOfDayOfWeek);
 		for (Mensa mensa : mensas) {

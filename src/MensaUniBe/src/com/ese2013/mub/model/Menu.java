@@ -1,8 +1,9 @@
 package com.ese2013.mub.model;
 
 import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.Locale;
+
+import com.ese2013.mub.util.Day;
 
 /**
  * Stores all data which make up a menu. Always created using the
@@ -10,7 +11,7 @@ import java.util.Locale;
  */
 public class Menu {
 	private String title, description;
-	private Date date;
+	private Day date;
 	private int hash;
 
 	/**
@@ -36,7 +37,7 @@ public class Menu {
 		return description;
 	}
 
-	public Date getDate() {
+	public Day getDate() {
 		return date;
 	}
 
@@ -52,7 +53,7 @@ public class Menu {
 	 *         "Monday, 14. October 2013").
 	 */
 	public String getDateString() {
-		return new SimpleDateFormat("EEEE, dd. MMMM yyyy", Locale.getDefault()).format(date);
+		return date.format(new SimpleDateFormat("EEEE, dd. MMMM yyyy", Locale.getDefault()));
 	}
 
 	@Override
@@ -86,7 +87,7 @@ public class Menu {
 	 */
 	public static class MenuBuilder {
 		private String title, description;
-		private Date date;
+		private Day date;
 		private int hash;
 
 		public MenuBuilder setTitle(String title) {
@@ -99,7 +100,7 @@ public class Menu {
 			return this;
 		}
 
-		public MenuBuilder setDate(Date date) {
+		public MenuBuilder setDate(Day date) {
 			this.date = date;
 			return this;
 		}

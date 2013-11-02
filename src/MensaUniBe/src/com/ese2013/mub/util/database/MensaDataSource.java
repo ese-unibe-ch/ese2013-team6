@@ -16,6 +16,7 @@ import com.ese2013.mub.model.DailyMenuplan;
 import com.ese2013.mub.model.Mensa;
 import com.ese2013.mub.model.Menu;
 import com.ese2013.mub.model.WeeklyMenuplan;
+import com.ese2013.mub.util.Day;
 import com.ese2013.mub.util.database.tables.FavoritesTable;
 import com.ese2013.mub.util.database.tables.MensasTable;
 import com.ese2013.mub.util.database.tables.MenusMensasTable;
@@ -88,7 +89,7 @@ public class MensaDataSource {
 		c.close();
 		return mensas;
 	}
-	
+
 	public void storeFavorites(List<Mensa> mensas) {
 		database.delete(FavoritesTable.TABLE_FAV_MENSAS, null, null);
 		for (Mensa m : mensas) {
@@ -99,7 +100,7 @@ public class MensaDataSource {
 			}
 		}
 	}
-	
+
 	public boolean isInFavorites(int mensaId) {
 		Cursor c = database.rawQuery("select * from " + FavoritesTable.TABLE_FAV_MENSAS + " where " + MensasTable.COL_ID
 				+ "=" + mensaId, null);
@@ -125,7 +126,7 @@ public class MensaDataSource {
 		values.put(MenusTable.COL_HASH, m.getHash());
 		values.put(MenusTable.COL_TITLE, m.getTitle());
 		values.put(MenusTable.COL_DESC, m.getDescription());
-		values.put(MenusTable.COL_DATE, fm.format(m.getDate()));
+		values.put(MenusTable.COL_DATE, m.getDate().format(fm));
 		database.replace(MenusTable.TABLE_MENUS, null, values);
 
 		ContentValues values2 = new ContentValues();
@@ -151,7 +152,7 @@ public class MensaDataSource {
 				Menu.MenuBuilder builder = new Menu.MenuBuilder();
 				builder.setTitle(c.getString(POS_TITLE));
 				builder.setDescription(c.getString(POS_DESC));
-				builder.setDate(fm.parse(c.getString(POS_DATE)));
+				builder.setDate(new Day(fm.parse(c.getString(POS_DATE))));
 				builder.setHash(c.getInt(POS_HASH));
 				p.addMenu(builder.build());
 			} catch (ParseException e) {
@@ -168,7 +169,7 @@ public class MensaDataSource {
 		database.delete(MenusTable.TABLE_MENUS, null, null);
 		database.delete(MenusMensasTable.TABLE_MENUS_MENSAS, null, null);
 	}
-	
+
 	public void cleanUpAllTables() {
 		database.delete(MensasTable.TABLE_MENSAS, null, null);
 		database.delete(FavoritesTable.TABLE_FAV_MENSAS, null, null);

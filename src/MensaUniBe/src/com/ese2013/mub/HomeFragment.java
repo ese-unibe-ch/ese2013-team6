@@ -3,7 +3,6 @@ package com.ese2013.mub;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
@@ -19,6 +18,7 @@ import android.view.ViewGroup;
 
 import com.ese2013.mub.model.Mensa;
 import com.ese2013.mub.model.Model;
+import com.ese2013.mub.util.Day;
 import com.ese2013.mub.util.Observer;
 
 public class HomeFragment extends Fragment implements Observer {
@@ -133,15 +133,15 @@ public class HomeFragment extends Fragment implements Observer {
 	}
 
 	public class MenuSectionsPagerAdapter extends FragmentStatePagerAdapter {
-		private ArrayList<Date> days;
+		private ArrayList<Day> days;
 		private Model model = Model.getInstance();
 		
 		public MenuSectionsPagerAdapter(FragmentManager fm) {
 			super(fm);
 			if (Model.getInstance().noMensasLoaded())
-				days = new ArrayList<Date>();
+				days = new ArrayList<Day>();
 			else
-				days = new ArrayList<Date>(Model.getInstance().getMensas().get(0).getMenuplan().getDays());
+				days = new ArrayList<Day>(model.getMensas().get(0).getMenuplan().getDays());
 		}
 
 		/**
@@ -164,16 +164,13 @@ public class HomeFragment extends Fragment implements Observer {
 
 		@Override
 		public CharSequence getPageTitle(int position) {
-			SimpleDateFormat df = new SimpleDateFormat("EEEE",
-					Locale.getDefault());
-			String dayOfWeek = df.format(days.get(position));
-			return dayOfWeek;
+			return days.get(position).getDayOfWeekString();
 		}
 
 		@Override
 		public void notifyDataSetChanged() {
 			if (!model.noMensasLoaded())
-				days = new ArrayList<Date>(Model.getInstance().getMensas().get(0).getMenuplan().getDays());
+				days = new ArrayList<Day>(Model.getInstance().getMensas().get(0).getMenuplan().getDays());
 			super.notifyDataSetChanged();
 		}
 	}

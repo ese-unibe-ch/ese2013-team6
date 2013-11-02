@@ -91,7 +91,7 @@ public class MensaFromWebFactory extends AbstractMensaFactory {
 			description += desc.getString(i) + "\n";
 
 		builder.setDescription(description);
-		builder.setDate(fm.parse(menu.getString("date")));
+		builder.setDate(new Day(fm.parse(menu.getString("date"))));
 		builder.setHash(menu.getInt("hash"));
 		return builder.build();
 	}

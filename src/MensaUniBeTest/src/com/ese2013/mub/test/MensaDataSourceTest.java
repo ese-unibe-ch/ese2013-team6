@@ -1,19 +1,16 @@
 package com.ese2013.mub.test;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.List;
-import java.util.Locale;
-import java.util.Set;
 
 import android.test.AndroidTestCase;
 
 import com.ese2013.mub.model.Mensa;
 import com.ese2013.mub.model.Menu;
 import com.ese2013.mub.model.WeeklyMenuplan;
+import com.ese2013.mub.util.Day;
 import com.ese2013.mub.util.database.MensaDataSource;
 
 public class MensaDataSourceTest extends AndroidTestCase {
@@ -102,15 +99,15 @@ public class MensaDataSourceTest extends AndroidTestCase {
 		m2.setMenuplan(plans.get(1));
 		dataSource.storeWeeklyMenuplan(m1);
 		dataSource.storeWeeklyMenuplan(m2);
-		
-//		Set<Date> daysLoaded = dataSource.loadMenuplan(m1.getId()).getDays();
-//		for (Date d : daysLoaded) {
-//			System.out.println(d.getTime());
-//		}
-//		System.out.println("ORIGINAL");
-//		for (Date d : m1.getMenuplan().getDays()) {
-//			System.out.println(d.getTime());
-//		}
+
+		// Set<Date> daysLoaded = dataSource.loadMenuplan(m1.getId()).getDays();
+		// for (Date d : daysLoaded) {
+		// System.out.println(d.getTime());
+		// }
+		// System.out.println("ORIGINAL");
+		// for (Date d : m1.getMenuplan().getDays()) {
+		// System.out.println(d.getTime());
+		// }
 
 		assertEquals(m1.getMenuplan(), dataSource.loadMenuplan(m1.getId()));
 		assertEquals(m2.getMenuplan(), dataSource.loadMenuplan(m2.getId()));
@@ -150,23 +147,25 @@ public class MensaDataSourceTest extends AndroidTestCase {
 		calendar.set(2013, 10, 20);
 		Menu.MenuBuilder builder = new Menu.MenuBuilder();
 		builder.setTitle("Vegi").setDescription("Something \n Served with some other Stuff").setHash(6234435)
-				.setDate(calendar.getTime());
+				.setDate(new Day(calendar.getTime()));
 		menus.add(builder.build());
 		builder.setTitle("Nice Menu").setDescription("Something nice\n Served with nothing else").setHash(123125)
-				.setDate(calendar.getTime());
+				.setDate(new Day(calendar.getTime()));
 		menus.add(builder.build());
 
 		calendar.set(2013, 10, 21);
-		builder.setTitle("Vegi").setDescription("Something vegetarian").setHash(4566341).setDate(calendar.getTime());
+		builder.setTitle("Vegi").setDescription("Something vegetarian").setHash(4566341)
+				.setDate(new Day(calendar.getTime()));
 		menus.add(builder.build());
-		builder.setTitle("Expensive Menu").setDescription("Very expensive food").setHash(124523).setDate(calendar.getTime());
+		builder.setTitle("Expensive Menu").setDescription("Very expensive food").setHash(124523)
+				.setDate(new Day(calendar.getTime()));
 		menus.add(builder.build());
 
 		calendar.set(2013, 10, 22);
 		builder.setTitle("Nice Vegi Menu").setDescription("Something nice vegetarian").setHash(3123412)
-				.setDate(calendar.getTime());
+				.setDate(new Day(calendar.getTime()));
 		menus.add(builder.build());
-		builder.setTitle("Special Menu").setDescription("Pizza").setHash(924523).setDate(calendar.getTime());
+		builder.setTitle("Special Menu").setDescription("Pizza").setHash(924523).setDate(new Day(calendar.getTime()));
 		menus.add(builder.build());
 
 		WeeklyMenuplan plan1 = new WeeklyMenuplan();

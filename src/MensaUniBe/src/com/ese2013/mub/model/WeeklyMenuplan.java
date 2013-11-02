@@ -1,15 +1,16 @@
 package com.ese2013.mub.model;
 
-import java.util.Date;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.Set;
 
+import com.ese2013.mub.util.Day;
+
 public class WeeklyMenuplan implements Iterable<DailyMenuplan> {
-	private LinkedHashMap<Date, DailyMenuplan> dailymenus = new LinkedHashMap<Date, DailyMenuplan>();
+	private LinkedHashMap<Day, DailyMenuplan> dailymenus = new LinkedHashMap<Day, DailyMenuplan>();
 
 	public void addMenu(Menu menu) {
-		Date date = menu.getDate();
+		Day date = menu.getDate();
 		if (dailymenus.containsKey(date)) {
 			dailymenus.get(date).add(menu);
 		} else {
@@ -19,7 +20,7 @@ public class WeeklyMenuplan implements Iterable<DailyMenuplan> {
 		}
 	}
 
-	public DailyMenuplan getDailymenuplan(Date date) {
+	public DailyMenuplan getDailymenuplan(Day date) {
 		return dailymenus.get(date);
 	}
 
@@ -28,7 +29,7 @@ public class WeeklyMenuplan implements Iterable<DailyMenuplan> {
 		return dailymenus.values().iterator();
 	}
 
-	public Set<Date> getDays() {
+	public Set<Day> getDays() {
 		return dailymenus.keySet();
 	}
 
@@ -39,12 +40,12 @@ public class WeeklyMenuplan implements Iterable<DailyMenuplan> {
 
 		if (other instanceof WeeklyMenuplan) {
 			WeeklyMenuplan otherPlan = (WeeklyMenuplan) other;
-			Set<Date> days = this.getDays();
-			Set<Date> otherDays = otherPlan.getDays();
+			Set<Day> days = this.getDays();
+			Set<Day> otherDays = otherPlan.getDays();
 			if (!days.equals(otherDays))
 				return false;
 
-			for (Date d : days)
+			for (Day d : days)
 				if (!otherPlan.getDailymenuplan(d).equals(this.getDailymenuplan(d)))
 					return false;
 			return true;
@@ -56,7 +57,7 @@ public class WeeklyMenuplan implements Iterable<DailyMenuplan> {
 	@Override
 	public String toString() {
 		String result = "";
-		for (Date d : getDays()) {
+		for (Day d : getDays()) {
 			result += getDailymenuplan(d).toString();
 			result += "\n";
 		}

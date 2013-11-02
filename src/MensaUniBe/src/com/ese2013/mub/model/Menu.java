@@ -39,7 +39,7 @@ public class Menu {
 	public Date getDate() {
 		return date;
 	}
-	
+
 	public int getHash() {
 		return hash;
 	}
@@ -53,6 +53,32 @@ public class Menu {
 	 */
 	public String getDateString() {
 		return new SimpleDateFormat("EEEE, dd. MMMM yyyy", Locale.getDefault()).format(date);
+	}
+
+	@Override
+	public boolean equals(Object other) {
+		if (this == other)
+			return true;
+		if (other instanceof Menu) {
+			Menu otherMenu = (Menu) other;
+			if (otherMenu.getHash() != this.hash)
+				return false;
+			if (!otherMenu.getDate().equals(this.date))
+				return false;
+			if (!otherMenu.getTitle().equals(this.title))
+				return false;
+			if (!otherMenu.getDescription().equals(this.description))
+				return false;
+			return true;
+		} else {
+			return false;
+		}
+	}
+
+	@Override
+	public String toString() {
+		return "Menu " + hash + " { \n" + "  Title: " + title + "\n  Description: " + description + "\n  Date: "
+				+ getDateString() + " \n }";
 	}
 
 	/**
@@ -77,7 +103,7 @@ public class Menu {
 			this.date = date;
 			return this;
 		}
-		
+
 		public MenuBuilder setHash(int hash) {
 			this.hash = hash;
 			return this;

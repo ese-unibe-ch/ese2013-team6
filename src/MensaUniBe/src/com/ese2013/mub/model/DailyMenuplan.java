@@ -38,4 +38,30 @@ public class DailyMenuplan {
 	public String getDateString() {
 		return menus.get(0).getDateString();
 	}
+
+	@Override
+	public boolean equals(Object other) {
+		if (this == other)
+			return true;
+		if (other instanceof DailyMenuplan) {
+			DailyMenuplan otherPlan = (DailyMenuplan) other;
+			if (!otherPlan.getDateString().equals(this.getDateString()))
+				return false;
+			if (!otherPlan.getMenus().equals(this.menus))
+				return false;
+			return true;
+		} else {
+			return false;
+		}
+	}
+	
+	@Override
+	public String toString() {
+		String result = "Menus for " + getDateString() + "\n";
+		for (Menu m : menus) {
+			result += m.toString();
+			result += "\n";
+		}
+		return result;
+	}
 }

@@ -55,7 +55,9 @@ public class Model extends Observable {
 	}
 
 	public void saveFavorites() {
+		dataSource.open();
 		dataSource.storeFavorites(mensas);
+		dataSource.close();
 	}
 
 	public void onCreationFinished(ModelCreationTask task) {

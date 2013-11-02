@@ -44,6 +44,23 @@ public class MensaDataSource {
 		dbHelper.close();
 	}
 
+	public void storeMensaList(List<Mensa> mensas) {
+		for (Mensa m : mensas)
+			storeMensa(m);
+	}
+
+	private void storeMensa(Mensa m) {
+		ContentValues values = new ContentValues();
+		values.put(MensasTable.COL_ID, m.getId());
+		values.put(MensasTable.COL_NAME, m.getName());
+		values.put(MensasTable.COL_STREET, m.getStreet());
+		values.put(MensasTable.COL_ZIP, m.getZip());
+		values.put(MensasTable.COL_LON, m.getLongitude());
+		values.put(MensasTable.COL_LAT, m.getLatitude());
+		values.put(MensasTable.COL_TIMESTAMP, m.getTimestamp());
+		database.replace(MensasTable.TABLE_MENSAS, null, values);
+	}
+
 	public List<Mensa> loadMensaList() {
 		List<Mensa> mensas = new ArrayList<Mensa>();
 		Cursor c = database.rawQuery("SELECT * FROM " + MensasTable.TABLE_MENSAS, null);
@@ -71,52 +88,29 @@ public class MensaDataSource {
 		c.close();
 		return mensas;
 	}
-
-	public WeeklyMenuplan loadMenuplan(int mensaId) {
-		String query = "select * from " + MenusTable.TABLE_MENUS + " inner join " + MenusMensasTable.TABLE_MENUS_MENSAS
-				+ " on " + MenusTable.TABLE_MENUS + "." + MenusTable.COL_HASH + " = " + MenusMensasTable.TABLE_MENUS_MENSAS
-				+ "." + MenusTable.COL_HASH + " where " + MenusMensasTable.TABLE_MENUS_MENSAS + "." + MensasTable.COL_ID
-				+ " = " + mensaId + " ;";
-		Cursor c = database.rawQuery(query, null);
-		final int POS_TITLE = c.getColumnIndex(MenusTable.COL_TITLE);
-		final int POS_DESC = c.getColumnIndex(MenusTable.COL_DESC);
-		final int POS_DATE = c.getColumnIndex(MenusTable.COL_DATE);
-		final int POS_HASH = c.getColumnIndex(MenusTable.COL_HASH);
-		WeeklyMenuplan p = new WeeklyMenuplan();
-		c.moveToFirst();
-		do {
-			try {
-				Menu.MenuBuilder builder = new Menu.MenuBuilder();
-				builder.setTitle(c.getString(POS_TITLE));
-				builder.setDescription(c.getString(POS_DESC));
-				builder.setDate(fm.parse(c.getString(POS_DATE)));
-				builder.setHash(c.getInt(POS_HASH));
-				p.addMenu(builder.build());
-			} catch (ParseException e) {
-				// If this happens, the db violated it's contract of properly
-				// storing the given data.
-				throw new AssertionError("Database did not save properly");
+	
+	public void storeFavorites(List<Mensa> mensas) {
+		database.delete(FavoritesTable.TABLE_FAV_MENSAS, null, null);
+		for (Mensa m : mensas) {
+			if (m.isFavorite()) {
+				ContentValues values = new ContentValues();
+				values.put(MensasTable.COL_ID, m.getId());
+				database.insert(FavoritesTable.TABLE_FAV_MENSAS, null, values);
 			}
-
-		} while (c.moveToNext());
-		return p;
+		}
+	}
+	
+	public boolean isInFavorites(int mensaId) {
+		Cursor c = database.rawQuery("select * from " + FavoritesTable.TABLE_FAV_MENSAS + " where " + MensasTable.COL_ID
+				+ "=" + mensaId, null);
+		return c.getCount() != 0;
 	}
 
-	public void storeMensaList(List<Mensa> mensas) {
-		for (Mensa m : mensas)
-			storeMensa(m);
-	}
-
-	private void storeMensa(Mensa m) {
-		ContentValues values = new ContentValues();
-		values.put(MensasTable.COL_ID, m.getId());
-		values.put(MensasTable.COL_NAME, m.getName());
-		values.put(MensasTable.COL_STREET, m.getStreet());
-		values.put(MensasTable.COL_ZIP, m.getZip());
-		values.put(MensasTable.COL_LON, m.getLongitude());
-		values.put(MensasTable.COL_LAT, m.getLatitude());
-		values.put(MensasTable.COL_TIMESTAMP, m.getTimestamp());
-		database.replace(MensasTable.TABLE_MENSAS, null, values);
+	public int getMensaTimestamp(int mensaId) {
+		Cursor c = database.rawQuery("select " + MensasTable.COL_TIMESTAMP + " from " + MensasTable.TABLE_MENSAS + " where "
+				+ MensasTable.COL_ID + "=" + mensaId, null);
+		c.moveToFirst();
+		return c.getInt(0);
 	}
 
 	public void storeWeeklyMenuplan(Mensa mensa) {
@@ -140,33 +134,44 @@ public class MensaDataSource {
 		database.replace(MenusMensasTable.TABLE_MENUS_MENSAS, null, values2);
 	}
 
-	public boolean isInFavorites(int mensaId) {
-		Cursor c = database.rawQuery("select * from " + FavoritesTable.TABLE_FAV_MENSAS + " where " + MensasTable.COL_ID
-				+ "=" + mensaId, null);
-		return c.getCount() != 0;
-	}
-
-	public void storeFavorites(List<Mensa> mensas) {
-		open();
-		database.delete(FavoritesTable.TABLE_FAV_MENSAS, null, null);
-		for (Mensa m : mensas) {
-			if (m.isFavorite()) {
-				ContentValues values = new ContentValues();
-				values.put(MensasTable.COL_ID, m.getId());
-				database.insert(FavoritesTable.TABLE_FAV_MENSAS, null, values);
-			}
-		}
-		close();
-	}
-
-	public int getMensaTimestamp(int mensaId) {
-		Cursor c = database.rawQuery("select " + MensasTable.COL_TIMESTAMP + " from " + MensasTable.TABLE_MENSAS + " where "
-				+ MensasTable.COL_ID + "=" + mensaId, null);
+	public WeeklyMenuplan loadMenuplan(int mensaId) {
+		String query = "select * from " + MenusTable.TABLE_MENUS + " inner join " + MenusMensasTable.TABLE_MENUS_MENSAS
+				+ " on " + MenusTable.TABLE_MENUS + "." + MenusTable.COL_HASH + " = " + MenusMensasTable.TABLE_MENUS_MENSAS
+				+ "." + MenusTable.COL_HASH + " where " + MenusMensasTable.TABLE_MENUS_MENSAS + "." + MensasTable.COL_ID
+				+ " = " + mensaId + " ;";
+		Cursor c = database.rawQuery(query, null);
+		final int POS_TITLE = c.getColumnIndex(MenusTable.COL_TITLE);
+		final int POS_DESC = c.getColumnIndex(MenusTable.COL_DESC);
+		final int POS_DATE = c.getColumnIndex(MenusTable.COL_DATE);
+		final int POS_HASH = c.getColumnIndex(MenusTable.COL_HASH);
+		WeeklyMenuplan p = new WeeklyMenuplan();
 		c.moveToFirst();
-		return c.getInt(0);
+		do {
+			try {
+				Menu.MenuBuilder builder = new Menu.MenuBuilder();
+				builder.setTitle(c.getString(POS_TITLE));
+				builder.setDescription(c.getString(POS_DESC));
+				builder.setDate(fm.parse(c.getString(POS_DATE)));
+				builder.setHash(c.getInt(POS_HASH));
+				p.addMenu(builder.build());
+			} catch (ParseException e) {
+				// If this happens, the DB violated it's contract of properly
+				// storing the given string data.
+				throw new AssertionError("Database did not save properly");
+			}
+
+		} while (c.moveToNext());
+		return p;
 	}
 
 	public void deleteMenus() {
+		database.delete(MenusTable.TABLE_MENUS, null, null);
+		database.delete(MenusMensasTable.TABLE_MENUS_MENSAS, null, null);
+	}
+	
+	public void cleanUpAllTables() {
+		database.delete(MensasTable.TABLE_MENSAS, null, null);
+		database.delete(FavoritesTable.TABLE_FAV_MENSAS, null, null);
 		database.delete(MenusTable.TABLE_MENUS, null, null);
 		database.delete(MenusMensasTable.TABLE_MENUS_MENSAS, null, null);
 	}

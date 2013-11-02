@@ -93,11 +93,40 @@ public class Mensa {
 	public WeeklyMenuplan getMenuplan() {
 		return menuplan;
 	}
-	
+
 	@Override
-	 public String toString() {
-	  return name;
-	 }
+	public String toString() {
+		return name;
+	}
+
+	@Override
+	public boolean equals(Object other) {
+		if (this == other)
+			return true;
+		
+		if (other instanceof Mensa) {
+			Mensa otherMensa = (Mensa) other;
+			if (otherMensa.getId() != this.id)
+				return false;
+			if (otherMensa.getLatitude() != this.latitude)
+				return false;
+			if (otherMensa.getLongitude() != this.longitude)
+				return false;
+			if (!otherMensa.getName().equals(this.name))
+				return false;
+			if (!otherMensa.getStreet().equals(this.street))
+				return false;
+			if (!otherMensa.getZip().equals(this.zip))
+				return false;
+			if (otherMensa.getTimestamp() != this.timestamp)
+				return false;
+			if (otherMensa.isFavorite() != this.isFavorite)
+				return false;
+			return true;
+		} else {
+			return false;
+		}
+	}
 
 	/**
 	 * Standard builder class used to construct Mensa objects. All fields have

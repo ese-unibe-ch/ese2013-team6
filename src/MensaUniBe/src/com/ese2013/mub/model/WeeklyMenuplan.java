@@ -18,7 +18,7 @@ public class WeeklyMenuplan implements Iterable<DailyMenuplan> {
 			dailymenus.put(date, plan);
 		}
 	}
-	
+
 	public DailyMenuplan getDailymenuplan(Date date) {
 		return dailymenus.get(date);
 	}
@@ -30,5 +30,36 @@ public class WeeklyMenuplan implements Iterable<DailyMenuplan> {
 
 	public Set<Date> getDays() {
 		return dailymenus.keySet();
+	}
+
+	@Override
+	public boolean equals(Object other) {
+		if (this == other)
+			return true;
+
+		if (other instanceof WeeklyMenuplan) {
+			WeeklyMenuplan otherPlan = (WeeklyMenuplan) other;
+			Set<Date> days = this.getDays();
+			Set<Date> otherDays = otherPlan.getDays();
+			if (!days.equals(otherDays))
+				return false;
+
+			for (Date d : days)
+				if (!otherPlan.getDailymenuplan(d).equals(this.getDailymenuplan(d)))
+					return false;
+			return true;
+		} else {
+			return false;
+		}
+	}
+	
+	@Override
+	public String toString() {
+		String result = "";
+		for (Date d : getDays()) {
+			result += getDailymenuplan(d).toString();
+			result += "\n";
+		}
+		return result;
 	}
 }

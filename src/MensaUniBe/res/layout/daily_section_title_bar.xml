@@ -3,11 +3,6 @@
    android:id="@+id/section_title_bar"
             android:layout_height="wrap_content"
             android:layout_width="match_parent">
-             <ImageButton
-            	android:id="@+id/daily_title_fav_button"
-            	android:layout_height="wrap_content"
-           		android:layout_width="wrap_content"
-           		android:contentDescription="@string/favorite_button"
-           		android:background="?android:attr/selectableItemBackground"
-            />
+            <include layout="@layout/favorite_button"/>
+            <include layout="@layout/map_button"/>
 </RelativeLayout>

@@ -63,6 +63,11 @@ public class DailyPlanFragment extends PlanFragment {
 		textDateOfDayOfWeek.setText(day.format(df));
 		LayoutInflater inf = (LayoutInflater)getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 		layout.addView(textDateOfDayOfWeek);
+		if(mensas.isEmpty()) {
+				TextView noFavoriteMensasChosen = new TextView(container.getContext());
+				noFavoriteMensasChosen.setText(R.string.no_favorite_mensa);
+				layout.addView(noFavoriteMensasChosen);
+		}
 		for (Mensa mensa : mensas) {
 			
 				RelativeLayout rel = (RelativeLayout)inf.inflate(R.layout.daily_section_title_bar, null);

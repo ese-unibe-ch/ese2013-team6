@@ -1,16 +1,27 @@
 package com.ese2013.mub;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
+import org.json.JSONObject;
+
 import android.content.Context;
+import android.graphics.Color;
 import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentTransaction;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,20 +33,23 @@ import android.widget.Toast;
 
 import com.ese2013.mub.model.Mensa;
 import com.ese2013.mub.model.Model;
+import com.ese2013.mub.util.DirectionsJSONParser;
 import com.ese2013.mub.util.NamedLocation;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
-
 import com.google.android.gms.maps.model.LatLngBounds;
-import com.google.android.gms.maps.model.Marker;
-
+import com.google.android.gms.maps.model.LatLngBounds.Builder;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.maps.model.PolylineOptions;
+
+//TODO: Zoom, Setttings TravelMode
 
 public class MapFragment extends Fragment {
 	//private static final int INIT_ZOOM = 14;
+	protected static final String TRAVEL_MODE_WALKING = "walking";
 	protected static final float DETAIL_ZOOM = 17;
 	private GoogleMap map;
 	List<Mensa> mensaList;
@@ -72,6 +86,7 @@ public class MapFragment extends Fragment {
 	    Spinner spinFocus = (Spinner)view.findViewById(R.id.focus_spinner);
 	    spinFocus.setAdapter(adapter);
 	    addListenerOnSpinnerItemSelection(spinFocus);
+	    
 	    System.out.println("Zoom on Map - onCreate");
 	    zoomOnContent(adapter, spinFocus);
         
@@ -111,10 +126,13 @@ public class MapFragment extends Fragment {
 			if (favouriteMensaSelected(mensaList)){
 				LatLng currentPoint = new LatLng(getCurrentNamedLocation().getLatitude(), getCurrentNamedLocation().getLongitude());
 				LatLng favPoint = new LatLng(getFavMensaNamedLocations().get(0).getLatitude(), getFavMensaNamedLocations().get(0).getLongitude());
+				
 				LatLngBounds bounds = new LatLngBounds(currentPoint, favPoint);
 //				map.moveCamera(CameraUpdateFactory.newLatLngBounds(bounds, 0));
+				
 				int spinnerPosition = adapter.getPosition(getCurrentNamedLocation());
 	    	    spinFocus.setSelection(spinnerPosition);
+	    	    map.moveCamera(CameraUpdateFactory.newLatLngZoom(bounds.getCenter(), 10));
 			}else{
 				int spinnerPosition = adapter.getPosition(getCurrentNamedLocation());
 	    	    spinFocus.setSelection(spinnerPosition);
@@ -143,7 +161,7 @@ public class MapFragment extends Fragment {
 			if (favouriteMensaSelected(mensaList)){
 				ArrayList<NamedLocation> favlocations = getFavMensaNamedLocations();
 				drawMensasWithClosest(currentNamedLocation);
-				drawRouteFromTo(currentNamedLocation, favlocations);
+				drawRouteFromToMany(currentNamedLocation, favlocations);
 			}else{
 				drawMensas();
 			}
@@ -155,6 +173,7 @@ public class MapFragment extends Fragment {
 	
 
 	private void drawMensasWithClosest(NamedLocation currentNamedLocation) {
+		assert currentLocationAvail();
 		try {
 			Mensa closest= getClosestMensa(currentNamedLocation);
 		
@@ -170,6 +189,7 @@ public class MapFragment extends Fragment {
 				map.addMarker(new MarkerOptions().position(mensaLocation).title(m.getName()));
 			}
 		}
+		drawRouteFromTo(getCurrentNamedLocation(), new NamedLocation(closest));
 		
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
@@ -191,9 +211,37 @@ public class MapFragment extends Fragment {
 		.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE)));
 	}
 
-	private void drawRouteFromTo(NamedLocation currentNamedLocation,
+	private void drawRouteFromToMany(NamedLocation currentNamedLocation,
 			ArrayList<NamedLocation> favlocations) {
-		// TODO Auto-generated method stub
+		LatLng origin = new LatLng(currentNamedLocation.getLatitude(), currentNamedLocation.getLongitude());
+		
+		for (NamedLocation namedL : favlocations){
+			 LatLng dest = new LatLng(namedL.getLatitude(), namedL.getLongitude());
+			 // Getting URL to the Google Directions API
+	        String url = getDirectionsUrl(origin, dest, TRAVEL_MODE_WALKING);
+	
+	        DownloadTask downloadTask = new DownloadTask();
+	
+	        // Start downloading json data from Google Directions API
+	        downloadTask.execute(url);
+		}
+		
+	}
+	
+	private void drawRouteFromTo(NamedLocation currentNamedLocation,
+			NamedLocation destination) {
+		LatLng origin = new LatLng(currentNamedLocation.getLatitude(), currentNamedLocation.getLongitude());
+		
+		
+		LatLng dest = new LatLng(destination.getLatitude(), destination.getLongitude());
+		 // Getting URL to the Google Directions API
+        String url = getDirectionsUrl(origin, dest, TRAVEL_MODE_WALKING);
+
+        DownloadTask downloadTask = new DownloadTask();
+
+        // Start downloading json data from Google Directions API
+        downloadTask.execute(url);
+		
 		
 	}
 
@@ -342,16 +390,197 @@ public class MapFragment extends Fragment {
           locationManager.requestLocationUpdates(provider, 200000, 100, locationListener);
 		return location;
 	}
+	
+
+//	---------------------------------------------------------------------------------------------------------------------------------
+//	---------------------------------------------------------------------------------------------------------------------------------
+//	---------------------------------------------------------------------------------------------------------------------------------
+//	---------------------------------------------------------------------------------------------------------------------------------
+	
+	
+	private String getDirectionsUrl(LatLng origin,LatLng dest, String transportMode){
+		 
+        // Origin of route
+        String str_origin = "origin="+origin.latitude+","+origin.longitude;
+ 
+        // Destination of route
+        String str_dest = "destination="+dest.latitude+","+dest.longitude;
+ 
+        // Sensor enabled
+        String sensor = "sensor=false";
+        
+        String mode = "mode="+transportMode;
+
+        // Building the parameters to the web service
+        String parameters = str_origin+"&"+str_dest+"&"+sensor+"&"+mode;
+ 
+        // Output format
+        String output = "json";
+ 
+        // Building the url to the web service
+        String url = "https://maps.googleapis.com/maps/api/directions/"+output+"?"+parameters;
+ 
+        return url;
+    }
+    /** A method to download json data from url */
+    private String downloadUrl(String strUrl) throws IOException{
+        String data = "";
+        InputStream iStream = null;
+        HttpURLConnection urlConnection = null;
+        try{
+            URL url = new URL(strUrl);
+ 
+            // Creating an http connection to communicate with url
+            urlConnection = (HttpURLConnection) url.openConnection();
+ 
+            // Connecting to url
+            urlConnection.connect();
+ 
+            // Reading data from url
+            iStream = urlConnection.getInputStream();
+ 
+            BufferedReader br = new BufferedReader(new InputStreamReader(iStream));
+ 
+            StringBuffer sb = new StringBuffer();
+ 
+            String line = "";
+            while( ( line = br.readLine()) != null){
+                sb.append(line);
+            }
+ 
+            data = sb.toString();
+ 
+            br.close();
+ 
+        }catch(Exception e){
+            Log.d("Exception while downloading url", e.toString());
+        }finally{
+            iStream.close();
+            urlConnection.disconnect();
+        }
+        return data;
+    }
+ 
+    // Fetches data from url passed
+    private class DownloadTask extends AsyncTask<String, Void, String>{
+ 
+        // Downloading data in non-ui thread
+        @Override
+        protected String doInBackground(String... url) {
+ 
+            // For storing data from web service
+            String data = "";
+ 
+            try{
+                // Fetching the data from web service
+                data = downloadUrl(url[0]);
+            }catch(Exception e){
+                Log.d("Background Task",e.toString());
+                e.printStackTrace();
+            }
+            return data;
+        }
+ 
+        // Executes in UI thread, after the execution of
+        // doInBackground()
+        @Override
+        protected void onPostExecute(String result) {
+            super.onPostExecute(result);
+ 
+            ParserTask parserTask = new ParserTask();
+ 
+            // Invokes the thread for parsing the JSON data
+            parserTask.execute(result);
+        }
+    }
+ 
+    /** A class to parse the Google Places in JSON format */
+    private class ParserTask extends AsyncTask<String, Integer, List<List<HashMap<String,String>>> >{
+ 
+        // Parsing the data in non-ui thread
+        @Override
+        protected List<List<HashMap<String, String>>> doInBackground(String... jsonData) {
+ 
+            JSONObject jObject;
+            List<List<HashMap<String, String>>> routes = null;
+ 
+            try{
+                jObject = new JSONObject(jsonData[0]);
+                DirectionsJSONParser parser = new DirectionsJSONParser();
+ 
+                // Starts parsing data
+                routes = parser.parse(jObject);
+            }catch(Exception e){
+                e.printStackTrace();
+            }
+            return routes;
+        }
+ 
+        // Executes in UI thread, after the parsing process
+        @Override
+        protected void onPostExecute(List<List<HashMap<String, String>>> result) {
+            ArrayList<LatLng> points = null;
+            PolylineOptions lineOptions = null;
+            MarkerOptions markerOptions = new MarkerOptions();
+ 
+            // Traversing through all the routes
+            for(int i=0;i<result.size();i++){
+                points = new ArrayList<LatLng>();
+                lineOptions = new PolylineOptions();
+ 
+                // Fetching i-th route
+                List<HashMap<String, String>> path = result.get(i);
+ 
+                // Fetching all the points in i-th route
+                for(int j=0;j<path.size();j++){
+                    HashMap<String,String> point = path.get(j);
+ 
+                    double lat = Double.parseDouble(point.get("lat"));
+                    double lng = Double.parseDouble(point.get("lng"));
+                    LatLng position = new LatLng(lat, lng);
+ 
+                    points.add(position);
+                }
+ 
+                // Adding all the points in the route to LineOptions
+                lineOptions.addAll(points);
+                lineOptions.width(3);
+                lineOptions.color(Color.RED);
+            }
+ 
+            // Drawing polyline in the Google Map for the i-th route
+            map.addPolyline(lineOptions);
+        }
+    }
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+
+//	---------------------------------------------------------------------------------------------------------------------------------
+//	---------------------------------------------------------------------------------------------------------------------------------
+//	---------------------------------------------------------------------------------------------------------------------------------
+//	---------------------------------------------------------------------------------------------------------------------------------
+//	---------------------------------------------------------------------------------------------------------------------------------
 
 
 
 
-	@Override
-	public void onDestroyView() {
-		super.onDestroyView();
-		Fragment fragment = (getFragmentManager().findFragmentById(R.id.map));
-		FragmentTransaction ft = getActivity().getSupportFragmentManager().beginTransaction();
-		ft.remove(fragment);
-		ft.commit();
-	}
+//	@Override
+//	public void onDestroyView() {
+//		super.onDestroyView();
+//		Fragment fragment = (getFragmentManager().findFragmentById(R.id.map));
+//		FragmentTransaction ft = getActivity().getSupportFragmentManager().beginTransaction();
+//		ft.remove(fragment);
+//		ft.commit();
+//	}
 }

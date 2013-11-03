@@ -184,7 +184,7 @@ public class MapFragment extends Fragment {
 		map.clear();
 		LatLng currentPosition = new LatLng(currentNamedLocation.getLatitude(),
 				currentNamedLocation.getLongitude());
-		Marker marker = map.addMarker(new MarkerOptions()
+		map.addMarker(new MarkerOptions()
 		.position(currentPosition)
 		.snippet("Lat:" + currentNamedLocation.getLatitude() + "Lng:"+ currentNamedLocation.getLongitude())
 		.title("Your Location")
@@ -274,7 +274,7 @@ public class MapFragment extends Fragment {
 	private void drawMensas() {
 		for (Mensa m : mensaList) {
 			LatLng mensaLocation = new LatLng(m.getLatitude(), m.getLongitude());
-			Marker marker = map.addMarker(new MarkerOptions().position(mensaLocation).title(m.getName()));
+			map.addMarker(new MarkerOptions().position(mensaLocation).title(m.getName()));
 		}
 	}
 

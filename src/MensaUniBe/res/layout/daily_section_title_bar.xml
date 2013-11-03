@@ -1,13 +1,26 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-   android:id="@+id/section_title_bar"
-            android:layout_height="wrap_content"
-            android:layout_width="match_parent">
-             <ImageButton
-            	android:id="@+id/daily_title_fav_button"
-            	android:layout_height="wrap_content"
-           		android:layout_width="wrap_content"
-           		android:contentDescription="@string/favorite_button"
-           		android:background="?android:attr/selectableItemBackground"
-            />
+    android:id="@+id/section_title_bar"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content" >
+
+    <include layout="@layout/section_title_text"
+        android:id="@+id/daily_section_title_text"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/common_signin_btn_default_background" />
+
+    <include layout="@layout/favorite_button" 
+        android:id="@+id/section_title_fav_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"/>
+
+    <include layout="@layout/map_button"
+        android:id="@+id/section_title_map_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/ic_map"
+        android:layout_toLeftOf="@+id/section_title_fav_button"/>
+
 </RelativeLayout>

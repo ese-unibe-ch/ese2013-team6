@@ -58,7 +58,9 @@ public class WeeklyPlanFragment extends PlanFragment {
 								// due screen rotation, needs to be handled
 								// through proper state management and so
 								// on.
-		ImageButton favorite = (ImageButton) rootView.findViewById(R.id.weekly_title_fav_button);
+		ImageButton favorite = (ImageButton) rootView.findViewById(R.id.page_title_favorite_button);
+		ImageButton map = (ImageButton) rootView.findViewById(R.id.page_title_map_button);
+		map.setImageResource(R.drawable.ic_map);
 		
 		if(mensa.isFavorite())
 			favorite.setImageResource(R.drawable.ic_fav);
@@ -69,8 +71,8 @@ public class WeeklyPlanFragment extends PlanFragment {
 		
 		for (DailyMenuplan d : mensa.getMenuplan()) {
 			
-			TextView text = getTextView(d.getDateString());
-			
+			TextView text = (TextView)inflater.inflate(R.layout.section_title_text, null);
+			text.setText(d.getDateString());
 			layout.addView(text);
 			
 			LinearLayout menuLayout = new LinearLayout(container.getContext());

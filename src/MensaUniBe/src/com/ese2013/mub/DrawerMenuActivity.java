@@ -33,7 +33,7 @@ public class DrawerMenuActivity extends FragmentActivity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		new Model(this);
+		new Model(this.getApplicationContext());
 
 		setContentView(R.layout.activity_drawer_menu);
 

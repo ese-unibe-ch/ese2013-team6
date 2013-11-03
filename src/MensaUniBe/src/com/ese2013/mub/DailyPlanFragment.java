@@ -1,7 +1,6 @@
 package com.ese2013.mub;
 
 import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
@@ -13,26 +12,26 @@ import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
-import android.widget.RelativeLayout.LayoutParams;
 import android.widget.TextView;
 
 import com.ese2013.mub.model.DailyMenuplan;
 import com.ese2013.mub.model.Mensa;
 import com.ese2013.mub.model.Menu;
 import com.ese2013.mub.model.Model;
+import com.ese2013.mub.util.Day;
 
 public class DailyPlanFragment extends PlanFragment {
-	private Date day;
+	private Day day;
 	private List<Mensa> mensas;
 
 	public DailyPlanFragment() {
 	}
 
-	public void setDay(Date day) {
+	public void setDay(Day day) {
 		this.day = day;
 	}
 
-	public static DailyPlanFragment newInstance(Date day) {
+	public static DailyPlanFragment newInstance(Day day) {
 		DailyPlanFragment frag = new DailyPlanFragment();
 		frag.setDay(day);
 		return frag;
@@ -61,26 +60,32 @@ public class DailyPlanFragment extends PlanFragment {
 		
 		SimpleDateFormat df = new SimpleDateFormat( "dd. MMMM yyyy", Locale.getDefault());
 		TextView textDateOfDayOfWeek = new TextView(container.getContext());
-		textDateOfDayOfWeek.setText(df.format(day));
+		textDateOfDayOfWeek.setText(day.format(df));
 		LayoutInflater inf = (LayoutInflater)getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 		layout.addView(textDateOfDayOfWeek);
-		//RelativeLayout rel = (RelativeLayout) rootView.findViewById(R.id.section_title_bar);
+		if(mensas.isEmpty()) {
+				TextView noFavoriteMensasChosen = new TextView(container.getContext());
+				noFavoriteMensasChosen.setText(R.string.no_favorite_mensa);
+				layout.addView(noFavoriteMensasChosen);
+		}
 		for (Mensa mensa : mensas) {
 			
 				RelativeLayout rel = (RelativeLayout)inf.inflate(R.layout.daily_section_title_bar, null);
-				TextView text = getTextView(mensa.getName());
-
+				TextView text = (TextView) rel.getChildAt(0);
+				text.setText(mensa.getName());
 				DailyMenuplan d = mensa.getMenuplan().getDailymenuplan(day);
 				
 				LinearLayout menuLayout = new LinearLayout(container.getContext());
 				menuLayout.setOrientation(LinearLayout.VERTICAL);
 				
-				ImageButton favorite = (ImageButton) inflater.inflate(R.layout.favorite_button, null);
+				ImageButton favorite = (ImageButton)rel.getChildAt(1);//works like a charm
 				if(mensa.isFavorite())
 					favorite.setImageResource(R.drawable.ic_fav);
 				else
 					favorite.setImageResource(R.drawable.ic_fav_grey);
-				
+				ImageButton map = (ImageButton)rel.getChildAt(2);
+				//map.setOnClickListener(new bla());
+				map.setImageResource(R.drawable.ic_map);
 				for (Menu menu : d.getMenus()) {
 					menuLayout.addView(new MenuView(container.getContext(), menu.getTitle(), menu.getDescription()));
 				}
@@ -89,12 +94,9 @@ public class DailyPlanFragment extends PlanFragment {
 				
 				rel.setOnClickListener(new ToggleListener(menuLayout, container.getContext()));
 				
-				rel.addView(text);
-				rel.addView(favorite);
-				RelativeLayout.LayoutParams param = new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
+				
+				
 				favorite.setOnClickListener(new FavoriteButtonListener(mensa, favorite));
-				param.addRule(RelativeLayout.ALIGN_RIGHT);
-				favorite.setLayoutParams(param);
 				layout.addView(rel);
 				layout.addView(menuLayout);
 		}

@@ -1,5 +1,6 @@
 package com.ese2013.mub.util;
 
+import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -13,10 +14,11 @@ import org.json.JSONObject;
 import com.ese2013.mub.model.Mensa;
 import com.ese2013.mub.model.Menu;
 import com.ese2013.mub.model.WeeklyMenuplan;
+import com.ese2013.mub.util.database.MensaDataSource;
 
 public class MensaFromWebFactory extends AbstractMensaFactory {
 
-	private DataManager dataManager = DataManager.getInstance();
+	private MensaDataSource dataSource = MensaDataSource.getInstance();
 	private static SimpleDateFormat fm = new SimpleDateFormat("yyyy-MM-dd", Locale.GERMAN);
 	private JSONArray updateStatusJson;
 
@@ -27,26 +29,28 @@ public class MensaFromWebFactory extends AbstractMensaFactory {
 	@Override
 	public List<Mensa> createMensaList() throws MensaDownloadException {
 		try {
+			dataSource.open();
 			JsonDataRequest request = new JsonDataRequest(ServiceUri.GET_MENSAS);
 			JSONObject result = request.execute();
-			if (result.getJSONObject("result").getInt("code") == JsonDataRequest.CODE_SUCCESS) {
-				JSONArray content = result.getJSONObject("result").getJSONArray("content");
-				List<Mensa> mensas = new ArrayList<Mensa>();
-				for (int i = 0; i < content.length(); i++) {
-					JSONObject mensaJsonObject = content.getJSONObject(i);
-					JSONObject mensaJsonUpdate = updateStatusJson.getJSONObject(i);
-					Mensa mensa = parseMensaJson(mensaJsonObject, mensaJsonUpdate);
-					mensa.setMenuplan(createWeeklyMenuplan(mensa));
-					mensas.add(mensa);
-				}
-				return mensas;
+			JSONArray content = result.getJSONObject("result").getJSONArray("content");
+			List<Mensa> mensas = new ArrayList<Mensa>();
+			for (int i = 0; i < content.length(); i++) {
+				JSONObject mensaJsonObject = content.getJSONObject(i);
+				JSONObject mensaJsonUpdate = updateStatusJson.getJSONObject(i);
+				Mensa mensa = parseMensaJson(mensaJsonObject, mensaJsonUpdate);
+				mensa.setMenuplan(createWeeklyMenuplan(mensa));
+				mensas.add(mensa);
 			}
-		} catch (Exception e) {
+			return mensas;
+		} catch (JSONException e) {
+			throw new MensaDownloadException(e);
+		} catch (IOException e) {
+			throw new MensaDownloadException(e);
+		} catch (ParseException e) {
 			throw new MensaDownloadException(e);
 		} finally {
-			dataManager.closeOpenResources();
+			dataSource.close();
 		}
-		throw new MensaDownloadException("Failed downloading");
 	}
 
 	private Mensa parseMensaJson(JSONObject mensaJson, JSONObject mensaJsonUpdate) throws JSONException {
@@ -58,12 +62,12 @@ public class MensaFromWebFactory extends AbstractMensaFactory {
 		builder.setZip(mensaJson.getString("plz"));
 		builder.setLongitude(mensaJson.getDouble("lon"));
 		builder.setLatitude(mensaJson.getDouble("lat"));
-		builder.setIsFavorite(dataManager.isInFavorites(mensaId));
+		builder.setIsFavorite(dataSource.isInFavorites(mensaId));
 		builder.setTimestamp(mensaJsonUpdate.getInt("timestamp"));
 		return builder.build();
 	}
 
-	private WeeklyMenuplan createWeeklyMenuplan(Mensa m) throws Exception {
+	private WeeklyMenuplan createWeeklyMenuplan(Mensa m) throws IOException, JSONException, ParseException {
 		JsonDataRequest menuRequest = new JsonDataRequest(ServiceUri.GET_WEEKLY_MENUPLAN.replaceFirst(":id", "" + m.getId()));
 		JSONArray menus = menuRequest.execute().getJSONObject("result").getJSONObject("content").getJSONArray("menus");
 		return parseWeeklyMenuplan(menus);
@@ -87,7 +91,7 @@ public class MensaFromWebFactory extends AbstractMensaFactory {
 			description += desc.getString(i) + "\n";
 
 		builder.setDescription(description);
-		builder.setDate(fm.parse(menu.getString("date")));
+		builder.setDate(new Day(fm.parse(menu.getString("date"))));
 		builder.setHash(menu.getInt("hash"));
 		return builder.build();
 	}

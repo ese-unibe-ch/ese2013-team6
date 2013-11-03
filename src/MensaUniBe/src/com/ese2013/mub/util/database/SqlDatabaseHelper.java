@@ -15,7 +15,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 
 public class SqlDatabaseHelper extends SQLiteOpenHelper {
 
-	private static final String DATABASE_NAME = "mensas.db";
+	public static final String DATABASE_NAME = "mensas.db";
 	private static final int DATABASE_VERSION = 11;
 
 	private List<AbstractTable> tables = new ArrayList<AbstractTable>(4);

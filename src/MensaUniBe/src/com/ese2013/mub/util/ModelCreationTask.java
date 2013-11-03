@@ -1,5 +1,6 @@
 package com.ese2013.mub.util;
 
+import java.io.IOException;
 import java.util.List;
 
 import org.json.JSONArray;
@@ -9,6 +10,7 @@ import android.os.AsyncTask;
 
 import com.ese2013.mub.model.Mensa;
 import com.ese2013.mub.model.Model;
+import com.ese2013.mub.util.database.MensaDataSource;
 
 /**
  * This class loads asynchronously all data from the mensa web service and
@@ -16,7 +18,7 @@ import com.ese2013.mub.model.Model;
  */
 public class ModelCreationTask extends AsyncTask<Void, Void, Void> {
 	private JSONArray updateStatusJson;
-	private DataManager dataManager = DataManager.getInstance();
+	private MensaDataSource dataSource = MensaDataSource.getInstance();
 	private List<Mensa> mensas;
 	private boolean successful, downloadedNewData;
 
@@ -35,16 +37,10 @@ public class ModelCreationTask extends AsyncTask<Void, Void, Void> {
 		}
 		try {
 			mensas = fac.createMensaList();
-		} catch (MensaDownloadException e) {
+			successful = true;
+		} catch (IOException e) {
 			successful = false;
-			e.printStackTrace();
-			return null;
-		} catch (MensaLoadException e) {
-			successful = false;
-			e.printStackTrace();
-			return null;
 		}
-		successful = true;
 		return null;
 	}
 
@@ -63,16 +59,19 @@ public class ModelCreationTask extends AsyncTask<Void, Void, Void> {
 	// TODO Is this really in the right class here?
 	private boolean localDataNeedsUpdate() {
 		try {
+			dataSource.open();
 			JsonDataRequest updateStatusRequest = new JsonDataRequest(ServiceUri.GET_UPDATE_STATUS);
 			updateStatusJson = updateStatusRequest.execute().getJSONObject("result").getJSONArray("content");
 			for (int i = 0; i < updateStatusJson.length(); i++) {
 				JSONObject mensaJson = updateStatusJson.getJSONObject(i);
-				int timestamp = dataManager.getMensaTimestamp(mensaJson.getInt("id"));
+				int timestamp = dataSource.getMensaTimestamp(mensaJson.getInt("id"));
 				if (timestamp < mensaJson.getInt("timestamp"))
 					return true;
 			}
 		} catch (Exception e) {
 			return true;
+		} finally {
+			dataSource.close();
 		}
 		return false;
 	}

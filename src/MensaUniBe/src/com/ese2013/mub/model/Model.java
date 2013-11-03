@@ -3,13 +3,13 @@ package com.ese2013.mub.model;
 import java.util.ArrayList;
 import java.util.List;
 
-import android.support.v4.app.FragmentActivity;
+import android.content.Context;
 import android.widget.Toast;
 
-import com.ese2013.mub.util.DataManager;
 import com.ese2013.mub.util.ModelCreationTask;
 import com.ese2013.mub.util.ModelSavingTask;
 import com.ese2013.mub.util.Observable;
+import com.ese2013.mub.util.database.MensaDataSource;
 
 /**
  * Manages the loading and storing of the whole model. This class holds the list
@@ -19,16 +19,17 @@ import com.ese2013.mub.util.Observable;
 public class Model extends Observable {
 	private List<Mensa> mensas = new ArrayList<Mensa>();
 	private static Model instance;
-	private FragmentActivity activity;
+	private Context context;
+	private MensaDataSource dataSource;
 
-	public Model(FragmentActivity activity) {
+	public Model(Context context) {
 		Model.instance = this;
-		this.activity = activity;
+		this.context = context;
 		init();
 	}
 
 	private void init() {
-		new DataManager(activity);
+		dataSource = new MensaDataSource(context);
 		ModelCreationTask task = new ModelCreationTask();
 		task.execute();
 	}
@@ -54,20 +55,22 @@ public class Model extends Observable {
 	}
 
 	public void saveFavorites() {
-		DataManager.getInstance().storeFavorites(mensas);
+		dataSource.open();
+		dataSource.storeFavorites(mensas);
+		dataSource.close();
 	}
 
 	public void onCreationFinished(ModelCreationTask task) {
 		if (task.wasSuccessful()) {
 			this.mensas = task.getMensas();
 			if (task.hasDownloadedNewData()) {
-				Toast.makeText(activity, "Downloaded new menus!", Toast.LENGTH_LONG).show();
+				Toast.makeText(context, "Downloaded new menus!", Toast.LENGTH_LONG).show();
 				saveModel();
 			} else {
-				Toast.makeText(activity, "Menus up to date.", Toast.LENGTH_LONG).show();
+				Toast.makeText(context, "Menus up to date.", Toast.LENGTH_LONG).show();
 			}
 		} else {
-			Toast.makeText(activity, "Could not load Menus.", Toast.LENGTH_LONG).show();
+			Toast.makeText(context, "Could not load Menus.", Toast.LENGTH_LONG).show();
 		}
 		this.notifyChanges();
 	}

@@ -1,8 +1,8 @@
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="fill_parent"
-    android:layout_height="fill_parent">
-    
+    android:layout_height="fill_parent" >
+
     <LinearLayout
         android:id="@+id/section_linear_layout"
         android:layout_width="fill_parent"
@@ -12,35 +12,28 @@
         android:paddingLeft="@dimen/menu_scroll_layout_horizontal_margin"
         android:paddingRight="@dimen/menu_scroll_layout_horizontal_margin"
         android:paddingTop="@dimen/menu_scroll_layout_vertical_margin" >
-        <RelativeLayout 
-            android:id="@+id/section_title_bar"
-            android:layout_height="wrap_content"
-            android:layout_width="match_parent">
-             <ImageButton
-            	android:id="@+id/weekly_title_fav_button"
-            	android:layout_height="wrap_content"
-           		android:layout_width="wrap_content"
-           		android:contentDescription="@string/favorite_button"
-           		android:background="?android:attr/selectableItemBackground"
-           		android:layout_centerHorizontal="true"
-            />
-             <ImageButton
-            	android:id="@+id/weekly_title_map_button"
-            	android:layout_height="wrap_content"
-           		android:layout_width="wrap_content"
-           		android:contentDescription="@string/map_button"
-           		android:background="?android:attr/selectableItemBackground"
-           		android:layout_centerHorizontal="true"
-           		android:layout_toRightOf="@id/weekly_title_fav_button"
-            />
-          <!--android:src="@drawable/ic_map"-->
-             <TextView 
-                 android:id="@+id/weekly_title_text"
-                 android:layout_height="wrap_content"
-           		 android:layout_width="wrap_content"
-           		 android:layout_toLeftOf="@id/weekly_title_fav_button"
-                 />
-            </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/page_title_bar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" >
+
+            <include
+                android:id="@+id/page_title_favorite_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                layout="@layout/favorite_button" />
+
+            <include
+                android:id="@+id/page_title_map_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                layout="@layout/map_button"
+                android:layout_toLeftOf="@+id/page_title_favorite_button"/>
+
+            
+        </RelativeLayout>
     </LinearLayout>
 
 </ScrollView>

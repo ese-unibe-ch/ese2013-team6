@@ -21,6 +21,7 @@ import android.location.LocationManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -41,7 +42,6 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
-import com.google.android.gms.maps.model.LatLngBounds.Builder;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.PolylineOptions;
 
@@ -127,6 +127,8 @@ public class MapFragment extends Fragment {
 				LatLng currentPoint = new LatLng(getCurrentNamedLocation().getLatitude(), getCurrentNamedLocation().getLongitude());
 				LatLng favPoint = new LatLng(getFavMensaNamedLocations().get(0).getLatitude(), getFavMensaNamedLocations().get(0).getLongitude());
 				
+				//TODO Delio: This sometimes causes crashes, i don't exactly know why, but seems to be related
+				// to if i have favorites or not. Please fix it.
 				LatLngBounds bounds = new LatLngBounds(currentPoint, favPoint);
 //				map.moveCamera(CameraUpdateFactory.newLatLngBounds(bounds, 0));
 				
@@ -572,15 +574,17 @@ public class MapFragment extends Fragment {
 //	---------------------------------------------------------------------------------------------------------------------------------
 //	---------------------------------------------------------------------------------------------------------------------------------
 
-
-
-
-//	@Override
-//	public void onDestroyView() {
-//		super.onDestroyView();
-//		Fragment fragment = (getFragmentManager().findFragmentById(R.id.map));
-//		FragmentTransaction ft = getActivity().getSupportFragmentManager().beginTransaction();
-//		ft.remove(fragment);
-//		ft.commit();
-//	}
+	/**
+	 * Destroy method which is called by the android framework when the view is
+	 * no longer needed. Here we remove the google map fragment which is
+	 * embedded in our own map fragment.
+	 */
+	@Override
+	public void onDestroyView() {
+		super.onDestroyView();
+		Fragment fragment = (getFragmentManager().findFragmentById(R.id.map));
+		FragmentTransaction ft = getActivity().getSupportFragmentManager().beginTransaction();
+		ft.remove(fragment);
+		ft.commit();
+	}
 }

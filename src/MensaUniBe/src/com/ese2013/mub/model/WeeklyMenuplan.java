@@ -32,6 +32,11 @@ public class WeeklyMenuplan implements Iterable<DailyMenuplan> {
 	public Set<Day> getDays() {
 		return dailymenus.keySet();
 	}
+	
+	public int getWeekNumber() {
+		Day d = getDays().iterator().next();
+		return d.getWeekNumber();
+	}
 
 	@Override
 	public boolean equals(Object other) {

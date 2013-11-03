@@ -5,9 +5,19 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
 
+/**
+ * Represents a simple date composed of year, month and day. Partly wraps the
+ * functionality of the java.util.Date class.
+ */
 public class Day {
 	private int year, month, day;
 
+	/**
+	 * Creates a Day from a given java.util.Date.
+	 * 
+	 * @param date
+	 *            Date used to retrieve year, month and day. Must not be null.
+	 */
 	public Day(Date date) {
 		Calendar cal = Calendar.getInstance();
 		cal.setTime(date);
@@ -16,24 +26,62 @@ public class Day {
 		day = cal.get(Calendar.DAY_OF_MONTH);
 	}
 
+	/**
+	 * Converts the Day to a java.util.Date. Used internally to allow for
+	 * formatting with the SimpleDateFormat class.
+	 * 
+	 * @return Date set the the day represented by this Day object.
+	 */
 	private Date getDate() {
+		return getCalendar().getTime();
+	}
+
+	/**
+	 * Converts the Day to a Calendar object representing the same day.
+	 * 
+	 * @return Calendar set to the same day as the Day object.
+	 */
+	private Calendar getCalendar() {
 		Calendar cal = Calendar.getInstance();
 		cal.setTimeInMillis(0);
 		cal.set(Calendar.YEAR, year);
 		cal.set(Calendar.MONTH, month);
 		cal.set(Calendar.DAY_OF_MONTH, day);
-		return cal.getTime();
+		return cal;
 	}
-	
+
+	/**
+	 * Returns the number of the week this day is in.
+	 * 
+	 * @return Number of week.
+	 */
+	public int getWeekNumber() {
+		return getCalendar().get(Calendar.WEEK_OF_YEAR);
+	}
+
+	/**
+	 * Returns the Day as a String, formatted using the passed SimpleDateFormat.
+	 * 
+	 * @param fm
+	 *            SimpleDateFormat to be used to format the Day. Must not be
+	 *            null and should only use year, month and day as day time
+	 *            (hours, minutes etc.) are not well defined for a Day.
+	 * @return String representing the Day, created using the SimpleDateFormat.
+	 */
 	public String format(SimpleDateFormat fm) {
 		return fm.format(getDate());
 	}
-	
+
+	/**
+	 * Returns the day of week as String (e.g. Monday, Tuesday and so on).
+	 * 
+	 * @return Day of week as String.
+	 */
 	public String getDayOfWeekString() {
 		return format(new SimpleDateFormat("EEEE", Locale.getDefault()));
 	}
-	
-	@Override 
+
+	@Override
 	public String toString() {
 		return format(new SimpleDateFormat("EEEE, dd. MMMM yyyy", Locale.getDefault()));
 	}

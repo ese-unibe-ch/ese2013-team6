@@ -29,7 +29,8 @@ public class Model extends Observable {
 	}
 
 	private void init() {
-		dataSource = new MensaDataSource(context);
+		dataSource = MensaDataSource.getInstance();
+		dataSource.init(context);
 		ModelCreationTask task = new ModelCreationTask();
 		task.execute();
 	}

@@ -3,6 +3,7 @@ package com.ese2013.mub.util.database;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
 
@@ -22,29 +23,60 @@ import com.ese2013.mub.util.database.tables.MensasTable;
 import com.ese2013.mub.util.database.tables.MenusMensasTable;
 import com.ese2013.mub.util.database.tables.MenusTable;
 
+/**
+ * Manages storing and loading data from the Mensa SQLite database.
+ */
 public class MensaDataSource {
 	private SQLiteDatabase database;
 	private SqlDatabaseHelper dbHelper;
 	private static SimpleDateFormat fm = new SimpleDateFormat("yyyy-MM-dd", Locale.GERMAN);
 	private static MensaDataSource instance;
 
-	public MensaDataSource(Context context) {
-		dbHelper = new SqlDatabaseHelper(context);
-		instance = this;
+	private MensaDataSource() {
 	}
 
 	public static MensaDataSource getInstance() {
+		if (instance == null)
+			instance = new MensaDataSource();
 		return instance;
 	}
 
+	/**
+	 * Should be called before the MensaDataSource is used.
+	 * 
+	 * @param context
+	 *            Context in which the DataSource is used, i.e. the main
+	 *            activity. Must not be null.
+	 */
+	public void init(Context context) {
+		dbHelper = new SqlDatabaseHelper(context);
+	}
+
+	/**
+	 * Opens the database, must be called before using the database. Caller must
+	 * also call close() after using the database to avoid a resource leak.
+	 * 
+	 * @throws SQLException
+	 *             If the database cannot be created or read.
+	 */
 	public void open() throws SQLException {
 		database = dbHelper.getWritableDatabase();
 	}
 
+	/**
+	 * Closes the database. Must be called after using the database.
+	 */
 	public void close() {
 		dbHelper.close();
 	}
 
+	/**
+	 * Stores the given list of mensas
+	 * 
+	 * @param mensas
+	 *            The List of Mensa objects to be stored. Must not be null and
+	 *            must not contain null.
+	 */
 	public void storeMensaList(List<Mensa> mensas) {
 		for (Mensa m : mensas)
 			storeMensa(m);
@@ -62,6 +94,11 @@ public class MensaDataSource {
 		database.replace(MensasTable.TABLE_MENSAS, null, values);
 	}
 
+	/**
+	 * Loads the list of mensas from the database
+	 * 
+	 * @return List of Mensas.
+	 */
 	public List<Mensa> loadMensaList() {
 		List<Mensa> mensas = new ArrayList<Mensa>();
 		Cursor c = database.rawQuery("SELECT * FROM " + MensasTable.TABLE_MENSAS, null);
@@ -90,6 +127,13 @@ public class MensaDataSource {
 		return mensas;
 	}
 
+	/**
+	 * Updates the table of favorite mensas using the given mensa list. Every
+	 * mensa which is a favorite mensa gets stored in the favorites table.
+	 * 
+	 * @param mensas
+	 *            List of mensas to update the favorites table.
+	 */
 	public void storeFavorites(List<Mensa> mensas) {
 		database.delete(FavoritesTable.TABLE_FAV_MENSAS, null, null);
 		for (Mensa m : mensas) {
@@ -101,12 +145,26 @@ public class MensaDataSource {
 		}
 	}
 
+	/**
+	 * Checks if a given mensa id belongs to a favorite mensa.
+	 * 
+	 * @param mensaId
+	 *            Int mensa id to be checked.
+	 * @return true if the mensa id belongs to a favorite mensa.
+	 */
 	public boolean isInFavorites(int mensaId) {
 		Cursor c = database.rawQuery("select * from " + FavoritesTable.TABLE_FAV_MENSAS + " where " + MensasTable.COL_ID
 				+ "=" + mensaId, null);
 		return c.getCount() != 0;
 	}
 
+	/**
+	 * Returns the update time stamp for a given mensa id.
+	 * 
+	 * @param mensaId
+	 *            Int id of the mensa to retrieve the time stamp of.
+	 * @return Time stamp of the given mensa (represented by the id).
+	 */
 	public int getMensaTimestamp(int mensaId) {
 		Cursor c = database.rawQuery("select " + MensasTable.COL_TIMESTAMP + " from " + MensasTable.TABLE_MENSAS + " where "
 				+ MensasTable.COL_ID + "=" + mensaId, null);
@@ -114,6 +172,14 @@ public class MensaDataSource {
 		return c.getInt(0);
 	}
 
+	/**
+	 * Stores the given Mensa's weekly menu plan to the database. Caller must
+	 * assure that only weekly menu plans of the same week are stored in the
+	 * database.
+	 * 
+	 * @param mensa
+	 *            The Mensa the weekly plan belongs to. Must not be null
+	 */
 	public void storeWeeklyMenuplan(Mensa mensa) {
 		WeeklyMenuplan plan = mensa.getMenuplan();
 		for (DailyMenuplan d : plan)
@@ -135,6 +201,13 @@ public class MensaDataSource {
 		database.replace(MenusMensasTable.TABLE_MENUS_MENSAS, null, values2);
 	}
 
+	/**
+	 * Loads the weekly menu plan of a given mensa, represented by the mensa id.
+	 * 
+	 * @param mensaId
+	 *            Id of the mensa.
+	 * @return WeeklyMenuplan of the given mensa.
+	 */
 	public WeeklyMenuplan loadMenuplan(int mensaId) {
 		String query = "select * from " + MenusTable.TABLE_MENUS + " inner join " + MenusMensasTable.TABLE_MENUS_MENSAS
 				+ " on " + MenusTable.TABLE_MENUS + "." + MenusTable.COL_HASH + " = " + MenusMensasTable.TABLE_MENUS_MENSAS
@@ -156,20 +229,49 @@ public class MensaDataSource {
 				builder.setHash(c.getInt(POS_HASH));
 				p.addMenu(builder.build());
 			} catch (ParseException e) {
-				// If this happens, the DB violated it's contract of properly
-				// storing the given string data.
 				throw new AssertionError("Database did not save properly");
 			}
-
 		} while (c.moveToNext());
 		return p;
 	}
 
+	/**
+	 * Returns the week of the stored menus.
+	 * 
+	 * @return Number of week of the menus.
+	 */
+	public int getWeekOfStoredMenus() {
+		Cursor c = database.query(MenusTable.TABLE_MENUS, new String[] { MenusTable.COL_DATE }, null, null,
+				MenusTable.COL_DATE, null, null);
+
+		final int POS_DATE = c.getColumnIndex(MenusTable.COL_DATE);
+		c.moveToFirst();
+		int minWeek = Integer.MAX_VALUE;
+		do {
+			try {
+				String dateString = c.getString(POS_DATE);
+				Calendar cal = Calendar.getInstance(Locale.GERMAN);
+				cal.setTime(fm.parse(dateString));
+				int week = cal.get(Calendar.WEEK_OF_YEAR);
+				minWeek = week < minWeek ? week : minWeek;
+			} catch (ParseException e) {
+				throw new AssertionError("Database did not save properly");
+			}
+		} while (c.moveToNext());
+		return minWeek;
+	}
+
+	/**
+	 * Deletes all menus from the database.
+	 */
 	public void deleteMenus() {
 		database.delete(MenusTable.TABLE_MENUS, null, null);
 		database.delete(MenusMensasTable.TABLE_MENUS_MENSAS, null, null);
 	}
 
+	/**
+	 * Completely clears the whole database.
+	 */
 	public void cleanUpAllTables() {
 		database.delete(MensasTable.TABLE_MENSAS, null, null);
 		database.delete(FavoritesTable.TABLE_FAV_MENSAS, null, null);

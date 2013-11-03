@@ -15,12 +15,13 @@ import com.ese2013.mub.util.database.MensaDataSource;
 
 public class MensaDataSourceTest extends AndroidTestCase {
 
-	MensaDataSource dataSource = new MensaDataSource(getContext());
+	private MensaDataSource dataSource;
 
 	@Override
 	protected void setUp() throws Exception {
 		super.setUp();
-		dataSource = new MensaDataSource(getContext());
+		dataSource = MensaDataSource.getInstance();
+		dataSource.init(getContext());
 		assertNotNull(dataSource);
 		dataSource.open();
 		dataSource.cleanUpAllTables();
@@ -38,7 +39,7 @@ public class MensaDataSourceTest extends AndroidTestCase {
 		List<Mensa> loadedMensas = dataSource.loadMensaList();
 		assertEquals("Loaded mensas should be the same as stored", loadedMensas, mensas);
 	}
-	
+
 	public void testStoreAndLoadFavorites() {
 		List<Mensa> mensas = createMensaList();
 
@@ -93,8 +94,23 @@ public class MensaDataSourceTest extends AndroidTestCase {
 		assertEquals(m1.getMenuplan(), dataSource.loadMenuplan(m1.getId()));
 		assertEquals(m2.getMenuplan(), dataSource.loadMenuplan(m2.getId()));
 	}
+	
+	public void testGetWeekOfStoredMenus() {
+		List<Mensa> mensas = createMensaList();
+		List<WeeklyMenuplan> plans = createWeeklyplans();
+		Mensa m1 = mensas.get(0);
+		m1.setMenuplan(plans.get(0));
+		Mensa m2 = mensas.get(2);
+		m2.setMenuplan(plans.get(1));
+		dataSource.storeWeeklyMenuplan(m1);
+		dataSource.storeWeeklyMenuplan(m2);
+		
+		assertEquals(dataSource.getWeekOfStoredMenus(), plans.get(0).getWeekNumber());
+		assertEquals(dataSource.getWeekOfStoredMenus(), plans.get(1).getWeekNumber());
+	}
+	
 
-	private ArrayList<Mensa> createMensaList() {
+	private static ArrayList<Mensa> createMensaList() {
 		ArrayList<Mensa> mensas = new ArrayList<Mensa>();
 		Mensa.MensaBuilder builder = new Mensa.MensaBuilder();
 		builder.setId(1).setName("Mensa Gesellschaftsstrasse").setStreet("Some street 123").setZip("3001 Bern")
@@ -118,7 +134,7 @@ public class MensaDataSourceTest extends AndroidTestCase {
 		return mensas;
 	}
 
-	private ArrayList<WeeklyMenuplan> createWeeklyplans() {
+	private static ArrayList<WeeklyMenuplan> createWeeklyplans() {
 		ArrayList<WeeklyMenuplan> plans = new ArrayList<WeeklyMenuplan>();
 		ArrayList<Menu> menus = new ArrayList<Menu>();
 

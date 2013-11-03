@@ -75,7 +75,12 @@ public class Menu {
 
 	@Override
 	public int hashCode() {
-		return hash;
+		int result = 17;
+		result = 31 * result + hash;
+		result = 31 * result + title.hashCode();
+		result = 31 * result + description.hashCode();
+		result = 31 * result + date.hashCode();
+		return result;
 	}
 
 	@Override

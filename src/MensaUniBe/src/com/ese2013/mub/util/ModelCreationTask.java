@@ -28,8 +28,8 @@ public class ModelCreationTask extends AsyncTask<Void, Void, Void> {
 	private JSONArray updateStatusJson;
 	private MensaDataSource dataSource = MensaDataSource.getInstance();
 	private List<Mensa> mensas;
-	private boolean successful, downloadedNewData;
-	
+	private boolean successful, localDataOutdated, downloadedNewData;
+
 	/**
 	 * Asynchronously creates the mensa list by using
 	 * {@link MensaFromWebFactory} or {@link MensaFromLocalFactory}. Which
@@ -41,19 +41,55 @@ public class ModelCreationTask extends AsyncTask<Void, Void, Void> {
 	@Override
 	protected Void doInBackground(Void... params) {
 		AbstractMensaFactory fac;
-		if (localDataNeedsUpdate()) {
+		localDataOutdated = localDataNeedsUpdate();
+		if (localDataOutdated) {
 			fac = new MensaFromWebFactory(updateStatusJson);
 			downloadedNewData = true;
 		} else {
 			fac = new MensaFromLocalFactory();
 		}
+
+		try {
+			mensas = fac.createMensaList();
+			successful = true;
+		} catch (MensaDownloadException e) {
+			downloadedNewData = false;
+			retryUsingLocalData();
+		} catch (MensaLoadException e) {
+			successful = false;
+		}
+		return null;
+	}
+
+	private void retryUsingLocalData() {
+		AbstractMensaFactory fac = new MensaFromLocalFactory();
 		try {
 			mensas = fac.createMensaList();
 			successful = true;
 		} catch (IOException e) {
 			successful = false;
 		}
-		return null;
+	}
+
+	/**
+	 * Returns a status message resource address to display based on the results
+	 * of the task. Should only be called if the task is done.
+	 * 
+	 * @return int containing resource address of short status message.
+	 */
+	public int getStatusMsgResource() {
+		if (wasSuccessful()) {
+			if (hasDownloadedNewData()) {
+				return com.ese2013.mub.R.string.loading_download_done;
+			} else {
+				if (localDataOutdated)
+					return com.ese2013.mub.R.string.loading_download_failed;
+				else
+					return com.ese2013.mub.R.string.loading_no_update_needed;
+			}
+		} else {
+			return com.ese2013.mub.R.string.loading_failure;
+		}
 	}
 
 	/**
@@ -97,6 +133,8 @@ public class ModelCreationTask extends AsyncTask<Void, Void, Void> {
 				return true;
 
 		} catch (Exception e) {
+			// if anything happens during checking, we just update the local
+			// data.
 			return true;
 		} finally {
 			dataSource.close();
@@ -105,8 +143,8 @@ public class ModelCreationTask extends AsyncTask<Void, Void, Void> {
 	}
 
 	/**
-	 * Called after the task has been executed, informs the {@link Model} that the Task
-	 * is done (is now again in the Main Thread).
+	 * Called after the task has been executed, informs the {@link Model} that
+	 * the Task is done (is now again in the Main Thread).
 	 */
 	@Override
 	protected void onPostExecute(Void v) {
@@ -127,6 +165,13 @@ public class ModelCreationTask extends AsyncTask<Void, Void, Void> {
 			return false;
 	}
 
+	/**
+	 * This is used only as a additional check, as the updates page sometimes is
+	 * still buggy.
+	 * 
+	 * @return
+	 * @throws JSONException
+	 */
 	private boolean webDataUpdated() throws JSONException {
 		for (int i = 0; i < updateStatusJson.length(); i++) {
 			JSONObject mensaJson = updateStatusJson.getJSONObject(i);

@@ -5,7 +5,6 @@ import android.view.View.OnClickListener;
 import android.widget.ImageButton;
 
 import com.ese2013.mub.model.Mensa;
-import com.ese2013.mub.util.Day;
 
 public class FavoriteButtonListener implements OnClickListener {
 	private Mensa mensa;

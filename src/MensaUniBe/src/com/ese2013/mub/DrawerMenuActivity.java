@@ -236,7 +236,6 @@ public class DrawerMenuActivity extends FragmentActivity {
 		frag.setShowAllByDay(true);
 		spinner.setSelection(1);
 		setDisplayedFragment(frag);
-
 	}
 
 	public void refreshHomeActivity() {

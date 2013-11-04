@@ -94,11 +94,16 @@ public class DailyPlanFragment extends PlanFragment {
 				
 				rel.setOnClickListener(new ToggleListener(menuLayout, container.getContext()));
 			
-				favorite.setOnClickListener(new FavoriteButtonListener(mensa, favorite, (DrawerMenuActivity)getActivity()));
+				favorite.setOnClickListener(new FavoriteButtonListener(mensa, favorite, this));
 				
 				layout.addView(rel);
 				layout.addView(menuLayout);
 		}
 		return rootView;
+	}
+
+	public void refreshFavoriteView() {
+		((DrawerMenuActivity) getActivity()).refreshHomeActivity();
+		
 	}
 }

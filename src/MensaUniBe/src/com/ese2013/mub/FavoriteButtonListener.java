@@ -5,23 +5,24 @@ import android.view.View.OnClickListener;
 import android.widget.ImageButton;
 
 import com.ese2013.mub.model.Mensa;
+import com.ese2013.mub.util.Day;
 
 public class FavoriteButtonListener implements OnClickListener {
 	private Mensa mensa;
 	private ImageButton button;
-	private DrawerMenuActivity act;
-	private boolean constructorFlag;
+	private DailyPlanFragment frag;
+	private boolean isInDailyView;
 
 	public FavoriteButtonListener(Mensa mensa, ImageButton button) {
 		this.mensa = mensa;
 		this.button = button;
 	}
 
-	public FavoriteButtonListener(Mensa mensa, ImageButton button, DrawerMenuActivity act) {
+	public FavoriteButtonListener(Mensa mensa, ImageButton button, DailyPlanFragment frag) {
 		this.mensa = mensa;
 		this.button = button;
-		this.act = act;
-		this.constructorFlag = true;
+		this.frag = frag;
+		this.isInDailyView = true;
 	}
 
 	@Override
@@ -31,8 +32,8 @@ public class FavoriteButtonListener implements OnClickListener {
 		// mensa.isFavorite(), Toast.LENGTH_SHORT).show();
 		if (!mensa.isFavorite()) {
 			button.setImageResource(R.drawable.ic_fav_grey);
-			if(constructorFlag && !HomeFragment.getShowAllByDay())
-			act.refreshHomeActivity();
+			if(isInDailyView && !HomeFragment.getShowAllByDay())
+				frag.refreshFavoriteView();
 		} else
 			button.setImageResource(R.drawable.ic_fav);
 	}

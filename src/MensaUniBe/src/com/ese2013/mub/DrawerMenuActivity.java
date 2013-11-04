@@ -238,4 +238,11 @@ public class DrawerMenuActivity extends FragmentActivity {
 		setDisplayedFragment(frag);
 
 	}
+
+	public void refreshHomeActivity() {
+		HomeFragment frag = new HomeFragment();
+		frag.setFavorites(true);
+		frag.setShowAllByDay(false);
+		this.setDisplayedFragment(frag);
+	}
 }

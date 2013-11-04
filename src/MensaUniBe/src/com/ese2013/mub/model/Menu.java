@@ -1,6 +1,5 @@
 package com.ese2013.mub.model;
 
-import com.ese2013.mub.util.Day;
 
 /**
  * Stores all data which make up a menu. Always created using the

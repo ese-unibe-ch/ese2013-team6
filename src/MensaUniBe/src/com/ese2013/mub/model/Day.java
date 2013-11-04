@@ -1,4 +1,4 @@
-package com.ese2013.mub.util;
+package com.ese2013.mub.model;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -24,6 +24,24 @@ public class Day {
 		year = cal.get(Calendar.YEAR);
 		month = cal.get(Calendar.MONTH);
 		day = cal.get(Calendar.DAY_OF_MONTH);
+	}
+
+	/**
+	 * Creates a Day given day, month and year as int.
+	 * 
+	 * @param day
+	 *            int containing the number of the day in the month. Must be
+	 *            between 1 and 28/29/30/31, depending on the month.
+	 * @param month
+	 *            int containing the number of the month in the year. Must be
+	 *            between 1 and 12.
+	 * @param year
+	 *            int containing the year, must be of the form "2013"
+	 */
+	public Day(int day, int month, int year) {
+		this.year = year;
+		this.month = month;
+		this.day = day;
 	}
 
 	/**

@@ -31,12 +31,6 @@ public class Mensa {
 		this.timestamp = builder.timestamp;
 	}
 
-	public Mensa(String name, double latitude, double longitude) {
-		this.name = name;
-		this.latitude = latitude;
-		this.longitude = longitude;
-	}
-
 	public int getId() {
 		return id;
 	}

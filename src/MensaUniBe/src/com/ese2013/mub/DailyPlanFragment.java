@@ -15,10 +15,10 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.ese2013.mub.model.DailyMenuplan;
+import com.ese2013.mub.model.Day;
 import com.ese2013.mub.model.Mensa;
 import com.ese2013.mub.model.Menu;
 import com.ese2013.mub.model.Model;
-import com.ese2013.mub.util.Day;
 
 public class DailyPlanFragment extends PlanFragment {
 	private Day day;

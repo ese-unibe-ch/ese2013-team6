@@ -4,7 +4,6 @@ import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.Set;
 
-import com.ese2013.mub.util.Day;
 
 public class WeeklyMenuplan implements Iterable<DailyMenuplan> {
 	private LinkedHashMap<Day, DailyMenuplan> dailymenus = new LinkedHashMap<Day, DailyMenuplan>();

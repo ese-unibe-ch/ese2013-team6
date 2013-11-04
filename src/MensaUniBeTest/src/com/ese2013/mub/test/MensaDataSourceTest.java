@@ -7,10 +7,10 @@ import java.util.List;
 
 import android.test.AndroidTestCase;
 
+import com.ese2013.mub.model.Day;
 import com.ese2013.mub.model.Mensa;
 import com.ese2013.mub.model.Menu;
 import com.ese2013.mub.model.WeeklyMenuplan;
-import com.ese2013.mub.util.Day;
 import com.ese2013.mub.util.database.MensaDataSource;
 
 public class MensaDataSourceTest extends AndroidTestCase {

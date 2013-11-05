@@ -166,16 +166,16 @@ public class MensaDataSourceTest extends AndroidTestCase {
 		menus.add(builder.build());
 
 		WeeklyMenuplan plan1 = new WeeklyMenuplan();
-		plan1.addMenu(menus.get(0));
-		plan1.addMenu(menus.get(1));
-		plan1.addMenu(menus.get(2));
-		plan1.addMenu(menus.get(4));
+		plan1.add(menus.get(0));
+		plan1.add(menus.get(1));
+		plan1.add(menus.get(2));
+		plan1.add(menus.get(4));
 
 		WeeklyMenuplan plan2 = new WeeklyMenuplan();
-		plan2.addMenu(menus.get(0));
-		plan2.addMenu(menus.get(1));
-		plan2.addMenu(menus.get(3));
-		plan2.addMenu(menus.get(5));
+		plan2.add(menus.get(0));
+		plan2.add(menus.get(1));
+		plan2.add(menus.get(3));
+		plan2.add(menus.get(5));
 
 		plans.add(plan1);
 		plans.add(plan2);

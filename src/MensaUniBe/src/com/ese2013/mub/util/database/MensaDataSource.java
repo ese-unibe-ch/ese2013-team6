@@ -227,7 +227,7 @@ public class MensaDataSource {
 				builder.setDescription(c.getString(POS_DESC));
 				builder.setDate(new Day(fm.parse(c.getString(POS_DATE))));
 				builder.setHash(c.getInt(POS_HASH));
-				p.addMenu(builder.build());
+				p.add(builder.build());
 			} catch (ParseException e) {
 				throw new AssertionError("Database did not save properly");
 			}

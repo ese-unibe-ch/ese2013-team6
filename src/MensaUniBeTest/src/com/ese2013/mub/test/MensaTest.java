@@ -1,22 +1,25 @@
 package com.ese2013.mub.test;
 
 import junit.framework.TestCase;
+import static com.ese2013.mub.test.Util.assertNotEquals;
 
 import com.ese2013.mub.model.Day;
 import com.ese2013.mub.model.Mensa;
+import com.ese2013.mub.model.Mensa.MensaBuilder;
 import com.ese2013.mub.model.Menu;
+import com.ese2013.mub.model.Menu.MenuBuilder;
 import com.ese2013.mub.model.WeeklyMenuplan;
 
 public class MensaTest extends TestCase {
 
-	private Mensa.MensaBuilder builder;
+	private MensaBuilder builder;
 	private Mensa mensa;
 	private Mensa changedMensa;
 
 	@Override
 	protected void setUp() throws Exception {
 		super.setUp();
-		builder = new Mensa.MensaBuilder();
+		builder = new MensaBuilder();
 		builder.setId(1);
 		builder.setIsFavorite(true);
 		builder.setLatitude(42.123451);
@@ -28,13 +31,8 @@ public class MensaTest extends TestCase {
 		mensa = builder.build();
 	}
 
-	@Override
-	protected void tearDown() throws Exception {
-		super.tearDown();
-	}
-
 	public void testDefaultValues() {
-		Mensa.MensaBuilder builder = new Mensa.MensaBuilder();
+		MensaBuilder builder = new MensaBuilder();
 		assertNotNull(builder);
 		Mensa mensa = builder.build();
 		// all string values have defaults as these are immutable
@@ -59,25 +57,18 @@ public class MensaTest extends TestCase {
 	}
 
 	public void testSelfEquals() {
-		assertNotNull(builder);
 		assertFalse(mensa.equals(null));
 		assertEquals(mensa, mensa);
 	}
 
 	public void testIdComparison() {
 		changedMensa = builder.setId(2).build();
-		assertNotEquals(changedMensa, mensa);
 		assertNotEquals(mensa, changedMensa);
 	}
 
 	public void testIsFavoriteComparison() {
 		changedMensa = builder.setIsFavorite(false).build();
 		assertNotEquals(mensa, changedMensa);
-	}
-
-	private void assertNotEquals(Mensa mensa, Mensa changedMensa) {
-		assertFalse(changedMensa.equals(mensa));
-		assertFalse(mensa.equals(changedMensa));
 	}
 
 	public void testNameComparison() {
@@ -120,14 +111,14 @@ public class MensaTest extends TestCase {
 		mensa = changedMensa;
 		changedMensa = builder.build();
 		WeeklyMenuplan plan = new WeeklyMenuplan();
-		Menu menu = new Menu.MenuBuilder().setDate(new Day(28, 10, 2013)).setTitle("menu title").build();
-		plan.addMenu(menu);
+		Menu menu = new MenuBuilder().setDate(new Day(28, 10, 2013)).setTitle("menu title").build();
+		plan.add(menu);
 		changedMensa.setMenuplan(plan);
 		assertNotEquals(mensa, changedMensa);
-		
-		//tests if weeklyplans are compared recursivly
+
+		// tests if weeklyplans are compared recursivly
 		WeeklyMenuplan plan2 = new WeeklyMenuplan();
-		plan2.addMenu(menu);
+		plan2.add(menu);
 		assertNotEquals(mensa, changedMensa);
 	}
 }

@@ -40,7 +40,7 @@ public class Day {
 	 */
 	public Day(int day, int month, int year) {
 		this.year = year;
-		this.month = month;
+		this.month = month - 1; // Calendar counts month from 0 to 11
 		this.day = day;
 	}
 
@@ -55,12 +55,13 @@ public class Day {
 	}
 
 	/**
-	 * Converts the Day to a Calendar object representing the same day.
+	 * Converts the Day to a Calendar object representing the same day, using
+	 * Locale.GERMAN to avoid confusion with the U.S. calendar standards.
 	 * 
 	 * @return Calendar set to the same day as the Day object.
 	 */
 	private Calendar getCalendar() {
-		Calendar cal = Calendar.getInstance();
+		Calendar cal = Calendar.getInstance(Locale.GERMAN);
 		cal.setTimeInMillis(0);
 		cal.set(Calendar.YEAR, year);
 		cal.set(Calendar.MONTH, month);

@@ -1,6 +1,8 @@
 package com.ese2013.mub.model;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 /**
  * Manages a list of menus served at a specific day (in one mensa). There must
@@ -22,10 +24,11 @@ public class DailyMenuplan {
 	/**
 	 * Returns the list of menus.
 	 * 
-	 * @return ArrayList containing the menus.
+	 * @return List containing the menus, is immutable as menus should only be
+	 *         added using the add method of DailyMenuplan.
 	 */
-	public ArrayList<Menu> getMenus() {
-		return menus;
+	public List<Menu> getMenus() {
+		return Collections.unmodifiableList(menus);
 	}
 
 	/**
@@ -50,12 +53,12 @@ public class DailyMenuplan {
 			return false;
 		}
 	}
-	
+
 	@Override
 	public int hashCode() {
 		return menus.hashCode();
 	}
-	
+
 	@Override
 	public String toString() {
 		String result = "Menus for " + getDateString() + "\n";

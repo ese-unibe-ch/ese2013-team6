@@ -6,6 +6,7 @@ import java.util.Date;
 import java.util.Locale;
 
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,7 +22,7 @@ import com.ese2013.mub.model.Model;
 /**
  * This fragment displays the weekly menu plan for the given mensa.
  */
-public class WeeklyPlanFragment extends PlanFragment {
+public class WeeklyPlanFragment extends Fragment {
 	/**
 	 * The fragment argument representing the section number for this
 	 * fragment.
@@ -92,6 +93,7 @@ public class WeeklyPlanFragment extends PlanFragment {
 				menuLayout.setVisibility(View.VISIBLE);
 			else
 				menuLayout.setVisibility(View.GONE);
+			
 			layout.addView(menuLayout);
 			
 		}

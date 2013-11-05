@@ -7,11 +7,10 @@ import android.view.View.OnClickListener;
 public class ToggleListener implements OnClickListener {
 	private View toToggle;
 	private Context ctx;
-	//private View title;
+	
 	public ToggleListener(View toToggle, Context ctx){
 		this.toToggle = toToggle;
 		this.ctx = ctx;
-		//this.title = title;
 	}
 	@Override
 	public void onClick(View v) {

@@ -34,15 +34,10 @@ public class MensaListAdapter extends BaseAdapter{
         
         setUpFavoriteButton(view, mensa);
         setUpMapButton(view, mensa);
+        setUpAdressTextView(view, mensa);
         
         TextView titleView = (TextView) view.findViewById(R.id.mensa_name_view);
-        TextView adressView = (TextView) view.findViewById(R.id.mensa_adress_view);
-        
-        titleView.setText(mensa.getName());
-        adressView.setText(mensa.getName() + "\n" + mensa.getStreet() + "\n" + mensa.getZip());
-        setTextViewListener(adressView, mensa);
-      
-            
+        titleView.setText(mensa.getName());    
 		return view;
 	}
 	public void setUpMapButton(View view, final Mensa mensa){
@@ -58,8 +53,10 @@ public class MensaListAdapter extends BaseAdapter{
 			  favorites.setBackgroundResource(R.drawable.ic_fav_grey);
 	        favorites.setOnClickListener(new FavoriteButtonListener(mensa, favorites));
 	}
-	public void setTextViewListener(View view, Mensa mensa){
-		view.setOnClickListener(new AddressTextListener(mensa, this));
+	public void setUpAdressTextView(View view, Mensa mensa){
+        TextView adressView = (TextView) view.findViewById(R.id.mensa_adress_view);
+        adressView.setText(mensa.getName() + "\n" + mensa.getStreet() + "\n" + mensa.getZip());
+		adressView.setOnClickListener(new AddressTextListener(mensa, this));
 	}
 	@Override
 	public int getCount() {

@@ -6,6 +6,7 @@ import java.util.Locale;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,7 +21,7 @@ import com.ese2013.mub.model.Mensa;
 import com.ese2013.mub.model.Menu;
 import com.ese2013.mub.model.Model;
 
-public class DailyPlanFragment extends PlanFragment {
+public class DailyPlanFragment extends Fragment {
 	private Day day;
 	private List<Mensa> mensas;
 

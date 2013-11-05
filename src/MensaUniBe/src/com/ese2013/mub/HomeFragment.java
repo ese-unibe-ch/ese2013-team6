@@ -26,20 +26,7 @@ public class HomeFragment extends Fragment implements Observer {
 
 	private static boolean showFavorites = true;	// if true, Spinner should be on favorites list
 	private static boolean showAllByDay = false;	// if true, Spinner should be on list of all menus of one day
-													// else Spinner is on list of all menus of one mensa
-	public static boolean getShowAllByDay(){
-		return showAllByDay;
-	}
-	
-	public void setFavorites(boolean bool) {
-		showFavorites = bool;
-	}
-	
-	public void setShowAllByDay(boolean bool){
-		showAllByDay = bool;
-	}
-
-	@Override
+													@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 		View view = inflater.inflate(R.layout.fragment_home, container, false);
 		
@@ -53,28 +40,18 @@ public class HomeFragment extends Fragment implements Observer {
 		}
 		
 		viewPager = (ViewPager) view.findViewById(R.id.pager);
-		
-		
 		viewPager.setAdapter(sectionsPagerAdapter);
 		
 		this.onAttach(getActivity());
 		
 		if(showFavorites && dayOfWeek < 6 && dayOfWeek > 1)
 			viewPager.setCurrentItem(dayOfWeek-2);
-		
-		if(getArguments() != null){
-			Bundle bundle = getArguments();
-			int pos = bundle.getInt("POSITION", 0);
-			viewPager.setCurrentItem(pos-1);
-		}
-		
-		
+		handleGivenArguments();
 		Model.getInstance().addObserver(this);
 		getActivity().getActionBar().setDisplayShowCustomEnabled(true);
 		
 		return view;
 	}
-
 	@Override
 	public void onNotifyChanges() {
 		sectionsPagerAdapter.notifyDataSetChanged();
@@ -87,6 +64,28 @@ public class HomeFragment extends Fragment implements Observer {
 		Model.getInstance().removeObserver(this);
 	}
 	
+
+	// else Spinner is on list of all menus of one mensa
+	public static boolean getShowAllByDay(){
+		return showAllByDay;
+	}
+
+	public void setFavorites(boolean bool) {
+		showFavorites = bool;
+	}
+
+	public void setShowAllByDay(boolean bool){
+		showAllByDay = bool;
+	}
+
+	public void handleGivenArguments(){
+		if(getArguments() != null){
+			Bundle bundle = getArguments();
+			int pos = bundle.getInt("POSITION", 0);
+			viewPager.setCurrentItem(pos-1);
+		}
+	}
+
 
 	/**
 	 * A {@link FragmentPagerAdapter} that returns a fragment corresponding to

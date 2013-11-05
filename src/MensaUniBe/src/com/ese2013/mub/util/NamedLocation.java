@@ -31,7 +31,6 @@ public class NamedLocation extends Location {
 	}
 	
 	private static Location calcMensaLocation(Mensa mensa) {
-		assert mensa != null;
 		Location loc = new Location("");
 		loc.setLatitude(mensa.getLatitude());
 		loc.setLongitude(mensa.getLongitude());

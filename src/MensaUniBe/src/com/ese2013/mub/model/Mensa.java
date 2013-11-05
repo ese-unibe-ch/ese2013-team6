@@ -2,8 +2,8 @@ package com.ese2013.mub.model;
 
 /**
  * Represents a mensa by holding information about name, address and
- * geographical location. Also provides a unique Id for the mensa.
- * 
+ * geographical location. Also provides a unique Id for the mensa and the time stamp 
+ * of the last update.
  */
 public class Mensa {
 	private String name, street, zip;
@@ -29,12 +29,6 @@ public class Mensa {
 		this.latitude = builder.latitude;
 		this.isFavorite = builder.isFavorite;
 		this.timestamp = builder.timestamp;
-	}
-
-	public Mensa(String name, double latitude, double longitude) {
-		this.name = name;
-		this.latitude = latitude;
-		this.longitude = longitude;
 	}
 
 	public int getId() {

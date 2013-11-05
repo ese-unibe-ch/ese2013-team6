@@ -1,6 +1,5 @@
 package com.ese2013.mub.model;
 
-import com.ese2013.mub.util.Day;
 
 /**
  * Stores all data which make up a menu. Always created using the
@@ -75,7 +74,12 @@ public class Menu {
 
 	@Override
 	public int hashCode() {
-		return hash;
+		int result = 17;
+		result = 31 * result + hash;
+		result = 31 * result + title.hashCode();
+		result = 31 * result + description.hashCode();
+		result = 31 * result + date.hashCode();
+		return result;
 	}
 
 	@Override

@@ -21,13 +21,16 @@ import android.location.LocationManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.Spinner;
 import android.widget.Toast;
 
@@ -41,14 +44,13 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
-import com.google.android.gms.maps.model.LatLngBounds.Builder;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.PolylineOptions;
 
 //TODO: Zoom, Setttings TravelMode
 
 public class MapFragment extends Fragment {
-	//private static final int INIT_ZOOM = 14;
+	// private static final int INIT_ZOOM = 14;
 	protected static final String TRAVEL_MODE_WALKING = "walking";
 	protected static final float DETAIL_ZOOM = 17;
 	private GoogleMap map;
@@ -57,41 +59,118 @@ public class MapFragment extends Fragment {
 	private ArrayList<NamedLocation> spinnerList;
 	private LocationManager locationManager;
 	private NamedLocation currentNamedLocation;
-
+	private ArrayAdapter<NamedLocation> adapter;
+	private NamedLocation selectedLocation;
+	private Spinner spinFocus;
 
 	@Override
-	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+	public View onCreateView(LayoutInflater inflater, ViewGroup container,
+			Bundle savedInstanceState) {
 		View view = inflater.inflate(R.layout.fragment_map, container, false);
-		locationManager = (LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
+		
+		locationManager = (LocationManager) getActivity().getSystemService(
+				Context.LOCATION_SERVICE);
 		Location rawLocation = getLocation();
-		if (rawLocation !=null){
-			currentNamedLocation = new NamedLocation("My Location", rawLocation.getLatitude(), rawLocation.getLongitude());
+		if (rawLocation != null) {
+			currentNamedLocation = new NamedLocation("My Location",
+					rawLocation.getLatitude(), rawLocation.getLongitude());
 		}
-		
+
 		mensaList = getMensaList();
-		mensaLocations= convertMensasToNamedLocations(mensaList);
-		
-		map = ((SupportMapFragment) getFragmentManager().findFragmentById(R.id.map)).getMap();
-		
-		if (map == null) 
+		mensaLocations = convertMensasToNamedLocations(mensaList);
+
+		map = ((SupportMapFragment) getFragmentManager().findFragmentById(
+				R.id.map)).getMap();
+
+		if (map == null)
 			return view;
-		
+
 		drawOnMap();
-		
+
 		spinnerList = new ArrayList<NamedLocation>();
 		spinnerList.addAll(mensaLocations);
 		addCurrentLocationToSpinner();
-	    ArrayAdapter<NamedLocation> adapter = new ArrayAdapter<NamedLocation>(getActivity(),
-	            android.R.layout.simple_spinner_dropdown_item, spinnerList);
-	    Spinner spinFocus = (Spinner)view.findViewById(R.id.focus_spinner);
-	    spinFocus.setAdapter(adapter);
-	    addListenerOnSpinnerItemSelection(spinFocus);
-	    
-	    System.out.println("Zoom on Map - onCreate");
-	    zoomOnContent(adapter, spinFocus);
-        
+		adapter = new ArrayAdapter<NamedLocation>(
+				getActivity(), android.R.layout.simple_spinner_dropdown_item,
+				spinnerList);
+		spinFocus = (Spinner) view.findViewById(R.id.focus_spinner);
+		spinFocus.setAdapter(adapter);
+		addListenerOnSpinnerItemSelection(spinFocus);
+		setSpinnerDefault(spinFocus);
+		
+		
+		Button getDirButton = (Button) view.findViewById(R.id.get_directions_button);
+		addOnCLickListener(getDirButton);
 		return view;
 	}
+
+
+
+	
+
+
+
+	@Override
+	public void onViewCreated(View view, Bundle savedInstanceState) {
+		super.onViewCreated(view, savedInstanceState);
+		
+		boolean argumentsEmpty;
+		try {
+			argumentsEmpty = getArguments().isEmpty();
+		} catch (NullPointerException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+			argumentsEmpty = true;
+		}
+		if (!argumentsEmpty){
+			try {
+				String mensaName = (String) getArguments().get("mensa.name");
+				zoomTo(mensaName);
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+				zoomOnContent();
+			}
+		}else{
+			zoomOnContent();
+		}
+	}
+
+	private void zoomTo(String string) throws Exception {
+		if (MensaNameFound(mensaLocations,string)){
+			for (NamedLocation nl : mensaLocations){
+				if (nl.getName()==string){
+					map.moveCamera(CameraUpdateFactory.newLatLngZoom(nl.getLatLng(), DETAIL_ZOOM));
+					int pos = adapter.getPosition(nl);
+					spinFocus.setSelection(pos);
+					if(currentLocationAvail()){
+						drawRouteFromTo(currentNamedLocation, nl);
+					}
+				}
+			}	
+		}else{
+			throw new Exception();
+		}
+		
+		
+		
+	}
+
+
+
+	private boolean MensaNameFound(ArrayList<NamedLocation> mensaLocations2,
+			String string) {
+		for (NamedLocation nl : mensaLocations){
+			if (nl.getName()==string){
+				return true;
+			}
+		}
+		return false;
+	}
+
+
+
+
 
 
 
@@ -104,155 +183,84 @@ public class MapFragment extends Fragment {
 		return results;
 	}
 
-
-
 	private List<Mensa> getMensaList() {
 		return Model.getInstance().getMensas();
 	}
 
-
 	private void addCurrentLocationToSpinner() {
-		if (currentLocationAvail()){
+		if (currentLocationAvail()) {
 			NamedLocation currentNamedLocation = getCurrentNamedLocation();
 			spinnerList.add(currentNamedLocation);
 		}
 	}
 
+	public void zoomOnContent() {
+		
+		
+		
+		double minLat = Double.MAX_VALUE, maxLat = Double.MIN_VALUE, minLon = Double.MAX_VALUE, maxLon = Double.MIN_VALUE;
+		for (int i = 0; i < spinnerList.size(); i++) {
+			NamedLocation n = spinnerList.get(i);
+			minLat = Math.min(minLat, n.getLatitude());
+			maxLat = Math.max(maxLat, n.getLatitude());
+			minLon = Math.min(minLon, n.getLongitude());
+			maxLon = Math.max(maxLon, n.getLongitude());
 
-
-	private void zoomOnContent(ArrayAdapter<NamedLocation> adapter,
-			Spinner spinFocus) {
-		if (currentLocationAvail()){
-			if (favouriteMensaSelected(mensaList)){
-				LatLng currentPoint = new LatLng(getCurrentNamedLocation().getLatitude(), getCurrentNamedLocation().getLongitude());
-				LatLng favPoint = new LatLng(getFavMensaNamedLocations().get(0).getLatitude(), getFavMensaNamedLocations().get(0).getLongitude());
-				
-//				LatLngBounds bounds = new LatLngBounds(currentPoint, favPoint);
-//				System.out.println("bounds: "+bounds.toString());
-////				map.moveCamera(CameraUpdateFactory.newLatLngBounds(bounds, 0));
-//				
-//				 
-//				LatLng center = bounds.getCenter();
-//
-//				 map.addMarker(new MarkerOptions()
-//					.position(center)
-//					.snippet("Lat:" + currentNamedLocation.getLatitude() + "Lng:"+ currentNamedLocation.getLongitude())
-//					.title("Center")
-//					.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_YELLOW)));
-				 
-				int spinnerPosition = adapter.getPosition(getCurrentNamedLocation());
-	    	    spinFocus.setSelection(spinnerPosition);
-//	    	    map.moveCamera(CameraUpdateFactory.newLatLngZoom(center, 10));
-			}else{
-				int spinnerPosition = adapter.getPosition(getCurrentNamedLocation());
-	    	    spinFocus.setSelection(spinnerPosition);
-			}
-		}else{
-			if (favouriteMensaSelected(mensaList)){
-				System.out.println("Zoom to: "+getFavMensaNamedLocations().get(0).toString());
-				int spinnerPosition = adapter.getPosition(getFavMensaNamedLocations().get(0));
-				System.out.println("spinnerPosition: "+spinnerPosition);
-	    	    spinFocus.setSelection(spinnerPosition);
-			}else{
-				int spinnerPosition = adapter.getPosition(mensaLocations.get(2));
-	    	    spinFocus.setSelection(spinnerPosition);
-			}
 		}
+		LatLng southWest = new LatLng(minLat, minLon);
+		LatLng northEast = new LatLng(maxLat, maxLon);
+//		map.addMarker(new MarkerOptions().position(southWest).title("southWest"));
+//		map.addMarker(new MarkerOptions().position(northEast).title("northEast"));
+		
+		
+		
+		LatLngBounds bounds = new LatLngBounds(southWest, northEast);
+		map.moveCamera(CameraUpdateFactory.newLatLngBounds(bounds, 400, 400, 10));
 	}
-
-
 
 
 	private void drawOnMap() {
-		System.out.println(currentLocationAvail() + " + "+ favouriteMensaSelected(mensaList));
-		if (currentLocationAvail()){
+		System.out.println(currentLocationAvail() + " + "
+				+ favoriteMensaExists(mensaList));
+		if (currentLocationAvail()) {
 			NamedLocation currentNamedLocation = getCurrentNamedLocation();
 			drawCurrentLocation(currentNamedLocation);
-			if (favouriteMensaSelected(mensaList)){
-				ArrayList<NamedLocation> favlocations = getFavMensaNamedLocations();
-				drawMensasWithClosest(currentNamedLocation);
-				drawRouteFromToMany(currentNamedLocation, favlocations);
-			}else{
-				drawMensas();
-			}
-		}else{
-			drawMensas();
 		}
+		drawMensas();
 	}
 
 	
-
-	private void drawMensasWithClosest(NamedLocation currentNamedLocation) {
-		assert currentLocationAvail();
-		try {
-			Mensa closest= getClosestMensa(currentNamedLocation);
-		
-		for (Mensa m : mensaList) {
-			LatLng mensaLocation = new LatLng(m.getLatitude(), m.getLongitude());
-			if (m==closest){
-				 map.addMarker(new MarkerOptions()
-				.position(mensaLocation)
-				.snippet("Lat:" + currentNamedLocation.getLatitude() + "Lng:"+ currentNamedLocation.getLongitude())
-				.title(m.getName())
-				.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN)));
-			}else{
-				map.addMarker(new MarkerOptions().position(mensaLocation).title(m.getName()));
-			}
-		}
-		drawRouteFromTo(getCurrentNamedLocation(), new NamedLocation(closest));
-		
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		
-	}
-
-
-
 	private void drawCurrentLocation(NamedLocation currentNamedLocation) {
 		map.clear();
 		LatLng currentPosition = new LatLng(currentNamedLocation.getLatitude(),
 				currentNamedLocation.getLongitude());
 		map.addMarker(new MarkerOptions()
-		.position(currentPosition)
-		.snippet("Lat:" + currentNamedLocation.getLatitude() + "Lng:"+ currentNamedLocation.getLongitude())
-		.title("Your Location")
-		.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE)));
+				.position(currentPosition)
+				.snippet(
+						"Lat:" + currentNamedLocation.getLatitude() + "Lng:"
+								+ currentNamedLocation.getLongitude())
+				.title("Your Location")
+				.icon(BitmapDescriptorFactory
+						.defaultMarker(BitmapDescriptorFactory.HUE_AZURE)));
 	}
 
-	private void drawRouteFromToMany(NamedLocation currentNamedLocation,
-			ArrayList<NamedLocation> favlocations) {
-		LatLng origin = new LatLng(currentNamedLocation.getLatitude(), currentNamedLocation.getLongitude());
-		
-		for (NamedLocation namedL : favlocations){
-			 LatLng dest = new LatLng(namedL.getLatitude(), namedL.getLongitude());
-			 // Getting URL to the Google Directions API
-	        String url = getDirectionsUrl(origin, dest, TRAVEL_MODE_WALKING);
-	
-	        DownloadTask downloadTask = new DownloadTask();
-	
-	        // Start downloading json data from Google Directions API
-	        downloadTask.execute(url);
-		}
-		
-	}
-	
+
+
 	private void drawRouteFromTo(NamedLocation currentNamedLocation,
 			NamedLocation destination) {
-		LatLng origin = new LatLng(currentNamedLocation.getLatitude(), currentNamedLocation.getLongitude());
-		
-		
-		LatLng dest = new LatLng(destination.getLatitude(), destination.getLongitude());
-		 // Getting URL to the Google Directions API
-        String url = getDirectionsUrl(origin, dest, TRAVEL_MODE_WALKING);
+		LatLng origin = new LatLng(currentNamedLocation.getLatitude(),
+				currentNamedLocation.getLongitude());
 
-        DownloadTask downloadTask = new DownloadTask();
+		LatLng dest = new LatLng(destination.getLatitude(),
+				destination.getLongitude());
+		// Getting URL to the Google Directions API
+		String url = getDirectionsUrl(origin, dest, TRAVEL_MODE_WALKING);
 
-        // Start downloading json data from Google Directions API
-        downloadTask.execute(url);
-		
-		
+		DownloadTask downloadTask = new DownloadTask();
+
+		// Start downloading json data from Google Directions API
+		downloadTask.execute(url);
+
 	}
 
 	private NamedLocation getCurrentNamedLocation() {
@@ -261,62 +269,105 @@ public class MapFragment extends Fragment {
 	}
 
 	private boolean currentLocationAvail() {
-		System.out.println("locManager enabled: "+locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER));
-		if (currentNamedLocation != null){
-			return locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
-		}else{
+		System.out.println("locManager enabled: "
+				+ locationManager
+						.isProviderEnabled(LocationManager.GPS_PROVIDER));
+		if (currentNamedLocation != null) {
+			return locationManager
+					.isProviderEnabled(LocationManager.GPS_PROVIDER);
+		} else {
 			return false;
 		}
-		 
+
 	}
 
-	private ArrayList<NamedLocation> getFavMensaNamedLocations() {
-		ArrayList<Mensa> favMensas = getFavouriteMensas(mensaList);
-		ArrayList<NamedLocation> result = new ArrayList<NamedLocation>();
-		for (Mensa m : favMensas){
-			for (NamedLocation nL : mensaLocations){
-				if (nL.getName() == m.getName()){
-					result.add(nL);
-				}
-			}
-		}
-		return result;
-	}
 
-	private ArrayList<Mensa> getFavouriteMensas(List<Mensa> mensaList2) {
-		assert favouriteMensaSelected(mensaList2) == true;
-		ArrayList<Mensa> result = new ArrayList<Mensa>();
-		for (Mensa m : mensaList) {
-			if (m.isFavorite()){
-				result.add(m);
-			}
-		}
-		return result;
-	}
-
-	private boolean favouriteMensaSelected(List<Mensa> mensaList2) {
+	private boolean favoriteMensaExists(List<Mensa> mensaList2) {
 		boolean result = false;
 		for (Mensa m : mensaList) {
-			if (m.isFavorite()){
+			if (m.isFavorite()) {
 				result = true;
 			}
 		}
 		return result;
 	}
+	
+	private void setSpinnerDefault(Spinner spinFocus) {
+		
+		Mensa closest = getClosestMensa(currentNamedLocation);
+		
+		if (closest != null) {
+			NamedLocation closestNameLoc = null;
+			for (NamedLocation nl : spinnerList) {
+				if (nl.getName() == closest.getName()) {
+					closestNameLoc = nl;
+				}
+			}
+			int pos = adapter.getPosition(closestNameLoc);
+			spinFocus.setSelection(pos);
+		}else{
+			if (favoriteMensaExists(getMensaList())){
+				Mensa fav = getFavMensa();
+				NamedLocation favNameLoc = null;
+				for (NamedLocation nl : spinnerList){
+					if (nl.getName() == fav.getName()) {
+						favNameLoc = nl;
+					}
+				}
+				int pos = adapter.getPosition(favNameLoc);
+				spinFocus.setSelection(pos);
+			}
+		}
+		
+	}
+	
+	
 
+	private Mensa getFavMensa() {
+		Mensa result = null;
+		for (Mensa m : mensaList) {
+			if (m.isFavorite()) {
+				result = m;
+			}
+		}
+		return result;
+	}
+
+	
+	private void addOnCLickListener(Button button){
+		button.setOnClickListener(new OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				// TODO Auto-generated method stub
+				if (currentLocationAvail()){
+					map.clear();
+					drawOnMap();
+					drawRouteFromTo(currentNamedLocation, getSelectedLocation());
+				}else{
+					
+				}
+				
+			}
+		});
+	}
 	private void addListenerOnSpinnerItemSelection(Spinner spinFocus) {
 		spinFocus.setOnItemSelectedListener(new OnItemSelectedListener() {
+
+//			private LatLng selectedLocation;
 
 			@Override
 			public void onItemSelected(AdapterView<?> parent, View view,
 					int position, long id) {
+				
 				System.out.println(" onItemSelected position: "+position);
 				 NamedLocation namedLoc = (NamedLocation) parent.getItemAtPosition(position);
 				 System.out.println("onItemSelected: "+namedLoc);
-				 
-					 LatLng selectedLocation = new LatLng(namedLoc.getLatitude(), namedLoc.getLongitude());
-					 map.moveCamera(CameraUpdateFactory.newLatLngZoom(selectedLocation, DETAIL_ZOOM));
+				 setSelectedLocation(namedLoc);
+
+
 			}
+
 
 			@Override
 			public void onNothingSelected(AdapterView<?> arg0) {
@@ -324,273 +375,272 @@ public class MapFragment extends Fragment {
 				
 			}
 		});
-		
+
 	}
-
-
 
 	private void drawMensas() {
 		for (Mensa m : mensaList) {
 			LatLng mensaLocation = new LatLng(m.getLatitude(), m.getLongitude());
-			map.addMarker(new MarkerOptions().position(mensaLocation).title(m.getName()));
+			map.addMarker(new MarkerOptions().position(mensaLocation).title(
+					m.getName()));
 		}
 	}
 
-
-
-	private Mensa getClosestMensa(Location location) throws Exception {
+	private Mensa getClosestMensa(Location location) {
 		Mensa result = null;
-		float smallestDist=99999999;
-		for (Mensa m : mensaList){
+		float smallestDist = Integer.MAX_VALUE;
+		for (Mensa m : mensaList) {
 			Location mensaLocation = new Location("");
 			mensaLocation.setLatitude(m.getLatitude());
 			mensaLocation.setLongitude(m.getLongitude());
-			float currentDist= location.distanceTo(mensaLocation);
-			if (smallestDist>currentDist){
-				smallestDist=currentDist;
-				result=m;
+			float currentDist = location.distanceTo(mensaLocation);
+			if (smallestDist > currentDist) {
+				smallestDist = currentDist;
+				result = m;
 			}
-		}
-		if (smallestDist==99999999){
-			throw new Exception();
 		}
 		return result;
 	}
 
-
 	private Location getLocation() {
-		
+
 		// Creating a criteria object to retrieve provider
-        Criteria criteria = new Criteria();
+		Criteria criteria = new Criteria();
 
-        // Getting the name of the best provider
-        String provider = locationManager.getBestProvider(criteria, true);
+		// Getting the name of the best provider
+		String provider = locationManager.getBestProvider(criteria, true);
 
-        // Getting Current Location
-        Location location = locationManager.getLastKnownLocation(provider);
-        
-        LocationListener locationListener = new LocationListener() {
-            public void onLocationChanged(Location location) {
-            // redraw the marker when get location update.
-//            Toast.makeText(getActivity(), "Location changed", Toast.LENGTH_SHORT).show();
-            	System.out.println("Draw on Map - onLocationChanged");
-            drawOnMap();
-          }
+		// Getting Current Location
+		Location location = locationManager.getLastKnownLocation(provider);
 
+		LocationListener locationListener = new LocationListener() {
+			public void onLocationChanged(Location location) {
+				// redraw the marker when get location update.
+				// Toast.makeText(getActivity(), "Location changed",
+				// Toast.LENGTH_SHORT).show();
+				System.out.println("Draw on Map - onLocationChanged");
+				drawOnMap();
+			}
 
 			@Override
 			public void onProviderDisabled(String arg0) {
-				Toast.makeText(getActivity(), "ProviderDisabled", Toast.LENGTH_SHORT).show();
-				
+				Toast.makeText(getActivity(), "ProviderDisabled",
+						Toast.LENGTH_SHORT).show();
+
 			}
 
 			@Override
 			public void onProviderEnabled(String arg0) {
-				Toast.makeText(getActivity(), "onProviderEnabled", Toast.LENGTH_SHORT).show();
-				
+				Toast.makeText(getActivity(), "onProviderEnabled",
+						Toast.LENGTH_SHORT).show();
+
 			}
 
 			@Override
 			public void onStatusChanged(String arg0, int arg1, Bundle arg2) {
-//				Toast.makeText(getActivity(), "onStatusChanged", Toast.LENGTH_SHORT).show();
-//				drawCurrentLocation(getCurrentNamedLocation());
-//	            drawMensas();
-			}};
-          
-          locationManager.requestLocationUpdates(provider, 200000, 100, locationListener);
+				// Toast.makeText(getActivity(), "onStatusChanged",
+				// Toast.LENGTH_SHORT).show();
+				// drawCurrentLocation(getCurrentNamedLocation());
+				// drawMensas();
+			}
+		};
+
+		locationManager.requestLocationUpdates(provider, 200000, 100,
+				locationListener);
 		return location;
 	}
-	
 
-//	---------------------------------------------------------------------------------------------------------------------------------
-//	---------------------------------------------------------------------------------------------------------------------------------
-//	---------------------------------------------------------------------------------------------------------------------------------
-//	---------------------------------------------------------------------------------------------------------------------------------
-	
-	
-	private String getDirectionsUrl(LatLng origin,LatLng dest, String transportMode){
-		 
-        // Origin of route
-        String str_origin = "origin="+origin.latitude+","+origin.longitude;
- 
-        // Destination of route
-        String str_dest = "destination="+dest.latitude+","+dest.longitude;
- 
-        // Sensor enabled
-        String sensor = "sensor=false";
-        
-        String mode = "mode="+transportMode;
+	// ---------------------------------------------------------------------------------------------------------------------------------
+	// ---------------------------------------------------------------------------------------------------------------------------------
+	// ---------------------------------------------------------------------------------------------------------------------------------
+	// ---------------------------------------------------------------------------------------------------------------------------------
 
-        // Building the parameters to the web service
-        String parameters = str_origin+"&"+str_dest+"&"+sensor+"&"+mode;
- 
-        // Output format
-        String output = "json";
- 
-        // Building the url to the web service
-        String url = "https://maps.googleapis.com/maps/api/directions/"+output+"?"+parameters;
- 
-        return url;
-    }
-    /** A method to download json data from url */
-    private String downloadUrl(String strUrl) throws IOException{
-        String data = "";
-        InputStream iStream = null;
-        HttpURLConnection urlConnection = null;
-        try{
-            URL url = new URL(strUrl);
- 
-            // Creating an http connection to communicate with url
-            urlConnection = (HttpURLConnection) url.openConnection();
- 
-            // Connecting to url
-            urlConnection.connect();
- 
-            // Reading data from url
-            iStream = urlConnection.getInputStream();
- 
-            BufferedReader br = new BufferedReader(new InputStreamReader(iStream));
- 
-            StringBuffer sb = new StringBuffer();
- 
-            String line = "";
-            while( ( line = br.readLine()) != null){
-                sb.append(line);
-            }
- 
-            data = sb.toString();
- 
-            br.close();
- 
-        }catch(Exception e){
-            Log.d("Exception while downloading url", e.toString());
-        }finally{
-            iStream.close();
-            urlConnection.disconnect();
-        }
-        return data;
-    }
- 
-    // Fetches data from url passed
-    private class DownloadTask extends AsyncTask<String, Void, String>{
- 
-        // Downloading data in non-ui thread
-        @Override
-        protected String doInBackground(String... url) {
- 
-            // For storing data from web service
-            String data = "";
- 
-            try{
-                // Fetching the data from web service
-                data = downloadUrl(url[0]);
-            }catch(Exception e){
-                Log.d("Background Task",e.toString());
-                e.printStackTrace();
-            }
-            return data;
-        }
- 
-        // Executes in UI thread, after the execution of
-        // doInBackground()
-        @Override
-        protected void onPostExecute(String result) {
-            super.onPostExecute(result);
- 
-            ParserTask parserTask = new ParserTask();
- 
-            // Invokes the thread for parsing the JSON data
-            parserTask.execute(result);
-        }
-    }
- 
-    /** A class to parse the Google Places in JSON format */
-    private class ParserTask extends AsyncTask<String, Integer, List<List<HashMap<String,String>>> >{
- 
-        // Parsing the data in non-ui thread
-        @Override
-        protected List<List<HashMap<String, String>>> doInBackground(String... jsonData) {
- 
-            JSONObject jObject;
-            List<List<HashMap<String, String>>> routes = null;
- 
-            try{
-                jObject = new JSONObject(jsonData[0]);
-                DirectionsJSONParser parser = new DirectionsJSONParser();
- 
-                // Starts parsing data
-                routes = parser.parse(jObject);
-            }catch(Exception e){
-                e.printStackTrace();
-            }
-            return routes;
-        }
- 
-        // Executes in UI thread, after the parsing process
-        @Override
-        protected void onPostExecute(List<List<HashMap<String, String>>> result) {
-            ArrayList<LatLng> points = null;
-            PolylineOptions lineOptions = null;
-            MarkerOptions markerOptions = new MarkerOptions();
- 
-            // Traversing through all the routes
-            for(int i=0;i<result.size();i++){
-                points = new ArrayList<LatLng>();
-                lineOptions = new PolylineOptions();
- 
-                // Fetching i-th route
-                List<HashMap<String, String>> path = result.get(i);
- 
-                // Fetching all the points in i-th route
-                for(int j=0;j<path.size();j++){
-                    HashMap<String,String> point = path.get(j);
- 
-                    double lat = Double.parseDouble(point.get("lat"));
-                    double lng = Double.parseDouble(point.get("lng"));
-                    LatLng position = new LatLng(lat, lng);
- 
-                    points.add(position);
-                }
- 
-                // Adding all the points in the route to LineOptions
-                lineOptions.addAll(points);
-                lineOptions.width(3);
-                lineOptions.color(Color.RED);
-            }
- 
-            // Drawing polyline in the Google Map for the i-th route
-            map.addPolyline(lineOptions);
-        }
-    }
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
+	private String getDirectionsUrl(LatLng origin, LatLng dest,
+			String transportMode) {
 
-//	---------------------------------------------------------------------------------------------------------------------------------
-//	---------------------------------------------------------------------------------------------------------------------------------
-//	---------------------------------------------------------------------------------------------------------------------------------
-//	---------------------------------------------------------------------------------------------------------------------------------
-//	---------------------------------------------------------------------------------------------------------------------------------
+		// Origin of route
+		String str_origin = "origin=" + origin.latitude + ","
+				+ origin.longitude;
+
+		// Destination of route
+		String str_dest = "destination=" + dest.latitude + "," + dest.longitude;
+
+		// Sensor enabled
+		String sensor = "sensor=false";
+
+		String mode = "mode=" + transportMode;
+
+		// Building the parameters to the web service
+		String parameters = str_origin + "&" + str_dest + "&" + sensor + "&"
+				+ mode;
+
+		// Output format
+		String output = "json";
+
+		// Building the url to the web service
+		String url = "https://maps.googleapis.com/maps/api/directions/"
+				+ output + "?" + parameters;
+
+		return url;
+	}
+
+	/** A method to download json data from url */
+	private String downloadUrl(String strUrl) throws IOException {
+		String data = "";
+		InputStream iStream = null;
+		HttpURLConnection urlConnection = null;
+		try {
+			URL url = new URL(strUrl);
+
+			// Creating an http connection to communicate with url
+			urlConnection = (HttpURLConnection) url.openConnection();
+
+			// Connecting to url
+			urlConnection.connect();
+
+			// Reading data from url
+			iStream = urlConnection.getInputStream();
+
+			BufferedReader br = new BufferedReader(new InputStreamReader(
+					iStream));
+
+			StringBuffer sb = new StringBuffer();
+
+			String line = "";
+			while ((line = br.readLine()) != null) {
+				sb.append(line);
+			}
+
+			data = sb.toString();
+
+			br.close();
+
+		} catch (Exception e) {
+			Log.d("Exception while downloading url", e.toString());
+		} finally {
+			iStream.close();
+			urlConnection.disconnect();
+		}
+		return data;
+	}
+
+	// Fetches data from url passed
+	private class DownloadTask extends AsyncTask<String, Void, String> {
+
+		// Downloading data in non-ui thread
+		@Override
+		protected String doInBackground(String... url) {
+
+			// For storing data from web service
+			String data = "";
+
+			try {
+				// Fetching the data from web service
+				data = downloadUrl(url[0]);
+			} catch (Exception e) {
+				Log.d("Background Task", e.toString());
+				e.printStackTrace();
+			}
+			return data;
+		}
+
+		// Executes in UI thread, after the execution of
+		// doInBackground()
+		@Override
+		protected void onPostExecute(String result) {
+			super.onPostExecute(result);
+
+			ParserTask parserTask = new ParserTask();
+
+			// Invokes the thread for parsing the JSON data
+			parserTask.execute(result);
+		}
+	}
+
+	/** A class to parse the Google Places in JSON format */
+	private class ParserTask extends
+			AsyncTask<String, Integer, List<List<HashMap<String, String>>>> {
+
+		// Parsing the data in non-ui thread
+		@Override
+		protected List<List<HashMap<String, String>>> doInBackground(
+				String... jsonData) {
+
+			JSONObject jObject;
+			List<List<HashMap<String, String>>> routes = null;
+
+			try {
+				jObject = new JSONObject(jsonData[0]);
+				DirectionsJSONParser parser = new DirectionsJSONParser();
+
+				// Starts parsing data
+				routes = parser.parse(jObject);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+			return routes;
+		}
+
+		// Executes in UI thread, after the parsing process
+		@Override
+		protected void onPostExecute(List<List<HashMap<String, String>>> result) {
+			ArrayList<LatLng> points = null;
+			PolylineOptions lineOptions = null;
+
+			// Traversing through all the routes
+			for (int i = 0; i < result.size(); i++) {
+				points = new ArrayList<LatLng>();
+				lineOptions = new PolylineOptions();
+
+				// Fetching i-th route
+				List<HashMap<String, String>> path = result.get(i);
+
+				// Fetching all the points in i-th route
+				for (int j = 0; j < path.size(); j++) {
+					HashMap<String, String> point = path.get(j);
+
+					double lat = Double.parseDouble(point.get("lat"));
+					double lng = Double.parseDouble(point.get("lng"));
+					LatLng position = new LatLng(lat, lng);
+
+					points.add(position);
+				}
+
+				// Adding all the points in the route to LineOptions
+				lineOptions.addAll(points);
+				lineOptions.width(3);
+				lineOptions.color(Color.RED);
+			}
+
+			// Drawing polyline in the Google Map for the i-th route
+			map.addPolyline(lineOptions);
+		}
+	}
+
+	/**
+	 * Destroy method which is called by the android framework when the view is
+	 * no longer needed. Here we remove the google map fragment which is
+	 * embedded in our own map fragment.
+	 */
+	@Override
+	public void onDestroyView() {
+		super.onDestroyView();
+		Fragment fragment = (getFragmentManager().findFragmentById(R.id.map));
+		FragmentTransaction ft = getActivity().getSupportFragmentManager()
+				.beginTransaction();
+		ft.remove(fragment);
+		ft.commit();
+		System.out.println("onDestroyView finished");
+	}
 
 
+	public NamedLocation getSelectedLocation() {
+		return selectedLocation;
+	}
 
+	public void setSelectedLocation(NamedLocation selectedLocation) {
+		this.selectedLocation = selectedLocation;
+	}
 
-//	@Override
-//	public void onDestroyView() {
-//		super.onDestroyView();
-//		Fragment fragment = (getFragmentManager().findFragmentById(R.id.map));
-//		FragmentTransaction ft = getActivity().getSupportFragmentManager().beginTransaction();
-//		ft.remove(fragment);
-//		ft.commit();
-//	}
+	
 }

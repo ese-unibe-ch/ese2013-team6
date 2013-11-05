@@ -15,10 +15,10 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.ese2013.mub.model.DailyMenuplan;
+import com.ese2013.mub.model.Day;
 import com.ese2013.mub.model.Mensa;
 import com.ese2013.mub.model.Menu;
 import com.ese2013.mub.model.Model;
-import com.ese2013.mub.util.Day;
 
 public class DailyPlanFragment extends PlanFragment {
 	private Day day;
@@ -78,13 +78,13 @@ public class DailyPlanFragment extends PlanFragment {
 				LinearLayout menuLayout = new LinearLayout(container.getContext());
 				menuLayout.setOrientation(LinearLayout.VERTICAL);
 				
-				ImageButton favorite = (ImageButton)rel.getChildAt(1);//works like a charm
+				ImageButton favorite = (ImageButton)rel.getChildAt(1);
 				if(mensa.isFavorite())
 					favorite.setImageResource(R.drawable.ic_fav);
 				else
 					favorite.setImageResource(R.drawable.ic_fav_grey);
 				ImageButton map = (ImageButton)rel.getChildAt(2);
-				//map.setOnClickListener(new bla());
+				map.setOnClickListener(new MapButtonListener(mensa));
 				map.setImageResource(R.drawable.ic_map);
 				for (Menu menu : d.getMenus()) {
 					menuLayout.addView(new MenuView(container.getContext(), menu.getTitle(), menu.getDescription()));
@@ -93,13 +93,17 @@ public class DailyPlanFragment extends PlanFragment {
 					menuLayout.setVisibility(View.GONE);
 				
 				rel.setOnClickListener(new ToggleListener(menuLayout, container.getContext()));
+			
+				favorite.setOnClickListener(new FavoriteButtonListener(mensa, favorite, this));
 				
-				
-				
-				favorite.setOnClickListener(new FavoriteButtonListener(mensa, favorite));
 				layout.addView(rel);
 				layout.addView(menuLayout);
 		}
 		return rootView;
+	}
+
+	public void refreshFavoriteView() {
+		((DrawerMenuActivity) getActivity()).refreshHomeActivity();
+		
 	}
 }

@@ -37,8 +37,8 @@ public class DrawerMenuActivity extends FragmentActivity {
 
 		setContentView(R.layout.activity_drawer_menu);
 
-		String[] menuItemNames = { "Home", "Mensa List", "Map", "Invites",
-				"Settings" };
+		String[] menuItemNames = { "Home", "Mensa List", "Map" };
+		
 		mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
 		mDrawerLayout.setDrawerShadow(R.drawable.drawer_shadow,
 				GravityCompat.START);
@@ -236,6 +236,12 @@ public class DrawerMenuActivity extends FragmentActivity {
 		frag.setShowAllByDay(true);
 		spinner.setSelection(1);
 		setDisplayedFragment(frag);
+	}
 
+	public void refreshHomeActivity() {
+		HomeFragment frag = new HomeFragment();
+		frag.setFavorites(true);
+		frag.setShowAllByDay(false);
+		this.setDisplayedFragment(frag);
 	}
 }

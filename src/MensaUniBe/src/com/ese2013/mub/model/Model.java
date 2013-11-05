@@ -29,7 +29,8 @@ public class Model extends Observable {
 	}
 
 	private void init() {
-		dataSource = new MensaDataSource(context);
+		dataSource = MensaDataSource.getInstance();
+		dataSource.init(context);
 		ModelCreationTask task = new ModelCreationTask();
 		task.execute();
 	}
@@ -61,18 +62,13 @@ public class Model extends Observable {
 	}
 
 	public void onCreationFinished(ModelCreationTask task) {
+		Toast.makeText(context, context.getString(task.getStatusMsgResource()), Toast.LENGTH_LONG).show();
 		if (task.wasSuccessful()) {
-			this.mensas = task.getMensas();
-			if (task.hasDownloadedNewData()) {
-				Toast.makeText(context, "Downloaded new menus!", Toast.LENGTH_LONG).show();
+			mensas = task.getMensas();
+			if (task.hasDownloadedNewData())
 				saveModel();
-			} else {
-				Toast.makeText(context, "Menus up to date.", Toast.LENGTH_LONG).show();
-			}
-		} else {
-			Toast.makeText(context, "Could not load Menus.", Toast.LENGTH_LONG).show();
 		}
-		this.notifyChanges();
+		notifyChanges();
 	}
 
 	private void saveModel() {

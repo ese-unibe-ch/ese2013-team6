@@ -14,9 +14,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.ese2013.mub.model.Day;
 import com.ese2013.mub.model.Mensa;
 import com.ese2013.mub.model.Model;
-import com.ese2013.mub.util.Day;
 import com.ese2013.mub.util.Observer;
 
 public class HomeFragment extends Fragment implements Observer {

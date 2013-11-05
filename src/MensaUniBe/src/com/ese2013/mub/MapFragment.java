@@ -294,7 +294,8 @@ public class MapFragment extends Fragment {
 	
 	private void setSpinnerDefault(Spinner spinFocus) {
 		
-		Mensa closest = getClosestMensa(currentNamedLocation);
+		Mensa closest = null;
+//				getClosestMensa(currentNamedLocation);
 		
 		if (closest != null) {
 			NamedLocation closestNameLoc = null;

@@ -84,7 +84,7 @@ public class DailyPlanFragment extends PlanFragment {
 				else
 					favorite.setImageResource(R.drawable.ic_fav_grey);
 				ImageButton map = (ImageButton)rel.getChildAt(2);
-				map.setOnClickListener(new MapButtonListener(mensa));
+				map.setOnClickListener(new MapButtonListener(mensa, this));
 				map.setImageResource(R.drawable.ic_map);
 				for (Menu menu : d.getMenus()) {
 					menuLayout.addView(new MenuView(container.getContext(), menu.getTitle(), menu.getDescription()));

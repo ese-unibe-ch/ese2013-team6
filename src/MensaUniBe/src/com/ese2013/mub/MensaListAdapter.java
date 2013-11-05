@@ -4,17 +4,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 import android.content.Context;
-import android.os.Bundle;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageButton;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.ese2013.mub.model.Mensa;
 import com.ese2013.mub.model.Model;
@@ -36,8 +31,9 @@ public class MensaListAdapter extends BaseAdapter{
         	inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         Mensa mensa = menus.get(position);
         view = inflater.inflate(R.layout.mensa_row, null);
-        setFavoriteButtonListener(view, mensa);
-        setMapButtonListener(view, mensa);
+        
+        setUpFavoriteButton(view, mensa);
+        setUpMapButton(view, mensa);
         
         TextView titleView = (TextView) view.findViewById(R.id.mensa_name_view);
         TextView adressView = (TextView) view.findViewById(R.id.mensa_adress_view);
@@ -49,29 +45,12 @@ public class MensaListAdapter extends BaseAdapter{
             
 		return view;
 	}
-	public void setMapButtonListener(View view, final Mensa mensa){
+	public void setUpMapButton(View view, final Mensa mensa){
 		ImageButton mapButton = (ImageButton) view.findViewById(R.id.mensa_list_map_button);
 		mapButton.setImageResource(R.drawable.ic_map);
-        mapButton.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View viewIn) {
-            	//TODO: implement Button functionality
-            	
-            	FragmentManager fragmentManager = target.getFragmentManager();
-            	FragmentTransaction transaction = fragmentManager.beginTransaction();
-            	
-            	MapFragment mapFragment = new MapFragment();
-            	
-            	Bundle args = new Bundle();
-                args.putString("mensa.name", mensa.getName());
-                mapFragment.setArguments(args);
-                
-            	transaction.replace(R.id.drawer_layout_frag_container, mapFragment);
-            	transaction.addToBackStack(null);
-            	transaction.commit();
-            	}});
+        mapButton.setOnClickListener(new MapButtonListener(mensa, target));
 	}
-	public void setFavoriteButtonListener(View view, Mensa mensa){
+	public void setUpFavoriteButton(View view, Mensa mensa){
 		  ImageButton favorites = (ImageButton) view.findViewById(R.id.mensa_list_fav_button);
 		  if(mensa.isFavorite())
 			  favorites.setBackgroundResource(R.drawable.ic_fav);

@@ -56,7 +56,7 @@ public class MapFragment extends Fragment {
 	private GoogleMap map;
 	List<Mensa> mensaList;
 	ArrayList<NamedLocation> mensaLocations = new ArrayList<NamedLocation>();
-	private ArrayList<NamedLocation> spinnerList;
+	private ArrayList<NamedLocation> spinnerList = new ArrayList<NamedLocation>();
 	private LocationManager locationManager;
 	private NamedLocation currentNamedLocation;
 	private ArrayAdapter<NamedLocation> adapter;
@@ -87,7 +87,7 @@ public class MapFragment extends Fragment {
 
 		drawOnMap();
 
-		spinnerList = new ArrayList<NamedLocation>();
+		
 		spinnerList.addAll(mensaLocations);
 		addCurrentLocationToSpinner();
 		adapter = new ArrayAdapter<NamedLocation>(

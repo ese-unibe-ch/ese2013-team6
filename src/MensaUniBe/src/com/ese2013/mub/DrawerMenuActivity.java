@@ -18,6 +18,7 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.Spinner;
 
+import com.ese2013.mub.model.Mensa;
 import com.ese2013.mub.model.Model;
 
 /**
@@ -259,5 +260,13 @@ public class DrawerMenuActivity extends FragmentActivity {
 		frag.setFavorites(true);
 		frag.setShowAllByDay(false);
 		this.setDisplayedFragment(frag);
+	}
+	public void displayMapAtMensa(Mensa mensa){
+		MapFragment mapFragment = new MapFragment();
+    	
+    	Bundle args = new Bundle();
+        args.putString("mensa.name", mensa.getName());
+        mapFragment.setArguments(args);
+        setDisplayedFragment(mapFragment);
 	}
 }

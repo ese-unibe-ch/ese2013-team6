@@ -58,9 +58,11 @@ public class WeeklyPlanFragment extends PlanFragment {
 								// due screen rotation, needs to be handled
 								// through proper state management and so
 								// on.
+		
 		ImageButton favorite = (ImageButton) rootView.findViewById(R.id.page_title_favorite_button);
 		ImageButton map = (ImageButton) rootView.findViewById(R.id.page_title_map_button);
 		map.setImageResource(R.drawable.ic_map);
+		map.setOnClickListener(new MapButtonListener(mensa, this));
 		
 		if(mensa.isFavorite())
 			favorite.setImageResource(R.drawable.ic_fav);

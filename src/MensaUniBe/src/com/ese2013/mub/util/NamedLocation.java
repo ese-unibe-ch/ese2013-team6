@@ -1,6 +1,7 @@
 package com.ese2013.mub.util;
 
 import com.ese2013.mub.model.Mensa;
+import com.google.android.gms.maps.model.LatLng;
 
 import android.location.Location;
 
@@ -47,5 +48,10 @@ public class NamedLocation extends Location {
 	
 	public String toString(){
 		return this.name;
+	}
+	
+	public LatLng getLatLng(){
+		LatLng result = new LatLng(getLatitude(), getLongitude());
+		return result;
 	}
 }

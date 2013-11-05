@@ -6,6 +6,7 @@ import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.view.Menu;
@@ -181,9 +182,24 @@ public class DrawerMenuActivity extends FragmentActivity {
 	 */
 	private void setDisplayedFragment(Fragment frag) {
 		assert (frag != null);
+		
 		FragmentManager fragmentManager = getSupportFragmentManager();
-		fragmentManager.beginTransaction()
-				.replace(R.id.drawer_layout_frag_container, frag).commit();
+		Fragment f = fragmentManager.findFragmentById(R.id.drawer_layout_frag_container);
+		MapFragment mapFragment;
+		if(f != null && f instanceof MapFragment && frag instanceof MapFragment) {
+		    mapFragment=(MapFragment) f;
+		    mapFragment.zoomOnContent();
+		}else{
+			FragmentTransaction transaction = fragmentManager.beginTransaction();
+				transaction.replace(R.id.drawer_layout_frag_container, frag);
+				transaction.commit();
+
+		}
+
+
+			
+		
+		
 	}
 
 	/**

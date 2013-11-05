@@ -4,6 +4,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import android.content.Context;
+import android.os.Bundle;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -34,7 +37,7 @@ public class MensaListAdapter extends BaseAdapter{
         Mensa mensa = menus.get(position);
         view = inflater.inflate(R.layout.mensa_row, null);
         setFavoriteButtonListener(view, mensa);
-        setMapButtonListener(view);
+        setMapButtonListener(view, mensa);
         
         TextView titleView = (TextView) view.findViewById(R.id.mensa_name_view);
         TextView adressView = (TextView) view.findViewById(R.id.mensa_adress_view);
@@ -46,15 +49,26 @@ public class MensaListAdapter extends BaseAdapter{
             
 		return view;
 	}
-	public void setMapButtonListener(View view){
+	public void setMapButtonListener(View view, final Mensa mensa){
 		ImageButton mapButton = (ImageButton) view.findViewById(R.id.mensa_list_map_button);
 		mapButton.setImageResource(R.drawable.ic_map);
         mapButton.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View viewIn) {
             	//TODO: implement Button functionality
-            	Toast t = Toast.makeText(context, "Not yet Implemented!", Toast.LENGTH_SHORT);
-            	t.show();
+            	
+            	FragmentManager fragmentManager = target.getFragmentManager();
+            	FragmentTransaction transaction = fragmentManager.beginTransaction();
+            	
+            	MapFragment mapFragment = new MapFragment();
+            	
+            	Bundle args = new Bundle();
+                args.putString("mensa.name", mensa.getName());
+                mapFragment.setArguments(args);
+                
+            	transaction.replace(R.id.drawer_layout_frag_container, mapFragment);
+            	transaction.addToBackStack(null);
+            	transaction.commit();
             	}});
 	}
 	public void setFavoriteButtonListener(View view, Mensa mensa){

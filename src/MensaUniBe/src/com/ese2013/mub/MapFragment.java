@@ -127,12 +127,22 @@ public class MapFragment extends Fragment {
 				LatLng currentPoint = new LatLng(getCurrentNamedLocation().getLatitude(), getCurrentNamedLocation().getLongitude());
 				LatLng favPoint = new LatLng(getFavMensaNamedLocations().get(0).getLatitude(), getFavMensaNamedLocations().get(0).getLongitude());
 				
-				LatLngBounds bounds = new LatLngBounds(currentPoint, favPoint);
-//				map.moveCamera(CameraUpdateFactory.newLatLngBounds(bounds, 0));
-				
+//				LatLngBounds bounds = new LatLngBounds(currentPoint, favPoint);
+//				System.out.println("bounds: "+bounds.toString());
+////				map.moveCamera(CameraUpdateFactory.newLatLngBounds(bounds, 0));
+//				
+//				 
+//				LatLng center = bounds.getCenter();
+//
+//				 map.addMarker(new MarkerOptions()
+//					.position(center)
+//					.snippet("Lat:" + currentNamedLocation.getLatitude() + "Lng:"+ currentNamedLocation.getLongitude())
+//					.title("Center")
+//					.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_YELLOW)));
+				 
 				int spinnerPosition = adapter.getPosition(getCurrentNamedLocation());
 	    	    spinFocus.setSelection(spinnerPosition);
-	    	    map.moveCamera(CameraUpdateFactory.newLatLngZoom(bounds.getCenter(), 10));
+//	    	    map.moveCamera(CameraUpdateFactory.newLatLngZoom(center, 10));
 			}else{
 				int spinnerPosition = adapter.getPosition(getCurrentNamedLocation());
 	    	    spinFocus.setSelection(spinnerPosition);
@@ -303,9 +313,9 @@ public class MapFragment extends Fragment {
 				System.out.println(" onItemSelected position: "+position);
 				 NamedLocation namedLoc = (NamedLocation) parent.getItemAtPosition(position);
 				 System.out.println("onItemSelected: "+namedLoc);
-				 LatLng selectedLocation = new LatLng(namedLoc.getLatitude(), namedLoc.getLongitude());
-        		 map.moveCamera(CameraUpdateFactory.newLatLngZoom(selectedLocation, DETAIL_ZOOM));
-				
+				 
+					 LatLng selectedLocation = new LatLng(namedLoc.getLatitude(), namedLoc.getLongitude());
+					 map.moveCamera(CameraUpdateFactory.newLatLngZoom(selectedLocation, DETAIL_ZOOM));
 			}
 
 			@Override

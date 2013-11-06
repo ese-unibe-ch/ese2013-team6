@@ -171,4 +171,12 @@ public class HomeFragment extends Fragment implements Observer {
 			super.notifyDataSetChanged();
 		}
 	}
+	@Override
+	public void onPause(){
+		super.onPause();
+	}
+	@Override
+	public void onResume(){
+		super.onResume();
+	}
 }

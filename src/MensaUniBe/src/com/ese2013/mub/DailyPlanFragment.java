@@ -107,4 +107,16 @@ public class DailyPlanFragment extends Fragment {
 		((DrawerMenuActivity) getActivity()).refreshHomeActivity();
 		
 	}
+	@Override
+	public void onPause(){
+		super.onPause();
+	}
+	@Override
+	public void onResume(){
+		super.onResume();
+	}
+	@Override
+	public void onDestroy(){
+		super.onDestroy();
+	}
 }

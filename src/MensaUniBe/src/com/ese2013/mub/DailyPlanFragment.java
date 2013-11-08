@@ -74,19 +74,15 @@ public class DailyPlanFragment extends Fragment {
 				RelativeLayout rel = (RelativeLayout)inf.inflate(R.layout.daily_section_title_bar, null);
 				TextView text = (TextView) rel.getChildAt(0);
 				text.setText(mensa.getName());
+				
 				DailyMenuplan d = mensa.getMenuplan().getDailymenuplan(day);
 				
 				LinearLayout menuLayout = new LinearLayout(container.getContext());
 				menuLayout.setOrientation(LinearLayout.VERTICAL);
 				
-				ImageButton favorite = (ImageButton)rel.getChildAt(1);
-				if(mensa.isFavorite())
-					favorite.setImageResource(R.drawable.ic_fav);
-				else
-					favorite.setImageResource(R.drawable.ic_fav_grey);
-				ImageButton map = (ImageButton)rel.getChildAt(2);
-				map.setOnClickListener(new MapButtonListener(mensa, this));
-				map.setImageResource(R.drawable.ic_map);
+				setUpFavoriteButton(rel, mensa);
+				setUpMapButton(rel, mensa);
+				
 				for (Menu menu : d.getMenus()) {
 					menuLayout.addView(new MenuView(container.getContext(), menu.getTitle(), menu.getDescription()));
 				}
@@ -94,15 +90,24 @@ public class DailyPlanFragment extends Fragment {
 					menuLayout.setVisibility(View.GONE);
 				
 				rel.setOnClickListener(new ToggleListener(menuLayout, container.getContext()));
-			
-				favorite.setOnClickListener(new FavoriteButtonListener(mensa, favorite, this));
 				
 				layout.addView(rel);
 				layout.addView(menuLayout);
 		}
 		return rootView;
 	}
+	public void setUpFavoriteButton(RelativeLayout rel, Mensa mensa){
+		ImageButton favorite = (ImageButton)rel.getChildAt(1);
+		
+		favorite.setImageResource((mensa.isFavorite()) ? R.drawable.ic_fav : R.drawable.ic_fav_grey);
 
+		favorite.setOnClickListener(new FavoriteButtonListener(mensa, favorite, this));
+	}
+	public void setUpMapButton(RelativeLayout rel, Mensa mensa){
+		ImageButton map = (ImageButton)rel.getChildAt(2);
+		map.setOnClickListener(new MapButtonListener(mensa, this));
+		map.setImageResource(R.drawable.ic_map);
+	}
 	public void refreshFavoriteView() {
 		((DrawerMenuActivity) getActivity()).refreshHomeActivity();
 		

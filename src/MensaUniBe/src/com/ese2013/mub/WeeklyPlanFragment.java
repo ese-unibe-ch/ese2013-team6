@@ -53,31 +53,16 @@ public class WeeklyPlanFragment extends Fragment {
 		View rootView = inflater.inflate(R.layout.fragment_home_scrollable_content, container, false);
 		LinearLayout layout = (LinearLayout) rootView.findViewById(R.id.section_linear_layout);
 		
-		
 		if (Model.getInstance().noMensasLoaded())
 			return rootView; // hacky fix for the case when app is recreated
 								// due screen rotation, needs to be handled
 								// through proper state management and so
 								// on.
 		
-		ImageButton favorite = (ImageButton) rootView.findViewById(R.id.page_title_favorite_button);
-		ImageButton map = (ImageButton) rootView.findViewById(R.id.page_title_map_button);
-		map.setImageResource(R.drawable.ic_map);
-		map.setOnClickListener(new MapButtonListener(mensa, this));
-		
-		if(mensa.isFavorite())
-			favorite.setImageResource(R.drawable.ic_fav);
-		else
-			favorite.setImageResource(R.drawable.ic_fav_grey);
-		
-			favorite.setOnClickListener(new FavoriteButtonListener(mensa, favorite));
+		this.setUpMapButton(rootView);
+		this.setUpFavoriteButton(rootView);
 		
 		for (DailyMenuplan d : mensa.getMenuplan()) {
-			
-			TextView text = (TextView)inflater.inflate(R.layout.section_title_text, null);
-			text.setText(d.getDateString());
-			layout.addView(text);
-			
 			LinearLayout menuLayout = new LinearLayout(container.getContext());
 			menuLayout.setOrientation(LinearLayout.VERTICAL);
 			
@@ -85,19 +70,32 @@ public class WeeklyPlanFragment extends Fragment {
 				menuLayout.addView(new MenuView(container.getContext(), menu.getTitle(), menu.getDescription()));
 			}
 			
+			TextView text = (TextView)inflater.inflate(R.layout.section_title_text, null);
+			text.setText(d.getDateString());
+			
 			text.setOnClickListener(new ToggleListener(menuLayout, getActivity()));
 			
-			Date date = Calendar.getInstance().getTime();
-			
-			if(d.getDateString().equals(new SimpleDateFormat("EEEE, dd. MMMM yyyy", Locale.getDefault()).format(date)))
-				menuLayout.setVisibility(View.VISIBLE);
-			else
-				menuLayout.setVisibility(View.GONE);
-			
+			this.decideToggleState(menuLayout, d.getDateString());
+			layout.addView(text);
 			layout.addView(menuLayout);
 			
 		}
 		return rootView;
+	}
+	private void decideToggleState(LinearLayout menuLayout, String menuDate){
+		Date today = Calendar.getInstance().getTime();
+		SimpleDateFormat sdf = new SimpleDateFormat("EEEE, dd. MMMM yyyy", Locale.getDefault());
+		menuLayout.setVisibility((menuDate.equals(sdf.format(today)) ? View.VISIBLE : View.GONE));
+	}
+	private void setUpFavoriteButton(View rootView){
+		ImageButton favorite = (ImageButton) rootView.findViewById(R.id.page_title_favorite_button);
+		favorite.setImageResource((mensa.isFavorite()) ? R.drawable.ic_fav : R.drawable.ic_fav_grey);
+		favorite.setOnClickListener(new FavoriteButtonListener(mensa, favorite));
+	}
+	private void setUpMapButton(View rootView){
+		ImageButton map = (ImageButton) rootView.findViewById(R.id.page_title_map_button);
+		map.setImageResource(R.drawable.ic_map);
+		map.setOnClickListener(new MapButtonListener(mensa, this));
 	}
 	@Override
 	public void onPause(){

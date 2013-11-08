@@ -1,6 +1,5 @@
 package com.ese2013.mub.model;
 
-
 /**
  * Stores all data which make up a menu. Always created using the
  * Menu.MenuBuilder class.
@@ -8,7 +7,6 @@ package com.ese2013.mub.model;
 public class Menu {
 	private String title, description;
 	private Day date;
-	private int hash;
 
 	/**
 	 * Creates a Menu from a given MenuBuilder. Is private to ensure that Menus
@@ -22,7 +20,7 @@ public class Menu {
 		this.title = builder.title;
 		this.description = builder.description;
 		this.date = builder.date;
-		this.hash = builder.hash;
+		//
 	}
 
 	public String getTitle() {
@@ -35,10 +33,6 @@ public class Menu {
 
 	public Day getDate() {
 		return date;
-	}
-
-	public int getHash() {
-		return hash;
 	}
 
 	/**
@@ -58,8 +52,6 @@ public class Menu {
 			return true;
 		if (other instanceof Menu) {
 			Menu otherMenu = (Menu) other;
-			if (otherMenu.getHash() != this.hash)
-				return false;
 			if (otherMenu.getDate() == null ? this.date != null : !otherMenu.getDate().equals(this.date))
 				return false;
 			if (!otherMenu.getTitle().equals(this.title))
@@ -75,7 +67,6 @@ public class Menu {
 	@Override
 	public int hashCode() {
 		int result = 17;
-		result = 31 * result + hash;
 		result = 31 * result + title.hashCode();
 		result = 31 * result + description.hashCode();
 		result = 31 * result + date.hashCode();
@@ -84,8 +75,8 @@ public class Menu {
 
 	@Override
 	public String toString() {
-		return "Menu " + hash + " { \n" + "  Title: " + title + "\n  Description: " + description + "\n  Date: "
-				+ getDateString() + " \n }";
+		return "Menu { \n" + "  Title: " + title + "\n  Description: " + description + "\n  Date: " + getDateString()
+				+ " \n }";
 	}
 
 	/**
@@ -95,7 +86,6 @@ public class Menu {
 		private static final String DEFAULT = "N//A";
 		private String title = DEFAULT, description = DEFAULT;
 		private Day date;
-		private int hash;
 
 		public MenuBuilder setTitle(String title) {
 			this.title = title;
@@ -109,11 +99,6 @@ public class Menu {
 
 		public MenuBuilder setDate(Day date) {
 			this.date = date;
-			return this;
-		}
-
-		public MenuBuilder setHash(int hash) {
-			this.hash = hash;
 			return this;
 		}
 

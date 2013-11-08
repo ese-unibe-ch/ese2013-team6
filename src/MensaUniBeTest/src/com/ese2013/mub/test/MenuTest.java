@@ -16,7 +16,6 @@ public class MenuTest extends TestCase {
 	protected void setUp() throws Exception {
 		super.setUp();
 		builder = new MenuBuilder();
-		builder.setHash(1234);
 		builder.setTitle("Menu title");
 		builder.setDescription("Menu description");
 		builder.setDate(new Day(4, 11, 2013));
@@ -37,7 +36,6 @@ public class MenuTest extends TestCase {
 	public void testBuilder() {
 		assertNotNull(builder);
 		menu = builder.build();
-		assertEquals(menu.getHash(), 1234);
 		assertEquals(menu.getTitle(), "Menu title");
 		assertEquals(menu.getDescription(), "Menu description");
 		assertEquals(menu.getDate(), new Day(4, 11, 2013));
@@ -46,11 +44,6 @@ public class MenuTest extends TestCase {
 	public void testSelfEquals() {
 		assertFalse(menu.equals(null));
 		assertEquals(menu, menu);
-	}
-
-	public void testHashComparison() {
-		changedMenu = builder.setHash(4124).build();
-		assertNotEquals(menu, changedMenu);
 	}
 
 	public void testTitleComparison() {

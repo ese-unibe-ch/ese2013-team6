@@ -13,7 +13,7 @@
     </string-array>
     <string name="no_favorite_mensa">\nChoose your favorite mensas in the \'Mensa List\' by tipping on the stars.</string>
     <string name="loading_download_done">Downloaded new menus!</string>
-    <string name="loading_download_failed">Menus not updated, displayed menus maybe not up to date.</string>
+    <string name="loading_download_failed">Menus not updated, displayed menus may not up to date.</string>
     <string name="loading_no_update_needed">Menus up to date.</string>
     <string name="loading_failure">Could not load any menus, please make sure you have internet connection</string>
 

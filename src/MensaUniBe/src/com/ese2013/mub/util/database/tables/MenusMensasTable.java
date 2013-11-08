@@ -6,9 +6,9 @@ public class MenusMensasTable extends AbstractTable {
 	
 	private static final String TABLE_MENUS_MENSAS_CREATE = 
 			"create table " + TABLE_MENUS_MENSAS + "(" + 
-			MenusTable.COL_HASH + " integer not null references " + MenusTable.TABLE_MENUS + "(" + MenusTable.COL_HASH + ") on delete cascade," + 
+			MenusTable.COL_ID + " integer not null references " + MenusTable.TABLE_MENUS + "(" + MenusTable.COL_ID + ") on delete cascade," + 
 			MensasTable.COL_ID + " integer not null references " + MensasTable.TABLE_MENSAS + "(" + MensasTable.COL_ID + ") on delete cascade," +
-			"primary key(" + MenusTable.COL_HASH + ","+ MensasTable.COL_ID + "));";
+			"primary key(" + MenusTable.COL_ID + ","+ MensasTable.COL_ID + "));";
 	
 	public MenusMensasTable() {
 		super(TABLE_MENUS_MENSAS, TABLE_MENUS_MENSAS_CREATE);

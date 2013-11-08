@@ -187,16 +187,37 @@ public class MensaDataSource {
 				storeMenu(m, mensa);
 	}
 
-	private void storeMenu(Menu m, Mensa mensa) {
-		ContentValues values = new ContentValues();
-		values.put(MenusTable.COL_HASH, m.getHash());
-		values.put(MenusTable.COL_TITLE, m.getTitle());
-		values.put(MenusTable.COL_DESC, m.getDescription());
-		values.put(MenusTable.COL_DATE, m.getDate().format(fm));
-		database.replace(MenusTable.TABLE_MENUS, null, values);
+	/**
+	 * Stores the given Menu in the MenuTable and also stores a pair of Menu Id
+	 * and Mensa Id in the MenusMensa Table.
+	 * 
+	 * @param menu Menu to be stored. Must not be null.
+	 * @param mensa Mensa which the Menu belongs to. Must not be null.
+	 */
+	private void storeMenu(Menu menu, Mensa mensa) {
+		String date = menu.getDate().format(fm);
+		
+		//query the database to check if the menu is already stored, and if so, retrieve the id.
+		Cursor c = database.rawQuery("select " + MenusTable.COL_ID + " from " + MenusTable.TABLE_MENUS + " where "
+				+ MenusTable.COL_TITLE + "='" + menu.getTitle() + "' and " + MenusTable.COL_DESC + "='" + menu.getDescription()
+				+ "' and " + MenusTable.COL_DATE + "='" + date + "'", null);
+		int id;
+		if (c.getCount() == 0) {
+			ContentValues values = new ContentValues();
+			values.put(MenusTable.COL_TITLE, menu.getTitle());
+			values.put(MenusTable.COL_DESC, menu.getDescription());
+			values.put(MenusTable.COL_DATE, date);
+			database.insert(MenusTable.TABLE_MENUS, null, values);
+			c = database.rawQuery("select last_insert_rowid()", null);
+			c.moveToFirst();
+			id = c.getInt(0);
+		} else {
+			c.moveToFirst();
+			id = c.getInt(c.getColumnIndex(MenusTable.COL_ID));
+		}
 
 		ContentValues values2 = new ContentValues();
-		values2.put(MenusTable.COL_HASH, m.getHash());
+		values2.put(MenusTable.COL_ID, id);
 		values2.put(MensasTable.COL_ID, mensa.getId());
 		database.replace(MenusMensasTable.TABLE_MENUS_MENSAS, null, values2);
 	}
@@ -210,14 +231,13 @@ public class MensaDataSource {
 	 */
 	public WeeklyMenuplan loadMenuplan(int mensaId) {
 		String query = "select * from " + MenusTable.TABLE_MENUS + " inner join " + MenusMensasTable.TABLE_MENUS_MENSAS
-				+ " on " + MenusTable.TABLE_MENUS + "." + MenusTable.COL_HASH + " = " + MenusMensasTable.TABLE_MENUS_MENSAS
-				+ "." + MenusTable.COL_HASH + " where " + MenusMensasTable.TABLE_MENUS_MENSAS + "." + MensasTable.COL_ID
+				+ " on " + MenusTable.TABLE_MENUS + "." + MenusTable.COL_ID + " = " + MenusMensasTable.TABLE_MENUS_MENSAS
+				+ "." + MenusTable.COL_ID + " where " + MenusMensasTable.TABLE_MENUS_MENSAS + "." + MensasTable.COL_ID
 				+ " = " + mensaId + " ;";
 		Cursor c = database.rawQuery(query, null);
 		final int POS_TITLE = c.getColumnIndex(MenusTable.COL_TITLE);
 		final int POS_DESC = c.getColumnIndex(MenusTable.COL_DESC);
 		final int POS_DATE = c.getColumnIndex(MenusTable.COL_DATE);
-		final int POS_HASH = c.getColumnIndex(MenusTable.COL_HASH);
 		WeeklyMenuplan p = new WeeklyMenuplan();
 		c.moveToFirst();
 		do {
@@ -226,7 +246,6 @@ public class MensaDataSource {
 				builder.setTitle(c.getString(POS_TITLE));
 				builder.setDescription(c.getString(POS_DESC));
 				builder.setDate(new Day(fm.parse(c.getString(POS_DATE))));
-				builder.setHash(c.getInt(POS_HASH));
 				p.add(builder.build());
 			} catch (ParseException e) {
 				throw new AssertionError("Database did not save properly");
@@ -266,6 +285,7 @@ public class MensaDataSource {
 	 */
 	public void deleteMenus() {
 		database.delete(MenusTable.TABLE_MENUS, null, null);
+		database.execSQL("delete from sqlite_sequence where name='" + MenusTable.TABLE_MENUS + "';");
 		database.delete(MenusMensasTable.TABLE_MENUS_MENSAS, null, null);
 	}
 

@@ -22,7 +22,7 @@ public class WeeklyMenuplanTest extends TestCase {
 
 	public void testAddMenu() {
 		Day day = new Day(4, 11, 2013);
-		Menu menu = createMenu(1234, day);
+		Menu menu = createMenu("title 1", day);
 		assertNull(plan.getDailymenuplan(day));
 		plan.add(menu);
 		List<Menu> menus = plan.getDailymenuplan(day).getMenus();
@@ -33,9 +33,9 @@ public class WeeklyMenuplanTest extends TestCase {
 	public void testMultipleMenusOnSameDay() {
 		Day day = new Day(4, 11, 2013);
 		assertNull(plan.getDailymenuplan(day));
-		Menu menu = createMenu(1234, day);
+		Menu menu = createMenu("title 1", day);
 		plan.add(menu);
-		Menu menu2 = createMenu(1512, day);
+		Menu menu2 = createMenu("title 2", day);
 		plan.add(menu2);
 		List<Menu> menus = plan.getDailymenuplan(day).getMenus();
 		assertEquals(menus.size(), 2);
@@ -46,12 +46,12 @@ public class WeeklyMenuplanTest extends TestCase {
 	public void testMultipleMenusOnDifferentDays() {
 		Day day1 = new Day(4, 11, 2013);
 		assertNull(plan.getDailymenuplan(day1));
-		Menu menu = createMenu(1234, day1);
+		Menu menu = createMenu("title 1", day1);
 		plan.add(menu);
 
 		Day day2 = new Day(6, 11, 2013);
 		assertNull(plan.getDailymenuplan(day2));
-		Menu menu2 = createMenu(1512, day2);
+		Menu menu2 = createMenu("title 2", day2);
 		plan.add(menu2);
 
 		List<Menu> menusDay1 = plan.getDailymenuplan(day1).getMenus();
@@ -65,11 +65,11 @@ public class WeeklyMenuplanTest extends TestCase {
 
 	public void testGetDays() {
 		Day day1 = new Day(4, 11, 2013);
-		Menu menu = createMenu(1234, day1);
+		Menu menu = createMenu("title 1", day1);
 		plan.add(menu);
 
 		Day day2 = new Day(6, 11, 2013);
-		Menu menu2 = createMenu(1512, day2);
+		Menu menu2 = createMenu("title 2", day2);
 		plan.add(menu2);
 
 		assertEquals(plan.getDays().size(), 2);
@@ -82,40 +82,40 @@ public class WeeklyMenuplanTest extends TestCase {
 
 	public void testGetWeekNumber() {
 		Day day = new Day(4, 11, 2013);
-		Menu menu = createMenu(1234, day);
+		Menu menu = createMenu("title 1", day);
 		plan.add(menu);
 		assertEquals(day.getWeekNumber(), plan.getWeekNumber());
 	}
 
 	public void testEquals() {
 		Day day1 = new Day(4, 11, 2013);
-		Menu menu = createMenu(1234, day1);
+		Menu menu = createMenu("title 1", day1);
 		plan.add(menu);
 
 		Day day2 = new Day(6, 11, 2013);
-		Menu menu2 = createMenu(1512, day2);
+		Menu menu2 = createMenu("title 2", day2);
 		plan.add(menu2);
 
 		WeeklyMenuplan otherPlan = new WeeklyMenuplan();
 		// create new instances with same data, assures that equals recursively
 		// uses equals on the Menus.
-		menu = createMenu(1234, day1);
+		menu = createMenu("title 1", day1);
 		otherPlan.add(menu);
-		menu2 = createMenu(1512, day2);
+		menu2 = createMenu("title 2", day2);
 		otherPlan.add(menu2);
 		assertEquals(plan, otherPlan);
 
-		Menu menu3 = createMenu(1512, day2);
+		Menu menu3 = createMenu("title 2", day2);
 		otherPlan.add(menu3);
 		assertNotEquals(plan, otherPlan);
 
-		menu3 = createMenu(8656, day2);
+		menu3 = createMenu("title 3", day2);
 		plan.add(menu3);
 		assertNotEquals(plan, otherPlan);
 	}
 
-	private static Menu createMenu(int hash, Day day) {
-		return new MenuBuilder().setHash(hash).setTitle("title").setDescription("some description").setDate(day).build();
+	private static Menu createMenu(String title, Day day) {
+		return new MenuBuilder().setTitle(title).setDescription("some description").setDate(day).build();
 	}
 
 }

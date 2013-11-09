@@ -1,36 +1,31 @@
 package com.ese2013.mub.util;
 
-import com.ese2013.mub.model.Mensa;
-import com.google.android.gms.maps.model.LatLng;
-
 import android.location.Location;
 
+import com.ese2013.mub.model.Mensa;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MarkerOptions;
+
 public class NamedLocation extends Location {
-	
+
 	private String name;
-	
-	public NamedLocation(Location loc, String name){
+	private float color;
+
+	public NamedLocation(Location loc, String name) {
 		super(loc);
-		this.setName(name);
-	}
-	
-	public NamedLocation(Mensa mensa){
-		super(calcMensaLocation(mensa));
-		this.name = mensa.getName();
+		this.name = name;
 	}
 
-	public NamedLocation(String string, double latitude, double longitude) {
-		super(calcLocation(latitude, longitude));
-		this.setName(string);
+	public NamedLocation(Mensa mensa) {
+		this(calcMensaLocation(mensa), mensa.getName());
 	}
 
-	private static Location calcLocation(double latitude, double longitude) {
-		Location loc = new Location("");
-		loc.setLatitude(latitude);
-		loc.setLongitude(longitude);
-		return loc;
+	public NamedLocation(Location loc, String name, float color) {
+		this(loc, name);
+		this.color = color;
 	}
-	
+
 	private static Location calcMensaLocation(Mensa mensa) {
 		Location loc = new Location("");
 		loc.setLatitude(mensa.getLatitude());
@@ -38,19 +33,26 @@ public class NamedLocation extends Location {
 		return loc;
 	}
 
+	public MarkerOptions getMarker() {
+		LatLng loc = new LatLng(getLatitude(), getLongitude());
+		return new MarkerOptions().position(loc).title(name)
+				.icon(BitmapDescriptorFactory.defaultMarker(color));
+	}
+
 	public String getName() {
 		return name;
 	}
 
-	public void setName(String name) {
-		this.name = name;
-	}
-	
-	public String toString(){
+	public String toString() {
 		return this.name;
 	}
 	
-	public LatLng getLatLng(){
+	public void setLocation(Location location) {
+		setLatitude(location.getLatitude());
+		setLongitude(location.getLongitude());
+	}
+
+	public LatLng getLatLng() {
 		LatLng result = new LatLng(getLatitude(), getLongitude());
 		return result;
 	}

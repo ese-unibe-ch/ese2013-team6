@@ -22,7 +22,6 @@ import android.net.Uri.Builder;
  * another thread (i.e. a asynchronous download thread).
  */
 public class JsonDataRequest {
-	public static final int CODE_SUCCESS = 200;
 	private String serviceUri;
 
 	/**
@@ -45,8 +44,7 @@ public class JsonDataRequest {
 	 *         JSON string.
 	 * @throws IOException
 	 *             If download did not succeed or web service did not provide a
-	 *             valid JSON file or the web service reported an error using
-	 *             the error code.
+	 *             valid JSON file.
 	 */
 	public JSONObject execute() throws IOException {
 		try {
@@ -57,13 +55,7 @@ public class JsonDataRequest {
 			HttpResponse response = client.execute(httpGet);
 			InputStream is = response.getEntity().getContent();
 			String inputStream = inputStreamToString(is);
-			JSONObject json = new JSONObject(inputStream);
-			int errorCode = json.getJSONObject("result").getInt("code");
-			if (errorCode == CODE_SUCCESS) {
-				return new JSONObject(inputStream);
-			} else {
-				throw new IOException("Failed downloading: exit with error code: " + errorCode);
-			}
+			return new JSONObject(inputStream);
 		} catch (JSONException e) {
 			throw new IOException(e);
 		} catch (IllegalStateException e) {

@@ -152,7 +152,7 @@ public class ModelCreationTask extends AsyncTask<Void, Void, Void> {
 	}
 
 	private void retrieveUpdatesPage() throws JSONException, IOException {
-		JsonDataRequest updateStatusRequest = new JsonDataRequest(ServiceUri.GET_UPDATE_STATUS);
+		MensaWebserviceJsonRequest updateStatusRequest = new MensaWebserviceJsonRequest(ServiceUri.GET_UPDATE_STATUS);
 		updateStatusJson = updateStatusRequest.execute().getJSONObject("result").getJSONArray("content");
 	}
 

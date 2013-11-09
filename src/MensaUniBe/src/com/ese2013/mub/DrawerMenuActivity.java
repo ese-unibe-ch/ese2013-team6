@@ -40,15 +40,13 @@ public class DrawerMenuActivity extends FragmentActivity {
 		setContentView(R.layout.activity_drawer_menu);
 
 		String[] menuItemNames = { "Home", "Mensa List", "Map", "Settings" };
-		
+
 		mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
-		mDrawerLayout.setDrawerShadow(R.drawable.drawer_shadow,
-				GravityCompat.START);
+		mDrawerLayout.setDrawerShadow(R.drawable.drawer_shadow, GravityCompat.START);
 		mDrawerList = (ListView) findViewById(R.id.left_drawer);
 
 		// Set the adapter for the list view
-		mDrawerList.setAdapter(new ArrayAdapter<String>(this,
-				R.layout.drawer_list_item, menuItemNames));
+		mDrawerList.setAdapter(new ArrayAdapter<String>(this, R.layout.drawer_list_item, menuItemNames));
 
 		// enable ActionBar app icon to behave as action to toggle nav drawer
 
@@ -58,9 +56,8 @@ public class DrawerMenuActivity extends FragmentActivity {
 		/* spinner */
 
 		// Set up the action bar to show a dropdown list.
-		ArrayAdapter<CharSequence> spinnerAdapter = ArrayAdapter
-				.createFromResource(this, R.array.spinner_list,
-						android.R.layout.simple_spinner_dropdown_item);
+		ArrayAdapter<CharSequence> spinnerAdapter = ArrayAdapter.createFromResource(this, R.array.spinner_list,
+				android.R.layout.simple_spinner_dropdown_item);
 
 		actionBar.setDisplayShowTitleEnabled(false);
 		Spinner navigationSpinner = new Spinner(this);
@@ -68,8 +65,7 @@ public class DrawerMenuActivity extends FragmentActivity {
 		actionBar.setCustomView(navigationSpinner);
 		OnItemSelectedListener spinnerNavigationListener = new OnItemSelectedListener() {
 			@Override
-			public void onItemSelected(AdapterView<?> arg0, View arg1,
-					int position, long arg3) {
+			public void onItemSelected(AdapterView<?> arg0, View arg1, int position, long arg3) {
 
 				HomeFragment frag = new HomeFragment();
 				switch (position) {
@@ -104,8 +100,7 @@ public class DrawerMenuActivity extends FragmentActivity {
 
 		selectItem(0);
 
-		mDrawerToggle = new ActionBarDrawerToggle(this, mDrawerLayout,
-				R.drawable.ic_drawer, R.string.drawer_open,
+		mDrawerToggle = new ActionBarDrawerToggle(this, mDrawerLayout, R.drawable.ic_drawer, R.string.drawer_open,
 				R.string.drawer_close) {
 			public void onDrawerClosed(View view) {
 				invalidateOptionsMenu(); // creates call to
@@ -136,11 +131,9 @@ public class DrawerMenuActivity extends FragmentActivity {
 	 * ClickListener for the Drawer List. Handles selecting list items in the
 	 * Drawer menu.
 	 */
-	private class DrawerItemClickListener implements
-			ListView.OnItemClickListener {
+	private class DrawerItemClickListener implements ListView.OnItemClickListener {
 		@Override
-		public void onItemClick(AdapterView<?> parent, View view, int position,
-				long id) {
+		public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 			selectItem(position);
 		}
 	}
@@ -184,25 +177,10 @@ public class DrawerMenuActivity extends FragmentActivity {
 	 *            the Fragment to be displayed. Shouldn't be null.
 	 */
 	private void setDisplayedFragment(Fragment frag) {
-		assert (frag != null);
-		
 		FragmentManager fragmentManager = getSupportFragmentManager();
-		Fragment f = fragmentManager.findFragmentById(R.id.drawer_layout_frag_container);
-		MapFragment mapFragment;
-		if(f != null && f instanceof MapFragment && frag instanceof MapFragment) {
-		    mapFragment=(MapFragment) f;
-		    mapFragment.zoomOnContent();
-		}else{
-			FragmentTransaction transaction = fragmentManager.beginTransaction();
-				transaction.replace(R.id.drawer_layout_frag_container, frag);
-				transaction.commit();
-
-		}
-
-
-			
-		
-		
+		FragmentTransaction transaction = fragmentManager.beginTransaction();
+		transaction.replace(R.id.drawer_layout_frag_container, frag);
+		transaction.commit();
 	}
 
 	/**
@@ -213,7 +191,7 @@ public class DrawerMenuActivity extends FragmentActivity {
 	public boolean onPrepareOptionsMenu(Menu menu) {
 		boolean drawerOpen = mDrawerLayout.isDrawerOpen(mDrawerList);
 		menu.findItem(R.id.action_settings).setVisible(!drawerOpen);
-		//getActionBar().setDisplayShowCustomEnabled(!drawerOpen);
+		// getActionBar().setDisplayShowCustomEnabled(!drawerOpen);
 		return super.onPrepareOptionsMenu(menu);
 	}
 
@@ -263,12 +241,12 @@ public class DrawerMenuActivity extends FragmentActivity {
 		frag.setShowAllByDay(false);
 		this.setDisplayedFragment(frag);
 	}
-	public void displayMapAtMensa(Mensa mensa){
+
+	public void displayMapAtMensa(Mensa mensa) {
 		MapFragment mapFragment = new MapFragment();
-    	
-    	Bundle args = new Bundle();
-        args.putString("mensa.name", mensa.getName());
-        mapFragment.setArguments(args);
-        setDisplayedFragment(mapFragment);
+		Bundle args = new Bundle();
+		args.putInt("mensa.id", mensa.getId());
+		mapFragment.setArguments(args);
+		setDisplayedFragment(mapFragment);
 	}
 }

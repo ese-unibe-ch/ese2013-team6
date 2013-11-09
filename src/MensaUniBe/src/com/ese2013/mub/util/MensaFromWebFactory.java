@@ -31,7 +31,7 @@ public class MensaFromWebFactory extends AbstractMensaFactory {
 	public List<Mensa> createMensaList() throws MensaDownloadException {
 		try {
 			dataSource.open();
-			JsonDataRequest request = new JsonDataRequest(ServiceUri.GET_MENSAS);
+			MensaWebserviceJsonRequest request = new MensaWebserviceJsonRequest(ServiceUri.GET_MENSAS);
 			JSONObject result = request.execute();
 			JSONArray content = result.getJSONObject("result").getJSONArray("content");
 			List<Mensa> mensas = new ArrayList<Mensa>();
@@ -69,7 +69,7 @@ public class MensaFromWebFactory extends AbstractMensaFactory {
 	}
 
 	private WeeklyMenuplan createWeeklyMenuplan(Mensa m) throws IOException, JSONException, ParseException {
-		JsonDataRequest menuRequest = new JsonDataRequest(ServiceUri.GET_WEEKLY_MENUPLAN.replaceFirst(":id", "" + m.getId()));
+		MensaWebserviceJsonRequest menuRequest = new MensaWebserviceJsonRequest(ServiceUri.GET_WEEKLY_MENUPLAN.replaceFirst(":id", "" + m.getId()));
 		JSONArray menus = menuRequest.execute().getJSONObject("result").getJSONObject("content").getJSONArray("menus");
 		return parseWeeklyMenuplan(menus);
 	}

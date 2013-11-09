@@ -11,6 +11,7 @@ public class NamedLocation extends Location {
 
 	private String name;
 	private float color;
+	private int mensaId = -1;
 
 	public NamedLocation(Location loc, String name) {
 		super(loc);
@@ -19,6 +20,7 @@ public class NamedLocation extends Location {
 
 	public NamedLocation(Mensa mensa) {
 		this(calcMensaLocation(mensa), mensa.getName());
+		this.mensaId = mensa.getId();
 	}
 
 	public NamedLocation(Location loc, String name, float color) {
@@ -35,8 +37,7 @@ public class NamedLocation extends Location {
 
 	public MarkerOptions getMarker() {
 		LatLng loc = new LatLng(getLatitude(), getLongitude());
-		return new MarkerOptions().position(loc).title(name)
-				.icon(BitmapDescriptorFactory.defaultMarker(color));
+		return new MarkerOptions().position(loc).title(name).icon(BitmapDescriptorFactory.defaultMarker(color));
 	}
 
 	public String getName() {
@@ -46,7 +47,7 @@ public class NamedLocation extends Location {
 	public String toString() {
 		return this.name;
 	}
-	
+
 	public void setLocation(Location location) {
 		setLatitude(location.getLatitude());
 		setLongitude(location.getLongitude());
@@ -55,5 +56,13 @@ public class NamedLocation extends Location {
 	public LatLng getLatLng() {
 		LatLng result = new LatLng(getLatitude(), getLongitude());
 		return result;
+	}
+
+	public boolean isLocationOfMensa(int mensaId) {
+		return this.mensaId == mensaId;
+	}
+
+	public boolean isLocationOfMensa(Mensa mensa) {
+		return isLocationOfMensa(mensa.getId());
 	}
 }

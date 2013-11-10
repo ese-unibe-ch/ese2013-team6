@@ -3,6 +3,7 @@ package com.ese2013.mub;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.ImageButton;
+import android.widget.Toast;
 
 import com.ese2013.mub.model.Mensa;
 
@@ -31,9 +32,12 @@ public class FavoriteButtonListener implements OnClickListener {
 		// mensa.isFavorite(), Toast.LENGTH_SHORT).show();
 		if (!mensa.isFavorite()) {
 			button.setImageResource(R.drawable.ic_fav_grey);
+			Toast.makeText(frag.getActivity(), mensa.getName()  + "is added to Favorites!", Toast.LENGTH_SHORT).show();
 			if(isInDailyView && !HomeFragment.getShowAllByDay())
 				frag.refreshFavoriteView();
-		} else
+		} else{
 			button.setImageResource(R.drawable.ic_fav);
-	}
+			Toast.makeText(frag.getActivity(), mensa.getName()  + "is removed from Favorites!", Toast.LENGTH_SHORT).show();
+		}
+	}	
 }

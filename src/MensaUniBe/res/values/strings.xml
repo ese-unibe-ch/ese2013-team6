@@ -16,11 +16,5 @@
     <string name="loading_download_failed">Menus not updated, displayed menus may not up to date.</string>
     <string name="loading_no_update_needed">Menus up to date.</string>
     <string name="loading_failure">Could not load any menus, please make sure you have internet connection</string>
-    <string name="action_refresh">Refresh</string>
-    <string-array name="settings_languages">
-        <item>German</item>
-        <item>English</item>
-        <item>French</item>
-    </string-array>
 
 </resources>

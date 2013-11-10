@@ -39,7 +39,7 @@ public class DrawerMenuActivity extends FragmentActivity {
 
 		setContentView(R.layout.activity_drawer_menu);
 
-		String[] menuItemNames = { "Home", "Mensa List", "Map", "Settings" };
+		String[] menuItemNames = { "Home", "Mensa List", "Map" };
 
 		mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
 		mDrawerLayout.setDrawerShadow(R.drawable.drawer_shadow, GravityCompat.START);
@@ -155,11 +155,6 @@ public class DrawerMenuActivity extends FragmentActivity {
 			setDisplayedFragment(frag);
 			break;
 		case 3:
-//			frag = new SettingsFragment();
-//			setDisplayedFragment(frag);
-//			break;
-			getFragmentManager().beginTransaction().replace(android.R.id.content, new SettingsFragment()).commit();
-		case 4:
 			break;
 		}
 

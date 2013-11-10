@@ -206,7 +206,6 @@ public class DrawerMenuActivity extends FragmentActivity {
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		if (mDrawerToggle.onOptionsItemSelected(item)) {
-			
 			return true;
 		}
 		return super.onOptionsItemSelected(item);
@@ -242,7 +241,7 @@ public class DrawerMenuActivity extends FragmentActivity {
 	public void displayMapAtMensa(Mensa mensa) {
 		MapFragment mapFragment = new MapFragment();
 		Bundle args = new Bundle();
-		args.putInt("mensa.id", mensa.getId());
+		args.putInt(MapFragment.MENSA_ID_LOCATION, mensa.getId());
 		mapFragment.setArguments(args);
 		setDisplayedFragment(mapFragment);
 	}

@@ -10,7 +10,7 @@ import com.google.android.gms.maps.model.MarkerOptions;
 public class NamedLocation extends Location {
 
 	private String name;
-	private float color;
+	private float color, origColor;
 	private int mensaId = -1;
 
 	public NamedLocation(Location loc, String name) {
@@ -25,7 +25,8 @@ public class NamedLocation extends Location {
 
 	public NamedLocation(Location loc, String name, float color) {
 		this(loc, name);
-		this.color = color;
+		this.origColor = color;
+		this.color = this.origColor;
 	}
 
 	private static Location calcMensaLocation(Mensa mensa) {
@@ -64,5 +65,13 @@ public class NamedLocation extends Location {
 
 	public boolean isLocationOfMensa(Mensa mensa) {
 		return isLocationOfMensa(mensa.getId());
+	}
+
+	public void setColorSelected() {
+		color = BitmapDescriptorFactory.HUE_YELLOW;
+	}
+
+	public void resetColor() {
+		color = origColor;
 	}
 }

@@ -1,16 +1,21 @@
 <resources>
-    
+
     <string name="app_name">MensaUniBe</string>
     <string name="action_settings">Settings</string>
     <string name="drawer_open">Opens the navigation drawer</string>
     <string name="drawer_close">Closes the navigation drawer</string>
     <string name="favorite_button">Select as Favorite</string>
     <string name="map_button">Goto Map</string>
+    <string name="map_directions_button">Get directions to selected Mensa</string>
+    <string name="map_my_location">My Location</string>
+    <string name="map_directions_error">Could not retrieve directions</string>
+
     <string-array name="spinner_list">
         <item>Favorites</item>
         <item>Weekly plans</item>
         <item>All mensas</item>
     </string-array>
+
     <string name="no_favorite_mensa">\nChoose your favorite mensas in the \'Mensa List\' by tipping on the stars.</string>
     <string name="loading_download_done">Downloaded new menus!</string>
     <string name="loading_download_failed">Menus not updated, displayed menus may not up to date.</string>

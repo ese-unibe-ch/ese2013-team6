@@ -17,7 +17,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.Spinner;
 import android.widget.Toast;
 
@@ -37,53 +37,61 @@ import com.google.android.gms.maps.model.LatLngBounds;
 public class MapFragment extends Fragment {
 	private static final String TRAVEL_MODE_WALKING = "walking";
 	private static final float DETAIL_ZOOM = 17;
+	public static final String MENSA_ID_LOCATION = "mensa.id";
 	private GoogleMap map;
-	private ArrayList<NamedLocation> spinnerList = new ArrayList<NamedLocation>();
-	private NamedLocation currentNamedLocation;
-	private LocationManager locationManager;
-	private ArrayAdapter<NamedLocation> namedLocationAdapter;
+	private ArrayList<NamedLocation> namedLocations = new ArrayList<NamedLocation>();
+	private ArrayAdapter<NamedLocation> namedLocationsAdapter;
+	private NamedLocation currentLocation;
 	private NamedLocation selectedLocation;
-	private Spinner spinFocus;
+	private LocationManager locationManager;
+	private Spinner locationSpinner;
 	private Model model;
+	private boolean drawPath;
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 		View view = inflater.inflate(R.layout.fragment_map, container, false);
-
 		locationManager = (LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
-		registerLocationListener();
-		Location rawLocation = getLocation();
-		if (rawLocation != null) {
-			updateCurrentNamedLocation(rawLocation);
-			spinnerList.add(currentNamedLocation);
-		}
 
-		model = Model.getInstance();
 		map = ((SupportMapFragment) getFragmentManager().findFragmentById(R.id.map)).getMap();
 
 		if (map == null)
 			return view;
 
-		spinnerList.addAll(getNamedLocationsFromMensas());
-		namedLocationAdapter = new ArrayAdapter<NamedLocation>(getActivity(), android.R.layout.simple_spinner_dropdown_item,
-				spinnerList);
-		spinFocus = (Spinner) view.findViewById(R.id.focus_spinner);
-		spinFocus.setAdapter(namedLocationAdapter);
-		addListenerOnSpinnerItemSelection(spinFocus);
-		setSpinnerDefault();
+		registerLocationListener();
 
-		Button getDirButton = (Button) view.findViewById(R.id.get_directions_button);
+		namedLocationsAdapter = new ArrayAdapter<NamedLocation>(getActivity(),
+				android.R.layout.simple_spinner_dropdown_item, namedLocations);
+
+		Location rawLocation = getLocation();
+		if (rawLocation != null)
+			updateCurrentNamedLocation(rawLocation);
+
+		model = Model.getInstance();
+
+		namedLocations.addAll(getNamedLocationsFromMensas());
+		namedLocationsAdapter.notifyDataSetChanged();
+		locationSpinner = (Spinner) view.findViewById(R.id.focus_spinner);
+		locationSpinner.setAdapter(namedLocationsAdapter);
+		addListenerOnSpinnerItemSelection(locationSpinner);
+		setSpinnerDefault();
+		ImageButton getDirButton = (ImageButton) view.findViewById(R.id.get_directions_button);
 		addOnCLickListener(getDirButton);
+		getDirButton.setImageResource(R.drawable.ic_action_directions);
 		repaintMap();
 		zoomOnContent();
 		return view;
 	}
 
 	private void updateCurrentNamedLocation(Location location) {
-		if (currentNamedLocation == null)
-			currentNamedLocation = new NamedLocation(location, "My Location", BitmapDescriptorFactory.HUE_AZURE);
-		else
-			currentNamedLocation.setLocation(location);
+		if (currentLocation == null) {
+			currentLocation = new NamedLocation(location, getActivity().getString(R.string.map_my_location), BitmapDescriptorFactory.HUE_AZURE);
+			namedLocations.add(currentLocation);
+			namedLocationsAdapter.notifyDataSetChanged();
+		} else {
+			currentLocation.setLocation(location);
+		}
+		repaintMap();
 	}
 
 	@Override
@@ -95,7 +103,7 @@ public class MapFragment extends Fragment {
 			return;
 		}
 
-		Integer mensaId = (Integer) bundle.get("mensa.id");
+		Integer mensaId = (Integer) bundle.get(MENSA_ID_LOCATION);
 		if (mensaId != null)
 			zoomTo(mensaId.intValue());
 		else
@@ -107,7 +115,6 @@ public class MapFragment extends Fragment {
 		LocationListener locationListener = new LocationListener() {
 			public void onLocationChanged(Location location) {
 				updateCurrentNamedLocation(location);
-				repaintMap();
 			}
 
 			@Override
@@ -117,7 +124,6 @@ public class MapFragment extends Fragment {
 			@Override
 			public void onProviderEnabled(String arg0) {
 				updateCurrentNamedLocation(getLocation());
-				repaintMap();
 			}
 
 			@Override
@@ -128,19 +134,19 @@ public class MapFragment extends Fragment {
 	}
 
 	private void zoomTo(int mensaId) {
-		for (NamedLocation nl : spinnerList) {
+		for (NamedLocation nl : namedLocations) {
 			if (nl.isLocationOfMensa(mensaId)) {
 				map.moveCamera(CameraUpdateFactory.newLatLngZoom(nl.getLatLng(), DETAIL_ZOOM));
 				setSpinnerTo(nl);
 				if (currentLocationAvailable()) {
-					drawRouteFromTo(currentNamedLocation, nl);
+					drawRouteFromTo(currentLocation, nl);
 				}
 			}
 		}
 	}
 
 	private void setSpinnerTo(NamedLocation location) {
-		spinFocus.setSelection(namedLocationAdapter.getPosition(location));
+		locationSpinner.setSelection(namedLocationsAdapter.getPosition(location));
 	}
 
 	private ArrayList<NamedLocation> getNamedLocationsFromMensas() {
@@ -152,8 +158,8 @@ public class MapFragment extends Fragment {
 
 	public void zoomOnContent() {
 		double minLat = Double.MAX_VALUE, maxLat = Double.MIN_VALUE, minLon = Double.MAX_VALUE, maxLon = Double.MIN_VALUE;
-		for (int i = 0; i < spinnerList.size(); i++) {
-			NamedLocation n = spinnerList.get(i);
+		for (int i = 0; i < namedLocations.size(); i++) {
+			NamedLocation n = namedLocations.get(i);
 			minLat = Math.min(minLat, n.getLatitude());
 			maxLat = Math.max(maxLat, n.getLatitude());
 			minLon = Math.min(minLon, n.getLongitude());
@@ -168,6 +174,8 @@ public class MapFragment extends Fragment {
 	private void repaintMap() {
 		map.clear();
 		drawedNamedLocations();
+		if (drawPath)
+			drawRouteFromTo(currentLocation, selectedLocation);
 	}
 
 	private void drawRouteFromTo(NamedLocation currentNamedLocation, NamedLocation destination) {
@@ -180,11 +188,11 @@ public class MapFragment extends Fragment {
 		if (downloadTask.wasSuccesful())
 			map.addPolyline(downloadTask.getPolyline());
 		else
-			Toast.makeText(getActivity(), "Could not retrieve directions", Toast.LENGTH_LONG).show();
+			Toast.makeText(getActivity(), getActivity().getString(R.string.map_directions_error), Toast.LENGTH_LONG).show();
 	}
 
 	private boolean currentLocationAvailable() {
-		return currentNamedLocation != null && locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
+		return currentLocation != null && locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
 	}
 
 	private void setSpinnerDefault() {
@@ -194,24 +202,24 @@ public class MapFragment extends Fragment {
 
 		Mensa selectedMensa;
 		if (currentLocationAvailable())
-			selectedMensa = getClosestMensa(currentNamedLocation);
+			selectedMensa = getClosestMensa(currentLocation);
 		else
 			selectedMensa = model.favoritesExist() ? model.getFavoriteMensas().get(0) : model.getMensas().get(0);
 
-		for (NamedLocation namedLoc : spinnerList)
+		for (NamedLocation namedLoc : namedLocations)
 			if (namedLoc.isLocationOfMensa(selectedMensa))
 				selectedLocation = namedLoc;
 
 		setSpinnerTo(selectedLocation);
 	}
 
-	private void addOnCLickListener(Button button) {
+	private void addOnCLickListener(ImageButton button) {
 		button.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
 				if (currentLocationAvailable()) {
+					drawPath = true;
 					repaintMap();
-					drawRouteFromTo(currentNamedLocation, selectedLocation);
 				}
 			}
 		});
@@ -222,21 +230,22 @@ public class MapFragment extends Fragment {
 			@Override
 			public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
 				NamedLocation namedLoc = (NamedLocation) parent.getItemAtPosition(position);
+				selectedLocation.resetColor();
 				selectedLocation = namedLoc;
+				selectedLocation.setColorSelected();
+				repaintMap();
 			}
 
 			@Override
 			public void onNothingSelected(AdapterView<?> arg0) {
-				// TODO Auto-generated method stub
 			}
 		});
 
 	}
 
 	private void drawedNamedLocations() {
-		for (int i = 0; i < namedLocationAdapter.getCount(); i++) {
-			map.addMarker(namedLocationAdapter.getItem(i).getMarker());
-		}
+		for (NamedLocation n : namedLocations)
+			map.addMarker(n.getMarker());
 	}
 
 	private Mensa getClosestMensa(Location location) {

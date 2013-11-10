@@ -155,10 +155,9 @@ public class DrawerMenuActivity extends FragmentActivity {
 			setDisplayedFragment(frag);
 			break;
 		case 3:
-//			frag = new SettingsFragment();
-//			setDisplayedFragment(frag);
-//			break;
-			getFragmentManager().beginTransaction().replace(android.R.id.content, new SettingsFragment()).commit();
+			frag = new SettingsFragment();
+			setDisplayedFragment(frag);
+			break;
 		case 4:
 			break;
 		}
@@ -211,7 +210,6 @@ public class DrawerMenuActivity extends FragmentActivity {
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		if (mDrawerToggle.onOptionsItemSelected(item)) {
-			
 			return true;
 		}
 		return super.onOptionsItemSelected(item);

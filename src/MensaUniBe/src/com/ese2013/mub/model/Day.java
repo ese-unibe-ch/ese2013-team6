@@ -128,4 +128,7 @@ public class Day {
 		hashCode += day;
 		return hashCode;
 	}
+	public static Day today(){
+		return new Day(Calendar.getInstance(Locale.getDefault()).getTime());
+	}
 }

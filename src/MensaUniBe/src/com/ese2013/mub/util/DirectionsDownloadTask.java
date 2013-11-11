@@ -17,7 +17,6 @@ import com.google.android.gms.maps.model.PolylineOptions;
 public class DirectionsDownloadTask extends AsyncTask<Void, Void, Void> {
 	private MapFragment mapFragment;
 	private PolylineOptions polyline;
-	private boolean successful;
 	private String url;
 
 	public DirectionsDownloadTask(LatLng origin, LatLng dest, String transportMode, MapFragment mapFragment) {
@@ -33,9 +32,8 @@ public class DirectionsDownloadTask extends AsyncTask<Void, Void, Void> {
 			DirectionsJSONParser parser = new DirectionsJSONParser();
 			routes = parser.parse(data);
 			polyline = createPolyLine(routes);
-			successful = true;
 		} catch (IOException e) {
-			successful = false;
+			polyline = null;
 		}
 		return null;
 	}
@@ -45,7 +43,7 @@ public class DirectionsDownloadTask extends AsyncTask<Void, Void, Void> {
 	}
 
 	public boolean wasSuccesful() {
-		return successful;
+		return polyline != null;
 	}
 
 	@Override

@@ -9,6 +9,7 @@
     <string name="map_directions_button">Get directions to selected Mensa</string>
     <string name="map_my_location">My Location</string>
     <string name="map_directions_error">Could not retrieve directions</string>
+    <string name="map_travelmode_walk">Walking</string>
 
     <string-array name="spinner_list">
         <item>Favorites</item>
@@ -21,5 +22,7 @@
     <string name="loading_download_failed">Menus not updated, displayed menus may not up to date.</string>
     <string name="loading_no_update_needed">Menus up to date.</string>
     <string name="loading_failure">Could not load any menus, please make sure you have internet connection</string>
+    <string name="map_travelmode_driving">Driving</string>
+    <string name="map_travelmode_bicycle">Bicycle</string>
 
 </resources>

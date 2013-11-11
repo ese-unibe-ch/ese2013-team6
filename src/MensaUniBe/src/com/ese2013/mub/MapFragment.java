@@ -1,6 +1,7 @@
 package com.ese2013.mub;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import android.content.Context;
 import android.location.Criteria;
@@ -9,6 +10,7 @@ import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -18,6 +20,9 @@ import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.ArrayAdapter;
 import android.widget.ImageButton;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
+import android.widget.RadioGroup.OnCheckedChangeListener;
 import android.widget.Spinner;
 import android.widget.Toast;
 
@@ -29,14 +34,13 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
-import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 
-//TODO: Zoom, Settings TravelMode
+//TODO: Zoom
 
 public class MapFragment extends Fragment {
-	private static final String TRAVEL_MODE_WALKING = "walking";
-	private static final float DETAIL_ZOOM = 17;
+	private static final String TRAVEL_MODE_WALKING = "walking", TRAVEL_MODE_BICYCLE = "bicycle",
+			TRAVEL_MODE_DRIVING = "driving";
 	public static final String MENSA_ID_LOCATION = "mensa.id";
 	private GoogleMap map;
 	private ArrayList<NamedLocation> namedLocations = new ArrayList<NamedLocation>();
@@ -47,6 +51,7 @@ public class MapFragment extends Fragment {
 	private Spinner locationSpinner;
 	private Model model;
 	private boolean drawPath;
+	private String travelMode = TRAVEL_MODE_WALKING;
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -58,40 +63,29 @@ public class MapFragment extends Fragment {
 		if (map == null)
 			return view;
 
+		model = Model.getInstance();
 		registerLocationListener();
+		setRadioGroupListener(view);
+
+		ImageButton getDirButton = (ImageButton) view.findViewById(R.id.get_directions_button);
+		addOnCLickListener(getDirButton);
+		getDirButton.setImageResource(R.drawable.ic_action_directions);
 
 		namedLocationsAdapter = new ArrayAdapter<NamedLocation>(getActivity(),
 				android.R.layout.simple_spinner_dropdown_item, namedLocations);
+		namedLocations.addAll(getNamedLocationsFromMensas());
+		namedLocationsAdapter.notifyDataSetChanged();
+		locationSpinner = (Spinner) view.findViewById(R.id.focus_spinner);
+		locationSpinner.setAdapter(namedLocationsAdapter);
 
 		Location rawLocation = getLocation();
 		if (rawLocation != null)
 			updateCurrentNamedLocation(rawLocation);
 
-		model = Model.getInstance();
-
-		namedLocations.addAll(getNamedLocationsFromMensas());
-		namedLocationsAdapter.notifyDataSetChanged();
-		locationSpinner = (Spinner) view.findViewById(R.id.focus_spinner);
-		locationSpinner.setAdapter(namedLocationsAdapter);
 		addListenerOnSpinnerItemSelection(locationSpinner);
 		setSpinnerDefault();
-		ImageButton getDirButton = (ImageButton) view.findViewById(R.id.get_directions_button);
-		addOnCLickListener(getDirButton);
-		getDirButton.setImageResource(R.drawable.ic_action_directions);
-		repaintMap();
-		zoomOnContent();
-		return view;
-	}
 
-	private void updateCurrentNamedLocation(Location location) {
-		if (currentLocation == null) {
-			currentLocation = new NamedLocation(location, getActivity().getString(R.string.map_my_location), BitmapDescriptorFactory.HUE_AZURE);
-			namedLocations.add(currentLocation);
-			namedLocationsAdapter.notifyDataSetChanged();
-		} else {
-			currentLocation.setLocation(location);
-		}
-		repaintMap();
+		return view;
 	}
 
 	@Override
@@ -99,15 +93,56 @@ public class MapFragment extends Fragment {
 		super.onViewCreated(view, savedInstanceState);
 		Bundle bundle = getArguments();
 		if (bundle == null || bundle.isEmpty()) {
-			zoomOnContent();
+			repaintMap();
 			return;
 		}
 
 		Integer mensaId = (Integer) bundle.get(MENSA_ID_LOCATION);
-		if (mensaId != null)
-			zoomTo(mensaId.intValue());
-		else
-			zoomOnContent();
+		if (mensaId != null) {
+			for (NamedLocation nl : namedLocations) {
+				if (nl.isLocationOfMensa(mensaId.intValue())) {
+					setSpinnerTo(nl);
+					if (currentLocationAvailable())
+						drawPath = true;
+				}
+			}
+		}
+		repaintMap();
+	}
+
+	private void setRadioGroupListener(View view) {
+		RadioGroup radioGroup = (RadioGroup) view.findViewById(R.id.rg_modes);
+		radioGroup.setOnCheckedChangeListener(new OnCheckedChangeListener() {
+
+			@Override
+			public void onCheckedChanged(RadioGroup group, int checkedId) {
+				RadioButton radioButton = (RadioButton) getView().findViewById(checkedId);
+				switch (radioButton.getId()) {
+				case R.id.rb_bicycling:
+					travelMode = TRAVEL_MODE_BICYCLE;
+					break;
+				case R.id.rb_walking:
+					travelMode = TRAVEL_MODE_WALKING;
+					break;
+				case R.id.rb_driving:
+					travelMode = TRAVEL_MODE_DRIVING;
+					break;
+				}
+				repaintMap();
+			}
+		});
+	}
+
+	private void updateCurrentNamedLocation(Location location) {
+		if (currentLocation == null) {
+			currentLocation = new NamedLocation(location, getActivity().getString(R.string.map_my_location),
+					BitmapDescriptorFactory.HUE_AZURE);
+			namedLocations.add(currentLocation);
+			namedLocationsAdapter.notifyDataSetChanged();
+		} else {
+			currentLocation.setLocation(location);
+		}
+		repaintMap();
 	}
 
 	private void registerLocationListener() {
@@ -133,18 +168,6 @@ public class MapFragment extends Fragment {
 		locationManager.requestLocationUpdates(provider, 1000, 15, locationListener);
 	}
 
-	private void zoomTo(int mensaId) {
-		for (NamedLocation nl : namedLocations) {
-			if (nl.isLocationOfMensa(mensaId)) {
-				map.moveCamera(CameraUpdateFactory.newLatLngZoom(nl.getLatLng(), DETAIL_ZOOM));
-				setSpinnerTo(nl);
-				if (currentLocationAvailable()) {
-					drawRouteFromTo(currentLocation, nl);
-				}
-			}
-		}
-	}
-
 	private void setSpinnerTo(NamedLocation location) {
 		locationSpinner.setSelection(namedLocationsAdapter.getPosition(location));
 	}
@@ -156,31 +179,38 @@ public class MapFragment extends Fragment {
 		return results;
 	}
 
-	public void zoomOnContent() {
-		double minLat = Double.MAX_VALUE, maxLat = Double.MIN_VALUE, minLon = Double.MAX_VALUE, maxLon = Double.MIN_VALUE;
-		for (int i = 0; i < namedLocations.size(); i++) {
-			NamedLocation n = namedLocations.get(i);
-			minLat = Math.min(minLat, n.getLatitude());
-			maxLat = Math.max(maxLat, n.getLatitude());
-			minLon = Math.min(minLon, n.getLongitude());
-			maxLon = Math.max(maxLon, n.getLongitude());
-		}
-		LatLng southWest = new LatLng(minLat, minLon);
-		LatLng northEast = new LatLng(maxLat, maxLon);
-		LatLngBounds bounds = new LatLngBounds(southWest, northEast);
-		map.moveCamera(CameraUpdateFactory.newLatLngBounds(bounds, 400, 400, 10));
+	private void zoomOnContent() {
+		zoomOnContent(namedLocations);
+	}
+
+	private void zoomOnContent(NamedLocation loc1, NamedLocation loc2) {
+		List<NamedLocation> list = new ArrayList<NamedLocation>();
+		list.add(loc1);
+		list.add(loc2);
+		zoomOnContent(list);
+	}
+
+	private void zoomOnContent(List<NamedLocation> locations) {
+		LatLngBounds.Builder bounds = new LatLngBounds.Builder();
+		for (NamedLocation l : locations)
+			bounds.include(l.getLatLng());
+		map.moveCamera(CameraUpdateFactory.newLatLngBounds(bounds.build(), 400, 400, 15));
 	}
 
 	private void repaintMap() {
 		map.clear();
 		drawedNamedLocations();
-		if (drawPath)
+		if (drawPath) {
 			drawRouteFromTo(currentLocation, selectedLocation);
+			zoomOnContent(currentLocation, selectedLocation);
+		} else {
+			zoomOnContent();
+		}
 	}
 
 	private void drawRouteFromTo(NamedLocation currentNamedLocation, NamedLocation destination) {
 		DirectionsDownloadTask downloadTask = new DirectionsDownloadTask(currentNamedLocation.getLatLng(),
-				destination.getLatLng(), TRAVEL_MODE_WALKING, this);
+				destination.getLatLng(), travelMode, this);
 		downloadTask.execute();
 	}
 
@@ -188,7 +218,11 @@ public class MapFragment extends Fragment {
 		if (downloadTask.wasSuccesful())
 			map.addPolyline(downloadTask.getPolyline());
 		else
-			Toast.makeText(getActivity(), getActivity().getString(R.string.map_directions_error), Toast.LENGTH_LONG).show();
+			showDirectionsError();
+	}
+
+	private void showDirectionsError() {
+		Toast.makeText(getActivity(), getActivity().getString(R.string.map_directions_error), Toast.LENGTH_LONG).show();
 	}
 
 	private boolean currentLocationAvailable() {
@@ -196,7 +230,6 @@ public class MapFragment extends Fragment {
 	}
 
 	private void setSpinnerDefault() {
-
 		if (model.noMensasLoaded())
 			return;
 
@@ -276,10 +309,12 @@ public class MapFragment extends Fragment {
 	 */
 	@Override
 	public void onDestroyView() {
-		super.onDestroyView();
-		Fragment fragment = (getFragmentManager().findFragmentById(R.id.map));
-		FragmentTransaction ft = getActivity().getSupportFragmentManager().beginTransaction();
+		// TODO Crashes on rotate device
+		FragmentManager fm = getActivity().getSupportFragmentManager();
+		Fragment fragment = fm.findFragmentById(R.id.map);
+		FragmentTransaction ft = fm.beginTransaction();
 		ft.remove(fragment);
-		ft.commit();
+		ft.commitAllowingStateLoss();
+		super.onDestroyView();
 	}
 }

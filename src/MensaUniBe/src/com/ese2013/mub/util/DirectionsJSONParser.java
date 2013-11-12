@@ -1,7 +1,6 @@
 package com.ese2013.mub.util;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 import org.json.JSONArray;
@@ -25,29 +24,18 @@ public class DirectionsJSONParser {
 	 * Receives a JSONObject and returns a list of lists containing latitude and
 	 * longitude
 	 */
-	public List<HashMap<String, String>> parse(JSONObject jObject) {
-		List<HashMap<String, String>> path = new ArrayList<HashMap<String, String>>();
+	public List<LatLng> parse(JSONObject jObject) {
+		List<LatLng> path = new ArrayList<LatLng>();
 		try {
 			JSONArray jRoutes = jObject.getJSONArray("routes");
-			/** We only need 1 route **/
+			// We only need 1 route
 			JSONArray jLegs = jRoutes.getJSONObject(0).getJSONArray("legs");
-
 			for (int j = 0; j < jLegs.length(); j++) {
 				JSONArray jSteps = jLegs.getJSONObject(j).getJSONArray("steps");
-
 				for (int k = 0; k < jSteps.length(); k++) {
-					String polyline = "";
-					polyline = jSteps.getJSONObject(k).getJSONObject("polyline").getString("points");
+					String polyline = jSteps.getJSONObject(k).getJSONObject("polyline").getString("points");
 					List<LatLng> list = decodePoly(polyline);
-					System.out.println("---- mofos -----");
-					for (LatLng l : list) 
-						System.out.println(l);
-					for (int l = 0; l < list.size(); l++) {
-						HashMap<String, String> hm = new HashMap<String, String>();
-						hm.put("lat", Double.toString(((LatLng) list.get(l)).latitude));
-						hm.put("lng", Double.toString(((LatLng) list.get(l)).longitude));
-						path.add(hm);
-					}
+					path.addAll(list);
 				}
 			}
 		} catch (JSONException e) {

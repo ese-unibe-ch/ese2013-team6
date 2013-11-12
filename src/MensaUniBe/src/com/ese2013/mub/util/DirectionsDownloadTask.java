@@ -1,8 +1,6 @@
 package com.ese2013.mub.util;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 import org.json.JSONObject;
@@ -30,7 +28,7 @@ public class DirectionsDownloadTask extends AsyncTask<Void, Void, Void> {
 
 	@Override
 	protected Void doInBackground(Void... args) {
-		List<HashMap<String, String>> path = null;
+		List<LatLng> path = null;
 		try {
 			JSONObject data = new JsonDataRequest(url).execute();
 			DirectionsJSONParser parser = new DirectionsJSONParser();
@@ -56,27 +54,12 @@ public class DirectionsDownloadTask extends AsyncTask<Void, Void, Void> {
 		mapFragment.onDirectionsDownloadFinished(this);
 	}
 
-	private static PolylineOptions createPolyLine(List<HashMap<String, String>> path) {
+	private static PolylineOptions createPolyLine(List<LatLng> path) {
 		PolylineOptions lineOptions = new PolylineOptions();
-		List<LatLng> points = getPointsInPath(path);
-
-		lineOptions.addAll(points);
+		lineOptions.addAll(path);
 		lineOptions.width(5);
 		lineOptions.color(Color.RED);
-
 		return lineOptions;
-	}
-
-	private static List<LatLng> getPointsInPath(List<HashMap<String, String>> path) {
-		List<LatLng> points = new ArrayList<LatLng>();
-		for (int j = 0; j < path.size(); j++) {
-			HashMap<String, String> point = path.get(j);
-			double lat = Double.parseDouble(point.get("lat"));
-			double lng = Double.parseDouble(point.get("lng"));
-			LatLng position = new LatLng(lat, lng);
-			points.add(position);
-		}
-		return points;
 	}
 
 	private static String getDirectionsUrl(LatLng origin, LatLng dest, String transportMode) {

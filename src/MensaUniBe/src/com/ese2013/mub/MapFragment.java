@@ -57,7 +57,6 @@ public class MapFragment extends Fragment {
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 		View view = inflater.inflate(R.layout.fragment_map, container, false);
 		locationManager = (LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
-
 		map = ((SupportMapFragment) getFragmentManager().findFragmentById(R.id.map)).getMap();
 
 		if (map == null)
@@ -200,11 +199,13 @@ public class MapFragment extends Fragment {
 	private void repaintMap() {
 		map.clear();
 		drawedNamedLocations();
-		if (drawPath) {
-			drawRouteFromTo(currentLocation, selectedLocation);
-			zoomOnContent(currentLocation, selectedLocation);
-		} else {
-			zoomOnContent();
+		if (model.mensasLoaded()) {
+			if (drawPath) {
+				drawRouteFromTo(currentLocation, selectedLocation);
+				zoomOnContent(currentLocation, selectedLocation);
+			} else {
+				zoomOnContent();
+			}
 		}
 	}
 
@@ -309,12 +310,14 @@ public class MapFragment extends Fragment {
 	 */
 	@Override
 	public void onDestroyView() {
-		// TODO Crashes on rotate device
+		super.onDestroyView();
+		if (!getActivity().isChangingConfigurations())
+			removeMapFragment();
+	}
+
+	private void removeMapFragment() {
 		FragmentManager fm = getActivity().getSupportFragmentManager();
 		Fragment fragment = fm.findFragmentById(R.id.map);
-		FragmentTransaction ft = fm.beginTransaction();
-		ft.remove(fragment);
-		ft.commitAllowingStateLoss();
-		super.onDestroyView();
+		fm.beginTransaction().remove(fragment).commitAllowingStateLoss();
 	}
 }

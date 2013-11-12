@@ -11,7 +11,6 @@ import android.location.LocationManager;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -73,7 +72,7 @@ public class MapFragment extends Fragment {
 		namedLocationsAdapter = new ArrayAdapter<NamedLocation>(getActivity(),
 				android.R.layout.simple_spinner_dropdown_item, namedLocations);
 		namedLocations.addAll(getNamedLocationsFromMensas());
-		namedLocationsAdapter.notifyDataSetChanged();
+
 		locationSpinner = (Spinner) view.findViewById(R.id.focus_spinner);
 		locationSpinner.setAdapter(namedLocationsAdapter);
 
@@ -136,8 +135,8 @@ public class MapFragment extends Fragment {
 		if (currentLocation == null) {
 			currentLocation = new NamedLocation(location, getActivity().getString(R.string.map_my_location),
 					BitmapDescriptorFactory.HUE_AZURE);
-			namedLocations.add(currentLocation);
-			namedLocationsAdapter.notifyDataSetChanged();
+			// namedLocations.add(currentLocation);
+			// namedLocationsAdapter.notifyDataSetChanged();
 		} else {
 			currentLocation.setLocation(location);
 		}
@@ -193,6 +192,8 @@ public class MapFragment extends Fragment {
 		LatLngBounds.Builder bounds = new LatLngBounds.Builder();
 		for (NamedLocation l : locations)
 			bounds.include(l.getLatLng());
+		if (currentLocation != null)
+			bounds.include(currentLocation.getLatLng());
 		map.moveCamera(CameraUpdateFactory.newLatLngBounds(bounds.build(), 400, 400, 15));
 	}
 
@@ -280,6 +281,8 @@ public class MapFragment extends Fragment {
 	private void drawedNamedLocations() {
 		for (NamedLocation n : namedLocations)
 			map.addMarker(n.getMarker());
+		if (currentLocation != null)
+			map.addMarker(currentLocation.getMarker());
 	}
 
 	private Mensa getClosestMensa(Location location) {

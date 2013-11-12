@@ -31,42 +31,62 @@ public class DrawerMenuActivity extends FragmentActivity {
 	private DrawerLayout mDrawerLayout;
 	private ListView mDrawerList;
 	private Spinner spinner;
+	private int selectedPosition = -1;
+	private static final int HOME_INDEX = 0, MAP_INDEX = 2;
+	private Model model;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		new Model(this.getApplicationContext());
+		model = new Model(getApplicationContext());
 
 		setContentView(R.layout.activity_drawer_menu);
-
-		String[] menuItemNames = { "Home", "Mensa List", "Map" };
-
 		mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
 		mDrawerLayout.setDrawerShadow(R.drawable.drawer_shadow, GravityCompat.START);
 		mDrawerList = (ListView) findViewById(R.id.left_drawer);
 
-		// Set the adapter for the list view
+		// Set the adapter for the drawer menu list
+		String[] menuItemNames = { "Home", "Mensa List", "Map" };
 		mDrawerList.setAdapter(new ArrayAdapter<String>(this, R.layout.drawer_list_item, menuItemNames));
 
 		// enable ActionBar app icon to behave as action to toggle nav drawer
-
 		ActionBar actionBar = getActionBar();
 		actionBar.setDisplayHomeAsUpEnabled(true);
 		actionBar.setHomeButtonEnabled(true);
-		/* spinner */
 
 		// Set up the action bar to show a dropdown list.
+		createSpinner();
+		actionBar.setDisplayShowTitleEnabled(false);
+		actionBar.setCustomView(spinner);
+		actionBar.setDisplayShowCustomEnabled(false);
+
+		// select home in drawer menu
+		selectItem(HOME_INDEX, true);
+
+		mDrawerToggle = new ActionBarDrawerToggle(this, mDrawerLayout, R.drawable.ic_drawer, R.string.drawer_open,
+				R.string.drawer_close) {
+			public void onDrawerClosed(View view) {
+				invalidateOptionsMenu();
+			}
+
+			public void onDrawerOpened(View drawerView) {
+				invalidateOptionsMenu();
+			}
+		};
+
+		mDrawerLayout.setDrawerListener(mDrawerToggle);
+		mDrawerToggle.syncState();
+		mDrawerList.setOnItemClickListener(new DrawerItemClickListener());
+	}
+
+	private void createSpinner() {
 		ArrayAdapter<CharSequence> spinnerAdapter = ArrayAdapter.createFromResource(this, R.array.spinner_list,
 				android.R.layout.simple_spinner_dropdown_item);
-
-		actionBar.setDisplayShowTitleEnabled(false);
-		Spinner navigationSpinner = new Spinner(this);
-		navigationSpinner.setAdapter(spinnerAdapter);
-		actionBar.setCustomView(navigationSpinner);
+		spinner = new Spinner(this);
+		spinner.setAdapter(spinnerAdapter);
 		OnItemSelectedListener spinnerNavigationListener = new OnItemSelectedListener() {
 			@Override
 			public void onItemSelected(AdapterView<?> arg0, View arg1, int position, long arg3) {
-
 				HomeFragment frag = new HomeFragment();
 				switch (position) {
 				case 0:
@@ -93,38 +113,13 @@ public class DrawerMenuActivity extends FragmentActivity {
 			public void onNothingSelected(AdapterView<?> arg0) {
 			}
 		};
-		navigationSpinner.setOnItemSelectedListener(spinnerNavigationListener);
-		actionBar.setDisplayShowCustomEnabled(false);
-		spinner = navigationSpinner;
-		/* end of spinner */
-
-		selectItem(0);
-
-		mDrawerToggle = new ActionBarDrawerToggle(this, mDrawerLayout, R.drawable.ic_drawer, R.string.drawer_open,
-				R.string.drawer_close) {
-			public void onDrawerClosed(View view) {
-				invalidateOptionsMenu(); // creates call to
-											// onPrepareOptionsMenu()
-			}
-
-			public void onDrawerOpened(View drawerView) {
-				invalidateOptionsMenu(); // creates call to
-											// onPrepareOptionsMenu()
-			}
-		};
-
-		mDrawerLayout.setDrawerListener(mDrawerToggle);
-		mDrawerToggle.syncState();
-
-		// Set the list's click listener
-		mDrawerList.setOnItemClickListener(new DrawerItemClickListener());
-
+		spinner.setOnItemSelectedListener(spinnerNavigationListener);
 	}
 
 	@Override
 	public void onPause() {
 		super.onPause();
-		Model.getInstance().saveFavorites();
+		model.saveFavorites();
 	}
 
 	/**
@@ -134,34 +129,36 @@ public class DrawerMenuActivity extends FragmentActivity {
 	private class DrawerItemClickListener implements ListView.OnItemClickListener {
 		@Override
 		public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-			selectItem(position);
+			selectItem(position, true);
 		}
 	}
 
-	private void selectItem(int position) {
+	private void selectItem(int position, boolean instantiateFragment) {
 		// update the main content by replacing fragments
-		Fragment frag;
-		switch (position) {
-		case 0:
-			frag = new HomeFragment();
-			setDisplayedFragment(frag);
-			break;
-		case 1:
-			frag = new MensaListFragment();
-			setDisplayedFragment(frag);
-			break;
-		case 2:
-			frag = new MapFragment();
-			setDisplayedFragment(frag);
-			break;
-		case 3:
-			break;
+		if (instantiateFragment && selectedPosition != position) {
+			Fragment frag;
+			switch (position) {
+			case 0:
+				frag = new HomeFragment();
+				setDisplayedFragment(frag);
+				break;
+			case 1:
+				frag = new MensaListFragment();
+				setDisplayedFragment(frag);
+				break;
+			case 2:
+				frag = new MapFragment();
+				setDisplayedFragment(frag);
+				break;
+			case 3:
+				break;
+			}
 		}
-
+		selectedPosition = position;
 		// update selected item, then close drawer
 		// TODO should also update the action bar if needed, maybe specific for
 		// each fragment?
-		mDrawerList.setItemChecked(position, true);
+		mDrawerList.setItemChecked(selectedPosition, true);
 		mDrawerLayout.closeDrawer(mDrawerList);
 	}
 
@@ -229,13 +226,15 @@ public class DrawerMenuActivity extends FragmentActivity {
 		frag.setShowAllByDay(true);
 		spinner.setSelection(1);
 		setDisplayedFragment(frag);
+		selectItem(HOME_INDEX, false);
 	}
 
 	public void refreshHomeActivity() {
 		HomeFragment frag = new HomeFragment();
 		frag.setFavorites(true);
 		frag.setShowAllByDay(false);
-		this.setDisplayedFragment(frag);
+		setDisplayedFragment(frag);
+		selectItem(HOME_INDEX, false);
 	}
 
 	public void displayMapAtMensa(Mensa mensa) {
@@ -244,5 +243,6 @@ public class DrawerMenuActivity extends FragmentActivity {
 		args.putInt(MapFragment.MENSA_ID_LOCATION, mensa.getId());
 		mapFragment.setArguments(args);
 		setDisplayedFragment(mapFragment);
+		selectItem(MAP_INDEX, false);
 	}
 }

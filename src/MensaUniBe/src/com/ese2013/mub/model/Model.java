@@ -52,9 +52,13 @@ public class Model extends Observable {
 	}
 
 	public boolean noMensasLoaded() {
-		return mensas.size() == 0;
+		return !mensasLoaded();
 	}
-	
+
+	public boolean mensasLoaded() {
+		return mensas.size() > 0;
+	}
+
 	public boolean favoritesExist() {
 		for (Mensa m : mensas)
 			if (m.isFavorite())

@@ -21,6 +21,7 @@ import com.ese2013.mub.util.Observer;
 
 public class HomeFragment extends Fragment implements Observer {
 	
+	public static final String POSITION = "com.ese2013.mub.HomeFragment.position";
 	private FragmentStatePagerAdapter sectionsPagerAdapter;
 	private ViewPager viewPager;
 
@@ -81,7 +82,7 @@ public class HomeFragment extends Fragment implements Observer {
 	public void handleGivenArguments(){
 		if(getArguments() != null){
 			Bundle bundle = getArguments();
-			int pos = bundle.getInt("POSITION", 0);
+			int pos = bundle.getInt(POSITION, 0);
 			viewPager.setCurrentItem(pos-1);
 		}
 	}

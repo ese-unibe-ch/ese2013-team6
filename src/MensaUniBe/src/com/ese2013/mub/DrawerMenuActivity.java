@@ -223,7 +223,7 @@ public class DrawerMenuActivity extends FragmentActivity {
 	public void launchByMensaAtGivenPage(int position) {
 		HomeFragment frag = new HomeFragment();
 		Bundle args = new Bundle();
-		args.putInt("POSITION", position);
+		args.putInt(HomeFragment.POSITION, position);
 		frag.setArguments(args);
 		frag.setFavorites(false);
 		frag.setShowAllByDay(true);

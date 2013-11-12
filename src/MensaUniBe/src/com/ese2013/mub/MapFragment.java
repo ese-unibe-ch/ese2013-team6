@@ -35,8 +35,6 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLngBounds;
 
-//TODO: Zoom
-
 public class MapFragment extends Fragment {
 	private static final String TRAVEL_MODE_WALKING = "walking", TRAVEL_MODE_BICYCLE = "bicycle",
 			TRAVEL_MODE_DRIVING = "driving";
@@ -101,7 +99,7 @@ public class MapFragment extends Fragment {
 				if (nl.isLocationOfMensa(mensaId.intValue())) {
 					setSpinnerTo(nl);
 					if (currentLocationAvailable())
-						drawPath = true;
+						onClickDirectionsButton(getView().findViewById(R.id.get_directions_button));
 				}
 			}
 		}
@@ -252,12 +250,19 @@ public class MapFragment extends Fragment {
 		button.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				if (currentLocationAvailable()) {
-					drawPath = true;
-					repaintMap();
-				}
+				onClickDirectionsButton(v);
 			}
 		});
+	}
+
+	private void onClickDirectionsButton(View view) {
+		if (currentLocationAvailable()) {
+			drawPath = !drawPath;
+			ImageButton getDirButton = (ImageButton) view;
+			getDirButton.setImageResource(drawPath ? R.drawable.ic_action_directions_active
+					: R.drawable.ic_action_directions);
+			repaintMap();
+		}
 	}
 
 	private void addListenerOnSpinnerItemSelection(Spinner spinFocus) {
@@ -321,6 +326,7 @@ public class MapFragment extends Fragment {
 	private void removeMapFragment() {
 		FragmentManager fm = getActivity().getSupportFragmentManager();
 		Fragment fragment = fm.findFragmentById(R.id.map);
-		fm.beginTransaction().remove(fragment).commitAllowingStateLoss();
+		if (fragment != null)
+			fm.beginTransaction().remove(fragment).commitAllowingStateLoss();
 	}
 }

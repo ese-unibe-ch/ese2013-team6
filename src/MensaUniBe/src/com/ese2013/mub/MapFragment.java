@@ -35,6 +35,15 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLngBounds;
 
+/**
+ * Displays a map showing all the Mensas and, if possible, the location of the
+ * user. Allows to display the path to a specific Mensa.
+ * 
+ * At startup the closest Mensa is selected if possible, else a favorite Mensa
+ * if one exists. If no closest or favorite Mensa are available, just the first
+ * Mensa in the Mensa List is selected.
+ * 
+ */
 public class MapFragment extends Fragment {
 	private static final String TRAVEL_MODE_WALKING = "walking", TRAVEL_MODE_BICYCLE = "bicycle",
 			TRAVEL_MODE_DRIVING = "driving";
@@ -50,6 +59,9 @@ public class MapFragment extends Fragment {
 	private boolean drawPath;
 	private String travelMode = TRAVEL_MODE_WALKING;
 
+	/**
+	 * Sets up the map view, listeners and default values.
+	 */
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 		View view = inflater.inflate(R.layout.fragment_map, container, false);
@@ -60,30 +72,34 @@ public class MapFragment extends Fragment {
 			return view;
 
 		model = Model.getInstance();
-		registerLocationListener();
+		setLocationListener();
 		setRadioGroupListener(view);
 
 		ImageButton getDirButton = (ImageButton) view.findViewById(R.id.get_directions_button);
-		addOnCLickListener(getDirButton);
+		setDirectionsButtonListener(getDirButton);
 		getDirButton.setImageResource(R.drawable.ic_action_directions);
 
 		namedLocationsAdapter = new ArrayAdapter<NamedLocation>(getActivity(),
 				android.R.layout.simple_spinner_dropdown_item, namedLocations);
-		namedLocations.addAll(getNamedLocationsFromMensas());
+		namedLocations.addAll(createNamedLocationsFromMensas());
 
 		locationSpinner = (Spinner) view.findViewById(R.id.focus_spinner);
 		locationSpinner.setAdapter(namedLocationsAdapter);
 
 		Location rawLocation = getLocation();
 		if (rawLocation != null)
-			updateCurrentNamedLocation(rawLocation);
+			updateCurrentLocation(rawLocation);
 
-		addListenerOnSpinnerItemSelection(locationSpinner);
+		setSpinnerItemSelectionListener(locationSpinner);
 		setSpinnerDefault();
 
 		return view;
 	}
 
+	/**
+	 * Is called after view was created. We check here the passed bundle for a
+	 * Mensa (represented by id) to select and draw the path to.
+	 */
 	@Override
 	public void onViewCreated(View view, Bundle savedInstanceState) {
 		super.onViewCreated(view, savedInstanceState);
@@ -104,6 +120,48 @@ public class MapFragment extends Fragment {
 			}
 		}
 		repaintMap();
+	}
+
+	/**
+	 * Sets the spinner to his default value. If possible, it is set to the
+	 * closest mensa. Else to a favorite Mensa if one exists. If there is no
+	 * closest Mensa and no favorite Mensa, just the first Mensa in the Mensa
+	 * List is selected.
+	 */
+	private void setSpinnerDefault() {
+		if (model.noMensasLoaded())
+			return;
+
+		Mensa selectedMensa;
+		if (currentLocationAvailable())
+			selectedMensa = getClosestMensa(currentLocation);
+		else
+			selectedMensa = model.favoritesExist() ? model.getFavoriteMensas().get(0) : model.getMensas().get(0);
+
+		for (NamedLocation namedLoc : namedLocations)
+			if (namedLoc.isLocationOfMensa(selectedMensa))
+				selectedLocation = namedLoc;
+
+		setSpinnerTo(selectedLocation);
+	}
+
+	private void setDirectionsButtonListener(ImageButton button) {
+		button.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				onClickDirectionsButton(v);
+			}
+		});
+	}
+
+	private void onClickDirectionsButton(View view) {
+		if (currentLocationAvailable()) {
+			drawPath = !drawPath;
+			ImageButton getDirButton = (ImageButton) view;
+			getDirButton.setImageResource(drawPath ? R.drawable.ic_action_directions_active
+					: R.drawable.ic_action_directions);
+			repaintMap();
+		}
 	}
 
 	private void setRadioGroupListener(View view) {
@@ -129,23 +187,33 @@ public class MapFragment extends Fragment {
 		});
 	}
 
-	private void updateCurrentNamedLocation(Location location) {
-		if (currentLocation == null) {
-			currentLocation = new NamedLocation(location, getActivity().getString(R.string.map_my_location),
-					BitmapDescriptorFactory.HUE_AZURE);
-			// namedLocations.add(currentLocation);
-			// namedLocationsAdapter.notifyDataSetChanged();
-		} else {
-			currentLocation.setLocation(location);
-		}
-		repaintMap();
+	private void setSpinnerItemSelectionListener(Spinner spinFocus) {
+		spinFocus.setOnItemSelectedListener(new OnItemSelectedListener() {
+			@Override
+			public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+				NamedLocation namedLoc = (NamedLocation) parent.getItemAtPosition(position);
+				selectedLocation.resetColor();
+				selectedLocation = namedLoc;
+				selectedLocation.setColorSelected();
+				repaintMap();
+			}
+
+			@Override
+			public void onNothingSelected(AdapterView<?> arg0) {
+			}
+		});
+
 	}
 
-	private void registerLocationListener() {
+	/**
+	 * Sets up the Location Listener. The listener is used to update the current
+	 * location if the location of the phone has been changed.
+	 */
+	private void setLocationListener() {
 		String provider = locationManager.getBestProvider(new Criteria(), true);
 		LocationListener locationListener = new LocationListener() {
 			public void onLocationChanged(Location location) {
-				updateCurrentNamedLocation(location);
+				updateCurrentLocation(location);
 			}
 
 			@Override
@@ -154,7 +222,7 @@ public class MapFragment extends Fragment {
 
 			@Override
 			public void onProviderEnabled(String arg0) {
-				updateCurrentNamedLocation(getLocation());
+				updateCurrentLocation(getLocation());
 			}
 
 			@Override
@@ -164,19 +232,68 @@ public class MapFragment extends Fragment {
 		locationManager.requestLocationUpdates(provider, 1000, 15, locationListener);
 	}
 
+	/**
+	 * Updates the current location and redraws the map.
+	 * 
+	 * @param location
+	 *            the new current Location. Must not be null.
+	 */
+	private void updateCurrentLocation(Location location) {
+		if (currentLocation == null)
+			currentLocation = new NamedLocation(location, getActivity().getString(R.string.map_my_location),
+					BitmapDescriptorFactory.HUE_AZURE);
+		else
+			currentLocation.setLocation(location);
+
+		repaintMap();
+	}
+
+	/**
+	 * Sets the spinner to a given NamedLocation
+	 * 
+	 * @param location
+	 *            NamedLocation for the spinner to be set to. Must be in the
+	 *            namedLocationsAdapter.
+	 */
 	private void setSpinnerTo(NamedLocation location) {
 		locationSpinner.setSelection(namedLocationsAdapter.getPosition(location));
 	}
 
-	private ArrayList<NamedLocation> getNamedLocationsFromMensas() {
+	/**
+	 * Creates a List of NamedLocations representing the Mensas.
+	 * 
+	 * @return List of NamedLocations.
+	 */
+	private List<NamedLocation> createNamedLocationsFromMensas() {
 		ArrayList<NamedLocation> results = new ArrayList<NamedLocation>();
 		for (Mensa m : model.getMensas())
 			results.add(new NamedLocation(m));
 		return results;
 	}
 
+	/**
+	 * Repaints the map, also updates the displayed path to a Mensa if needed
+	 * and the zoom.
+	 */
+	private void repaintMap() {
+		map.clear();
+		drawAllLocations();
+		if (model.mensasLoaded()) {
+			if (drawPath)
+				drawRouteFromTo(currentLocation, selectedLocation);
+			zoomOnContent();
+		}
+	}
+
+	/**
+	 * Sets the zoom to either show all Mensas or, if the path is drawn, to just
+	 * show the current location and the target Mensa.
+	 */
 	private void zoomOnContent() {
-		zoomOnContent(namedLocations);
+		if (drawPath)
+			zoomOnContent(currentLocation, selectedLocation);
+		else
+			zoomOnContent(namedLocations);
 	}
 
 	private void zoomOnContent(NamedLocation loc1, NamedLocation loc2) {
@@ -195,25 +312,27 @@ public class MapFragment extends Fragment {
 		map.moveCamera(CameraUpdateFactory.newLatLngBounds(bounds.build(), 400, 400, 15));
 	}
 
-	private void repaintMap() {
-		map.clear();
-		drawedNamedLocations();
-		if (model.mensasLoaded()) {
-			if (drawPath) {
-				drawRouteFromTo(currentLocation, selectedLocation);
-				zoomOnContent(currentLocation, selectedLocation);
-			} else {
-				zoomOnContent();
-			}
-		}
-	}
-
-	private void drawRouteFromTo(NamedLocation currentNamedLocation, NamedLocation destination) {
-		DirectionsDownloadTask downloadTask = new DirectionsDownloadTask(currentNamedLocation.getLatLng(),
-				destination.getLatLng(), travelMode, this);
+	/**
+	 * Calculates and draws the path from the given origin to destination using
+	 * the callback method onDirectionsDownloadFinished
+	 * 
+	 * @param origin
+	 *            Start NamedLocation. Must not be null.
+	 * @param destination
+	 *            Goal NamedLocation. Must not be null.
+	 */
+	private void drawRouteFromTo(NamedLocation origin, NamedLocation destination) {
+		DirectionsDownloadTask downloadTask = new DirectionsDownloadTask(origin.getLatLng(), destination.getLatLng(),
+				travelMode, this);
 		downloadTask.execute();
 	}
 
+	/**
+	 * Callback from DirectionsDownloadTask.
+	 * 
+	 * @param downloadTask
+	 *            the Task which downloaded the directions.
+	 */
 	public void onDirectionsDownloadFinished(DirectionsDownloadTask downloadTask) {
 		if (downloadTask.wasSuccesful())
 			map.addPolyline(downloadTask.getPolyline());
@@ -229,67 +348,20 @@ public class MapFragment extends Fragment {
 		return currentLocation != null && locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
 	}
 
-	private void setSpinnerDefault() {
-		if (model.noMensasLoaded())
-			return;
-
-		Mensa selectedMensa;
-		if (currentLocationAvailable())
-			selectedMensa = getClosestMensa(currentLocation);
-		else
-			selectedMensa = model.favoritesExist() ? model.getFavoriteMensas().get(0) : model.getMensas().get(0);
-
-		for (NamedLocation namedLoc : namedLocations)
-			if (namedLoc.isLocationOfMensa(selectedMensa))
-				selectedLocation = namedLoc;
-
-		setSpinnerTo(selectedLocation);
-	}
-
-	private void addOnCLickListener(ImageButton button) {
-		button.setOnClickListener(new OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				onClickDirectionsButton(v);
-			}
-		});
-	}
-
-	private void onClickDirectionsButton(View view) {
-		if (currentLocationAvailable()) {
-			drawPath = !drawPath;
-			ImageButton getDirButton = (ImageButton) view;
-			getDirButton.setImageResource(drawPath ? R.drawable.ic_action_directions_active
-					: R.drawable.ic_action_directions);
-			repaintMap();
-		}
-	}
-
-	private void addListenerOnSpinnerItemSelection(Spinner spinFocus) {
-		spinFocus.setOnItemSelectedListener(new OnItemSelectedListener() {
-			@Override
-			public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-				NamedLocation namedLoc = (NamedLocation) parent.getItemAtPosition(position);
-				selectedLocation.resetColor();
-				selectedLocation = namedLoc;
-				selectedLocation.setColorSelected();
-				repaintMap();
-			}
-
-			@Override
-			public void onNothingSelected(AdapterView<?> arg0) {
-			}
-		});
-
-	}
-
-	private void drawedNamedLocations() {
+	private void drawAllLocations() {
 		for (NamedLocation n : namedLocations)
 			map.addMarker(n.getMarker());
 		if (currentLocation != null)
 			map.addMarker(currentLocation.getMarker());
 	}
 
+	/**
+	 * Returns the Mensa which is closest to the given Location.
+	 * 
+	 * @param location
+	 *            Location from which the closest Mensa is searched.
+	 * @return Mensa which is closest to the given Location.
+	 */
 	private Mensa getClosestMensa(Location location) {
 		Mensa result = null;
 		float smallestDist = Integer.MAX_VALUE;
@@ -307,8 +379,7 @@ public class MapFragment extends Fragment {
 	}
 
 	private Location getLocation() {
-		String provider = locationManager.getBestProvider(new Criteria(), true);
-		return locationManager.getLastKnownLocation(provider);
+		return locationManager.getLastKnownLocation(locationManager.getBestProvider(new Criteria(), true));
 	}
 
 	/**

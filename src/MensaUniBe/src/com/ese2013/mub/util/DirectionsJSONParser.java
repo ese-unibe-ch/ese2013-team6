@@ -10,47 +10,50 @@ import org.json.JSONObject;
 
 import com.google.android.gms.maps.model.LatLng;
 
+/**
+ * Allows to parse a Google Maps JSONObject to a list of LatLng (geographical
+ * points).
+ * 
+ * Created after tutorial on:
+ * http://wptrafficanalyzer.in/blog/drawing-driving-route
+ * -directions-between-two-
+ * locations-using-google-directions-in-google-map-android-api-v2/
+ */
 public class DirectionsJSONParser {
 
 	/**
 	 * Receives a JSONObject and returns a list of lists containing latitude and
 	 * longitude
 	 */
-	public List<List<HashMap<String, String>>> parse(JSONObject jObject) {
-		List<List<HashMap<String, String>>> routes = new ArrayList<List<HashMap<String, String>>>();
+	public List<HashMap<String, String>> parse(JSONObject jObject) {
+		List<HashMap<String, String>> path = new ArrayList<HashMap<String, String>>();
 		try {
 			JSONArray jRoutes = jObject.getJSONArray("routes");
+			/** We only need 1 route **/
+			JSONArray jLegs = jRoutes.getJSONObject(0).getJSONArray("legs");
 
-			/** Traversing all routes */
-			for (int i = 0; i < jRoutes.length(); i++) {
-				JSONArray jLegs = ((JSONObject) jRoutes.get(i)).getJSONArray("legs");
-				List<HashMap<String, String>> path = new ArrayList<HashMap<String, String>>();
+			for (int j = 0; j < jLegs.length(); j++) {
+				JSONArray jSteps = jLegs.getJSONObject(j).getJSONArray("steps");
 
-				/** Traversing all legs */
-				for (int j = 0; j < jLegs.length(); j++) {
-					JSONArray jSteps = ((JSONObject) jLegs.get(j)).getJSONArray("steps");
-
-					/** Traversing all steps */
-					for (int k = 0; k < jSteps.length(); k++) {
-						String polyline = "";
-						polyline = (String) ((JSONObject) ((JSONObject) jSteps.get(k)).get("polyline")).get("points");
-						List<LatLng> list = decodePoly(polyline);
-
-						/** Traversing all points */
-						for (int l = 0; l < list.size(); l++) {
-							HashMap<String, String> hm = new HashMap<String, String>();
-							hm.put("lat", Double.toString(((LatLng) list.get(l)).latitude));
-							hm.put("lng", Double.toString(((LatLng) list.get(l)).longitude));
-							path.add(hm);
-						}
+				for (int k = 0; k < jSteps.length(); k++) {
+					String polyline = "";
+					polyline = jSteps.getJSONObject(k).getJSONObject("polyline").getString("points");
+					List<LatLng> list = decodePoly(polyline);
+					System.out.println("---- mofos -----");
+					for (LatLng l : list) 
+						System.out.println(l);
+					for (int l = 0; l < list.size(); l++) {
+						HashMap<String, String> hm = new HashMap<String, String>();
+						hm.put("lat", Double.toString(((LatLng) list.get(l)).latitude));
+						hm.put("lng", Double.toString(((LatLng) list.get(l)).longitude));
+						path.add(hm);
 					}
-					routes.add(path);
 				}
 			}
 		} catch (JSONException e) {
 			e.printStackTrace();
 		}
-		return routes;
+		return path;
 	}
 
 	/**

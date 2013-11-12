@@ -31,21 +31,24 @@ public class DrawerMenuActivity extends FragmentActivity {
 	private DrawerLayout mDrawerLayout;
 	private ListView mDrawerList;
 	private Spinner spinner;
+	private int selectedPosition = -1;
+	private static final int HOME_INDEX = 0, MAP_INDEX = 2; 
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		new Model(this.getApplicationContext());
+		new Model(getApplicationContext());
 
 		setContentView(R.layout.activity_drawer_menu);
 
-		String[] menuItemNames = { "Home", "Mensa List", "Map" };
+		
 
 		mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
 		mDrawerLayout.setDrawerShadow(R.drawable.drawer_shadow, GravityCompat.START);
 		mDrawerList = (ListView) findViewById(R.id.left_drawer);
 
 		// Set the adapter for the list view
+		String[] menuItemNames = { "Home", "Mensa List", "Map" };
 		mDrawerList.setAdapter(new ArrayAdapter<String>(this, R.layout.drawer_list_item, menuItemNames));
 
 		// enable ActionBar app icon to behave as action to toggle nav drawer
@@ -98,7 +101,7 @@ public class DrawerMenuActivity extends FragmentActivity {
 		spinner = navigationSpinner;
 		/* end of spinner */
 
-		selectItem(0);
+		selectItem(0, true);
 
 		mDrawerToggle = new ActionBarDrawerToggle(this, mDrawerLayout, R.drawable.ic_drawer, R.string.drawer_open,
 				R.string.drawer_close) {
@@ -134,34 +137,36 @@ public class DrawerMenuActivity extends FragmentActivity {
 	private class DrawerItemClickListener implements ListView.OnItemClickListener {
 		@Override
 		public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-			selectItem(position);
+			selectItem(position, true);
 		}
 	}
 
-	private void selectItem(int position) {
+	private void selectItem(int position, boolean instantiateFragment) {
 		// update the main content by replacing fragments
-		Fragment frag;
-		switch (position) {
-		case 0:
-			frag = new HomeFragment();
-			setDisplayedFragment(frag);
-			break;
-		case 1:
-			frag = new MensaListFragment();
-			setDisplayedFragment(frag);
-			break;
-		case 2:
-			frag = new MapFragment();
-			setDisplayedFragment(frag);
-			break;
-		case 3:
-			break;
+		if (instantiateFragment && selectedPosition != position) {
+			Fragment frag;
+			switch (position) {
+			case 0:
+				frag = new HomeFragment();
+				setDisplayedFragment(frag);
+				break;
+			case 1:
+				frag = new MensaListFragment();
+				setDisplayedFragment(frag);
+				break;
+			case 2:
+				frag = new MapFragment();
+				setDisplayedFragment(frag);
+				break;
+			case 3:
+				break;
+			}
 		}
-
+		selectedPosition = position;
 		// update selected item, then close drawer
 		// TODO should also update the action bar if needed, maybe specific for
 		// each fragment?
-		mDrawerList.setItemChecked(position, true);
+		mDrawerList.setItemChecked(selectedPosition, true);
 		mDrawerLayout.closeDrawer(mDrawerList);
 	}
 
@@ -229,13 +234,15 @@ public class DrawerMenuActivity extends FragmentActivity {
 		frag.setShowAllByDay(true);
 		spinner.setSelection(1);
 		setDisplayedFragment(frag);
+		selectItem(HOME_INDEX, false);
 	}
 
 	public void refreshHomeActivity() {
 		HomeFragment frag = new HomeFragment();
 		frag.setFavorites(true);
 		frag.setShowAllByDay(false);
-		this.setDisplayedFragment(frag);
+		setDisplayedFragment(frag);
+		selectItem(HOME_INDEX, false);
 	}
 
 	public void displayMapAtMensa(Mensa mensa) {
@@ -244,5 +251,6 @@ public class DrawerMenuActivity extends FragmentActivity {
 		args.putInt(MapFragment.MENSA_ID_LOCATION, mensa.getId());
 		mapFragment.setArguments(args);
 		setDisplayedFragment(mapFragment);
+		selectItem(MAP_INDEX, false);
 	}
 }

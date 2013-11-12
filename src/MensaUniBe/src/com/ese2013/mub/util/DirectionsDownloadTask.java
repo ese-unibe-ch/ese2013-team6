@@ -14,6 +14,10 @@ import com.ese2013.mub.MapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.PolylineOptions;
 
+/**
+ * Asynchronously downloads and parses the directions from some point to another
+ * using Google Maps.
+ */
 public class DirectionsDownloadTask extends AsyncTask<Void, Void, Void> {
 	private MapFragment mapFragment;
 	private PolylineOptions polyline;
@@ -26,12 +30,12 @@ public class DirectionsDownloadTask extends AsyncTask<Void, Void, Void> {
 
 	@Override
 	protected Void doInBackground(Void... args) {
-		List<List<HashMap<String, String>>> routes = null;
+		List<HashMap<String, String>> path = null;
 		try {
 			JSONObject data = new JsonDataRequest(url).execute();
 			DirectionsJSONParser parser = new DirectionsJSONParser();
-			routes = parser.parse(data);
-			polyline = createPolyLine(routes);
+			path = parser.parse(data);
+			polyline = createPolyLine(path);
 		} catch (IOException e) {
 			polyline = null;
 		}
@@ -52,12 +56,8 @@ public class DirectionsDownloadTask extends AsyncTask<Void, Void, Void> {
 		mapFragment.onDirectionsDownloadFinished(this);
 	}
 
-	private static PolylineOptions createPolyLine(List<List<HashMap<String, String>>> result) {
-		if (result.isEmpty())
-			return null;
-
+	private static PolylineOptions createPolyLine(List<HashMap<String, String>> path) {
 		PolylineOptions lineOptions = new PolylineOptions();
-		List<HashMap<String, String>> path = result.get(0);
 		List<LatLng> points = getPointsInPath(path);
 
 		lineOptions.addAll(points);

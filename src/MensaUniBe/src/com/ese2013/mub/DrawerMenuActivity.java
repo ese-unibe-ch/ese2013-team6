@@ -33,6 +33,7 @@ public class DrawerMenuActivity extends FragmentActivity {
 	private Spinner spinner;
 	private int selectedPosition = -1;
 	private static final int HOME_INDEX = 0, MAP_INDEX = 2;
+	private static final String POSITION = "com.ese2013.mub.position";
 	private Model model;
 
 	@Override
@@ -61,7 +62,10 @@ public class DrawerMenuActivity extends FragmentActivity {
 		actionBar.setDisplayShowCustomEnabled(false);
 
 		// select home in drawer menu
-		selectItem(HOME_INDEX, true);
+		if(savedInstanceState != null)
+			selectItem(savedInstanceState.getInt(POSITION, HOME_INDEX), true);
+		else
+			selectItem(HOME_INDEX, true);
 
 		mDrawerToggle = new ActionBarDrawerToggle(this, mDrawerLayout, R.drawable.ic_drawer, R.string.drawer_open,
 				R.string.drawer_close) {
@@ -120,6 +124,9 @@ public class DrawerMenuActivity extends FragmentActivity {
 	public void onPause() {
 		super.onPause();
 		model.saveFavorites();
+		Bundle bundle = new Bundle();
+		bundle.putInt(POSITION, selectedPosition);
+		//onSaveInstanceState(bundle); //save position in hardkill!
 	}
 
 	/**
@@ -244,5 +251,11 @@ public class DrawerMenuActivity extends FragmentActivity {
 		mapFragment.setArguments(args);
 		setDisplayedFragment(mapFragment);
 		selectItem(MAP_INDEX, false);
+	}
+	@Override
+	protected void onSaveInstanceState(Bundle outState){
+		if(selectedPosition != -1)
+			outState.putInt(POSITION, selectedPosition);
+		super.onSaveInstanceState(outState);
 	}
 }

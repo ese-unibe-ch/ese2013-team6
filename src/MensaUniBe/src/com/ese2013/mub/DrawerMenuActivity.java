@@ -184,18 +184,6 @@ public class DrawerMenuActivity extends FragmentActivity {
 	}
 
 	/**
-	 * Called whenever we call invalidateOptionsMenu() Hides all action par menu
-	 * options and redisplays them as needed
-	 */
-	@Override
-	public boolean onPrepareOptionsMenu(Menu menu) {
-		boolean drawerOpen = mDrawerLayout.isDrawerOpen(mDrawerList);
-		menu.findItem(R.id.action_settings).setVisible(!drawerOpen);
-		// getActionBar().setDisplayShowCustomEnabled(!drawerOpen);
-		return super.onPrepareOptionsMenu(menu);
-	}
-
-	/**
 	 * Called after creation of the activity.
 	 */
 	@Override
@@ -213,15 +201,6 @@ public class DrawerMenuActivity extends FragmentActivity {
 			return true;
 		}
 		return super.onOptionsItemSelected(item);
-	}
-
-	/**
-	 * Initializes the action bar.
-	 */
-	@Override
-	public boolean onCreateOptionsMenu(Menu menu) {
-		getMenuInflater().inflate(R.menu.home, menu);
-		return true;
 	}
 
 	public void launchByMensaAtGivenPage(int position) {

@@ -9,7 +9,6 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
-import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
@@ -27,9 +26,9 @@ import com.ese2013.mub.model.Model;
  */
 public class DrawerMenuActivity extends FragmentActivity {
 
-	private ActionBarDrawerToggle mDrawerToggle;
-	private DrawerLayout mDrawerLayout;
-	private ListView mDrawerList;
+	private ActionBarDrawerToggle drawerToggle;
+	private DrawerLayout drawerLayout;
+	private ListView drawerList;
 	private Spinner spinner;
 	private int selectedPosition = -1;
 	private static final int HOME_INDEX = 0, MAP_INDEX = 2;
@@ -42,13 +41,15 @@ public class DrawerMenuActivity extends FragmentActivity {
 		model = new Model(getApplicationContext());
 
 		setContentView(R.layout.activity_drawer_menu);
-		mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
-		mDrawerLayout.setDrawerShadow(R.drawable.drawer_shadow, GravityCompat.START);
-		mDrawerList = (ListView) findViewById(R.id.left_drawer);
+		drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
+		drawerLayout.setDrawerShadow(R.drawable.drawer_shadow,
+				GravityCompat.START);
+		drawerList = (ListView) findViewById(R.id.left_drawer);
 
 		// Set the adapter for the drawer menu list
 		String[] menuItemNames = { "Home", "Mensa List", "Map" };
-		mDrawerList.setAdapter(new ArrayAdapter<String>(this, R.layout.drawer_list_item, menuItemNames));
+		drawerList.setAdapter(new ArrayAdapter<String>(this,
+				R.layout.drawer_list_item, menuItemNames));
 
 		// enable ActionBar app icon to behave as action to toggle nav drawer
 		ActionBar actionBar = getActionBar();
@@ -62,12 +63,13 @@ public class DrawerMenuActivity extends FragmentActivity {
 		actionBar.setDisplayShowCustomEnabled(false);
 
 		// select home in drawer menu
-		if(savedInstanceState != null)
+		if (savedInstanceState != null)
 			selectItem(savedInstanceState.getInt(POSITION, HOME_INDEX), true);
 		else
 			selectItem(HOME_INDEX, true);
 
-		mDrawerToggle = new ActionBarDrawerToggle(this, mDrawerLayout, R.drawable.ic_drawer, R.string.drawer_open,
+		drawerToggle = new ActionBarDrawerToggle(this, drawerLayout,
+				R.drawable.ic_drawer, R.string.drawer_open,
 				R.string.drawer_close) {
 			public void onDrawerClosed(View view) {
 				invalidateOptionsMenu();
@@ -78,19 +80,21 @@ public class DrawerMenuActivity extends FragmentActivity {
 			}
 		};
 
-		mDrawerLayout.setDrawerListener(mDrawerToggle);
-		mDrawerToggle.syncState();
-		mDrawerList.setOnItemClickListener(new DrawerItemClickListener());
+		drawerLayout.setDrawerListener(drawerToggle);
+		drawerToggle.syncState();
+		drawerList.setOnItemClickListener(new DrawerItemClickListener());
 	}
 
 	private void createSpinner() {
-		ArrayAdapter<CharSequence> spinnerAdapter = ArrayAdapter.createFromResource(this, R.array.spinner_list,
-				android.R.layout.simple_spinner_dropdown_item);
+		ArrayAdapter<CharSequence> spinnerAdapter = ArrayAdapter
+				.createFromResource(this, R.array.spinner_list,
+						android.R.layout.simple_spinner_dropdown_item);
 		spinner = new Spinner(this);
 		spinner.setAdapter(spinnerAdapter);
 		OnItemSelectedListener spinnerNavigationListener = new OnItemSelectedListener() {
 			@Override
-			public void onItemSelected(AdapterView<?> arg0, View arg1, int position, long arg3) {
+			public void onItemSelected(AdapterView<?> arg0, View arg1,
+					int position, long arg3) {
 				HomeFragment frag = new HomeFragment();
 				switch (position) {
 				case 0:
@@ -124,18 +128,17 @@ public class DrawerMenuActivity extends FragmentActivity {
 	public void onPause() {
 		super.onPause();
 		model.saveFavorites();
-		Bundle bundle = new Bundle();
-		bundle.putInt(POSITION, selectedPosition);
-		//onSaveInstanceState(bundle); //save position in hardkill!
 	}
 
 	/**
 	 * ClickListener for the Drawer List. Handles selecting list items in the
 	 * Drawer menu.
 	 */
-	private class DrawerItemClickListener implements ListView.OnItemClickListener {
+	private class DrawerItemClickListener implements
+			ListView.OnItemClickListener {
 		@Override
-		public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+		public void onItemClick(AdapterView<?> parent, View view, int position,
+				long id) {
 			selectItem(position, true);
 		}
 	}
@@ -162,11 +165,8 @@ public class DrawerMenuActivity extends FragmentActivity {
 			}
 		}
 		selectedPosition = position;
-		// update selected item, then close drawer
-		// TODO should also update the action bar if needed, maybe specific for
-		// each fragment?
-		mDrawerList.setItemChecked(selectedPosition, true);
-		mDrawerLayout.closeDrawer(mDrawerList);
+		drawerList.setItemChecked(selectedPosition, true);
+		drawerLayout.closeDrawer(drawerList);
 	}
 
 	/**
@@ -189,7 +189,7 @@ public class DrawerMenuActivity extends FragmentActivity {
 	@Override
 	protected void onPostCreate(Bundle savedInstanceState) {
 		super.onPostCreate(savedInstanceState);
-		mDrawerToggle.syncState();
+		drawerToggle.syncState();
 	}
 
 	/**
@@ -197,7 +197,7 @@ public class DrawerMenuActivity extends FragmentActivity {
 	 */
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
-		if (mDrawerToggle.onOptionsItemSelected(item)) {
+		if (drawerToggle.onOptionsItemSelected(item)) {
 			return true;
 		}
 		return super.onOptionsItemSelected(item);
@@ -231,9 +231,10 @@ public class DrawerMenuActivity extends FragmentActivity {
 		setDisplayedFragment(mapFragment);
 		selectItem(MAP_INDEX, false);
 	}
+
 	@Override
-	protected void onSaveInstanceState(Bundle outState){
-		if(selectedPosition != -1)
+	protected void onSaveInstanceState(Bundle outState) {
+		if (selectedPosition != -1)
 			outState.putInt(POSITION, selectedPosition);
 		super.onSaveInstanceState(outState);
 	}

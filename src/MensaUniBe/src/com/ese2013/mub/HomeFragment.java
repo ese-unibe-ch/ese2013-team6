@@ -20,38 +20,40 @@ import com.ese2013.mub.model.Model;
 import com.ese2013.mub.util.Observer;
 
 public class HomeFragment extends Fragment implements Observer {
-	
+
+	public static final String POSITION = "com.ese2013.mub.HomeFragment.position";
 	private FragmentStatePagerAdapter sectionsPagerAdapter;
 	private ViewPager viewPager;
 
-	private static boolean showFavorites = true;	// if true, Spinner should be on favorites list
-	private static boolean showAllByDay = false;	// if true, Spinner should be on list of all menus of one day
-													@Override
-	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+	private static boolean showFavorites = true;
+	private static boolean showAllByDay = false;
+
+	@Override
+	public View onCreateView(LayoutInflater inflater, ViewGroup container,
+			Bundle savedInstanceState) {
 		View view = inflater.inflate(R.layout.fragment_home, container, false);
-		
+
 		int dayOfWeek = Calendar.getInstance().get(Calendar.DAY_OF_WEEK);
-	
-		if (showFavorites) {
-			sectionsPagerAdapter = new MenuSectionsPagerAdapter(getChildFragmentManager());
-			
-		} else {
-			sectionsPagerAdapter = new MensaSectionsPagerAdapter(getChildFragmentManager());
-		}
-		
+
+		FragmentManager fm = getChildFragmentManager();
+		if (showFavorites)
+			sectionsPagerAdapter = new MenuSectionsPagerAdapter(fm);
+		else
+			sectionsPagerAdapter = new MensaSectionsPagerAdapter(fm);
+
 		viewPager = (ViewPager) view.findViewById(R.id.pager);
 		viewPager.setAdapter(sectionsPagerAdapter);
-		
-		this.onAttach(getActivity());
-		
-		if(showFavorites && dayOfWeek < 6 && dayOfWeek > 1)
-			viewPager.setCurrentItem(dayOfWeek-2);
+
+		onAttach(getActivity());
+
+		if (showFavorites && dayOfWeek < 6 && dayOfWeek > 1)
+			viewPager.setCurrentItem(dayOfWeek - 2);
 		handleGivenArguments();
 		Model.getInstance().addObserver(this);
 		getActivity().getActionBar().setDisplayShowCustomEnabled(true);
-		
 		return view;
 	}
+
 	@Override
 	public void onNotifyChanges() {
 		sectionsPagerAdapter.notifyDataSetChanged();
@@ -63,10 +65,14 @@ public class HomeFragment extends Fragment implements Observer {
 		getActivity().getActionBar().setDisplayShowCustomEnabled(false);
 		Model.getInstance().removeObserver(this);
 	}
-	
 
-	// else Spinner is on list of all menus of one mensa
-	public static boolean getShowAllByDay(){
+	/**
+	 * Returns if all menus of a day should be displayed.
+	 * 
+	 * @return true if all menus should be displayed, false if only favorites
+	 *         should be displayed.
+	 */
+	public static boolean getShowAllByDay() {
 		return showAllByDay;
 	}
 
@@ -74,18 +80,17 @@ public class HomeFragment extends Fragment implements Observer {
 		showFavorites = bool;
 	}
 
-	public void setShowAllByDay(boolean bool){
+	public void setShowAllByDay(boolean bool) {
 		showAllByDay = bool;
 	}
 
-	public void handleGivenArguments(){
-		if(getArguments() != null){
+	public void handleGivenArguments() {
+		if (getArguments() != null) {
 			Bundle bundle = getArguments();
-			int pos = bundle.getInt("POSITION", 0);
-			viewPager.setCurrentItem(pos-1);
+			int pos = bundle.getInt(POSITION, 0);
+			viewPager.setCurrentItem(pos - 1);
 		}
 	}
-
 
 	/**
 	 * A {@link FragmentPagerAdapter} that returns a fragment corresponding to
@@ -132,13 +137,14 @@ public class HomeFragment extends Fragment implements Observer {
 	public class MenuSectionsPagerAdapter extends FragmentStatePagerAdapter {
 		private ArrayList<Day> days;
 		private Model model = Model.getInstance();
-		
+
 		public MenuSectionsPagerAdapter(FragmentManager fm) {
 			super(fm);
-			if (Model.getInstance().noMensasLoaded())
+			if (model.noMensasLoaded())
 				days = new ArrayList<Day>();
 			else
-				days = new ArrayList<Day>(model.getMensas().get(0).getMenuplan().getDays());
+				days = new ArrayList<Day>(model.getMensas().get(0)
+						.getMenuplan().getDays());
 		}
 
 		/**
@@ -167,16 +173,19 @@ public class HomeFragment extends Fragment implements Observer {
 		@Override
 		public void notifyDataSetChanged() {
 			if (!model.noMensasLoaded())
-				days = new ArrayList<Day>(Model.getInstance().getMensas().get(0).getMenuplan().getDays());
+				days = new ArrayList<Day>(model.getMensas().get(0)
+						.getMenuplan().getDays());
 			super.notifyDataSetChanged();
 		}
 	}
+
 	@Override
-	public void onPause(){
+	public void onPause() {
 		super.onPause();
 	}
+
 	@Override
-	public void onResume(){
+	public void onResume() {
 		super.onResume();
 	}
 }

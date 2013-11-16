@@ -57,7 +57,7 @@ public class Day {
 	/**
 	 * Converts the Day to a Calendar object representing the same day, using
 	 * Locale.GERMAN to avoid confusion with the U.S. calendar standards.
-	 * 
+	 * Used for unified output for saving!
 	 * @return Calendar set to the same day as the Day object.
 	 */
 	private Calendar getCalendar() {

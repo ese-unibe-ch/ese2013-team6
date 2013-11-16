@@ -1,8 +1,6 @@
 package com.ese2013.mub.util;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 import org.json.JSONObject;
@@ -14,10 +12,13 @@ import com.ese2013.mub.MapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.PolylineOptions;
 
+/**
+ * Asynchronously downloads and parses the directions from some point to another
+ * using Google Maps.
+ */
 public class DirectionsDownloadTask extends AsyncTask<Void, Void, Void> {
 	private MapFragment mapFragment;
 	private PolylineOptions polyline;
-	private boolean successful;
 	private String url;
 
 	public DirectionsDownloadTask(LatLng origin, LatLng dest, String transportMode, MapFragment mapFragment) {
@@ -27,15 +28,14 @@ public class DirectionsDownloadTask extends AsyncTask<Void, Void, Void> {
 
 	@Override
 	protected Void doInBackground(Void... args) {
-		List<List<HashMap<String, String>>> routes = null;
+		List<LatLng> path = null;
 		try {
 			JSONObject data = new JsonDataRequest(url).execute();
 			DirectionsJSONParser parser = new DirectionsJSONParser();
-			routes = parser.parse(data);
-			polyline = createPolyLine(routes);
-			successful = true;
+			path = parser.parse(data);
+			polyline = createPolyLine(path);
 		} catch (IOException e) {
-			successful = false;
+			polyline = null;
 		}
 		return null;
 	}
@@ -45,7 +45,7 @@ public class DirectionsDownloadTask extends AsyncTask<Void, Void, Void> {
 	}
 
 	public boolean wasSuccesful() {
-		return successful;
+		return polyline != null;
 	}
 
 	@Override
@@ -54,31 +54,12 @@ public class DirectionsDownloadTask extends AsyncTask<Void, Void, Void> {
 		mapFragment.onDirectionsDownloadFinished(this);
 	}
 
-	private static PolylineOptions createPolyLine(List<List<HashMap<String, String>>> result) {
-		if (result.isEmpty())
-			return null;
-
+	private static PolylineOptions createPolyLine(List<LatLng> path) {
 		PolylineOptions lineOptions = new PolylineOptions();
-		List<HashMap<String, String>> path = result.get(0);
-		List<LatLng> points = getPointsInPath(path);
-
-		lineOptions.addAll(points);
+		lineOptions.addAll(path);
 		lineOptions.width(5);
 		lineOptions.color(Color.RED);
-
 		return lineOptions;
-	}
-
-	private static List<LatLng> getPointsInPath(List<HashMap<String, String>> path) {
-		List<LatLng> points = new ArrayList<LatLng>();
-		for (int j = 0; j < path.size(); j++) {
-			HashMap<String, String> point = path.get(j);
-			double lat = Double.parseDouble(point.get("lat"));
-			double lng = Double.parseDouble(point.get("lng"));
-			LatLng position = new LatLng(lat, lng);
-			points.add(position);
-		}
-		return points;
 	}
 
 	private static String getDirectionsUrl(LatLng origin, LatLng dest, String transportMode) {

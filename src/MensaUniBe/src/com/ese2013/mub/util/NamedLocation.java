@@ -7,11 +7,14 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
+/**
+ * Represents a location with a name and (optionally) a Mensa it refers to.
+ */
 public class NamedLocation extends Location {
 
 	private String name;
-	private float color;
-	private int mensaId = -1;
+	private float color, origColor;
+	private Mensa mensa;
 
 	public NamedLocation(Location loc, String name) {
 		super(loc);
@@ -20,12 +23,13 @@ public class NamedLocation extends Location {
 
 	public NamedLocation(Mensa mensa) {
 		this(calcMensaLocation(mensa), mensa.getName());
-		this.mensaId = mensa.getId();
+		this.mensa = mensa;
 	}
 
 	public NamedLocation(Location loc, String name, float color) {
 		this(loc, name);
-		this.color = color;
+		this.origColor = color;
+		this.color = this.origColor;
 	}
 
 	private static Location calcMensaLocation(Mensa mensa) {
@@ -35,6 +39,11 @@ public class NamedLocation extends Location {
 		return loc;
 	}
 
+	/**
+	 * Returns MarkerOptions to be added on a map
+	 * 
+	 * @return MarkerOptions at position, title and color of this NamedLocation.
+	 */
 	public MarkerOptions getMarker() {
 		LatLng loc = new LatLng(getLatitude(), getLongitude());
 		return new MarkerOptions().position(loc).title(name).icon(BitmapDescriptorFactory.defaultMarker(color));
@@ -59,10 +68,18 @@ public class NamedLocation extends Location {
 	}
 
 	public boolean isLocationOfMensa(int mensaId) {
-		return this.mensaId == mensaId;
+		return mensa.getId() == mensaId;
 	}
 
 	public boolean isLocationOfMensa(Mensa mensa) {
 		return isLocationOfMensa(mensa.getId());
+	}
+
+	public void setColorSelected() {
+		color = BitmapDescriptorFactory.HUE_YELLOW;
+	}
+
+	public void resetColor() {
+		color = origColor;
 	}
 }

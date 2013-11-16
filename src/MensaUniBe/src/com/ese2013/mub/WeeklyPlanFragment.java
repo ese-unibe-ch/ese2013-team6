@@ -1,10 +1,5 @@
 package com.ese2013.mub;
 
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.Locale;
-
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -15,6 +10,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.ese2013.mub.model.DailyMenuplan;
+import com.ese2013.mub.model.Day;
 import com.ese2013.mub.model.Mensa;
 import com.ese2013.mub.model.Menu;
 import com.ese2013.mub.model.Model;
@@ -68,6 +64,7 @@ public class WeeklyPlanFragment extends Fragment {
 			
 			for (Menu menu : d.getMenus()) {
 				menuLayout.addView(new MenuView(container.getContext(), menu.getTitle(), menu.getDescription()));
+				this.decideToggleState(menuLayout, menu);
 			}
 			
 			TextView text = (TextView)inflater.inflate(R.layout.section_title_text, null);
@@ -75,17 +72,15 @@ public class WeeklyPlanFragment extends Fragment {
 			
 			text.setOnClickListener(new ToggleListener(menuLayout, getActivity()));
 			
-			this.decideToggleState(menuLayout, d.getDateString());
+			
 			layout.addView(text);
 			layout.addView(menuLayout);
 			
 		}
 		return rootView;
 	}
-	private void decideToggleState(LinearLayout menuLayout, String menuDate){
-		Date today = Calendar.getInstance().getTime();
-		SimpleDateFormat sdf = new SimpleDateFormat("EEEE, dd. MMMM yyyy", Locale.getDefault());
-		menuLayout.setVisibility((menuDate.equals(sdf.format(today)) ? View.VISIBLE : View.GONE));
+	private void decideToggleState(LinearLayout menuLayout, Menu menu){
+		menuLayout.setVisibility((menu.getDate().equals(Day.today()) ? View.VISIBLE : View.GONE));
 	}
 	private void setUpFavoriteButton(View rootView){
 		ImageButton favorite = (ImageButton) rootView.findViewById(R.id.page_title_favorite_button);

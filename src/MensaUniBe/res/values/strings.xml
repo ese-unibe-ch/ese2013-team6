@@ -1,7 +1,7 @@
 <resources>
 
     <string name="app_name">MensaUniBe</string>
-<!--     <string name="action_settings">Settings</string> -->
+    <string name="action_settings">Settings</string>
     <string name="drawer_open">Opens the navigation drawer</string>
     <string name="drawer_close">Closes the navigation drawer</string>
     <string name="favorite_button">Select as Favorite</string>

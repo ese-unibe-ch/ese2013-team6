@@ -1,7 +1,6 @@
 package com.ese2013.mub.service;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Set;
 
@@ -10,43 +9,47 @@ import com.ese2013.mub.model.Day;
 import com.ese2013.mub.model.Mensa;
 import com.ese2013.mub.model.Menu;
 import com.ese2013.mub.model.WeeklyMenuplan;
+import com.ese2013.mub.util.Criteria;
 
 public class CriteriaMatcher {
-	private HashMap<Menu, List<Mensa>> container;
+	private List<Criteria> container;
 	private List<Mensa> temp;
 
 	public CriteriaMatcher() {
-		container = new HashMap<Menu, List<Mensa>>();
+		container = new ArrayList<Criteria>();
 		temp = new ArrayList<Mensa>();
 	}
 
 	/**
 	 * 
 	 * @param criteriaSet
-	 *            String set of criterias you want to match with
+	 *            String set of criterias you want to match with.
 	 * @param mensas
-	 *            List of Mensas you want to match the criterias with
-	 * @return Hashmap where the key entry is a Menu and the values are the
-	 *         lists of Mensas where the Menu is served in
+	 *            List of Mensas you want to match the criterias with.
+	 * @return List of Criteria Object wich stores the matching menus and the mensa in which the menu is served in.
 	 */
-	public HashMap<Menu, List<Mensa>> match(Set<String> criteriaSet, List<Mensa> mensas) {
+	public List<Criteria> match(Set<String> criteriaSet, List<Mensa> mensas) {
 		for (Mensa mensa : mensas) {
 			WeeklyMenuplan weekly = mensa.getMenuplan();
 			DailyMenuplan daily = weekly.getDailymenuplan(Day.today());
 
 			for (Menu menu : daily.getMenus()) {
 				for (String criteria : criteriaSet) {
+					Criteria crit = new Criteria();
+					crit.setName(criteria);
+					
 					if (menu.getDescription().contains(criteria)) {
-						if (!container.containsKey(menu)) {
+						if (!crit.getMap().containsKey(menu)) {
 							temp.clear();
 							temp.add(mensa);
-							container.put(menu, temp);
+							crit.getMap().put(menu, temp);
 						} else {
 							temp.clear();
-							temp = container.get(menu);
+							temp = crit.getMap().get(menu);
 							temp.add(mensa);
 						}
 					}
+					container.add(crit);
 				}
 			}
 		}

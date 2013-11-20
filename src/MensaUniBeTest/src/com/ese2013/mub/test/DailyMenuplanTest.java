@@ -16,8 +16,8 @@ public class DailyMenuplanTest extends TestCase {
 	}
 
 	public void testAddMenu() {
-		Menu menu = new MenuBuilder().setDate(new Day(23, 11, 2013)).setTitle("some title")
-				.setDescription("some desc.").build();
+		Menu menu = new MenuBuilder().setDate(new Day(23, 11, 2013)).setTitle("some title").setDescription("some desc.")
+				.setId(0).build();
 		assertNotNull(plan.getMenus());
 		assertEquals(plan.getMenus().size(), 0);
 
@@ -28,7 +28,7 @@ public class DailyMenuplanTest extends TestCase {
 
 	public void testAddMultipleMenus() {
 		MenuBuilder builder = new MenuBuilder().setDate(new Day(23, 11, 2013)).setTitle("some title")
-				.setDescription("some desc.");
+				.setDescription("some desc.").setId(0);
 		Menu menu1 = builder.build();
 		Menu menu2 = builder.setTitle("some other title").build();
 
@@ -45,7 +45,7 @@ public class DailyMenuplanTest extends TestCase {
 		assertEquals(plan, otherPlan);
 
 		MenuBuilder builder = new MenuBuilder().setDate(new Day(23, 11, 2013)).setTitle("some title")
-				.setDescription("some desc.");
+				.setDescription("some desc.").setId(0);
 		Menu menu1 = builder.build();
 		Menu menu2 = builder.setTitle("some other title").build();
 

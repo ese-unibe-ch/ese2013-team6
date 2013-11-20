@@ -7,6 +7,7 @@ package com.ese2013.mub.model;
 public class Menu {
 	private String title, description;
 	private Day date;
+	private int id;
 
 	/**
 	 * Creates a Menu from a given MenuBuilder. Is private to ensure that Menus
@@ -17,18 +18,30 @@ public class Menu {
 	 *            Must not be null;
 	 */
 	private Menu(MenuBuilder builder) {
+		this.id = builder.id;
 		this.title = builder.title;
 		this.description = builder.description;
 		this.date = builder.date;
-		//
+	}
+
+	public int getId() {
+		return id;
 	}
 
 	public String getTitle() {
 		return title;
 	}
 
+	public void setTitle(String title) {
+		this.title = title;
+	}
+
 	public String getDescription() {
 		return description;
+	}
+
+	public void setDescription(String description) {
+		this.description = description;
 	}
 
 	public Day getDate() {
@@ -52,6 +65,8 @@ public class Menu {
 			return true;
 		if (other instanceof Menu) {
 			Menu otherMenu = (Menu) other;
+			if (otherMenu.getId() != this.id)
+				return false;
 			if (otherMenu.getDate() == null ? this.date != null : !otherMenu.getDate().equals(this.date))
 				return false;
 			if (!otherMenu.getTitle().equals(this.title))
@@ -67,6 +82,7 @@ public class Menu {
 	@Override
 	public int hashCode() {
 		int result = 17;
+		result = 31 * result + id;
 		result = 31 * result + title.hashCode();
 		result = 31 * result + description.hashCode();
 		result = 31 * result + date.hashCode();
@@ -75,17 +91,24 @@ public class Menu {
 
 	@Override
 	public String toString() {
-		return "Menu { \n" + "  Title: " + title + "\n  Description: " + description + "\n  Date: " + getDateString()
-				+ " \n }";
+		return "Menu " + id + " { \n" + "  Title: " + title + "\n  Description: " + description + "\n  Date: "
+				+ getDateString() + " \n }";
 	}
 
 	/**
 	 * Standard builder class used to construct Menu objects.
 	 */
 	public static class MenuBuilder {
+		public static final int INVALID_ID = -1;
 		private static final String DEFAULT = "N//A";
 		private String title = DEFAULT, description = DEFAULT;
 		private Day date;
+		private int id = INVALID_ID;
+
+		public MenuBuilder setId(int id) {
+			this.id = id;
+			return this;
+		}
 
 		public MenuBuilder setTitle(String title) {
 			this.title = title;
@@ -105,5 +128,6 @@ public class Menu {
 		public Menu build() {
 			return new Menu(this);
 		}
+
 	}
 }

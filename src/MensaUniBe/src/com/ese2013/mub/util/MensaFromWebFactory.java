@@ -14,6 +14,7 @@ import org.json.JSONObject;
 import com.ese2013.mub.model.Day;
 import com.ese2013.mub.model.Mensa;
 import com.ese2013.mub.model.Menu;
+import com.ese2013.mub.model.MenuManager;
 import com.ese2013.mub.model.WeeklyMenuplan;
 import com.ese2013.mub.util.database.MensaDataSource;
 
@@ -22,9 +23,11 @@ public class MensaFromWebFactory extends AbstractMensaFactory {
 	private MensaDataSource dataSource = MensaDataSource.getInstance();
 	private static SimpleDateFormat fm = new SimpleDateFormat("yyyy-MM-dd", Locale.GERMAN);
 	private JSONArray updateStatusJson;
+	private MenuManager menuManager;
 
-	public MensaFromWebFactory(JSONArray updateStatusJson) {
+	public MensaFromWebFactory(JSONArray updateStatusJson, MenuManager menuManager) {
 		this.updateStatusJson = updateStatusJson;
+		this.menuManager = menuManager;
 	}
 
 	@Override
@@ -69,7 +72,8 @@ public class MensaFromWebFactory extends AbstractMensaFactory {
 	}
 
 	private WeeklyMenuplan createWeeklyMenuplan(Mensa m) throws IOException, JSONException, ParseException {
-		MensaWebserviceJsonRequest menuRequest = new MensaWebserviceJsonRequest(ServiceUri.GET_WEEKLY_MENUPLAN.replaceFirst(":id", "" + m.getId()));
+		MensaWebserviceJsonRequest menuRequest = new MensaWebserviceJsonRequest(ServiceUri.GET_WEEKLY_MENUPLAN.replaceFirst(
+				":id", "" + m.getId()));
 		JSONArray menus = menuRequest.execute().getJSONObject("result").getJSONObject("content").getJSONArray("menus");
 		return parseWeeklyMenuplan(menus);
 	}
@@ -84,16 +88,10 @@ public class MensaFromWebFactory extends AbstractMensaFactory {
 	}
 
 	private Menu parseMenu(JSONObject menu) throws JSONException, ParseException {
-		Menu.MenuBuilder builder = new Menu.MenuBuilder();
-		builder.setTitle(menu.getString("title"));
 		JSONArray desc = menu.getJSONArray("menu");
 		String description = "";
 		for (int i = 0; i < desc.length(); i++)
 			description += desc.getString(i) + "\n";
-
-		builder.setDescription(description);
-		builder.setDate(new Day(fm.parse(menu.getString("date"))));
-//		builder.setHash(menu.getInt("hash"));
-		return builder.build();
+		return menuManager.createMenu(menu.getString("title"), description, new Day(fm.parse(menu.getString("date"))));
 	}
 }

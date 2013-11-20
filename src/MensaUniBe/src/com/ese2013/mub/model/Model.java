@@ -18,6 +18,7 @@ import com.ese2013.mub.util.database.MensaDataSource;
  */
 public class Model extends Observable {
 	private List<Mensa> mensas = new ArrayList<Mensa>();
+	private MenuManager menuManager;
 	private static Model instance;
 	private Context context;
 	private MensaDataSource dataSource;
@@ -29,14 +30,20 @@ public class Model extends Observable {
 	}
 
 	private void init() {
+		menuManager = new MenuManager();
 		dataSource = MensaDataSource.getInstance();
-		dataSource.init(context);
+		dataSource.init(context, menuManager);
+		
 		ModelCreationTask task = new ModelCreationTask();
 		task.execute();
 	}
 
 	public List<Mensa> getMensas() {
 		return mensas;
+	}
+
+	public MenuManager getMenuManager() {
+		return menuManager;
 	}
 
 	public List<Mensa> getFavoriteMensas() {
@@ -74,6 +81,8 @@ public class Model extends Observable {
 
 	public void onCreationFinished(ModelCreationTask task) {
 		Toast.makeText(context, context.getString(task.getStatusMsgResource()), Toast.LENGTH_LONG).show();
+		//TODO MOVE TRANSLATION TO CREATION TASK
+		menuManager.translateAllMenusSync();
 		if (task.wasSuccessful()) {
 			mensas = task.getMensas();
 			if (task.hasDownloadedNewData())

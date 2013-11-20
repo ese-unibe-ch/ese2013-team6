@@ -9,6 +9,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
@@ -42,14 +43,12 @@ public class DrawerMenuActivity extends FragmentActivity {
 
 		setContentView(R.layout.activity_drawer_menu);
 		drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
-		drawerLayout.setDrawerShadow(R.drawable.drawer_shadow,
-				GravityCompat.START);
+		drawerLayout.setDrawerShadow(R.drawable.drawer_shadow, GravityCompat.START);
 		drawerList = (ListView) findViewById(R.id.left_drawer);
 
 		// Set the adapter for the drawer menu list
 		String[] menuItemNames = { "Home", "Mensa List", "Map" };
-		drawerList.setAdapter(new ArrayAdapter<String>(this,
-				R.layout.drawer_list_item, menuItemNames));
+		drawerList.setAdapter(new ArrayAdapter<String>(this, R.layout.drawer_list_item, menuItemNames));
 
 		// enable ActionBar app icon to behave as action to toggle nav drawer
 		ActionBar actionBar = getActionBar();
@@ -68,8 +67,7 @@ public class DrawerMenuActivity extends FragmentActivity {
 		else
 			selectItem(HOME_INDEX, true);
 
-		drawerToggle = new ActionBarDrawerToggle(this, drawerLayout,
-				R.drawable.ic_drawer, R.string.drawer_open,
+		drawerToggle = new ActionBarDrawerToggle(this, drawerLayout, R.drawable.ic_drawer, R.string.drawer_open,
 				R.string.drawer_close) {
 			public void onDrawerClosed(View view) {
 				invalidateOptionsMenu();
@@ -86,15 +84,13 @@ public class DrawerMenuActivity extends FragmentActivity {
 	}
 
 	private void createSpinner() {
-		ArrayAdapter<CharSequence> spinnerAdapter = ArrayAdapter
-				.createFromResource(this, R.array.spinner_list,
-						android.R.layout.simple_spinner_dropdown_item);
+		ArrayAdapter<CharSequence> spinnerAdapter = ArrayAdapter.createFromResource(this, R.array.spinner_list,
+				android.R.layout.simple_spinner_dropdown_item);
 		spinner = new Spinner(this);
 		spinner.setAdapter(spinnerAdapter);
 		OnItemSelectedListener spinnerNavigationListener = new OnItemSelectedListener() {
 			@Override
-			public void onItemSelected(AdapterView<?> arg0, View arg1,
-					int position, long arg3) {
+			public void onItemSelected(AdapterView<?> arg0, View arg1, int position, long arg3) {
 				HomeFragment frag = new HomeFragment();
 				switch (position) {
 				case 0:
@@ -134,11 +130,9 @@ public class DrawerMenuActivity extends FragmentActivity {
 	 * ClickListener for the Drawer List. Handles selecting list items in the
 	 * Drawer menu.
 	 */
-	private class DrawerItemClickListener implements
-			ListView.OnItemClickListener {
+	private class DrawerItemClickListener implements ListView.OnItemClickListener {
 		@Override
-		public void onItemClick(AdapterView<?> parent, View view, int position,
-				long id) {
+		public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 			selectItem(position, true);
 		}
 	}
@@ -184,6 +178,23 @@ public class DrawerMenuActivity extends FragmentActivity {
 	}
 
 	/**
+	 * Called whenever we call invalidateOptionsMenu() Hides all action par menu
+	 * options and redisplays them as needed
+	 */
+	@Override
+	public boolean onPrepareOptionsMenu(Menu menu) {
+		boolean drawerOpen = drawerLayout.isDrawerOpen(drawerList);
+		menu.findItem(R.id.action_settings).setVisible(!drawerOpen);
+		if (isShowingHomeFragment())
+			getActionBar().setDisplayShowCustomEnabled(!drawerOpen);
+		return super.onPrepareOptionsMenu(menu);
+	}
+
+	private boolean isShowingHomeFragment() {
+		return selectedPosition == HOME_INDEX;
+	}
+
+	/**
 	 * Called after creation of the activity.
 	 */
 	@Override
@@ -201,6 +212,15 @@ public class DrawerMenuActivity extends FragmentActivity {
 			return true;
 		}
 		return super.onOptionsItemSelected(item);
+	}
+
+	/**
+	 * Initializes the action bar.
+	 */
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu) {
+		getMenuInflater().inflate(R.menu.home, menu);
+		return true;
 	}
 
 	public void launchByMensaAtGivenPage(int position) {

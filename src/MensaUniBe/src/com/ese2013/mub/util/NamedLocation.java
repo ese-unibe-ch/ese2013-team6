@@ -15,8 +15,9 @@ public class NamedLocation extends Location {
 	private String name;
 	private float color, origColor;
 	private Mensa mensa;
+	private MarkerOptions marker;
 
-	public NamedLocation(Location loc, String name) {
+	private NamedLocation(Location loc, String name) {
 		super(loc);
 		this.name = name;
 	}
@@ -44,9 +45,11 @@ public class NamedLocation extends Location {
 	 * 
 	 * @return MarkerOptions at position, title and color of this NamedLocation.
 	 */
-	public MarkerOptions getMarker() {
+	public MarkerOptions getMarkerOptions() {
 		LatLng loc = new LatLng(getLatitude(), getLongitude());
-		return new MarkerOptions().position(loc).title(name).icon(BitmapDescriptorFactory.defaultMarker(color));
+		if (marker == null)
+			marker = new MarkerOptions();
+		return marker.position(loc).title(name).icon(BitmapDescriptorFactory.defaultMarker(color));
 	}
 
 	public String getName() {

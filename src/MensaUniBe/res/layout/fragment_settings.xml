@@ -14,11 +14,53 @@
         android:paddingRight="16dp"
         android:text="Translate menus" />
     
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingLeft="16dp"
+        android:paddingTop="24dp"
+        android:text="Choose language" />
+    
     <Spinner
     	android:id="@+id/language_spinner"
     	android:layout_width="fill_parent"
     	android:layout_height="wrap_content"
-    	android:paddingLeft="16dp"
-    	android:paddingRight="16dp" />
+        android:paddingLeft="8dp"
+    	android:layout_marginRight="8dp"
+    	android:entries= "@array/settings_languages" />
+    
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingLeft="4dp"
+        android:paddingTop="24dp"
+        android:text="Notifications" />
+    
+    <View
+	    android:layout_width="fill_parent"
+	    android:layout_height="1dip"
+	    android:background="@color/light_grey" />
+    
+    <Switch
+        android:id="@+id/notification_switch"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingTop="16dp"
+        android:paddingLeft="16dp"
+        android:paddingRight="16dp"
+        android:text="Notify me" />
+
+    <EditText
+        android:id="@+id/edit_text_notification"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingTop="24dp"
+        android:paddingLeft="8dp"
+    	android:layout_marginRight="8dp"
+        android:ems="10"
+        android:hint="Type the name of some food" >
+
+        <requestFocus />
+    </EditText>
 
 </LinearLayout>

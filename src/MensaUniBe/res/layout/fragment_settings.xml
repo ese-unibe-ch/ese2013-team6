@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/settings_fragment"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical" >
+
+    <Switch
+        android:id="@+id/language_switch"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingTop="16dp"
+        android:paddingLeft="16dp"
+        android:paddingRight="16dp"
+        android:text="Translate menus" />
+    
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingLeft="16dp"
+        android:paddingTop="24dp"
+        android:text="Choose language" />
+    
+    <Spinner
+    	android:id="@+id/language_spinner"
+    	android:layout_width="fill_parent"
+    	android:layout_height="wrap_content"
+        android:paddingLeft="8dp"
+    	android:layout_marginRight="16dp"
+    	android:entries= "@array/settings_languages" />
+    
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingLeft="4dp"
+        android:paddingTop="24dp"
+        android:text="Notifications" />
+    
+    <View
+	    android:layout_width="fill_parent"
+	    android:layout_height="2dp"
+	    android:background="@color/light_grey" />
+    
+    <Switch
+        android:id="@+id/notification_switch"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingTop="16dp"
+        android:paddingLeft="16dp"
+        android:paddingRight="16dp"
+        android:text="Notify me" />
+
+    <EditText
+        android:id="@+id/edit_text_notification"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingTop="24dp"
+    	android:layout_marginRight="16dp"
+    	android:layout_marginLeft="10dp"
+        android:ems="10"
+        android:hint="Give the name of some food" >
+
+        <requestFocus />
+    </EditText>
+
+</LinearLayout>

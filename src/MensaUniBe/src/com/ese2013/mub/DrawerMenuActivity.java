@@ -211,7 +211,17 @@ public class DrawerMenuActivity extends FragmentActivity {
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		if (drawerToggle.onOptionsItemSelected(item)) {
-			return true;
+			if (item.getItemId() == R.id.action_settings){
+				Fragment frag = new SettingsFragment();
+				setDisplayedFragment(frag);
+				return true;
+			}
+		} else {
+			if(item.getItemId() == R.id.action_settings){
+				Fragment frag = new SettingsFragment();
+				setDisplayedFragment(frag);
+				return true;
+			}
 		}
 		return super.onOptionsItemSelected(item);
 	}

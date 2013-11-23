@@ -24,5 +24,22 @@ public class Criteria {
 	public void setName(String name) {
 		this.criteria = name;
 	}
+	public boolean equals(Object object){
+		if(object instanceof Criteria){
+			Criteria other = (Criteria)object;
+			if(object == this)
+				return true;
+			if(!other.getName().equals(criteria))
+				return false;
+			return true;
+		}
+		else
+			return false;
+	}
+	public int HashCode(){
+		int result = 17;
+		result = 31 * result + criteria.hashCode();
+		return result;
+	}
 	
 }

@@ -17,6 +17,7 @@ import android.support.v4.app.NotificationCompat;
 
 import com.ese2013.mub.DrawerMenuActivity;
 import com.ese2013.mub.NotificationFragment;
+import com.ese2013.mub.R;
 import com.ese2013.mub.model.Mensa;
 import com.ese2013.mub.model.Model;
 import com.ese2013.mub.util.Criteria;
@@ -34,7 +35,9 @@ public class NotificationService extends Service{
 	
 	@Override
 	public int onStartCommand(Intent intent, int flags, int startId) {
+		
 		createCriteriaList();
+
 		if(!criteriaList.isEmpty())
 			push();
 		this.stopSelf();
@@ -53,10 +56,13 @@ public class NotificationService extends Service{
 		        new NotificationCompat.Builder(this)
 				.setContentTitle(criteriaList.size() + "Criteria " + ((criteriaList.size() == 1)? "is" :" are") + " matching!")
 		        .setContentText(criteriaString);
+		
 		Intent notificationIntent = new Intent(this, DrawerMenuActivity.class);
 		notificationIntent.putExtra(START_FROM_N, true);
 		PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
 		mBuilder.setContentIntent(pendingIntent);
+		mBuilder.setSmallIcon(R.drawable.ic_launcher);
+		
 		NotificationManager mNotificationManager =
 			    (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
 		mNotificationManager.notify(0, mBuilder.build());
@@ -90,6 +96,7 @@ public class NotificationService extends Service{
 				
 				CriteriaMatcher criteriaMatcher = new CriteriaMatcher();
 				mensas = allMensas ? Model.getInstance().getMensas() : Model.getInstance().getFavoriteMensas();
+				
 				criteriaList = criteriaMatcher.match(criteria, mensas);
 	}
 }

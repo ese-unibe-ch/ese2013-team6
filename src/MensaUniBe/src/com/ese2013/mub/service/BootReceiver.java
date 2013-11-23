@@ -32,6 +32,10 @@ public class BootReceiver extends BroadcastReceiver {
 					new Intent(context, AlarmReceiver.class),
 					PendingIntent.FLAG_CANCEL_CURRENT);
 
+			
+			alarm.set(AlarmManager.RTC,
+					tenOClock.getTimeInMillis(),
+					operation);
 			alarm.setInexactRepeating(AlarmManager.RTC,
 					tenOClock.getTimeInMillis(), AlarmManager.INTERVAL_DAY,
 					operation);

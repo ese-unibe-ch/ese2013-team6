@@ -26,30 +26,36 @@ public class CriteriaMatcher {
 	 *            String set of criterias you want to match with.
 	 * @param mensas
 	 *            List of Mensas you want to match the criterias with.
-	 * @return List of Criteria Object wich stores the matching menus and the mensa in which the menu is served in.
+	 * @return List of Criteria Object wich stores the matching menus and the
+	 *         mensa in which the menu is served in.
 	 */
 	public List<Criteria> match(Set<String> criteriaSet, List<Mensa> mensas) {
-		for (Mensa mensa : mensas) {
-			WeeklyMenuplan weekly = mensa.getMenuplan();
-			DailyMenuplan daily = weekly.getDailymenuplan(Day.today());
+		
+		for (String criteria : criteriaSet) {
+			Criteria crit = new Criteria();
+			crit.setName(criteria);			
+			for (Mensa mensa : mensas) {	
+				WeeklyMenuplan weekly = mensa.getMenuplan();
+				DailyMenuplan daily = weekly.getDailymenuplan(Day.today());
 
-			for (Menu menu : daily.getMenus()) {
-				for (String criteria : criteriaSet) {
-					Criteria crit = new Criteria();
-					crit.setName(criteria);
-					
+				for (Menu menu : daily.getMenus()) {
+
 					if (menu.getDescription().contains(criteria)) {
+
+						if(!container.contains(crit))
+							container.add(crit);
+						
 						if (!crit.getMap().containsKey(menu)) {
-							temp.clear();
+							temp = new ArrayList<Mensa>();
 							temp.add(mensa);
 							crit.getMap().put(menu, temp);
 						} else {
-							temp.clear();
+							temp = new ArrayList<Mensa>();
 							temp = crit.getMap().get(menu);
 							temp.add(mensa);
+							
 						}
 					}
-					container.add(crit);
 				}
 			}
 		}

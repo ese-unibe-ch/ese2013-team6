@@ -3,9 +3,16 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical" >
+
     <ListView
-        android:id="@+id/notification_view_layout"
-		android:layout_width="match_parent"
-    	android:layout_height="match_parent"
-    	android:orientation="vertical" />
+        android:id="@+id/notification_list"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical" />
+
+    <TextView
+        android:id="@+id/no_crit_text"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
 </LinearLayout>

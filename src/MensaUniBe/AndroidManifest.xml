@@ -44,7 +44,7 @@
 		
         <receiver android:name="com.ese2013.mub.service.AlarmReceiver" />
 		
-		<service android:name="com.ese2013.mub.service.NotificationService" />
+		<service android:name="com.ese2013.mub.service.NotificationService"></service>
         
         <meta-data
             android:name="com.google.android.maps.v2.API_KEY"

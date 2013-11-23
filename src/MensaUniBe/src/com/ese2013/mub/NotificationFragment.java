@@ -10,6 +10,7 @@ import android.content.ServiceConnection;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -30,50 +31,59 @@ public class NotificationFragment extends Fragment {
 	private List<Criteria> criteriaList;
 	private NotificationAdapter notificationAdapter;
 
+	
+	
+	@Override
+	public void onStart() {
+		super.onStart();
+		
+	}
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		
+		
 		criteriaList = new ArrayList<Criteria>();
-		getActivity().bindService(
-				new Intent(getActivity(), NotificationService.class),
-				mConnection, Context.BIND_AUTO_CREATE);
-		
-		//service im moment null, wiso???
-	
-		
+		getActivity().bindService(new Intent(getActivity(), NotificationService.class), mConnection, Context.BIND_AUTO_CREATE);
 
 	}
-	@Override
-	public View onCreateView(LayoutInflater inflater, ViewGroup container,
-			Bundle savedInstanceState) {
-
-		View view = inflater.inflate(R.layout.fragment_notification, container);
-		notificationAdapter = new NotificationAdapter();
-		// layoutStuff, analog mensaList..
-		if(criteriaList.isEmpty()){
-			//TODO make textList
-		}
-		ListView list = (ListView) view
-				.findViewById(R.id.notification_view_layout);
-		list.setAdapter(notificationAdapter);
-		return view;
-	}
-
 	private ServiceConnection mConnection = new ServiceConnection() {
 
 		public void onServiceConnected(ComponentName className, IBinder binder) {
 			service = ((NotificationService.NBinder) binder).getService();
-			if(service != null){
-				criteriaList = service.getCriteraData();
-				service.addObserver(NotificationFragment.this);
-				service.createCriteriaList();
-			}
+		
 		}
 
 		public void onServiceDisconnected(ComponentName className) {
 			service = null;
+			
 		}
 	};
+
+	@Override
+	public View onCreateView(LayoutInflater inflater, ViewGroup container,
+			Bundle savedInstanceState) {
+
+		View view = inflater.inflate(R.layout.fragment_notification, null);
+		notificationAdapter = new NotificationAdapter();
+		
+			service.addObserver(NotificationFragment.this);
+			service.createCriteriaList();
+			criteriaList = service.getCriteraData();
+		
+		
+		
+		if(criteriaList.isEmpty()){
+			TextView text = (TextView) view.findViewById(R.id.no_crit_text);
+			text.setText("No matching criteria found!");
+			return view;
+		}
+		ListView list = (ListView) view.findViewById(R.id.notification_list);
+		list.setAdapter(notificationAdapter);
+		return view;
+	}
+
+
 
 	public void onPause() {
 		super.onPause();
@@ -83,9 +93,8 @@ public class NotificationFragment extends Fragment {
 	@Override
 	public void onResume() {
 		super.onResume();
-		getActivity().bindService(
-				new Intent(getActivity(), NotificationService.class),
-				mConnection, Context.BIND_AUTO_CREATE);
+		getActivity().bindService(new Intent(getActivity(), NotificationService.class), mConnection, Context.BIND_AUTO_CREATE);
+
 	}
 
 	@Override
@@ -99,11 +108,12 @@ public class NotificationFragment extends Fragment {
 
 	}
 
-	public void sendListToMenusIntent(Mensa mensa){
-		((DrawerMenuActivity) getActivity()).launchByMensaAtGivenPage(mensa.getId());
+	public void sendListToMenusIntent(Mensa mensa) {
+		((DrawerMenuActivity) getActivity()).launchByMensaAtGivenPage(mensa
+				.getId());
 	}
 
-	class NotificationAdapter extends BaseAdapter implements IAdapter{
+	class NotificationAdapter extends BaseAdapter implements IAdapter {
 		private LayoutInflater inflater;
 
 		public NotificationAdapter() {
@@ -112,35 +122,43 @@ public class NotificationFragment extends Fragment {
 
 		@Override
 		public View getView(int position, View convertView, ViewGroup parent) {
-	
+
 			View view = convertView;
-			if (view == null)
+			if (inflater == null)
 				inflater = (LayoutInflater) getActivity().getSystemService(
 						Context.LAYOUT_INFLATER_SERVICE);
-			
+
 			view = inflater.inflate(R.layout.notification_list_element, null);
+			LinearLayout layout = (LinearLayout) view
+					.findViewById(R.id.notification_list_sublayout);
 			
-			//TODO problem, cannot add to layout which is parsed from xml.
 			Criteria criteria = criteriaList.get(position);
-			TextView textView = (TextView) view.findViewById(R.id.criteria_title);
+			TextView textView = (TextView) view
+					.findViewById(R.id.criteria_title);
 			textView.setText(criteria.getName());
-			LinearLayout layout = (LinearLayout)view.findViewById(R.id.notification_list_layout);
-		
-			for(Menu menu : criteria.getMap().keySet()){
-				layout.addView(new MenuView(getActivity(), menu.getTitle(), menu.getDescription()));
-				for(Mensa mensa : criteria.getMap().get(menu)){
-					RelativeLayout rel = (RelativeLayout)inflater.inflate(R.layout.daily_section_title_bar, null);
+			
+
+			for (Menu menu : criteria.getMap().keySet()) {
+				layout.addView(new MenuView(getActivity(), menu.getTitle(),
+						menu.getDescription()));
+				for (Mensa mensa : criteria.getMap().get(menu)) {
+					RelativeLayout rel = (RelativeLayout) inflater.inflate(
+							R.layout.daily_section_title_bar, null);
 					TextView text = (TextView) rel.getChildAt(0);
 					text.setOnClickListener(new AddressTextListener(mensa, this));
 					text.setText(mensa.getName());
-					ImageButton favoriteButton = (ImageButton)rel.getChildAt(1);
-					favoriteButton.setOnClickListener(new FavoriteButtonListener(mensa, favoriteButton));
-					ImageButton mapButton =(ImageButton)rel.getChildAt(2);
-					mapButton.setOnClickListener(new MapButtonListener(mensa, NotificationFragment.this));
+					ImageButton favoriteButton = (ImageButton) rel
+							.getChildAt(1);
+					favoriteButton
+							.setOnClickListener(new FavoriteButtonListener(
+									mensa, favoriteButton));
+					ImageButton mapButton = (ImageButton) rel.getChildAt(2);
+					mapButton.setOnClickListener(new MapButtonListener(mensa,
+							NotificationFragment.this));
 					layout.addView(rel);
 				}
 			}
-		
+
 			return view;
 		}
 
@@ -167,7 +185,8 @@ public class NotificationFragment extends Fragment {
 
 		@Override
 		public void sendListToMenusIntent(Mensa mensa) {
-			((DrawerMenuActivity) getActivity()).launchByMensaAtGivenPage(mensa.getId());
+			((DrawerMenuActivity) getActivity()).launchByMensaAtGivenPage(mensa
+					.getId());
 		}
 
 	}

@@ -1,7 +1,12 @@
 package com.ese2013.mub;
 
 import android.app.ActionBar;
+import android.content.ComponentName;
+import android.content.Context;
+import android.content.Intent;
+import android.content.ServiceConnection;
 import android.os.Bundle;
+import android.os.IBinder;
 import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
@@ -36,6 +41,8 @@ public class DrawerMenuActivity extends FragmentActivity {
 	private static final int HOME_INDEX = 0, MAP_INDEX = 2, NOTIFICATION_INDEX = 3;
 	private static final String POSITION = "com.ese2013.mub.position";
 	private Model model;
+	private NotificationService service;
+	private boolean isConnected = false;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -265,3 +272,4 @@ public class DrawerMenuActivity extends FragmentActivity {
 		super.onSaveInstanceState(outState);
 	}
 }
+	

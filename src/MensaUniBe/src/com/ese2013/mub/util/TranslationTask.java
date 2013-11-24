@@ -13,8 +13,8 @@ public class TranslationTask extends AsyncTask<Void, Void, Void> {
 	private Language newLang;
 	private Collection<Menu> menus;
 	private String[] newTitles, newDescriptions;
-	private static final String NEW_LINE = " ; "; 
-	
+	private static final String NEW_LINE = " ; ";
+
 	public TranslationTask(Collection<Menu> menus, Language newLang) {
 		Translate.setClientId("MensaUniBe");
 		Translate.setClientSecret("T35oR9q6ukB/GbuYAg4nsL09yRsp9j5afWjULfWfmuY=");
@@ -38,7 +38,7 @@ public class TranslationTask extends AsyncTask<Void, Void, Void> {
 		try {
 			newTitles = Translate.execute(menuTitles, Language.GERMAN, newLang);
 			newDescriptions = Translate.execute(descriptions, Language.GERMAN, newLang);
-	
+
 		} catch (Exception e) {
 			// Api throws general exception...
 			e.printStackTrace();
@@ -54,7 +54,7 @@ public class TranslationTask extends AsyncTask<Void, Void, Void> {
 			int i = 0;
 			for (Menu menu : menus) {
 				menu.setTitle(newTitles[i]);
-				menu.setDescription(newDescriptions[i].replace(NEW_LINE.trim(), "\n"));
+				menu.setDescription(newDescriptions[i].replace(NEW_LINE.trim(), "\n").replace("'", "\""));
 				i++;
 			}
 		} else {

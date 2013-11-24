@@ -1,4 +1,5 @@
 var _ = require('underscore');
+var tok = '?tok=6112255ca02b3040711015bbbda8d955';
 
 function dropTable(name) {
 	var query = new Parse.Query(name);
@@ -6,9 +7,7 @@ function dropTable(name) {
 	  success: function(results) {
 		Parse.Object.destroyAll(results);
 	  },
-
 	  error: function(error) {
-		// error is an instance of Parse.Error.
 	  }
 	});
 }
@@ -37,7 +36,7 @@ function getMenuPlan(mensaList) {
 				promise = promise.then(function() {
 				menuList = new Array();
 				menusMensas = new Array();
-				var weeklyPlanUrl = 'http://mensa.xonix.ch/v1/mensas/' + mensa.get("mensaId") + '/weeklyplan?tok=6112255ca02b3040711015bbbda8d955';
+				var weeklyPlanUrl = 'http://mensa.xonix.ch/v1/mensas/' + mensa.get("mensaId") + '/weeklyplan' + tok;
 				console.log(weeklyPlanUrl);
 				return Parse.Cloud.httpRequest({
 					url: weeklyPlanUrl,
@@ -94,7 +93,7 @@ Parse.Cloud.define("hello", function(request, response) {
 	dropTable("MenuMensa");
 	var mensaList = new Array();
 	Parse.Cloud.httpRequest({
-      url: 'http://mensa.xonix.ch/v1/mensas?tok=6112255ca02b3040711015bbbda8d955',
+      url: 'http://mensa.xonix.ch/v1/mensas' + tok,
       success: function(httpResponse) {
 		if (parseInt(httpResponse.data.result.code) == 200) {
 			var mensas = httpResponse.data.result.content;

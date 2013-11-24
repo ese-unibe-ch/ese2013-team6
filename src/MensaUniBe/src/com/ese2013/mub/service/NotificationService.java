@@ -84,7 +84,7 @@ public class NotificationService extends Service{
 	public List<Criteria> getCriteraData(){
 		return criteriaList;
 	}
-	public void notifyObserver(){
+	private void notifyObserver(){
 		observer.onNotifyChanges();
 	}
 	public void createCriteriaList() {
@@ -98,5 +98,6 @@ public class NotificationService extends Service{
 				mensas = allMensas ? Model.getInstance().getMensas() : Model.getInstance().getFavoriteMensas();
 				
 				criteriaList = criteriaMatcher.match(criteria, mensas);
+				notifyObserver();
 	}
 }

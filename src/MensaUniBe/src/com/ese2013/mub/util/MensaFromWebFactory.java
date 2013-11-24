@@ -13,10 +13,13 @@ import org.json.JSONObject;
 
 import com.ese2013.mub.model.Day;
 import com.ese2013.mub.model.Mensa;
+import com.ese2013.mub.model.Mensa.MensaBuilder;
 import com.ese2013.mub.model.Menu;
 import com.ese2013.mub.model.MenuManager;
 import com.ese2013.mub.model.WeeklyMenuplan;
 import com.ese2013.mub.util.database.MensaDataSource;
+import com.parse.ParseObject;
+import com.parse.ParseQuery;
 
 public class MensaFromWebFactory extends AbstractMensaFactory {
 
@@ -33,41 +36,65 @@ public class MensaFromWebFactory extends AbstractMensaFactory {
 	@Override
 	public List<Mensa> createMensaList() throws MensaDownloadException {
 		try {
+			ParseQuery<ParseObject> query = ParseQuery.getQuery("Mensa");
+			List<ParseObject> parseMensas = query.find();
+			System.out.println(parseMensas.size());
 			dataSource.open();
-			MensaWebserviceJsonRequest request = new MensaWebserviceJsonRequest(ServiceUri.GET_MENSAS);
-			JSONObject result = request.execute();
-			JSONArray content = result.getJSONObject("result").getJSONArray("content");
 			List<Mensa> mensas = new ArrayList<Mensa>();
-			for (int i = 0; i < content.length(); i++) {
-				JSONObject mensaJsonObject = content.getJSONObject(i);
+			for (int i = 0; i < parseMensas.size(); i++) {
+				ParseObject parseMensa = parseMensas.get(i);
 				JSONObject mensaJsonUpdate = updateStatusJson.getJSONObject(i);
-				Mensa mensa = parseMensaJson(mensaJsonObject, mensaJsonUpdate);
+				Mensa mensa = createMensa(parseMensa, mensaJsonUpdate);
+				System.out.println(mensa.getId());
+				System.out.println(mensa.getName());
+//				Mensa mensa = parseMensaJson(mensaJsonObject, mensaJsonUpdate);
 				mensa.setMenuplan(createWeeklyMenuplan(mensa));
 				mensas.add(mensa);
 			}
+			
+			
+			
+//			dataSource.open();
+//			MensaWebserviceJsonRequest request = new MensaWebserviceJsonRequest(ServiceUri.GET_MENSAS);
+//			JSONObject result = request.execute();
+//			JSONArray content = result.getJSONObject("result").getJSONArray("content");
+//			List<Mensa> mensas = new ArrayList<Mensa>();
+//			for (int i = 0; i < content.length(); i++) {
+//				JSONObject mensaJsonObject = content.getJSONObject(i);
+//				JSONObject mensaJsonUpdate = updateStatusJson.getJSONObject(i);
+//				Mensa mensa = parseMensaJson(mensaJsonObject, mensaJsonUpdate);
+//				mensa.setMenuplan(createWeeklyMenuplan(mensa));
+//				mensas.add(mensa);
+//			}
 			return mensas;
 		} catch (JSONException e) {
+			e.printStackTrace();
 			throw new MensaDownloadException(e);
 		} catch (IOException e) {
+			e.printStackTrace();
 			throw new MensaDownloadException(e);
 		} catch (ParseException e) {
+			e.printStackTrace();
+			throw new MensaDownloadException(e);
+		} catch (com.parse.ParseException e) {
+			e.printStackTrace();
 			throw new MensaDownloadException(e);
 		} finally {
 			dataSource.close();
 		}
 	}
-
-	private Mensa parseMensaJson(JSONObject mensaJson, JSONObject mensaJsonUpdate) throws JSONException {
-		Mensa.MensaBuilder builder = new Mensa.MensaBuilder();
-		int mensaId = mensaJson.getInt("id");
+	
+	private Mensa createMensa(ParseObject parseMensa, JSONObject updateStatus) throws JSONException {
+		MensaBuilder builder = new MensaBuilder();
+		int mensaId = Integer.parseInt(parseMensa.getString("mensaId"));
 		builder.setId(mensaId);
-		builder.setName(mensaJson.getString("mensa"));
-		builder.setStreet(mensaJson.getString("street"));
-		builder.setZip(mensaJson.getString("plz"));
-		builder.setLongitude(mensaJson.getDouble("lon"));
-		builder.setLatitude(mensaJson.getDouble("lat"));
+		builder.setName(parseMensa.getString("name"));
+		builder.setStreet(parseMensa.getString("street"));
+		builder.setZip(parseMensa.getString("plz"));
+		builder.setLongitude(Double.parseDouble(parseMensa.getString("lon")));
+		builder.setLatitude(Double.parseDouble(parseMensa.getString("lat")));
 		builder.setIsFavorite(dataSource.isInFavorites(mensaId));
-		builder.setTimestamp(mensaJsonUpdate.getInt("timestamp"));
+		builder.setTimestamp(updateStatus.getInt("timestamp"));
 		return builder.build();
 	}
 

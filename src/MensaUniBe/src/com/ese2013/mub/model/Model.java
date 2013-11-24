@@ -82,7 +82,7 @@ public class Model extends Observable {
 	public void onCreationFinished(ModelCreationTask task) {
 		Toast.makeText(context, context.getString(task.getStatusMsgResource()), Toast.LENGTH_LONG).show();
 		//TODO MOVE TRANSLATION TO CREATION TASK
-		menuManager.translateAllMenusSync();
+//		menuManager.translateAllMenusSync();
 		if (task.wasSuccessful()) {
 			mensas = task.getMensas();
 			if (task.hasDownloadedNewData())

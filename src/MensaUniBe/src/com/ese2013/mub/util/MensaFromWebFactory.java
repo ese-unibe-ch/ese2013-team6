@@ -1,99 +1,114 @@
 package com.ese2013.mub.util;
 
-import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 
 import org.json.JSONArray;
 import org.json.JSONException;
-import org.json.JSONObject;
 
 import com.ese2013.mub.model.Day;
 import com.ese2013.mub.model.Mensa;
+import com.ese2013.mub.model.Mensa.MensaBuilder;
 import com.ese2013.mub.model.Menu;
+import com.ese2013.mub.model.MenuManager;
 import com.ese2013.mub.model.WeeklyMenuplan;
 import com.ese2013.mub.util.database.MensaDataSource;
+import com.parse.ParseObject;
+import com.parse.ParseQuery;
 
 public class MensaFromWebFactory extends AbstractMensaFactory {
 
 	private MensaDataSource dataSource = MensaDataSource.getInstance();
 	private static SimpleDateFormat fm = new SimpleDateFormat("yyyy-MM-dd", Locale.GERMAN);
 	private JSONArray updateStatusJson;
+	private MenuManager menuManager;
 
-	public MensaFromWebFactory(JSONArray updateStatusJson) {
+	public MensaFromWebFactory(JSONArray updateStatusJson, MenuManager menuManager) {
 		this.updateStatusJson = updateStatusJson;
+		this.menuManager = menuManager;
 	}
 
 	@Override
 	public List<Mensa> createMensaList() throws MensaDownloadException {
 		try {
+			ParseQuery<ParseObject> query = ParseQuery.getQuery("MenuMensa");
+			query.include("menu");
+			query.include("mensa");
+			List<ParseObject> parseMenuMensas = query.find();
+			HashMap<String, Mensa> mensaMap = new HashMap<String, Mensa>();
 			dataSource.open();
-			MensaWebserviceJsonRequest request = new MensaWebserviceJsonRequest(ServiceUri.GET_MENSAS);
-			JSONObject result = request.execute();
-			JSONArray content = result.getJSONObject("result").getJSONArray("content");
-			List<Mensa> mensas = new ArrayList<Mensa>();
-			for (int i = 0; i < content.length(); i++) {
-				JSONObject mensaJsonObject = content.getJSONObject(i);
-				JSONObject mensaJsonUpdate = updateStatusJson.getJSONObject(i);
-				Mensa mensa = parseMensaJson(mensaJsonObject, mensaJsonUpdate);
-				mensa.setMenuplan(createWeeklyMenuplan(mensa));
-				mensas.add(mensa);
+			for (int i = 0; i < parseMenuMensas.size(); i++) {
+				WeeklyMenuplan plan;
+				ParseObject parseMenuMensa = parseMenuMensas.get(i);
+				ParseObject parseMensa = parseMenuMensa.getParseObject("mensa");
+				Mensa mensa = mensaMap.get(parseMensa.getObjectId());
+				if (mensa != null) {
+					plan = mensa.getMenuplan();
+				} else {
+					int timestamp = getUpdateTimestamp(parseMensa);
+					plan = new WeeklyMenuplan();
+					mensa = parseMensa(parseMensa, timestamp);
+					mensa.setMenuplan(plan);
+					mensaMap.put(parseMensa.getObjectId(), mensa);
+				}
+				plan.add(parseMenu(parseMenuMensa));
 			}
+			List<Mensa> mensas = new ArrayList<Mensa>(mensaMap.values());
+			sortMensaList(mensas);
 			return mensas;
 		} catch (JSONException e) {
-			throw new MensaDownloadException(e);
-		} catch (IOException e) {
+			e.printStackTrace();
 			throw new MensaDownloadException(e);
 		} catch (ParseException e) {
+			e.printStackTrace();
+			throw new MensaDownloadException(e);
+		} catch (com.parse.ParseException e) {
+			e.printStackTrace();
 			throw new MensaDownloadException(e);
 		} finally {
 			dataSource.close();
 		}
 	}
 
-	private Mensa parseMensaJson(JSONObject mensaJson, JSONObject mensaJsonUpdate) throws JSONException {
-		Mensa.MensaBuilder builder = new Mensa.MensaBuilder();
-		int mensaId = mensaJson.getInt("id");
+	private int getUpdateTimestamp(ParseObject parseMensa) throws JSONException {
+		for (int j = 0; j < updateStatusJson.length(); j++)
+			if (updateStatusJson.getJSONObject(j).getInt("id") == Integer.parseInt(parseMensa.getString("mensaId")))
+				return updateStatusJson.getJSONObject(j).getInt("timestamp");
+		return 0;
+	}
+
+	private void sortMensaList(List<Mensa> mensas) {
+		Collections.sort(mensas, new Comparator<Mensa>() {
+			@Override
+			public int compare(Mensa lhs, Mensa rhs) {
+				return lhs.getId() - rhs.getId();
+			}
+		});
+	}
+
+	private Mensa parseMensa(ParseObject parseMensa, int timestamp) throws JSONException {
+		MensaBuilder builder = new MensaBuilder();
+		int mensaId = Integer.parseInt(parseMensa.getString("mensaId"));
 		builder.setId(mensaId);
-		builder.setName(mensaJson.getString("mensa"));
-		builder.setStreet(mensaJson.getString("street"));
-		builder.setZip(mensaJson.getString("plz"));
-		builder.setLongitude(mensaJson.getDouble("lon"));
-		builder.setLatitude(mensaJson.getDouble("lat"));
+		builder.setName(parseMensa.getString("name"));
+		builder.setStreet(parseMensa.getString("street"));
+		builder.setZip(parseMensa.getString("plz"));
+		builder.setLongitude(Double.parseDouble(parseMensa.getString("lon")));
+		builder.setLatitude(Double.parseDouble(parseMensa.getString("lat")));
 		builder.setIsFavorite(dataSource.isInFavorites(mensaId));
-		builder.setTimestamp(mensaJsonUpdate.getInt("timestamp"));
+		builder.setTimestamp(timestamp);
 		return builder.build();
 	}
 
-	private WeeklyMenuplan createWeeklyMenuplan(Mensa m) throws IOException, JSONException, ParseException {
-		MensaWebserviceJsonRequest menuRequest = new MensaWebserviceJsonRequest(ServiceUri.GET_WEEKLY_MENUPLAN.replaceFirst(":id", "" + m.getId()));
-		JSONArray menus = menuRequest.execute().getJSONObject("result").getJSONObject("content").getJSONArray("menus");
-		return parseWeeklyMenuplan(menus);
-	}
-
-	private WeeklyMenuplan parseWeeklyMenuplan(JSONArray menus) throws JSONException, ParseException {
-		WeeklyMenuplan plan = new WeeklyMenuplan();
-		for (int i = 0; i < menus.length(); i++) {
-			JSONObject menu = menus.getJSONObject(i);
-			plan.add(parseMenu(menu));
-		}
-		return plan;
-	}
-
-	private Menu parseMenu(JSONObject menu) throws JSONException, ParseException {
-		Menu.MenuBuilder builder = new Menu.MenuBuilder();
-		builder.setTitle(menu.getString("title"));
-		JSONArray desc = menu.getJSONArray("menu");
-		String description = "";
-		for (int i = 0; i < desc.length(); i++)
-			description += desc.getString(i) + "\n";
-
-		builder.setDescription(description);
-		builder.setDate(new Day(fm.parse(menu.getString("date"))));
-//		builder.setHash(menu.getInt("hash"));
-		return builder.build();
+	private Menu parseMenu(ParseObject parseMenuMensa) throws ParseException {
+		ParseObject parseMenu = parseMenuMensa.getParseObject("menu");
+		return menuManager.createMenu(parseMenu.getString("title"), parseMenu.getString("description"),
+				new Day(fm.parse(parseMenuMensa.getString("date"))));
 	}
 }

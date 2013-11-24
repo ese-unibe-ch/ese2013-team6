@@ -17,6 +17,7 @@ import com.ese2013.mub.model.DailyMenuplan;
 import com.ese2013.mub.model.Day;
 import com.ese2013.mub.model.Mensa;
 import com.ese2013.mub.model.Menu;
+import com.ese2013.mub.model.MenuManager;
 import com.ese2013.mub.model.WeeklyMenuplan;
 import com.ese2013.mub.util.database.tables.FavoritesTable;
 import com.ese2013.mub.util.database.tables.MensasTable;
@@ -31,6 +32,7 @@ public class MensaDataSource {
 	private SqlDatabaseHelper dbHelper;
 	private static SimpleDateFormat fm = new SimpleDateFormat("yyyy-MM-dd", Locale.GERMAN);
 	private static MensaDataSource instance;
+	private MenuManager menuManager;
 
 	private MensaDataSource() {
 	}
@@ -48,8 +50,9 @@ public class MensaDataSource {
 	 *            Context in which the DataSource is used, i.e. the main
 	 *            activity. Must not be null.
 	 */
-	public void init(Context context) {
+	public void init(Context context, MenuManager menuManager) {
 		dbHelper = new SqlDatabaseHelper(context);
+		this.menuManager = menuManager;
 	}
 
 	/**
@@ -191,16 +194,20 @@ public class MensaDataSource {
 	 * Stores the given Menu in the MenuTable and also stores a pair of Menu Id
 	 * and Mensa Id in the MenusMensa Table.
 	 * 
-	 * @param menu Menu to be stored. Must not be null.
-	 * @param mensa Mensa which the Menu belongs to. Must not be null.
+	 * @param menu
+	 *            Menu to be stored. Must not be null.
+	 * @param mensa
+	 *            Mensa which the Menu belongs to. Must not be null.
 	 */
 	private void storeMenu(Menu menu, Mensa mensa) {
 		String date = menu.getDate().format(fm);
-		
-		//query the database to check if the menu is already stored, and if so, retrieve the id.
-		Cursor c = database.rawQuery("select " + MenusTable.COL_ID + " from " + MenusTable.TABLE_MENUS + " where "
-				+ MenusTable.COL_TITLE + "='" + menu.getTitle() + "' and " + MenusTable.COL_DESC + "='" + menu.getDescription()
-				+ "' and " + MenusTable.COL_DATE + "='" + date + "'", null);
+
+		// query the database to check if the menu is already stored, and if so,
+		// retrieve the id.
+		Cursor c = database.rawQuery(
+				"select " + MenusTable.COL_ID + " from " + MenusTable.TABLE_MENUS + " where " + MenusTable.COL_TITLE + "='"
+						+ menu.getTitle() + "' and " + MenusTable.COL_DESC + "='" + menu.getDescription() + "' and "
+						+ MenusTable.COL_DATE + "='" + date + "'", null);
 		int id;
 		if (c.getCount() == 0) {
 			ContentValues values = new ContentValues();
@@ -242,11 +249,8 @@ public class MensaDataSource {
 		c.moveToFirst();
 		do {
 			try {
-				Menu.MenuBuilder builder = new Menu.MenuBuilder();
-				builder.setTitle(c.getString(POS_TITLE));
-				builder.setDescription(c.getString(POS_DESC));
-				builder.setDate(new Day(fm.parse(c.getString(POS_DATE))));
-				p.add(builder.build());
+				p.add(menuManager.createMenu(c.getString(POS_TITLE), c.getString(POS_DESC),
+						new Day(fm.parse(c.getString(POS_DATE)))));
 			} catch (ParseException e) {
 				throw new AssertionError("Database did not save properly");
 			}

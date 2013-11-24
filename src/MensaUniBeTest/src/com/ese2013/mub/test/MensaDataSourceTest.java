@@ -10,6 +10,7 @@ import android.test.AndroidTestCase;
 import com.ese2013.mub.model.Day;
 import com.ese2013.mub.model.Mensa;
 import com.ese2013.mub.model.Menu;
+import com.ese2013.mub.model.MenuManager;
 import com.ese2013.mub.model.WeeklyMenuplan;
 import com.ese2013.mub.util.database.MensaDataSource;
 
@@ -21,7 +22,7 @@ public class MensaDataSourceTest extends AndroidTestCase {
 	protected void setUp() throws Exception {
 		super.setUp();
 		dataSource = MensaDataSource.getInstance();
-		dataSource.init(getContext());
+		dataSource.init(getContext(), new MenuManager());
 		assertNotNull(dataSource);
 		dataSource.open();
 		dataSource.cleanUpAllTables();
@@ -142,23 +143,23 @@ public class MensaDataSourceTest extends AndroidTestCase {
 
 		calendar.set(2013, 10, 20);
 		Menu.MenuBuilder builder = new Menu.MenuBuilder();
-		builder.setTitle("Vegi").setDescription("Something \n Served with some other Stuff")
+		builder.setId(0).setTitle("Vegi").setDescription("Something \n Served with some other Stuff")
 				.setDate(new Day(calendar.getTime()));
 		menus.add(builder.build());
-		builder.setTitle("Nice Menu").setDescription("Something nice\n Served with nothing else")
+		builder.setId(1).setTitle("Nice Menu").setDescription("Something nice\n Served with nothing else")
 				.setDate(new Day(calendar.getTime()));
 		menus.add(builder.build());
 
 		calendar.set(2013, 10, 21);
-		builder.setTitle("Vegi").setDescription("Something vegetarian").setDate(new Day(calendar.getTime()));
+		builder.setId(2).setTitle("Vegi").setDescription("Something vegetarian").setDate(new Day(calendar.getTime()));
 		menus.add(builder.build());
-		builder.setTitle("Expensive Menu").setDescription("Very expensive food").setDate(new Day(calendar.getTime()));
+		builder.setId(3).setTitle("Expensive Menu").setDescription("Very expensive food").setDate(new Day(calendar.getTime()));
 		menus.add(builder.build());
 
 		calendar.set(2013, 10, 22);
-		builder.setTitle("Nice Vegi Menu").setDescription("Something nice vegetarian").setDate(new Day(calendar.getTime()));
+		builder.setId(4).setTitle("Nice Vegi Menu").setDescription("Something nice vegetarian").setDate(new Day(calendar.getTime()));
 		menus.add(builder.build());
-		builder.setTitle("Special Menu").setDescription("Pizza").setDate(new Day(calendar.getTime()));
+		builder.setId(5).setTitle("Special Menu").setDescription("Pizza").setDate(new Day(calendar.getTime()));
 		menus.add(builder.build());
 
 		WeeklyMenuplan plan1 = new WeeklyMenuplan();

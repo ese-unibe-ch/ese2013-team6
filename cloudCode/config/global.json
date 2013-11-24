@@ -1,0 +1,14 @@
+{
+    "applications": {
+        "MensaUniBe": {
+            "applicationId": "ZmdQMR7FctP2XgMJN5lvj98Aj9IA2Bf8mJrny11n", 
+            "masterKey": "O904z8aHhpzPWKFIvoeSNwbL4NumQgwNzFFfQmyM"
+        }, 
+        "_default": {
+            "link": "MensaUniBe"
+        }
+    }, 
+    "global": {
+        "parseVersion": "1.2.13"
+    }
+}

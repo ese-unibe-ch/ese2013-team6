@@ -45,27 +45,9 @@ public class MensaFromWebFactory extends AbstractMensaFactory {
 				ParseObject parseMensa = parseMensas.get(i);
 				JSONObject mensaJsonUpdate = updateStatusJson.getJSONObject(i);
 				Mensa mensa = createMensa(parseMensa, mensaJsonUpdate);
-				System.out.println(mensa.getId());
-				System.out.println(mensa.getName());
-//				Mensa mensa = parseMensaJson(mensaJsonObject, mensaJsonUpdate);
 				mensa.setMenuplan(createWeeklyMenuplan(mensa));
 				mensas.add(mensa);
 			}
-			
-			
-			
-//			dataSource.open();
-//			MensaWebserviceJsonRequest request = new MensaWebserviceJsonRequest(ServiceUri.GET_MENSAS);
-//			JSONObject result = request.execute();
-//			JSONArray content = result.getJSONObject("result").getJSONArray("content");
-//			List<Mensa> mensas = new ArrayList<Mensa>();
-//			for (int i = 0; i < content.length(); i++) {
-//				JSONObject mensaJsonObject = content.getJSONObject(i);
-//				JSONObject mensaJsonUpdate = updateStatusJson.getJSONObject(i);
-//				Mensa mensa = parseMensaJson(mensaJsonObject, mensaJsonUpdate);
-//				mensa.setMenuplan(createWeeklyMenuplan(mensa));
-//				mensas.add(mensa);
-//			}
 			return mensas;
 		} catch (JSONException e) {
 			e.printStackTrace();

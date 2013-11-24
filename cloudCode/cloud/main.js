@@ -20,6 +20,19 @@ function getMenuPlan(mensaList) {
 	var menuList = new Array();
 	var menusMensas = new Array();
 	var menuMap = {};
+	var currentMenusTable;
+	promise = promise.then(function() {
+		var query = new Parse.Query("Menu");
+		return query.find({
+		  success: function(results) {
+			_.each(results, function(result) {
+				menuMap[result.get("description")] = result;
+			});
+		  },
+		  error: function(error) {
+		  }
+		});
+	});
 	_.each(mensaList, function(mensa) {
 				promise = promise.then(function() {
 				menuList = new Array();
@@ -27,50 +40,49 @@ function getMenuPlan(mensaList) {
 				var weeklyPlanUrl = 'http://mensa.xonix.ch/v1/mensas/' + mensa.get("mensaId") + '/weeklyplan?tok=6112255ca02b3040711015bbbda8d955';
 				console.log(weeklyPlanUrl);
 				return Parse.Cloud.httpRequest({
-				url: weeklyPlanUrl,
-				success: function(httpResponse) {
-				if (parseInt(httpResponse.data.result.code) == 200) {
-					var menus = httpResponse.data.result.content.menus;
-					for (var i = 0; i < menus.length; ++i) {
-						var Menu = Parse.Object.extend("Menu");
-						var menuJson = menus[i];
-						var desc = "";
-						for (var j = 0; j < menuJson.menu.length; ++j) {
-							desc += menuJson.menu[j] + "\n";
+					url: weeklyPlanUrl,
+					success: function(httpResponse) {
+					if (parseInt(httpResponse.data.result.code) == 200) {
+						var menus = httpResponse.data.result.content.menus;
+						for (var i = 0; i < menus.length; ++i) {
+							var Menu = Parse.Object.extend("Menu");
+							var menuJson = menus[i];
+							var desc = "";
+							for (var j = 0; j < menuJson.menu.length; ++j) {
+								desc += menuJson.menu[j] + "\n";
+							} 
+							var menu;
+							if (menuMap[desc]) {
+							 console.log("menu already exists");
+							 menu = menuMap[desc];
+							} else {
+								menu = new Menu
+								console.log("menu not found");
+								menu.set("title", menuJson.title);
+								menu.set("description", desc);
+								menu.set("ratingSum", 0);
+								menu.set("ratingCount", 0);
+								menu.set("mensaId", mensa.get("mensaId"));
+								menuList.push(menu);
+								menuMap[desc] = menu;
+							}
+							var MenuMensa = Parse.Object.extend("MenuMensa");
+							var menuMensa = new MenuMensa();
+							menuMensa.set("mensa", mensa);
+							menuMensa.set("menu", menu);
+							menuMensa.set("date", menuJson.date);
+							menusMensas.push(menuMensa);
 						}
-						var menu;
-						if(menuMap[desc]) {
-						 console.log("menu already exists");
-						 menu = menuMap[desc];
-						} else {
-							menu = new Menu
-							console.log("menu not found");
-							//console.log(desc);
-							menu.set("title", menuJson.title);
-							menu.set("description", desc);
-							menu.set("ratingSum", 0);
-							menu.set("ratingCount", 0);
-							menu.set("mensaId", mensa.get("mensaId"));
-							menuList.push(menu);
-							menuMap[desc] = menu;
-						}
-						var MenuMensa = Parse.Object.extend("MenuMensa");
-						var menuMensa = new MenuMensa();
-						menuMensa.set("mensa", mensa);
-						menuMensa.set("menu", menu);
-						menuMensa.set("date", menuJson.date);
-						menusMensas.push(menuMensa);
 					}
-				}
-				},
-				error: function(httpResponse) {
-				console.log("Error retrieving menus");
-				}
-		}).then( function() {
-				return Parse.Object.saveAll(menuList);
-			}).then( function() {
-				return Parse.Object.saveAll(menusMensas);
-			});
+					},
+					error: function(httpResponse) {
+					console.log("Error retrieving menus");
+					}
+				}).then( function() {
+					return Parse.Object.saveAll(menuList);
+				}).then( function() {
+					return Parse.Object.saveAll(menusMensas);
+				});
 		});
 	});
 	return promise;
@@ -79,7 +91,7 @@ function getMenuPlan(mensaList) {
 Parse.Cloud.define("hello", function(request, response) {
 		
 	dropTable("Mensa");
-	dropTable("Menu");
+	dropTable("MenuMensa");
 	var mensaList = new Array();
 	Parse.Cloud.httpRequest({
       url: 'http://mensa.xonix.ch/v1/mensas?tok=6112255ca02b3040711015bbbda8d955',

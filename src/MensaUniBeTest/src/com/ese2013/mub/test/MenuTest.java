@@ -16,6 +16,7 @@ public class MenuTest extends TestCase {
 	protected void setUp() throws Exception {
 		super.setUp();
 		builder = new MenuBuilder();
+		builder.setId(3);
 		builder.setTitle("Menu title");
 		builder.setDescription("Menu description");
 		builder.setDate(new Day(4, 11, 2013));
@@ -44,6 +45,11 @@ public class MenuTest extends TestCase {
 	public void testSelfEquals() {
 		assertFalse(menu.equals(null));
 		assertEquals(menu, menu);
+	}
+
+	public void testIdComparison() {
+		changedMenu = builder.setId(5).build();
+		assertNotEquals(menu, changedMenu);
 	}
 
 	public void testTitleComparison() {

@@ -43,7 +43,7 @@ public class ModelCreationTask extends AsyncTask<Void, Void, Void> {
 		AbstractMensaFactory fac;
 		localDataOutdated = localDataNeedsUpdate();
 		if (localDataOutdated) {
-			fac = new MensaFromWebFactory(updateStatusJson);
+			fac = new MensaFromWebFactory(updateStatusJson, Model.getInstance().getMenuManager());
 			downloadedNewData = true;
 		} else {
 			fac = new MensaFromLocalFactory();

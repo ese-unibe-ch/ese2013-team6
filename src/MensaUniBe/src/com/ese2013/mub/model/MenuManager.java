@@ -1,8 +1,6 @@
 package com.ese2013.mub.model;
 
-import java.text.SimpleDateFormat;
 import java.util.HashMap;
-import java.util.Locale;
 import java.util.concurrent.ExecutionException;
 
 import com.ese2013.mub.model.Menu.MenuBuilder;
@@ -11,19 +9,16 @@ import com.memetix.mst.language.Language;
 
 public class MenuManager {
 	private HashMap<String, Menu> menuMap = new HashMap<String, Menu>();
-	private int nextId = 0;
 
-	public Menu createMenu(String title, String description, Day day) {
+	public Menu createMenu(String id, String title, String description, Day day) {
 		// TODO there should be a better solution for this, MenuData object?
-		String key = title + description + day.format(new SimpleDateFormat("dd.mm.yyyy", Locale.GERMAN));
-		Menu menu = menuMap.get(key);
+		Menu menu = menuMap.get(id);
 		if (menu != null)
 			return menu;
 
-		menu = new MenuBuilder().setDate(day).setTitle(title).setDescription(description).setId(nextId).build();
-		nextId++;
+		menu = new MenuBuilder().setDate(day).setTitle(title).setDescription(description).setId(id).build();
 
-		menuMap.put(key, menu);
+		menuMap.put(id, menu);
 		return menu;
 	}
 
@@ -44,4 +39,35 @@ public class MenuManager {
 			e.printStackTrace();
 		}
 	}
+
+	// TODO Timm: Das ist so ungefähr wie ich mir das vorstelle. Du solltest dem
+	// Menu ein User Rating geben sowie Rating Sum und Rating Count von Parse.
+	// Ebenfalls sollte es möglich sein abzufragen ob ein menu schon gerated
+	// wurde. Dadurch kann der user sein rating ändern (siehe code unten, falls
+	// schon gerated wurde wird das alte abgezogen). Das ganze ist mit increment
+	// übrigens atomar, wodurch es keine probleme geben sollte wenn mehrere
+	// Leute gleichzeitig ein Rating hochladen. Die Frage ist halt noch ein
+	// wenig ob wir wirklich immer direkt hochladen wollen, können wir aber am
+	// Mittwoch fragen. Erstmal das hier zum Laufen bekommen.
+
+	/*
+	public static void updateMenuRating(Menu menu, int newRating) {
+		ParseQuery<ParseObject> query = ParseQuery.getQuery("Menu");
+
+		final boolean hasBeenRated = menu.hasBeenRated();
+		final int ratingUpdate = hasBeenRated ? newRating - menu.getUserRating() : newRating;
+		query.getInBackground(menu.getId(), new GetCallback<ParseObject>() {
+			public void done(ParseObject parseMenu, ParseException e) {
+				if (e == null) {
+					if (hasBeenRated)
+						parseMenu.increment("ratingCount");
+					parseMenu.increment("ratingSum", ratingUpdate);
+					parseMenu.saveInBackground();
+				}
+			}
+		});
+		menu.setUserRating(newRating);
+	}
+	*/
+
 }

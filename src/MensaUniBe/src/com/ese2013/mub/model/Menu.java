@@ -5,9 +5,8 @@ package com.ese2013.mub.model;
  * Menu.MenuBuilder class.
  */
 public class Menu {
-	private String title, description;
+	private String id, title, description;
 	private Day date;
-	private int id;
 
 	/**
 	 * Creates a Menu from a given MenuBuilder. Is private to ensure that Menus
@@ -24,7 +23,7 @@ public class Menu {
 		this.date = builder.date;
 	}
 
-	public int getId() {
+	public String getId() {
 		return id;
 	}
 
@@ -65,7 +64,7 @@ public class Menu {
 			return true;
 		if (other instanceof Menu) {
 			Menu otherMenu = (Menu) other;
-			if (otherMenu.getId() != this.id)
+			if (!otherMenu.getId().equals(this.id))
 				return false;
 			if (otherMenu.getDate() == null ? this.date != null : !otherMenu.getDate().equals(this.date))
 				return false;
@@ -82,7 +81,7 @@ public class Menu {
 	@Override
 	public int hashCode() {
 		int result = 17;
-		result = 31 * result + id;
+		result = 31 * result + id.hashCode();
 		result = 31 * result + title.hashCode();
 		result = 31 * result + description.hashCode();
 		result = 31 * result + date.hashCode();
@@ -99,13 +98,12 @@ public class Menu {
 	 * Standard builder class used to construct Menu objects.
 	 */
 	public static class MenuBuilder {
-		public static final int INVALID_ID = -1;
+		public static final String INVALID_ID = "INVALID";
 		private static final String DEFAULT = "N//A";
-		private String title = DEFAULT, description = DEFAULT;
+		private String id = INVALID_ID, title = DEFAULT, description = DEFAULT;
 		private Day date;
-		private int id = INVALID_ID;
 
-		public MenuBuilder setId(int id) {
+		public MenuBuilder setId(String id) {
 			this.id = id;
 			return this;
 		}
@@ -128,6 +126,5 @@ public class Menu {
 		public Menu build() {
 			return new Menu(this);
 		}
-
 	}
 }

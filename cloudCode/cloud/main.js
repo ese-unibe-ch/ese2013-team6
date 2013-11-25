@@ -37,7 +37,6 @@ function getMenuPlan(mensaList) {
 				menuList = new Array();
 				menusMensas = new Array();
 				var weeklyPlanUrl = 'http://mensa.xonix.ch/v1/mensas/' + mensa.get("mensaId") + '/weeklyplan' + tok;
-				console.log(weeklyPlanUrl);
 				return Parse.Cloud.httpRequest({
 					url: weeklyPlanUrl,
 					success: function(httpResponse) {
@@ -52,16 +51,13 @@ function getMenuPlan(mensaList) {
 							} 
 							var menu;
 							if (menuMap[desc]) {
-							 console.log("menu already exists");
 							 menu = menuMap[desc];
 							} else {
 								menu = new Menu
-								console.log("menu not found");
 								menu.set("title", menuJson.title);
 								menu.set("description", desc);
 								menu.set("ratingSum", 0);
 								menu.set("ratingCount", 0);
-								menu.set("mensaId", mensa.get("mensaId"));
 								menuList.push(menu);
 								menuMap[desc] = menu;
 							}
@@ -87,7 +83,7 @@ function getMenuPlan(mensaList) {
 	return promise;
 }
 
-Parse.Cloud.define("hello", function(request, response) {
+Parse.Cloud.job("menuUpdate", function(request, status) {
 		
 	dropTable("Mensa");
 	dropTable("MenuMensa");
@@ -101,7 +97,6 @@ Parse.Cloud.define("hello", function(request, response) {
 				var Mensa = Parse.Object.extend("Mensa");
 				var mensaJson = mensas[i];
 				var m = new Mensa();
-				console.log(mensaJson.mensa);
 				m.set("mensaId", mensaJson.id);
 				m.set("name", mensaJson.mensa);
 				m.set("street", mensaJson.street);
@@ -114,16 +109,11 @@ Parse.Cloud.define("hello", function(request, response) {
 		Parse.Object.saveAll(mensaList);
       },
       error: function(httpResponse) {
-        response.success('Request failed with response code ' + httpResponse.status);
+        status.success('Request failed with response code ' + httpResponse.status);
       }
     }).then(function() {
-		console.log("finished downloading mensas");
-		for (var a = 0; a < mensaList.length; ++a) {
-			console.log(mensaList[a].get("mensaId"));
-			console.log(mensaList[a].get("name"));
-		}
 		getMenuPlan(mensaList).then(function() {
-			response.success("succeeded (maybe)")
+			status.success("succeeded")
 		});
 	});
 });

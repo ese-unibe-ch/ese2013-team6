@@ -108,7 +108,7 @@ public class MensaFromWebFactory extends AbstractMensaFactory {
 
 	private Menu parseMenu(ParseObject parseMenuMensa) throws ParseException {
 		ParseObject parseMenu = parseMenuMensa.getParseObject("menu");
-		return menuManager.createMenu(parseMenu.getString("title"), parseMenu.getString("description"),
+		return menuManager.createMenu(parseMenu.getObjectId(), parseMenu.getString("title"), parseMenu.getString("description"),
 				new Day(fm.parse(parseMenuMensa.getString("date"))));
 	}
 }

@@ -5,6 +5,18 @@
     android:layout_height="match_parent"
     android:orientation="vertical" >
 
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingLeft="4dp"
+        android:paddingTop="24dp"
+        android:text="@string/title_translation" />
+    
+    <View
+	    android:layout_width="fill_parent"
+	    android:layout_height="2dp"
+	    android:background="@color/light_grey" />
+    
     <Switch
         android:id="@+id/language_switch"
         android:layout_width="match_parent"
@@ -12,20 +24,20 @@
         android:paddingTop="16dp"
         android:paddingLeft="16dp"
         android:paddingRight="16dp"
-        android:text="Translate menus" />
+        android:text="@string/language_switch" />
     
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:paddingLeft="16dp"
         android:paddingTop="24dp"
-        android:text="Choose language" />
+        android:text="@string/language_spinner" />
     
     <Spinner
     	android:id="@+id/language_spinner"
     	android:layout_width="fill_parent"
     	android:layout_height="wrap_content"
-        android:paddingLeft="8dp"
+        android:layout_marginLeft="8dp"
     	android:layout_marginRight="16dp"
     	android:entries= "@array/settings_languages" />
     
@@ -34,7 +46,7 @@
         android:layout_height="wrap_content"
         android:paddingLeft="4dp"
         android:paddingTop="24dp"
-        android:text="Notifications" />
+        android:text="@string/title_notifications" />
     
     <View
 	    android:layout_width="fill_parent"
@@ -48,7 +60,7 @@
         android:paddingTop="16dp"
         android:paddingLeft="16dp"
         android:paddingRight="16dp"
-        android:text="Notify me" />
+        android:text="@string/notification_switch" />
 
     <EditText
         android:id="@+id/edit_text_notification"
@@ -58,7 +70,7 @@
     	android:layout_marginRight="16dp"
     	android:layout_marginLeft="10dp"
         android:ems="10"
-        android:hint="Give the name of some food" >
+        android:hint="@string/notification_edittext" >
 
         <requestFocus />
     </EditText>

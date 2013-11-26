@@ -28,5 +28,11 @@
         <item>German</item>
         <item>English</item>
     </string-array>
+        <string name="title_translation">Translation</string>
+        <string name="language_switch">Translate menus</string>
+        <string name="language_spinner">Choose language</string>
+        <string name="title_notifications">Notifications</string>
+        <string name="notification_switch">Notify me</string>
+        <string name="notification_edittext">Give the name of some food</string>
     
 </resources>

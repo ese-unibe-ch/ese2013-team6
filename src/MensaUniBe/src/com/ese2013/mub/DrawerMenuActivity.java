@@ -214,12 +214,14 @@ public class DrawerMenuActivity extends FragmentActivity {
 			if (item.getItemId() == R.id.action_settings){
 				Fragment frag = new SettingsFragment();
 				setDisplayedFragment(frag);
+				selectedPosition = 4;
 				return true;
 			}
 		} else {
 			if(item.getItemId() == R.id.action_settings){
 				Fragment frag = new SettingsFragment();
 				setDisplayedFragment(frag);
+				selectedPosition = 4;
 				return true;
 			}
 		}

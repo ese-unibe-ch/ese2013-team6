@@ -128,8 +128,7 @@ public class NotificationFragment extends Fragment {
 			
 
 			for (Menu menu : criteria.getMap().keySet()) {
-				layout.addView(new MenuView(getActivity(), menu.getTitle(),
-						menu.getDescription()));
+				layout.addView(new MenuView(getActivity(), menu));
 				for (Mensa mensa : criteria.getMap().get(menu)) {
 					RelativeLayout rel = (RelativeLayout) inflater.inflate(
 							R.layout.daily_section_title_bar, null);

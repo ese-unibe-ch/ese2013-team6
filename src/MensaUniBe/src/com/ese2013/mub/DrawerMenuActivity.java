@@ -20,6 +20,7 @@ import android.widget.Spinner;
 
 import com.ese2013.mub.model.Mensa;
 import com.ese2013.mub.model.Model;
+
 import com.ese2013.mub.service.NotificationService;
 
 import com.parse.Parse;

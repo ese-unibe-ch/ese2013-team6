@@ -8,17 +8,15 @@ import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
-import android.preference.PreferenceManager;
+
+import com.ese2013.mub.Preferences;
 
 public class BootReceiver extends BroadcastReceiver {
 
 	@Override
 	public void onReceive(Context context, Intent intent) {
-		SharedPreferences pref = PreferenceManager
-				.getDefaultSharedPreferences(context);
-		
-		if (pref.getBoolean(NotificationHandler.NOTIFICATION_ENABLED, false)) {
+		Preferences pref = new Preferences();	
+		if (pref.getDoNotification(context)) {
 			
 			Calendar tenOClock = Calendar.getInstance(Locale.getDefault());
 			

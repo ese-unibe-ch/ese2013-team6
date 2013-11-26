@@ -76,7 +76,7 @@ public class DailyPlanFragment extends Fragment {
 			setUpMapButton(relativeLayout, mensa);
 
 			for (Menu menu : d.getMenus())
-				menuLayout.addView(new MenuView(container.getContext(), menu.getTitle(), menu.getDescription()));
+				menuLayout.addView(new MenuView(container.getContext(), menu));
 
 			if (HomeFragment.getShowAllByDay())
 				menuLayout.setVisibility(View.GONE);

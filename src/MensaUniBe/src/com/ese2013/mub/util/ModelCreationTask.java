@@ -131,7 +131,7 @@ public class ModelCreationTask extends AsyncTask<Void, Void, Void> {
 			dataSource.open();
 			if (menusNotFromCurrentWeek() || webDataUpdated())
 				return true;
-
+			
 		} catch (Exception e) {
 			// if anything happens during checking, we just update the local
 			// data.

@@ -12,14 +12,37 @@
         android:paddingTop="@dimen/menu_view_title_padding"
         android:textColor="@color/white" />
 
-    <TextView
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/white"
-        android:gravity="center"
-        android:paddingBottom="@dimen/menu_desc_vertical_padding"
-        android:paddingLeft="@dimen/menu_desc_side_padding"
-        android:paddingRight="@dimen/menu_desc_side_padding"
-        android:paddingTop="@dimen/menu_desc_vertical_padding" />
+        android:paddingBottom="4dp"
+        android:paddingLeft="4dp"
+        android:paddingRight="4dp"
+        android:paddingTop="4dp"
+        >
+
+        <TextView
+            android:id="@+id/menu_description_text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/white"
+            android:gravity="center"
+            android:paddingBottom="@dimen/menu_desc_vertical_padding"
+            android:paddingLeft="@dimen/menu_desc_side_padding"
+            android:paddingRight="@dimen/menu_desc_side_padding"
+            android:paddingTop="@dimen/menu_desc_vertical_padding" />
+     	<RatingBar 
+     	    android:id="@+id/menu_rating_bar"
+     	    android:layout_height="wrap_content"
+     	    android:layout_width="wrap_content"
+     	    android:numStars="5"
+     	    android:stepSize="0.5"
+     	    android:layout_below="@id/menu_description_text"
+     	    android:layout_alignParentRight="true"
+     	    style="@style/menuRatingBar"
+     	   
+     	    />
+    </RelativeLayout>
 
 </merge>

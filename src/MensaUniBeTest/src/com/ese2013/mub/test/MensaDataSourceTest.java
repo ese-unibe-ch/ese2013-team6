@@ -143,23 +143,25 @@ public class MensaDataSourceTest extends AndroidTestCase {
 
 		calendar.set(2013, 10, 20);
 		Menu.MenuBuilder builder = new Menu.MenuBuilder();
-		builder.setId(0).setTitle("Vegi").setDescription("Something \n Served with some other Stuff")
+		builder.setId("a").setTitle("Vegi").setDescription("Something \n Served with some other Stuff")
 				.setDate(new Day(calendar.getTime()));
 		menus.add(builder.build());
-		builder.setId(1).setTitle("Nice Menu").setDescription("Something nice\n Served with nothing else")
+		builder.setId("b").setTitle("Nice Menu").setDescription("Something nice\n Served with nothing else")
 				.setDate(new Day(calendar.getTime()));
 		menus.add(builder.build());
 
 		calendar.set(2013, 10, 21);
-		builder.setId(2).setTitle("Vegi").setDescription("Something vegetarian").setDate(new Day(calendar.getTime()));
+		builder.setId("c").setTitle("Vegi").setDescription("Something vegetarian").setDate(new Day(calendar.getTime()));
 		menus.add(builder.build());
-		builder.setId(3).setTitle("Expensive Menu").setDescription("Very expensive food").setDate(new Day(calendar.getTime()));
+		builder.setId("d").setTitle("Expensive Menu").setDescription("Very expensive food")
+				.setDate(new Day(calendar.getTime()));
 		menus.add(builder.build());
 
 		calendar.set(2013, 10, 22);
-		builder.setId(4).setTitle("Nice Vegi Menu").setDescription("Something nice vegetarian").setDate(new Day(calendar.getTime()));
+		builder.setId("e").setTitle("Nice Vegi Menu").setDescription("Something nice vegetarian")
+				.setDate(new Day(calendar.getTime()));
 		menus.add(builder.build());
-		builder.setId(5).setTitle("Special Menu").setDescription("Pizza").setDate(new Day(calendar.getTime()));
+		builder.setId("f").setTitle("Special Menu").setDescription("Pizza").setDate(new Day(calendar.getTime()));
 		menus.add(builder.build());
 
 		WeeklyMenuplan plan1 = new WeeklyMenuplan();

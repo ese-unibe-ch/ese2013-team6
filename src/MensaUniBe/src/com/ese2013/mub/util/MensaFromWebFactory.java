@@ -41,6 +41,7 @@ public class MensaFromWebFactory extends AbstractMensaFactory {
 			query.include("menu");
 			query.include("mensa");
 			List<ParseObject> parseMenuMensas = query.find();
+			
 			HashMap<String, Mensa> mensaMap = new HashMap<String, Mensa>();
 			dataSource.open();
 			for (int i = 0; i < parseMenuMensas.size(); i++) {
@@ -108,7 +109,10 @@ public class MensaFromWebFactory extends AbstractMensaFactory {
 
 	private Menu parseMenu(ParseObject parseMenuMensa) throws ParseException {
 		ParseObject parseMenu = parseMenuMensa.getParseObject("menu");
-		return menuManager.createMenu(parseMenu.getObjectId(), parseMenu.getString("title"), parseMenu.getString("description"),
-				new Day(fm.parse(parseMenuMensa.getString("date"))));
+		Menu result = menuManager.createMenu(parseMenu.getObjectId(), parseMenu.getString("title"), parseMenu.getString("description"),
+				new Day(fm.parse(parseMenuMensa.getString("date"))), parseMenu.getInt("ratingCount"), parseMenu.getInt("ratingSum"));
+//		System.out.println("parseMenu result: " + result.getDescription());
+//		System.out.println("parseMenu result avg rating: " + result.getAvarageRating());
+		return result;
 	}
 }

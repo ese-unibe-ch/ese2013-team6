@@ -28,6 +28,10 @@ public class Preferences extends Activity {
 		return getPrefs(context).getBoolean("doNotification", false);
 	}
 	
+	public int getNotificationMensas(Context context){
+		return getPrefs(context).getInt("notificationMensas", 0);
+	}
+	
 	public String getNotificationFood(Context context){
 		return getPrefs(context).getString("notificationFood", "");
 	}
@@ -43,6 +47,10 @@ public class Preferences extends Activity {
 	
 	public void setDoNotification(Context context, boolean doNotification){
 		getPrefs(context).edit().putBoolean("doNotification", doNotification).commit();
+	}
+	
+	public void setNotificationMensas(Context context, int notificationMensas){
+		getPrefs(context).edit().putInt("notificationMensas", notificationMensas).commit();
 	}
 	
 	public void setNotificationFood(Context context, String notificationFood){

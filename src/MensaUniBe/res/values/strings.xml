@@ -34,5 +34,10 @@
         <string name="title_notifications">Notifications</string>
         <string name="notification_switch">Notify me</string>
         <string name="notification_edittext">Give the name of some food</string>
+        <string name="notification_spinner">Choose mensas to check</string>
+    <string-array name="notification_mensa_list">
+        <item>All mensas</item>
+        <item>Favorite mensas</item>
+    </string-array>
     
 </resources>

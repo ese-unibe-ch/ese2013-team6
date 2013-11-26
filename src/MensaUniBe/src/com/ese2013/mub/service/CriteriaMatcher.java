@@ -2,6 +2,7 @@ package com.ese2013.mub.service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.Set;
 
 import com.ese2013.mub.model.DailyMenuplan;
@@ -40,7 +41,7 @@ public class CriteriaMatcher {
 
 				for (Menu menu : daily.getMenus()) {
 
-					if (menu.getDescription().contains(criteria)) {
+					if ((menu.getDescription().toLowerCase(Locale.getDefault())).contains(criteria.toLowerCase(Locale.getDefault()))) {
 
 						if(!container.contains(crit))
 							container.add(crit);

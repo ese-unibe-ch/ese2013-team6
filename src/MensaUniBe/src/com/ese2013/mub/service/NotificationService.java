@@ -2,6 +2,7 @@ package com.ese2013.mub.service;
 
 import java.util.List;
 import java.util.Set;
+import java.util.TreeSet;
 
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -11,6 +12,7 @@ import android.content.Intent;
 import android.os.Binder;
 import android.os.IBinder;
 import android.support.v4.app.NotificationCompat;
+import android.util.Log;
 
 import com.ese2013.mub.DrawerMenuActivity;
 import com.ese2013.mub.NotificationFragment;
@@ -37,6 +39,7 @@ public class NotificationService extends Service{
 		createCriteriaList();
 
 		if(!criteriaList.isEmpty())
+			Log.d(criteriaList.size() + "",criteriaList.size() + "");
 			push();
 		this.stopSelf();
 		return START_STICKY;
@@ -48,7 +51,6 @@ public class NotificationService extends Service{
 		for(Criteria crit : criteriaList){
 		  sb.append(crit.getName() + ", ");
 		}
-		sb.deleteCharAt(sb.length());
 		String criteriaString = sb.toString();
 		NotificationCompat.Builder mBuilder =
 		        new NotificationCompat.Builder(this)
@@ -82,6 +84,7 @@ public class NotificationService extends Service{
 	public List<Criteria> getCriteraData(){
 		return criteriaList;
 	}
+	@SuppressWarnings("unused")//may used in further version
 	private void notifyObserver(){
 		observer.onNotifyChanges();
 	}
@@ -92,15 +95,14 @@ public class NotificationService extends Service{
 				
 				//TODO needs to be changed in setting fragment, more than one criteria possible!
 				String criteria = pref.getNotificationFood(this);
+				this.criteria = new TreeSet<String>();
 				this.criteria.add(criteria);
-				
-				//TODO all mensas or just favorites, add to settings
-				//allMensas = pref.getBoolean(NotificationHandler.MENSAS_ALL, true);
+				allMensas = (pref.getNotificationMensas(this) == 0) ? true : false;
 				
 				CriteriaMatcher criteriaMatcher = new CriteriaMatcher();
 				mensas = allMensas ? Model.getInstance().getMensas() : Model.getInstance().getFavoriteMensas();
 				
 				criteriaList = criteriaMatcher.match(this.criteria, mensas);
-				notifyObserver();
+				
 	}
 }

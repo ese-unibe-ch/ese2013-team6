@@ -2,15 +2,13 @@ package com.ese2013.mub;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.Set;
 import java.util.TreeSet;
 
 import android.content.Context;
-import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -25,7 +23,6 @@ import com.ese2013.mub.model.Mensa;
 import com.ese2013.mub.model.Menu;
 import com.ese2013.mub.model.Model;
 import com.ese2013.mub.service.CriteriaMatcher;
-import com.ese2013.mub.service.NotificationHandler;
 import com.ese2013.mub.util.Criteria;
 
 public class NotificationFragment extends Fragment {
@@ -42,9 +39,13 @@ public class NotificationFragment extends Fragment {
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(getActivity());
-		Set<String> criteria = pref.getStringSet(NotificationHandler.CRITERIA_LIST, new TreeSet<String>());
-		boolean allMensas = pref.getBoolean(NotificationHandler.MENSAS_ALL, true);
+		Preferences pref = new Preferences();
+		
+		//TODO get set of Criteria not just criteria;
+		Set<String> criteria = new TreeSet<String>();
+		criteria.add(pref.getNotificationFood(this.getActivity()));
+		criteria.add("paniert");
+		boolean allMensas = pref.getNotificationMensas(this.getActivity()) == 0 ? true : false;
 		
 		CriteriaMatcher criteriaMatcher = new CriteriaMatcher();
 		List<Mensa> mensas = allMensas ? Model.getInstance().getMensas() : Model.getInstance().getFavoriteMensas();
@@ -62,10 +63,9 @@ public class NotificationFragment extends Fragment {
 		
 		if(criteriaList.isEmpty()){
 			TextView text = (TextView) view.findViewById(R.id.no_crit_text);
-			text.setText("No matching criteria found!");
+			text.setText(R.string.noMatches);
 			return view;
 		}
-		Log.d("list isn't empty", "list isn't emptyO");
 		notificationAdapter = new NotificationAdapter();
 		
 		
@@ -124,11 +124,17 @@ public class NotificationFragment extends Fragment {
 			// needs proper layout..
 			TextView criteriaTitle = (TextView) view
 					.findViewById(R.id.criteria_title);
-			criteriaTitle.setText(criteria.getName());
+			criteriaTitle.setText(criteria.getName().toUpperCase(Locale.getDefault()));
 			
-
+			
 			for (Menu menu : criteria.getMap().keySet()) {
+				TextView menuHeader = new TextView(getActivity());
+				menuHeader.setText(R.string.givenMenu);
+				layout.addView(menuHeader);
 				layout.addView(new MenuView(getActivity(), menu));
+				TextView mensaHeader = new TextView(getActivity());
+				mensaHeader.setText(R.string.servedInMensa);
+				layout.addView(mensaHeader);
 				for (Mensa mensa : criteria.getMap().get(menu)) {
 					RelativeLayout rel = (RelativeLayout) inflater.inflate(
 							R.layout.daily_section_title_bar, null);

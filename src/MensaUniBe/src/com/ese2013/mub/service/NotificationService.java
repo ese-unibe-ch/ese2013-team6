@@ -2,21 +2,19 @@ package com.ese2013.mub.service;
 
 import java.util.List;
 import java.util.Set;
-import java.util.TreeSet;
 
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Binder;
 import android.os.IBinder;
-import android.preference.PreferenceManager;
 import android.support.v4.app.NotificationCompat;
 
 import com.ese2013.mub.DrawerMenuActivity;
 import com.ese2013.mub.NotificationFragment;
+import com.ese2013.mub.Preferences;
 import com.ese2013.mub.R;
 import com.ese2013.mub.model.Mensa;
 import com.ese2013.mub.model.Model;
@@ -90,14 +88,19 @@ public class NotificationService extends Service{
 	public void createCriteriaList() {
 				new Model(this.getApplicationContext());
 				
-				SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(this.getApplicationContext());
-				criteria = pref.getStringSet(NotificationHandler.CRITERIA_LIST, new TreeSet<String>());
-				allMensas = pref.getBoolean(NotificationHandler.MENSAS_ALL, true);
+				Preferences pref= new Preferences();
+				
+				//TODO needs to be changed in setting fragment, more than one criteria possible!
+				String criteria = pref.getNotificationFood(this);
+				this.criteria.add(criteria);
+				
+				//TODO all mensas or just favorites, add to settings
+				//allMensas = pref.getBoolean(NotificationHandler.MENSAS_ALL, true);
 				
 				CriteriaMatcher criteriaMatcher = new CriteriaMatcher();
 				mensas = allMensas ? Model.getInstance().getMensas() : Model.getInstance().getFavoriteMensas();
 				
-				criteriaList = criteriaMatcher.match(criteria, mensas);
+				criteriaList = criteriaMatcher.match(this.criteria, mensas);
 				notifyObserver();
 	}
 }

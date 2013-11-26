@@ -30,7 +30,6 @@ import com.ese2013.mub.model.WeeklyMenuplan;
 import com.ese2013.mub.service.CriteriaMatcher;
 import com.ese2013.mub.service.NotificationService;
 import com.ese2013.mub.util.Criteria;
-import com.google.android.gms.internal.ad;
 
 public class NotificationFragment extends Fragment {
 	private NotificationService service;
@@ -154,8 +153,7 @@ public class NotificationFragment extends Fragment {
 			
 
 			for (Menu menu : criteria.getMap().keySet()) {
-				layout.addView(new MenuView(getActivity(), menu.getTitle(),
-						menu.getDescription()));
+				layout.addView(new MenuView(getActivity(), menu));
 				for (Mensa mensa : criteria.getMap().get(menu)) {
 					RelativeLayout rel = (RelativeLayout) inflater.inflate(
 							R.layout.daily_section_title_bar, null);

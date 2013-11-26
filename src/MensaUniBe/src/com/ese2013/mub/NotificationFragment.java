@@ -1,16 +1,14 @@
 package com.ese2013.mub;
 
 import java.util.ArrayList;
-import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.TreeSet;
 
-import android.content.ComponentName;
 import android.content.Context;
-import android.content.Intent;
-import android.content.ServiceConnection;
+import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.os.IBinder;
+import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -23,18 +21,16 @@ import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.ese2013.mub.model.Day;
 import com.ese2013.mub.model.Mensa;
 import com.ese2013.mub.model.Menu;
-import com.ese2013.mub.model.WeeklyMenuplan;
+import com.ese2013.mub.model.Model;
 import com.ese2013.mub.service.CriteriaMatcher;
-import com.ese2013.mub.service.NotificationService;
+import com.ese2013.mub.service.NotificationHandler;
 import com.ese2013.mub.util.Criteria;
-import com.google.android.gms.internal.ad;
 
 public class NotificationFragment extends Fragment {
-	private NotificationService service;
 	private NotificationAdapter notificationAdapter;
+	private List<Criteria> criteriaList;
 	private ListView list;
 
 	
@@ -42,55 +38,54 @@ public class NotificationFragment extends Fragment {
 	@Override
 	public void onStart() {
 		super.onStart();
-		getActivity().getApplicationContext().bindService(new Intent(getActivity().getApplicationContext(), NotificationService.class), mConnection, Context.BIND_AUTO_CREATE);
 	}
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-	}
-	private ServiceConnection mConnection = new ServiceConnection() {
-
-		public void onServiceConnected(ComponentName className, IBinder binder) {
-			service = ((NotificationService.NBinder) binder).getService();
+		SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(getActivity());
+		Set<String> criteria = pref.getStringSet(NotificationHandler.CRITERIA_LIST, new TreeSet<String>());
+		boolean allMensas = pref.getBoolean(NotificationHandler.MENSAS_ALL, true);
 		
-		}
-
-		public void onServiceDisconnected(ComponentName className) {
-			service = null;
-			
-		}
-	};
+		CriteriaMatcher criteriaMatcher = new CriteriaMatcher();
+		List<Mensa> mensas = allMensas ? Model.getInstance().getMensas() : Model.getInstance().getFavoriteMensas();
+		
+		criteriaList = criteriaMatcher.match(criteria, mensas);
+	}
+	
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
-
+		
+		
 		View view = inflater.inflate(R.layout.fragment_notification, container, false);
+		
+		if(criteriaList.isEmpty()){
+			TextView text = (TextView) view.findViewById(R.id.no_crit_text);
+			text.setText("No matching criteria found!");
+			return view;
+		}
+		Log.d("list isn't empty", "list isn't emptyO");
 		notificationAdapter = new NotificationAdapter();
 		
 		
 		list = (ListView) view.findViewById(R.id.notification_list);
 		list.setAdapter(notificationAdapter);
 		notificationAdapter.fill();
-		Log.d("am i here 2","am i here 2");
 		return view;
 	}
 	
 	public void onPause() {
-		//getActivity().unbindService(mConnection);
 		super.onPause();
 	};
 
 	@Override
 	public void onResume() {
 		super.onResume();
-		getActivity().getApplicationContext().bindService(new Intent(getActivity(), NotificationService.class), mConnection, Context.BIND_AUTO_CREATE);
-
 	}
 
 	@Override
 	public void onDestroy() {
-		//getActivity().unbindService(mConnection);
 		super.onDestroy();
 	}
 
@@ -115,28 +110,7 @@ public class NotificationFragment extends Fragment {
 
 		@Override
 		public View getView(int position, View convertView, ViewGroup parent) {
-			Log.d("am i here 1","am i here 1");
 			
-//			convertView.setOnClickListener(new OnClickListener() {
-//				
-//				@Override
-//				public void onClick(View v) {
-//					if(service != null){
-//					service.addObserver(NotificationFragment.this);
-//					service.createCriteriaList();
-//					criteriaList = service.getCriteraData();
-//					}
-//				}
-//			});
-//			convertView.performClick();
-//			
-//			
-//			
-//			if(criteriaList.isEmpty()){
-//				TextView text = (TextView) convertView.findViewById(R.id.no_crit_text);
-//				text.setText("No matching criteria found!");
-//				return convertView;
-//			}
 			View view = convertView;
 			if (inflater == null)
 				inflater = (LayoutInflater) getActivity().getSystemService(
@@ -193,7 +167,6 @@ public class NotificationFragment extends Fragment {
 
 		@Override
 		public void notifyDataSetChanged() {
-			adapterList = service.getCriteraData();
 			super.notifyDataSetChanged();
 		}
 
@@ -203,56 +176,7 @@ public class NotificationFragment extends Fragment {
 					.getId());
 		}
 		public void fill(){
-			fuckingTest();
-		}
-		public void fuckingTest(){
-			Mensa mensa1 = new Mensa.MensaBuilder().setId(0).setIsFavorite(true).setName("Mensa no. 1").build();
-			Mensa mensa2 = new Mensa.MensaBuilder().setId(0).setIsFavorite(true).setName("Mensa no. 2").build();
-			Mensa mensa3 = new Mensa.MensaBuilder().setId(0).setIsFavorite(true).setName("Mensa no. 3").build();
-		
-			WeeklyMenuplan plan1 = new WeeklyMenuplan();
-			WeeklyMenuplan plan2 = new WeeklyMenuplan();
-			WeeklyMenuplan plan3 = new WeeklyMenuplan();
-		
-			Menu menu1 = new Menu.MenuBuilder().setDate(Day.today()).setDescription("Pommes und Schnitzel").setTitle("Menu").build();
-			Menu menu2 = new Menu.MenuBuilder().setDate(Day.today()).setDescription("Teigwaren und Schnitzel").setTitle("Menu").build();
-			Menu menu3 = new Menu.MenuBuilder().setDate(Day.today()).setDescription("Rösti und Geschnetzeltes").setTitle("Menu").build();
-			
-			Menu menu4 = new Menu.MenuBuilder().setDate(Day.today()).setDescription("Pommes und Schnitzel").setTitle("Menu").build();
-			Menu menu5 = new Menu.MenuBuilder().setDate(Day.today()).setDescription("Bratkartoffeln und Geschnetzeltes").setTitle("Menu").build();
-			Menu menu6 = new Menu.MenuBuilder().setDate(Day.today()).setDescription("Kartoffeln und Fleisch").setTitle("Menu").build();
-			
-			Menu menu7 = new Menu.MenuBuilder().setDate(Day.today()).setDescription("Bratkartoffeln und Geschnetzeltes").setTitle("Menu").build();
-			Menu menu8 = new Menu.MenuBuilder().setDate(Day.today()).setDescription("Bratkartoffeln und Fleisch").setTitle("Menu").build();
-		
-			
-			plan1.add(menu1);
-			plan1.add(menu2);
-			plan1.add(menu3);
-			plan2.add(menu4);
-			plan2.add(menu5);
-			plan2.add(menu6);
-			plan3.add(menu7);
-			plan3.add(menu8);
-			
-			mensa1.setMenuplan(plan1);
-			mensa2.setMenuplan(plan2);
-			mensa3.setMenuplan(plan3);
-		
-			List<Mensa> mensas = new ArrayList<Mensa>();
-			mensas.add(mensa1);
-			mensas.add(mensa2);
-			mensas.add(mensa3);
-		
-			Set<String> criteria = new LinkedHashSet<String>();
-			criteria.add("Schnitzel");
-			criteria.add("Fleisch");
-			criteria.add("Pommes");
-			criteria.add("kommt nicht vor");
-			criteria.add("bogus");
-		
-			CriteriaMatcher matcher = new CriteriaMatcher();
-			adapterList = matcher.match(criteria, mensas);
+			adapterList = criteriaList;
 		}
 	}
 }

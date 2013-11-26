@@ -20,7 +20,11 @@ import android.widget.Spinner;
 
 import com.ese2013.mub.model.Mensa;
 import com.ese2013.mub.model.Model;
+
 import com.ese2013.mub.service.NotificationService;
+
+import com.parse.Parse;
+
 
 /**
  * This class is the main activity for the mub app. Everything else to be
@@ -40,6 +44,14 @@ public class DrawerMenuActivity extends FragmentActivity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		Parse.initialize(this, "ZmdQMR7FctP2XgMJN5lvj98Aj9IA2Bf8mJrny11n", "yVVh3GiearTRsRXZqgm2FG6xfWvcQPjINX6dGJNu");
+//		ParseCloud.callFunctionInBackground("hello", new HashMap<String, Object>(), new FunctionCallback<String>() {
+//			  public void done(String result, ParseException e) {
+//			    if (e == null) {
+//			    	System.out.println(result);
+//			    }
+//			  }
+//			});
 		model = new Model(getApplicationContext());
 
 		setContentView(R.layout.activity_drawer_menu);

@@ -24,5 +24,20 @@
     <string name="loading_failure">Could not load any menus, please make sure you have internet connection</string>
     <string name="map_travelmode_driving">Driving</string>
     <string name="map_travelmode_bicycle">Bicycle</string>
-
+    <string-array name="settings_languages">
+        <item>German</item>
+        <item>English</item>
+    </string-array>
+        <string name="title_translation">Translation</string>
+        <string name="language_switch">Translate menus</string>
+        <string name="language_spinner">Choose language</string>
+        <string name="title_notifications">Notifications</string>
+        <string name="notification_switch">Notify me</string>
+        <string name="notification_edittext">Give the name of some food</string>
+        <string name="notification_spinner">Choose mensas to check</string>
+    <string-array name="notification_mensa_list">
+        <item>All mensas</item>
+        <item>Favorite mensas</item>
+    </string-array>
+    
 </resources>

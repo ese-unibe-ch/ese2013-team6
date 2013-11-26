@@ -5,22 +5,43 @@ import java.util.Locale;
 import android.content.Context;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
+import android.view.View;
 import android.widget.LinearLayout;
+import android.widget.RatingBar;
 import android.widget.TextView;
 
-public class MenuView extends LinearLayout {
+import com.ese2013.mub.model.Menu;
 
-	public MenuView(Context context, String menuTitle, String menuDesc) {
+public class MenuView extends LinearLayout {
+	private String menuTitle;
+	private String menuDesc;
+	//private float averageMenuRating; // needs value
+	
+	public MenuView(Context context, Menu menu) {
 		super(context);
 		setOrientation(VERTICAL);
 		setPadding(0, 0, 0, dimToPixels(R.dimen.menu_view_bottom_margin));
 
 		LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-		inflater.inflate(R.layout.menu_view, this);
-
+		View view = inflater.inflate(R.layout.menu_view, this);
+		menuTitle = menu.getTitle();
+		menuDesc = menu.getDescription();
+		
 		menuTitle = menuTitle.toUpperCase(Locale.getDefault());
 		setTitle(menuTitle);
-		setDescription(menuDesc);
+		setDescription(menuDesc, view);
+		
+		RatingBar ratingBar = (RatingBar)view.findViewById(R.id.menu_rating_bar);
+		//ratingBar.setRating(averageMenuRating);
+		ratingBar.setOnRatingBarChangeListener(new RatingBar.OnRatingBarChangeListener(){ 
+		       @Override
+		       public void onRatingChanged(RatingBar ratingBar, float rating,
+		         boolean fromUser) {
+		        // TODO Do stuff
+		    	// you can make ratingBar to not listen anymore with setIsIndicator(true);
+		    	
+		       }}); 
+		    
 	}
 
 	public MenuView(Context context) {
@@ -37,8 +58,8 @@ public class MenuView extends LinearLayout {
 		menuTitleText.setBackgroundColor(getTitleColor(menuTitle));
 	}
 	
-	private void setDescription(String menuDesc) {
-		TextView menuDescView = (TextView) getChildAt(1);
+	private void setDescription(String menuDesc, View view) {
+		TextView menuDescView = (TextView) view.findViewById(R.id.menu_description_text);
 		menuDescView.setText(menuDesc);
 	}
 

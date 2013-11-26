@@ -63,7 +63,7 @@ public class WeeklyPlanFragment extends Fragment {
 			menuLayout.setOrientation(LinearLayout.VERTICAL);
 			
 			for (Menu menu : d.getMenus()) {
-				menuLayout.addView(new MenuView(container.getContext(), menu.getTitle(), menu.getDescription()));
+				menuLayout.addView(new MenuView(container.getContext(), menu));
 				this.decideToggleState(menuLayout, menu);
 			}
 			

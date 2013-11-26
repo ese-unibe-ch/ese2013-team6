@@ -44,13 +44,6 @@ public class DrawerMenuActivity extends FragmentActivity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		Parse.initialize(this, "ZmdQMR7FctP2XgMJN5lvj98Aj9IA2Bf8mJrny11n", "yVVh3GiearTRsRXZqgm2FG6xfWvcQPjINX6dGJNu");
-//		ParseCloud.callFunctionInBackground("hello", new HashMap<String, Object>(), new FunctionCallback<String>() {
-//			  public void done(String result, ParseException e) {
-//			    if (e == null) {
-//			    	System.out.println(result);
-//			    }
-//			  }
-//			});
 		model = new Model(getApplicationContext());
 
 		setContentView(R.layout.activity_drawer_menu);
@@ -226,7 +219,19 @@ public class DrawerMenuActivity extends FragmentActivity {
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		if (drawerToggle.onOptionsItemSelected(item)) {
-			return true;
+			if (item.getItemId() == R.id.action_settings){
+				Fragment frag = new SettingsFragment();
+				setDisplayedFragment(frag);
+				selectedPosition = 4;
+				return true;
+			}
+		} else {
+			if(item.getItemId() == R.id.action_settings){
+				Fragment frag = new SettingsFragment();
+				setDisplayedFragment(frag);
+				selectedPosition = 4;
+				return true;
+			}
 		}
 		return super.onOptionsItemSelected(item);
 	}

@@ -1,5 +1,7 @@
 package com.ese2013.mub.model;
 
+import com.ese2013.mub.model.Menu.MenuBuilder;
+
 /**
  * Stores all data which make up a menu. Always created using the
  * Menu.MenuBuilder class.
@@ -7,6 +9,17 @@ package com.ese2013.mub.model;
 public class Menu {
 	private String id, title, description;
 	private Day date;
+	private int userRating =0;
+	private int ratingSum=0, ratingCount=0;
+	public int getRatingSum() {
+		return ratingSum;
+	}
+
+	public int getRatingCount() {
+		return ratingCount;
+	}
+
+	private boolean beenRated = false;
 
 	/**
 	 * Creates a Menu from a given MenuBuilder. Is private to ensure that Menus
@@ -21,6 +34,10 @@ public class Menu {
 		this.title = builder.title;
 		this.description = builder.description;
 		this.date = builder.date;
+		this.ratingCount = builder.ratingCount;
+		this.ratingSum = builder.ratingSum;
+		this.userRating = builder.userRating;
+		this.beenRated = builder.beenRated;
 	}
 
 	public String getId() {
@@ -45,6 +62,31 @@ public class Menu {
 
 	public Day getDate() {
 		return date;
+	}
+	
+	public int getUserRating() {
+		return userRating;
+	}
+
+	public void setUserRating(int userRating) {
+		beenRated=true;
+		this.userRating = userRating;
+	}
+	
+	public boolean hasBeenRated() {
+		return beenRated;
+	}
+
+	public float getAvarageRating(){
+		if (ratingCount == 0){
+			return 0;
+		}else{
+			return roundToHalf(ratingSum/ratingCount);
+		}
+	}
+	
+	private static float roundToHalf(float x) {
+	    return (float) (Math.ceil(x * 2) / 2);
 	}
 
 	/**
@@ -98,6 +140,14 @@ public class Menu {
 	 * Standard builder class used to construct Menu objects.
 	 */
 	public static class MenuBuilder {
+		
+
+		
+
+		public int userRating;
+		public boolean beenRated = false;
+		public int ratingSum;
+		public int ratingCount;
 		public static final String INVALID_ID = "INVALID";
 		private static final String DEFAULT = "N//A";
 		private String id = INVALID_ID, title = DEFAULT, description = DEFAULT;
@@ -120,6 +170,26 @@ public class Menu {
 
 		public MenuBuilder setDate(Day date) {
 			this.date = date;
+			return this;
+		}
+		
+		public MenuBuilder setRatingSum(int ratingSum) {
+			this.ratingSum = ratingSum;
+			return this;
+		}
+
+		public MenuBuilder setRatingCount(int ratingCount) {
+			this.ratingCount = ratingCount;
+			return this;
+		}
+		
+		public MenuBuilder setBeenRated(boolean beenRated) {
+			this.beenRated = beenRated;
+			return this;
+		}
+		
+		public MenuBuilder setUserRating(int userRating) {
+			this.userRating = userRating;
 			return this;
 		}
 

@@ -204,6 +204,10 @@ public class MensaDataSource {
 		values.put(MenusTable.COL_ID, menu.getId());
 		values.put(MenusTable.COL_TITLE, menu.getTitle());
 		values.put(MenusTable.COL_DESC, menu.getDescription());
+		values.put(MenusTable.COL_USERRATING, menu.getUserRating());
+		values.put(MenusTable.COL_RATINGSUM, menu.getRatingSum());
+		values.put(MenusTable.COL_RATINGCOUNT, menu.getRatingCount());
+		
 		database.replace(MenusTable.TABLE_MENUS, null, values);
 
 		ContentValues values2 = new ContentValues();
@@ -230,12 +234,15 @@ public class MensaDataSource {
 		final int POS_TITLE = c.getColumnIndex(MenusTable.COL_TITLE);
 		final int POS_DESC = c.getColumnIndex(MenusTable.COL_DESC);
 		final int POS_DATE = c.getColumnIndex(MenusMensasTable.COL_DATE);
+		final int POS_USERRATING = c.getColumnIndex(MenusTable.COL_USERRATING);
+		final int POS_RATINGCOUNT = c.getColumnIndex(MenusTable.COL_RATINGCOUNT);
+		final int POS_RATINGSUM = c.getColumnIndex(MenusTable.COL_RATINGSUM);
 		WeeklyMenuplan p = new WeeklyMenuplan();
 		c.moveToFirst();
 		do {
 			try {
 				p.add(menuManager.createMenu(c.getString(POS_ID), c.getString(POS_TITLE), c.getString(POS_DESC),
-						new Day(fm.parse(c.getString(POS_DATE)))));
+						new Day(fm.parse(c.getString(POS_DATE))), c.getInt(POS_RATINGCOUNT), c.getInt(POS_RATINGSUM), c.getInt(POS_USERRATING)));
 			} catch (ParseException e) {
 				throw new AssertionError("Database did not save properly");
 			}
@@ -274,7 +281,34 @@ public class MensaDataSource {
 	 */
 	public void deleteMenus() {
 		database.delete(MenusTable.TABLE_MENUS, null, null);
-		database.execSQL("delete from sqlite_sequence where name='" + MenusTable.TABLE_MENUS + "';");
+//		TODO: 
+//		11-26 16:26:34.444: E/AndroidRuntime(3641): FATAL EXCEPTION: AsyncTask #2
+//		11-26 16:26:34.444: E/AndroidRuntime(3641): java.lang.RuntimeException: An error occured while executing doInBackground()
+//		11-26 16:26:34.444: E/AndroidRuntime(3641): 	at android.os.AsyncTask$3.done(AsyncTask.java:299)
+//		11-26 16:26:34.444: E/AndroidRuntime(3641): 	at java.util.concurrent.FutureTask.finishCompletion(FutureTask.java:352)
+//		11-26 16:26:34.444: E/AndroidRuntime(3641): 	at java.util.concurrent.FutureTask.setException(FutureTask.java:219)
+//		11-26 16:26:34.444: E/AndroidRuntime(3641): 	at java.util.concurrent.FutureTask.run(FutureTask.java:239)
+//		11-26 16:26:34.444: E/AndroidRuntime(3641): 	at android.os.AsyncTask$SerialExecutor$1.run(AsyncTask.java:230)
+//		11-26 16:26:34.444: E/AndroidRuntime(3641): 	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1080)
+//		11-26 16:26:34.444: E/AndroidRuntime(3641): 	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:573)
+//		11-26 16:26:34.444: E/AndroidRuntime(3641): 	at java.lang.Thread.run(Thread.java:856)
+//		11-26 16:26:34.444: E/AndroidRuntime(3641): Caused by: android.database.sqlite.SQLiteException: no such table: sqlite_sequence (code 1): , while compiling: delete from sqlite_sequence where name='menus';
+//		11-26 16:26:34.444: E/AndroidRuntime(3641): 	at android.database.sqlite.SQLiteConnection.nativePrepareStatement(Native Method)
+//		11-26 16:26:34.444: E/AndroidRuntime(3641): 	at android.database.sqlite.SQLiteConnection.acquirePreparedStatement(SQLiteConnection.java:882)
+//		11-26 16:26:34.444: E/AndroidRuntime(3641): 	at android.database.sqlite.SQLiteConnection.prepare(SQLiteConnection.java:493)
+//		11-26 16:26:34.444: E/AndroidRuntime(3641): 	at android.database.sqlite.SQLiteSession.prepare(SQLiteSession.java:588)
+//		11-26 16:26:34.444: E/AndroidRuntime(3641): 	at android.database.sqlite.SQLiteProgram.<init>(SQLiteProgram.java:58)
+//		11-26 16:26:34.444: E/AndroidRuntime(3641): 	at android.database.sqlite.SQLiteStatement.<init>(SQLiteStatement.java:31)
+//		11-26 16:26:34.444: E/AndroidRuntime(3641): 	at android.database.sqlite.SQLiteDatabase.executeSql(SQLiteDatabase.java:1663)
+//		11-26 16:26:34.444: E/AndroidRuntime(3641): 	at android.database.sqlite.SQLiteDatabase.execSQL(SQLiteDatabase.java:1594)
+//		11-26 16:26:34.444: E/AndroidRuntime(3641): 	at com.ese2013.mub.util.database.MensaDataSource.deleteMenus(MensaDataSource.java:277)
+//		11-26 16:26:34.444: E/AndroidRuntime(3641): 	at com.ese2013.mub.util.ModelSavingTask.doInBackground(ModelSavingTask.java:23)
+//		11-26 16:26:34.444: E/AndroidRuntime(3641): 	at com.ese2013.mub.util.ModelSavingTask.doInBackground(ModelSavingTask.java:1)
+//		11-26 16:26:34.444: E/AndroidRuntime(3641): 	at android.os.AsyncTask$2.call(AsyncTask.java:287)
+//		11-26 16:26:34.444: E/AndroidRuntime(3641): 	at java.util.concurrent.FutureTask.run(FutureTask.java:234)
+//		11-26 16:26:34.444: E/AndroidRuntime(3641): 	... 4 more
+
+//		database.execSQL("delete from sqlite_sequence where name='" + MenusTable.TABLE_MENUS + "';");
 		database.delete(MenusMensasTable.TABLE_MENUS_MENSAS, null, null);
 	}
 

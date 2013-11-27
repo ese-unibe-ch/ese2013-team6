@@ -11,13 +11,14 @@ import android.widget.RatingBar;
 import android.widget.TextView;
 
 import com.ese2013.mub.model.Menu;
+import com.ese2013.mub.model.MenuManager;
 
 public class MenuView extends LinearLayout {
 	private String menuTitle;
 	private String menuDesc;
 	//private float averageMenuRating; // needs value
 	
-	public MenuView(Context context, Menu menu) {
+	public MenuView(Context context, final Menu menu) {
 		super(context);
 		setOrientation(VERTICAL);
 		setPadding(0, 0, 0, dimToPixels(R.dimen.menu_view_bottom_margin));
@@ -32,14 +33,15 @@ public class MenuView extends LinearLayout {
 		setDescription(menuDesc, view);
 		
 		RatingBar ratingBar = (RatingBar)view.findViewById(R.id.menu_rating_bar);
-		//ratingBar.setRating(averageMenuRating);
+		ratingBar.setRating(menu.getAvarageRating());
 		ratingBar.setOnRatingBarChangeListener(new RatingBar.OnRatingBarChangeListener(){ 
 		       @Override
 		       public void onRatingChanged(RatingBar ratingBar, float rating,
 		         boolean fromUser) {
 		        // TODO Do stuff
 		    	// you can make ratingBar to not listen anymore with setIsIndicator(true);
-		    	
+		    	   
+		    	   MenuManager.updateMenuRating(menu, (int) rating);
 		       }}); 
 		    
 	}
@@ -68,7 +70,7 @@ public class MenuView extends LinearLayout {
 		if (title.contains("VEGI") || title.contains("VEGETARISCH"))
 			return getResources().getColor(R.color.green);
 
-		if (title.contains("EINFACH GUT") || title.contains("TAGESGERICHT") || title.contains("WARMES SCHÜSSELGERICHT"))
+		if (title.contains("EINFACH GUT") || title.contains("TAGESGERICHT") || title.contains("WARMES SCHï¿½SSELGERICHT"))
 			return getResources().getColor(R.color.yellow);
 
 		return getResources().getColor(R.color.blue);

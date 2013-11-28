@@ -23,6 +23,7 @@ public class SqlDatabaseHelper extends SQLiteOpenHelper {
 	public SqlDatabaseHelper(Context context) {
 		super(context, DATABASE_NAME, null, DATABASE_VERSION);
 		tables.add(new MensasTable());
+		System.out.println("Menus Table created");
 		tables.add(new MenusTable());
 		tables.add(new FavoritesTable());
 		tables.add(new MenusMensasTable());

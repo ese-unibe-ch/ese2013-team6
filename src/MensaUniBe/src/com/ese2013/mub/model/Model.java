@@ -91,7 +91,7 @@ public class Model extends Observable {
 		notifyChanges();
 	}
 
-	private void saveModel() {
+	public void saveModel() {
 		ModelSavingTask savingTask = new ModelSavingTask();
 		savingTask.execute();
 	}

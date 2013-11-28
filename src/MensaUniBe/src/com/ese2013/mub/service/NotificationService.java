@@ -12,7 +12,6 @@ import android.content.Intent;
 import android.os.Binder;
 import android.os.IBinder;
 import android.support.v4.app.NotificationCompat;
-import android.util.Log;
 
 import com.ese2013.mub.DrawerMenuActivity;
 import com.ese2013.mub.NotificationFragment;
@@ -21,33 +20,32 @@ import com.ese2013.mub.R;
 import com.ese2013.mub.model.Mensa;
 import com.ese2013.mub.model.Model;
 import com.ese2013.mub.util.Criteria;
+import com.ese2013.mub.util.Observer;
 
-public class NotificationService extends Service{
+public class NotificationService extends Service implements Observer{
 
 	public static final String START_FROM_N = "com.ese2013.mub.service.startFromN";
 	private final IBinder nBinder = new NBinder();
 	private List<Criteria> criteriaList;
 	private NotificationFragment observer;
-	
+	private boolean hasPushed;
 	
 	@Override
 	public int onStartCommand(Intent intent, int flags, int startId) {
 		new Model(this.getApplicationContext());
-
-		criteriaList = createCriteriaList();
-
-		if(!criteriaList.isEmpty())
-			Log.d("mensa size",criteriaList.size() + "");
-			push();
+		Model.getInstance().addObserver(this);
 		
-		this.stopSelf();
 		return START_STICKY;
 	}
 	private void push() {
+		if(!criteriaList.isEmpty()){
 		
 		StringBuilder sb = new StringBuilder();
+		String prefix = "";
 		for(Criteria crit : criteriaList){
-		  sb.append(crit.getName() + ", ");
+			sb.append(prefix);
+			prefix = ", ";
+			sb.append(crit.getName());
 		}
 		String criteriaString = sb.toString();
 		NotificationCompat.Builder mBuilder =
@@ -60,12 +58,18 @@ public class NotificationService extends Service{
 		PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
 		mBuilder.setContentIntent(pendingIntent);
 		mBuilder.setSmallIcon(R.drawable.ic_launcher);
+		mBuilder.setAutoCancel(true);
 		
 		NotificationManager mNotificationManager =
 			    (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
 		mNotificationManager.notify(0, mBuilder.build());
-
+		hasPushed = true;
+		}
 	}
+	/**
+	 * Only Used for binding options
+	 * @param observer
+	 */
 	public void addObserver(NotificationFragment observer){
 		this.observer = observer;
 	}
@@ -73,6 +77,10 @@ public class NotificationService extends Service{
 	public IBinder onBind(Intent arg0) {
 		return nBinder;
 	}
+	/**
+	 * Only Used for binding purposes
+	 *
+	 */
 	public class NBinder extends Binder{
 		
 		public NotificationService getService(){
@@ -82,22 +90,31 @@ public class NotificationService extends Service{
 	public List<Criteria> getCriteraData(){
 		return criteriaList;
 	}
-	@SuppressWarnings("unused")//may used in further version
+	@SuppressWarnings("unused")
+	/**
+	 * Only Used for Binding options
+	 */
 	private void notifyObserver(){
 		observer.onNotifyChanges();
+		
 	}
 	public List<Criteria> createCriteriaList() {
 				Preferences pref = new Preferences();
 				
-				//TODO get set of Criteria not just criteria;
 				Set<String> criteria = new TreeSet<String>();
 				criteria.add(pref.getNotificationFood(this));
 				boolean allMensas = pref.getNotificationMensas(this) == 0 ? true : false;
-				//Wie kann ich auf task warten.
 				CriteriaMatcher criteriaMatcher = new CriteriaMatcher();
 				List<Mensa> mensas = allMensas ? Model.getInstance().getMensas() : Model.getInstance().getFavoriteMensas();
 				
 				
 				return criteriaMatcher.match(criteria, mensas);
+	}
+	@Override
+	public void onNotifyChanges() {
+		criteriaList = createCriteriaList();
+		push();
+		if(hasPushed)
+			stopSelf();
 	}
 }

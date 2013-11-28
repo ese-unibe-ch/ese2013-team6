@@ -1,6 +1,5 @@
 package com.ese2013.mub;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 import java.util.Set;
@@ -26,9 +25,9 @@ import com.ese2013.mub.service.CriteriaMatcher;
 import com.ese2013.mub.util.Criteria;
 import com.ese2013.mub.util.Observer;
 
-public class NotificationFragment extends Fragment {
+public class NotificationFragment extends Fragment implements Observer{
 	private NotificationAdapter notificationAdapter;
-	private List<Criteria> criteriaList;
+	
 	private ListView list;
 
 	
@@ -40,6 +39,7 @@ public class NotificationFragment extends Fragment {
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		Model.getInstance().addObserver(this);
 	}
 	
 
@@ -80,7 +80,6 @@ public class NotificationFragment extends Fragment {
 
 	public void onNotifyChanges() {
 		notificationAdapter.notifyDataSetChanged();
-
 	}
 
 	public void sendListToMenusIntent(Mensa mensa) {
@@ -88,7 +87,7 @@ public class NotificationFragment extends Fragment {
 				.getId());
 	}
 
-	class NotificationAdapter extends BaseAdapter implements IAdapter, Observer {
+	class NotificationAdapter extends BaseAdapter implements IAdapter {
 		private LayoutInflater inflater;
 		private List<Criteria> adapterList;
 		private CriteriaMatcher criteriaMatcher = new CriteriaMatcher();
@@ -96,12 +95,12 @@ public class NotificationFragment extends Fragment {
 
 		public NotificationAdapter() {
 			super();
-			adapterList = new ArrayList<Criteria>();
+			adapterList = createList();
 		}
 
 		@Override
 		public View getView(int position, View convertView, ViewGroup parent) {
-			Model.getInstance().addObserver(this);
+			
 			View view = convertView;
 			if (inflater == null)
 				inflater = (LayoutInflater) getActivity().getSystemService(
@@ -185,13 +184,7 @@ public class NotificationFragment extends Fragment {
 					.getId());
 		}
 		public void fill(){
-			adapterList = createList();
-		}
-
-		@Override
-		public void onNotifyChanges() {
-			notifyDataSetChanged();
-			
+				adapterList = createList();
 		}
 	}
 }

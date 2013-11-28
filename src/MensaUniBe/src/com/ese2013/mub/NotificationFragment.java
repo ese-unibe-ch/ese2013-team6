@@ -24,6 +24,7 @@ import com.ese2013.mub.model.Menu;
 import com.ese2013.mub.model.Model;
 import com.ese2013.mub.service.CriteriaMatcher;
 import com.ese2013.mub.util.Criteria;
+import com.ese2013.mub.util.Observer;
 
 public class NotificationFragment extends Fragment {
 	private NotificationAdapter notificationAdapter;
@@ -39,18 +40,6 @@ public class NotificationFragment extends Fragment {
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		Preferences pref = new Preferences();
-		
-		//TODO get set of Criteria not just criteria;
-		Set<String> criteria = new TreeSet<String>();
-		criteria.add(pref.getNotificationFood(this.getActivity()));
-		criteria.add("paniert");
-		boolean allMensas = pref.getNotificationMensas(this.getActivity()) == 0 ? true : false;
-		
-		CriteriaMatcher criteriaMatcher = new CriteriaMatcher();
-		List<Mensa> mensas = allMensas ? Model.getInstance().getMensas() : Model.getInstance().getFavoriteMensas();
-		
-		criteriaList = criteriaMatcher.match(criteria, mensas);
 	}
 	
 
@@ -61,13 +50,13 @@ public class NotificationFragment extends Fragment {
 		
 		View view = inflater.inflate(R.layout.fragment_notification, container, false);
 		
-		if(criteriaList.isEmpty()){
-			TextView text = (TextView) view.findViewById(R.id.no_crit_text);
-			text.setText(R.string.noMatches);
-			return view;
-		}
+//		if(criteriaList.isEmpty()){
+//			TextView text = (TextView) view.findViewById(R.id.no_crit_text);
+//			text.setText(R.string.noMatches);
+//			return view;
+//		}
 		notificationAdapter = new NotificationAdapter();
-		
+	
 		
 		list = (ListView) view.findViewById(R.id.notification_list);
 		list.setAdapter(notificationAdapter);
@@ -99,9 +88,11 @@ public class NotificationFragment extends Fragment {
 				.getId());
 	}
 
-	class NotificationAdapter extends BaseAdapter implements IAdapter {
+	class NotificationAdapter extends BaseAdapter implements IAdapter, Observer {
 		private LayoutInflater inflater;
 		private List<Criteria> adapterList;
+		private CriteriaMatcher criteriaMatcher = new CriteriaMatcher();
+
 
 		public NotificationAdapter() {
 			super();
@@ -110,7 +101,7 @@ public class NotificationFragment extends Fragment {
 
 		@Override
 		public View getView(int position, View convertView, ViewGroup parent) {
-			
+			Model.getInstance().addObserver(this);
 			View view = convertView;
 			if (inflater == null)
 				inflater = (LayoutInflater) getActivity().getSystemService(
@@ -172,7 +163,20 @@ public class NotificationFragment extends Fragment {
 
 		@Override
 		public void notifyDataSetChanged() {
+			adapterList = createList();
 			super.notifyDataSetChanged();
+		}
+
+		private List<Criteria> createList() {
+			Preferences pref = new Preferences();
+			
+			//TODO get set of Criteria not just criteria;
+			Set<String> criteria = new TreeSet<String>();
+			criteria.add(pref.getNotificationFood(NotificationFragment.this.getActivity()));
+			boolean allMensas = pref.getNotificationMensas(NotificationFragment.this.getActivity()) == 0 ? true : false;
+			
+			List<Mensa> mensas = allMensas ? Model.getInstance().getMensas() : Model.getInstance().getFavoriteMensas();
+			return criteriaMatcher.match(criteria, mensas);
 		}
 
 		@Override
@@ -181,7 +185,13 @@ public class NotificationFragment extends Fragment {
 					.getId());
 		}
 		public void fill(){
-			adapterList = criteriaList;
+			adapterList = createList();
+		}
+
+		@Override
+		public void onNotifyChanges() {
+			notifyDataSetChanged();
+			
 		}
 	}
 }

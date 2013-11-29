@@ -4,8 +4,6 @@
 
 package com.ese2013.mub;
 
-import com.ese2013.mub.service.NotificationHandler;
-
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -54,10 +52,5 @@ public class SettingsFragment extends Fragment {
 		prefs.setDoNotification(context, ( (Switch)this.getView().findViewById(R.id.notification_switch) ).isChecked());
 		prefs.setNotificationMensas(context, ( (Spinner)this.getView().findViewById(R.id.notification_spinner) ).getSelectedItemPosition());
 		prefs.setNotificationFood(context, ( (EditText)this.getView().findViewById(R.id.edit_text_notification) ).getText().toString());
-		NotificationHandler notificationHandler = new NotificationHandler(context);
-		if(prefs.getDoNotification(context))
-			notificationHandler.setAlarmManager();
-		else
-			notificationHandler.unSetAlarm();
 	}
 }

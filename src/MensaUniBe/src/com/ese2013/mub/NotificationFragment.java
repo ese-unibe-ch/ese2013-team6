@@ -8,6 +8,7 @@ import java.util.TreeSet;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -27,7 +28,6 @@ import com.ese2013.mub.util.Observer;
 
 public class NotificationFragment extends Fragment implements Observer{
 	private NotificationAdapter notificationAdapter;
-	
 	private ListView list;
 
 	
@@ -60,6 +60,8 @@ public class NotificationFragment extends Fragment implements Observer{
 		
 		list = (ListView) view.findViewById(R.id.notification_list);
 		list.setAdapter(notificationAdapter);
+		View emptyView = view.findViewById(R.id.no_crit_text);
+		list.setEmptyView(emptyView);
 		notificationAdapter.fill();
 		return view;
 	}
@@ -100,7 +102,7 @@ public class NotificationFragment extends Fragment implements Observer{
 
 		@Override
 		public View getView(int position, View convertView, ViewGroup parent) {
-			
+			Log.d("even if empty", adapterList.size() + "");
 			View view = convertView;
 			if (inflater == null)
 				inflater = (LayoutInflater) getActivity().getSystemService(
@@ -157,6 +159,7 @@ public class NotificationFragment extends Fragment implements Observer{
 
 		@Override
 		public long getItemId(int position) {
+			
 			return position;
 		}
 

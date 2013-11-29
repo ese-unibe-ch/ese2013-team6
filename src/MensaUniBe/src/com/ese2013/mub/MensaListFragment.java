@@ -15,7 +15,6 @@ import com.ese2013.mub.model.Mensa;
 public class MensaListFragment extends Fragment {
 	private MensaListAdapter adapter;
 	private ListView mensaListView;
-	public static final String POSITION = "com.ese2013.mub.MensaToMenuIntent";
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,

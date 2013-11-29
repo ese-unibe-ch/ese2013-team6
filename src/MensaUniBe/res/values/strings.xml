@@ -41,5 +41,8 @@
         <item>All mensas</item>
         <item>Favorite mensas</item>
     </string-array>
+    <string name="servedInMensa">served in:</string>
+    <string name="givenMenu">Menu</string>
+    <string name="noMatches">\nNone of your criteria are a match oder you have not defined any!</string>
     
 </resources>

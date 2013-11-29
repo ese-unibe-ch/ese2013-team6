@@ -20,7 +20,11 @@ import android.widget.Spinner;
 
 import com.ese2013.mub.model.Mensa;
 import com.ese2013.mub.model.Model;
+
+import com.ese2013.mub.service.NotificationService;
+
 import com.parse.Parse;
+
 
 /**
  * This class is the main activity for the mub app. Everything else to be
@@ -33,7 +37,7 @@ public class DrawerMenuActivity extends FragmentActivity {
 	private ListView drawerList;
 	private Spinner spinner;
 	private int selectedPosition = -1;
-	private static final int HOME_INDEX = 0, MAP_INDEX = 2;
+	private static final int HOME_INDEX = 0, MAP_INDEX = 2, NOTIFICATION_INDEX = 3;
 	private static final String POSITION = "com.ese2013.mub.position";
 	private Model model;
 
@@ -49,7 +53,7 @@ public class DrawerMenuActivity extends FragmentActivity {
 		drawerList = (ListView) findViewById(R.id.left_drawer);
 
 		// Set the adapter for the drawer menu list
-		String[] menuItemNames = { "Home", "Mensa List", "Map" };
+		String[] menuItemNames = { "Home", "Mensa List", "Map", "Notifications" };
 		drawerList.setAdapter(new ArrayAdapter<String>(this, R.layout.drawer_list_item, menuItemNames));
 
 		// enable ActionBar app icon to behave as action to toggle nav drawer
@@ -66,6 +70,8 @@ public class DrawerMenuActivity extends FragmentActivity {
 		// select home in drawer menu
 		if (savedInstanceState != null)
 			selectItem(savedInstanceState.getInt(POSITION, HOME_INDEX), true);
+		else if(getIntent().getBooleanExtra(NotificationService.START_FROM_N, false))
+			selectItem(NOTIFICATION_INDEX,true);
 		else
 			selectItem(HOME_INDEX, true);
 
@@ -157,6 +163,8 @@ public class DrawerMenuActivity extends FragmentActivity {
 				setDisplayedFragment(frag);
 				break;
 			case 3:
+				frag = new NotificationFragment();
+				setDisplayedFragment(frag);
 				break;
 			}
 		}
@@ -173,6 +181,7 @@ public class DrawerMenuActivity extends FragmentActivity {
 	 *            the Fragment to be displayed. Shouldn't be null.
 	 */
 	private void setDisplayedFragment(Fragment frag) {
+		assert(frag != null);
 		FragmentManager fragmentManager = getSupportFragmentManager();
 		FragmentTransaction transaction = fragmentManager.beginTransaction();
 		transaction.replace(R.id.drawer_layout_frag_container, frag);
@@ -273,3 +282,4 @@ public class DrawerMenuActivity extends FragmentActivity {
 		super.onSaveInstanceState(outState);
 	}
 }
+	

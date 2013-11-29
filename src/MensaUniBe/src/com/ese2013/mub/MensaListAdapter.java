@@ -14,7 +14,7 @@ import android.widget.TextView;
 import com.ese2013.mub.model.Mensa;
 import com.ese2013.mub.model.Model;
 
-public class MensaListAdapter extends BaseAdapter{
+public class MensaListAdapter extends BaseAdapter implements IAdapter{
 	private static Context context;
 	private List<Mensa> menus = new ArrayList<Mensa>();
 	private LayoutInflater inflater;

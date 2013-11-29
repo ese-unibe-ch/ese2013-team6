@@ -7,11 +7,11 @@ import com.ese2013.mub.model.Mensa;
 
 public class AddressTextListener implements OnClickListener{
 private Mensa mensa;
-private MensaListAdapter adapt;
+private IAdapter adapt;
 
 
 	
-	public AddressTextListener(Mensa mensa, MensaListAdapter adapt) {
+	public AddressTextListener(Mensa mensa, IAdapter adapt) {
 		this.mensa = mensa;
 		this.adapt = adapt;
 	}

@@ -53,5 +53,4 @@ public class SettingsFragment extends Fragment {
 		prefs.setNotificationMensas(context, ( (Spinner)this.getView().findViewById(R.id.notification_spinner) ).getSelectedItemPosition());
 		prefs.setNotificationFood(context, ( (EditText)this.getView().findViewById(R.id.edit_text_notification) ).getText().toString());
 	}
-	
 }

@@ -10,6 +10,8 @@
     <string name="map_my_location">My Location</string>
     <string name="map_directions_error">Could not retrieve directions</string>
     <string name="map_travelmode_walk">Walking</string>
+    <string name="invitation_button">Invite</string>
+    <string name="invitation_button_desc">Invite Friends</string>
 
     <string-array name="spinner_list">
         <item>Favorites</item>

@@ -22,5 +22,13 @@
         android:layout_height="wrap_content"
         android:src="@drawable/ic_map"
         android:layout_toLeftOf="@+id/section_title_fav_button"/>
+    
+    <include layout="@layout/invitation_button"
+        android:id="@+id/section_title_invitation_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toLeftOf="@+id/section_title_map_button"/>
+    
+
 
 </RelativeLayout>

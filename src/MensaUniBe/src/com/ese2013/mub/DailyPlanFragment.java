@@ -10,6 +10,7 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -74,6 +75,7 @@ public class DailyPlanFragment extends Fragment {
 
 			setUpFavoriteButton(relativeLayout, mensa);
 			setUpMapButton(relativeLayout, mensa);
+			setUpInvitationButton(relativeLayout, mensa, day);
 
 			for (Menu menu : d.getMenus())
 				menuLayout.addView(new MenuView(container.getContext(), menu));
@@ -86,6 +88,14 @@ public class DailyPlanFragment extends Fragment {
 			layout.addView(relativeLayout);
 			layout.addView(menuLayout);
 		}
+	}
+
+	private void setUpInvitationButton(RelativeLayout relativeLayout,
+			Mensa mensa, Day dayOfInvitation) {
+		Button invitationButton = (Button) relativeLayout.getChildAt(3);
+		invitationButton.setOnClickListener(new InvitationButtonListener(mensa, dayOfInvitation, this));
+		// TODO Auto-generated method stub
+		
 	}
 
 	public void setUpFavoriteButton(RelativeLayout rel, Mensa mensa) {

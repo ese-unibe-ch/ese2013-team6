@@ -9,7 +9,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 
-import com.ese2013.mub.Preferences;
+import com.ese2013.mub.util.Preferences;
 
 public class BootReceiver extends BroadcastReceiver {
 

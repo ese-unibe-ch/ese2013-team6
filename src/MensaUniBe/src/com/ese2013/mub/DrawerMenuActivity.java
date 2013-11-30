@@ -23,8 +23,8 @@ import com.ese2013.mub.model.Model;
 
 import com.ese2013.mub.service.NotificationService;
 
+import com.memetix.mst.translate.Translate;
 import com.parse.Parse;
-
 
 /**
  * This class is the main activity for the mub app. Everything else to be
@@ -37,7 +37,7 @@ public class DrawerMenuActivity extends FragmentActivity {
 	private ListView drawerList;
 	private Spinner spinner;
 	private int selectedPosition = -1;
-	private static final int HOME_INDEX = 0, MAP_INDEX = 2, NOTIFICATION_INDEX = 3;
+	private static final int HOME_INDEX = 0, MAP_INDEX = 2, NOTIFICATION_INDEX = 3, NOTHING_INDEX = 4;
 	private static final String POSITION = "com.ese2013.mub.position";
 	private Model model;
 
@@ -45,6 +45,9 @@ public class DrawerMenuActivity extends FragmentActivity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		Parse.initialize(this, "ZmdQMR7FctP2XgMJN5lvj98Aj9IA2Bf8mJrny11n", "yVVh3GiearTRsRXZqgm2FG6xfWvcQPjINX6dGJNu");
+		Translate.setClientId("MensaUniBe");
+		Translate.setClientSecret("T35oR9q6ukB/GbuYAg4nsL09yRsp9j5afWjULfWfmuY=");
+
 		model = new Model(getApplicationContext());
 
 		setContentView(R.layout.activity_drawer_menu);
@@ -70,8 +73,8 @@ public class DrawerMenuActivity extends FragmentActivity {
 		// select home in drawer menu
 		if (savedInstanceState != null)
 			selectItem(savedInstanceState.getInt(POSITION, HOME_INDEX), true);
-		else if(getIntent().getBooleanExtra(NotificationService.START_FROM_N, false))
-			selectItem(NOTIFICATION_INDEX,true);
+		else if (getIntent().getBooleanExtra(NotificationService.START_FROM_N, false))
+			selectItem(NOTIFICATION_INDEX, true);
 		else
 			selectItem(HOME_INDEX, true);
 
@@ -181,7 +184,7 @@ public class DrawerMenuActivity extends FragmentActivity {
 	 *            the Fragment to be displayed. Shouldn't be null.
 	 */
 	private void setDisplayedFragment(Fragment frag) {
-		assert(frag != null);
+		assert (frag != null);
 		FragmentManager fragmentManager = getSupportFragmentManager();
 		FragmentTransaction transaction = fragmentManager.beginTransaction();
 		transaction.replace(R.id.drawer_layout_frag_container, frag);
@@ -219,20 +222,12 @@ public class DrawerMenuActivity extends FragmentActivity {
 	 */
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
-		if (drawerToggle.onOptionsItemSelected(item)) {
-			if (item.getItemId() == R.id.action_settings){
-				Fragment frag = new SettingsFragment();
-				setDisplayedFragment(frag);
-				selectedPosition = 4;
-				return true;
-			}
-		} else {
-			if(item.getItemId() == R.id.action_settings){
-				Fragment frag = new SettingsFragment();
-				setDisplayedFragment(frag);
-				selectedPosition = 4;
-				return true;
-			}
+		if (!drawerToggle.onOptionsItemSelected(item) && item.getItemId() == R.id.action_settings) {
+			drawerList.setItemChecked(selectedPosition, false);
+			Fragment frag = new SettingsFragment();
+			setDisplayedFragment(frag);
+			selectedPosition = NOTHING_INDEX;
+			return true;
 		}
 		return super.onOptionsItemSelected(item);
 	}
@@ -282,4 +277,3 @@ public class DrawerMenuActivity extends FragmentActivity {
 		super.onSaveInstanceState(outState);
 	}
 }
-	

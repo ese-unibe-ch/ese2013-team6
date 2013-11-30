@@ -15,12 +15,12 @@ import android.support.v4.app.NotificationCompat;
 
 import com.ese2013.mub.DrawerMenuActivity;
 import com.ese2013.mub.NotificationFragment;
-import com.ese2013.mub.Preferences;
 import com.ese2013.mub.R;
 import com.ese2013.mub.model.Mensa;
 import com.ese2013.mub.model.Model;
 import com.ese2013.mub.util.Criteria;
 import com.ese2013.mub.util.Observer;
+import com.ese2013.mub.util.Preferences;
 
 public class NotificationService extends Service implements Observer{
 

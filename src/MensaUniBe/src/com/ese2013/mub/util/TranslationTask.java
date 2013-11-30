@@ -1,24 +1,32 @@
 package com.ese2013.mub.util;
 
+import java.util.ArrayList;
 import java.util.Collection;
-
-import android.os.AsyncTask;
+import java.util.List;
 
 import com.ese2013.mub.model.Menu;
+import com.ese2013.mub.model.MenuManager;
 import com.memetix.mst.language.Language;
 import com.memetix.mst.translate.Translate;
 
-public class TranslationTask extends AsyncTask<Void, Void, Void> {
-	private Exception exception;
+public class TranslationTask extends AbstractAsyncTask<Void, Void, Void> {
 	private Language newLang;
 	private Collection<Menu> menus;
 	private String[] newTitles, newDescriptions;
 	private static final String NEW_LINE = " ; ";
+	private List<TranslationTaskCallback> callbacks = new ArrayList<TranslationTaskCallback>();
+	private MenuManager menuManager;
+
+	public TranslationTask(MenuManager menuManager, Language newLang, TranslationTaskCallback... callbacks) {
+		this.newLang = newLang;
+		this.menuManager = menuManager;
+		this.menus = menuManager.getMenus();
+
+		for (TranslationTaskCallback callback : callbacks)
+			this.callbacks.add(callback);
+	}
 
 	public TranslationTask(Collection<Menu> menus, Language newLang) {
-		Translate.setClientId("MensaUniBe");
-		Translate.setClientSecret("T35oR9q6ukB/GbuYAg4nsL09yRsp9j5afWjULfWfmuY=");
-
 		this.newLang = newLang;
 		this.menus = menus;
 	}
@@ -38,11 +46,9 @@ public class TranslationTask extends AsyncTask<Void, Void, Void> {
 		try {
 			newTitles = Translate.execute(menuTitles, Language.GERMAN, newLang);
 			newDescriptions = Translate.execute(descriptions, Language.GERMAN, newLang);
-
 		} catch (Exception e) {
 			// Api throws general exception...
-			e.printStackTrace();
-			exception = e;
+			setException(e);
 		}
 		return null;
 	}
@@ -50,16 +56,19 @@ public class TranslationTask extends AsyncTask<Void, Void, Void> {
 	@Override
 	protected void onPostExecute(Void arg0) {
 		super.onPostExecute(arg0);
-		if (exception == null) {
+		if (hasSucceeded()) {
 			int i = 0;
 			for (Menu menu : menus) {
-				menu.setTitle(newTitles[i]);
-				menu.setDescription(newDescriptions[i].replace(NEW_LINE.trim(), "\n").replace("'", "\""));
+				menu.setTranslatedTitle(newTitles[i]);
+				menu.setTranslatedDescription(newDescriptions[i].replace(NEW_LINE.trim(), "\n").replace("'", "\""));
 				i++;
 			}
+			menuManager.setTranslationsAvailable(true);
 		} else {
-			// TODO handle error
-			exception.printStackTrace();
+			menuManager.setTranslationsAvailable(false);
+			logException("TRANSLATION", "Could not translate");
 		}
+		for (TranslationTaskCallback callback : callbacks)
+			callback.onTaskFinished(this);
 	}
 }

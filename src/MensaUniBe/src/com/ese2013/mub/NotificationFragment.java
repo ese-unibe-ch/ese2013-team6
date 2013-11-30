@@ -25,6 +25,7 @@ import com.ese2013.mub.model.Model;
 import com.ese2013.mub.service.CriteriaMatcher;
 import com.ese2013.mub.util.Criteria;
 import com.ese2013.mub.util.Observer;
+import com.ese2013.mub.util.Preferences;
 
 public class NotificationFragment extends Fragment implements Observer{
 	private NotificationAdapter notificationAdapter;

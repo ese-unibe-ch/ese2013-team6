@@ -1,9 +1,7 @@
 package com.ese2013.mub.util.database.tables;
 
 public class FavoritesTable extends AbstractTable {
-
 	public static final String TABLE_FAV_MENSAS = "favoriteMensas";
-
 	
 	private static final String TABLE_FAV_MENSAS_CREATE = 
 			"create table " + TABLE_FAV_MENSAS + "(" + MensasTable.COL_ID +

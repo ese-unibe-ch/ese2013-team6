@@ -1,8 +1,8 @@
 package com.ese2013.mub.model;
 
 import java.util.Iterator;
-import java.util.LinkedHashMap;
 import java.util.Set;
+import java.util.TreeMap;
 
 /**
  * Represents a weekly menuplan. Allows to add menus to the plan and to get the
@@ -10,7 +10,7 @@ import java.util.Set;
  * 
  */
 public class WeeklyMenuplan implements Iterable<DailyMenuplan> {
-	private LinkedHashMap<Day, DailyMenuplan> dailymenus = new LinkedHashMap<Day, DailyMenuplan>();
+	private TreeMap<Day, DailyMenuplan> dailymenus = new TreeMap<Day, DailyMenuplan>();
 
 	/**
 	 * Adds a menu to the plan.

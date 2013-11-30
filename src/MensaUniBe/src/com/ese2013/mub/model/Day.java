@@ -9,7 +9,7 @@ import java.util.Locale;
  * Represents a simple date composed of year, month and day. Partly wraps the
  * functionality of the java.util.Date class.
  */
-public class Day {
+public class Day implements Comparable<Day> {
 	private int year, month, day;
 
 	/**
@@ -56,8 +56,9 @@ public class Day {
 
 	/**
 	 * Converts the Day to a Calendar object representing the same day, using
-	 * Locale.GERMAN to avoid confusion with the U.S. calendar standards.
-	 * Used for unified output for saving!
+	 * Locale.GERMAN to avoid confusion with the U.S. calendar standards. Used
+	 * for unified output for saving!
+	 * 
 	 * @return Calendar set to the same day as the Day object.
 	 */
 	private Calendar getCalendar() {
@@ -128,7 +129,22 @@ public class Day {
 		hashCode += day;
 		return hashCode;
 	}
-	public static Day today(){
+
+	public static Day today() {
 		return new Day(Calendar.getInstance(Locale.getDefault()).getTime());
+	}
+
+	private int asInt() {
+		int i = year;
+		i *= 100;
+		i += month;
+		i *= 100;
+		i += day;
+		return i;
+	}
+
+	@Override
+	public int compareTo(Day another) {
+		return this.asInt() - another.asInt();
 	}
 }

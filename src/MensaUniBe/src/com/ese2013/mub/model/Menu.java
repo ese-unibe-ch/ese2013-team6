@@ -90,10 +90,10 @@ public class Menu {
 	}
 
 	public void setUserRating(int userRating) {
-		beenRated = true;
 		this.userRating = userRating;
 		ratingSum += userRating;
 		ratingCount++;
+		beenRated = true;
 	}
 
 	public boolean hasBeenRated() {
@@ -101,13 +101,10 @@ public class Menu {
 	}
 
 	public float getAverageRating() {
-		if (ratingCount == 0) {
+		if (ratingCount == 0)
 			return 0;
-		} else {
-//			System.out.println("sum: " + ratingSum + ", Count : " + ratingCount);
-//			System.out.println(roundToHalf(ratingSum / ratingCount));
+		else
 			return roundToHalf(ratingSum / ratingCount);
-		}
 	}
 
 	private static float roundToHalf(float x) {

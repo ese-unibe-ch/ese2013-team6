@@ -19,12 +19,15 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.ArrayAdapter;
+import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Spinner;
 
 import com.ese2013.mub.model.Mensa;
 import com.ese2013.mub.model.Model;
 import com.ese2013.mub.service.NotificationService;
+import com.ese2013.mub.social.LoginService;
+import com.ese2013.mub.social.User;
 import com.ese2013.mub.util.SharedPrefsHandler;
 import com.google.android.gms.auth.GoogleAuthUtil;
 import com.google.android.gms.common.AccountPicker;
@@ -58,8 +61,23 @@ public class DrawerMenuActivity extends FragmentActivity {
 		if (requestCode == PICK_ACCOUNT_REQUEST) {
 			switch (resultCode) {
 			case RESULT_OK:
-				String accountName = data.getStringExtra(AccountManager.KEY_ACCOUNT_NAME);
-				new SharedPrefsHandler(this).setUserEmail(accountName);
+				final String accountName = data.getStringExtra(AccountManager.KEY_ACCOUNT_NAME);
+				SharedPrefsHandler prefs = new SharedPrefsHandler(this);
+				prefs.setUserEmail(accountName);
+				AlertDialog.Builder alert = new AlertDialog.Builder(this).setTitle("Enter Nickname").setMessage("Name");
+				final EditText input = new EditText(this);
+				alert.setView(input).setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+					public void onClick(DialogInterface dialog, int whichButton) {
+						String nickname = input.getText().toString();
+						LoginService.login(new User(accountName, nickname));
+					}
+				}).setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+					public void onClick(DialogInterface dialog, int whichButton) {
+						// Canceled.
+					}
+				});
+				alert.show();
+
 				break;
 			case RESULT_CANCELED:
 				showRegistrationMessage();

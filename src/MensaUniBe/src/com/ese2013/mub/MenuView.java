@@ -16,7 +16,7 @@ import com.ese2013.mub.model.Menu;
 import com.ese2013.mub.model.MenuManager;
 import com.ese2013.mub.model.Model;
 import com.ese2013.mub.util.ViewUtil;
-import com.ese2013.mub.util.parseDatabase.OnlineDataSource;
+import com.ese2013.mub.util.parseDatabase.OnlineDBHandler;
 
 public class MenuView extends LinearLayout {
 	private Menu menu;
@@ -28,7 +28,7 @@ public class MenuView extends LinearLayout {
 		setPadding(0, 0, 0, dimToPixels(R.dimen.menu_view_bottom_margin));
 
 		LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-		View view = inflater.inflate(R.layout.menu_view, this);
+		inflater.inflate(R.layout.menu_view, this);
 
 		MenuManager menuManager = Model.getInstance().getMenuManager();
 		String menuTitle, menuDesc;
@@ -42,21 +42,28 @@ public class MenuView extends LinearLayout {
 
 		menuTitle = menuTitle.toUpperCase(Locale.getDefault());
 		setTitle(menuTitle, getTitleColor(menu.getTitle()));
-		setDescription(menuDesc, view);
+		setDescription(menuDesc);
 
-		setCountDisplay(menu, view);
+		setCountDisplay();
 
-		RatingBar ratingBar = (RatingBar) view.findViewById(R.id.menu_rating_bar);
+		initRatingBar();
+	}
+
+	private void initRatingBar() {
+		RatingBar ratingBar = (RatingBar) this.findViewById(R.id.menu_rating_bar);
 		ratingBar.setRating(menu.getAverageRating());
 		ratingBar.setIsIndicator(menu.hasBeenRated());
 		ratingBar.setOnRatingBarChangeListener(new RatingBar.OnRatingBarChangeListener() {
 			@Override
 			public void onRatingChanged(RatingBar ratingBar, float rating, boolean fromUser) {
 				if (fromUser && !MenuView.this.menu.hasBeenRated()) {
-					new OnlineDataSource().updateMenuRating(MenuView.this.menu, (int) rating);
+					int userRating = (int) rating;
+					Menu menu = MenuView.this.menu;
+					menu.setUserRating(userRating);
+					new OnlineDBHandler().saveMenuRating(menu, userRating);
 					ratingBar.setIsIndicator(true);
-					setCountDisplay(MenuView.this.menu, MenuView.this);
-					ratingBar.setRating(MenuView.this.menu.getAverageRating());
+					setCountDisplay();
+					ratingBar.setRating(menu.getAverageRating());
 				}
 			}
 		});
@@ -71,8 +78,8 @@ public class MenuView extends LinearLayout {
 		ratingBar.setId(ViewUtil.generateViewId());
 	}
 
-	private void setCountDisplay(Menu menu, View view) {
-		((TextView) view.findViewById(R.id.menu_rating_count)).setText("" + menu.getRatingCount());
+	private void setCountDisplay() {
+		((TextView) this.findViewById(R.id.menu_rating_count)).setText("" + menu.getRatingCount());
 	}
 
 	public MenuView(Context context) {
@@ -89,8 +96,8 @@ public class MenuView extends LinearLayout {
 		menuTitleText.setBackgroundColor(color);
 	}
 
-	private void setDescription(String menuDesc, View view) {
-		TextView menuDescView = (TextView) view.findViewById(R.id.menu_description_text);
+	private void setDescription(String menuDesc) {
+		TextView menuDescView = (TextView) this.findViewById(R.id.menu_description_text);
 		menuDescView.setText(menuDesc);
 	}
 

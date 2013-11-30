@@ -15,6 +15,7 @@ import android.widget.Toast;
 import com.ese2013.mub.model.Menu;
 import com.ese2013.mub.model.MenuManager;
 import com.ese2013.mub.model.Model;
+import com.ese2013.mub.util.ViewUtil;
 import com.ese2013.mub.util.parseDatabase.OnlineDataSource;
 
 public class MenuView extends LinearLayout {
@@ -28,7 +29,7 @@ public class MenuView extends LinearLayout {
 
 		LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 		View view = inflater.inflate(R.layout.menu_view, this);
-		
+
 		MenuManager menuManager = Model.getInstance().getMenuManager();
 		String menuTitle, menuDesc;
 		if (menuManager.isTranslationEnabled() && menuManager.translationsAvailable()) {
@@ -67,6 +68,7 @@ public class MenuView extends LinearLayout {
 				return false;
 			}
 		});
+		ratingBar.setId(ViewUtil.generateViewId());
 	}
 
 	private void setCountDisplay(Menu menu, View view) {

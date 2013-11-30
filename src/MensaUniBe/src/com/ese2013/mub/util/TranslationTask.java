@@ -38,8 +38,8 @@ public class TranslationTask extends AbstractAsyncTask<Void, Void, Void> {
 
 		int i = 0;
 		for (Menu menu : menus) {
-			menuTitles[i] = menu.getTitle();
-			descriptions[i] = menu.getDescription().replace("\n", NEW_LINE).replace("\"", "'");
+			menuTitles[i] = menu.getOrigTitle();
+			descriptions[i] = menu.getOrigDescription().replace("\n", NEW_LINE).replace("\"", "'");
 			i++;
 		}
 

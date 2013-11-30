@@ -31,30 +31,30 @@ public class CriteriaMatcher {
 	 *         mensa in which the menu is served in.
 	 */
 	public List<Criteria> match(Set<String> criteriaSet, List<Mensa> mensas) {
-		
 		for (String criteria : criteriaSet) {
 			Criteria crit = new Criteria();
-			crit.setName(criteria);			
-			for (Mensa mensa : mensas) {	
+			crit.setName(criteria);
+			for (Mensa mensa : mensas) {
 				WeeklyMenuplan weekly = mensa.getMenuplan();
 				DailyMenuplan daily = weekly.getDailymenuplan(Day.today());
+				if (daily != null) {
+					for (Menu menu : daily.getMenus()) {
+						if ((menu.getDescription().toLowerCase(Locale.getDefault())).contains(criteria.toLowerCase(Locale
+								.getDefault()))) {
 
-				for (Menu menu : daily.getMenus()) {
+							if (!container.contains(crit))
+								container.add(crit);
 
-					if ((menu.getDescription().toLowerCase(Locale.getDefault())).contains(criteria.toLowerCase(Locale.getDefault()))) {
+							if (!crit.getMap().containsKey(menu)) {
+								temp = new ArrayList<Mensa>();
+								temp.add(mensa);
+								crit.getMap().put(menu, temp);
+							} else {
+								temp = new ArrayList<Mensa>();
+								temp = crit.getMap().get(menu);
+								temp.add(mensa);
 
-						if(!container.contains(crit))
-							container.add(crit);
-						
-						if (!crit.getMap().containsKey(menu)) {
-							temp = new ArrayList<Mensa>();
-							temp.add(mensa);
-							crit.getMap().put(menu, temp);
-						} else {
-							temp = new ArrayList<Mensa>();
-							temp = crit.getMap().get(menu);
-							temp.add(mensa);
-							
+							}
 						}
 					}
 				}

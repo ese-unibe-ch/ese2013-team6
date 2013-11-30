@@ -5,7 +5,7 @@ package com.ese2013.mub.model;
  * Menu.MenuBuilder class.
  */
 public class Menu {
-	private String id, title, description, translatedTitle, translatedDescription;
+	private String id, origTitle, origDescription, translatedTitle, translatedDescription;
 	private Day date;
 	private int userRating = 0;
 	private int ratingSum = 0, ratingCount = 0;
@@ -14,8 +14,8 @@ public class Menu {
 	public Menu(String id, String title, String description, String translTitle, String translDesc, Day day,
 			int ratingCount, int ratingSum, int userRating) {
 		this.id = id;
-		this.title = title;
-		this.description = description;
+		this.origTitle = title;
+		this.origDescription = description;
 		this.translatedTitle = translTitle;
 		this.translatedDescription = translDesc;
 		this.date = day;
@@ -34,8 +34,8 @@ public class Menu {
 	 */
 	private Menu(MenuBuilder builder) {
 		this.id = builder.id;
-		this.title = builder.title;
-		this.description = builder.description;
+		this.origTitle = builder.title;
+		this.origDescription = builder.description;
 		this.translatedTitle = builder.translTitle;
 		this.translatedDescription = builder.translDesc;
 		this.date = builder.date;
@@ -50,11 +50,19 @@ public class Menu {
 	}
 
 	public String getTitle() {
-		return title;
+		return getOrigTitle();
 	}
 
 	public String getDescription() {
-		return description;
+		return getOrigDescription();
+	}
+
+	public String getOrigTitle() {
+		return origTitle;
+	}
+
+	public String getOrigDescription() {
+		return origDescription;
 	}
 
 	public String getTranslatedTitle() {
@@ -84,16 +92,20 @@ public class Menu {
 	public void setUserRating(int userRating) {
 		beenRated = true;
 		this.userRating = userRating;
+		ratingSum += userRating;
+		ratingCount++;
 	}
 
 	public boolean hasBeenRated() {
 		return beenRated;
 	}
 
-	public float getAvarageRating() {
+	public float getAverageRating() {
 		if (ratingCount == 0) {
 			return 0;
 		} else {
+//			System.out.println("sum: " + ratingSum + ", Count : " + ratingCount);
+//			System.out.println(roundToHalf(ratingSum / ratingCount));
 			return roundToHalf(ratingSum / ratingCount);
 		}
 	}
@@ -131,9 +143,9 @@ public class Menu {
 				return false;
 			if (otherMenu.getDate() == null ? this.date != null : !otherMenu.getDate().equals(this.date))
 				return false;
-			if (!otherMenu.getTitle().equals(this.title))
+			if (!otherMenu.getOrigTitle().equals(this.origTitle))
 				return false;
-			if (!otherMenu.getDescription().equals(this.description))
+			if (!otherMenu.getOrigDescription().equals(this.origDescription))
 				return false;
 			return true;
 		} else {
@@ -145,15 +157,15 @@ public class Menu {
 	public int hashCode() {
 		int result = 17;
 		result = 31 * result + id.hashCode();
-		result = 31 * result + title.hashCode();
-		result = 31 * result + description.hashCode();
+		result = 31 * result + origTitle.hashCode();
+		result = 31 * result + origDescription.hashCode();
 		result = 31 * result + date.hashCode();
 		return result;
 	}
 
 	@Override
 	public String toString() {
-		return "Menu " + id + " { \n" + "  Title: " + title + "\n  Description: " + description + "\n  Date: "
+		return "Menu " + id + " { \n" + "  Title: " + origTitle + "\n  Description: " + origDescription + "\n  Date: "
 				+ getDateString() + " \n }";
 	}
 

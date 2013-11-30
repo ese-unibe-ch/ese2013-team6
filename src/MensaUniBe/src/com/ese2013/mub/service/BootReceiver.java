@@ -9,31 +9,20 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 
-import com.ese2013.mub.util.Preferences;
+import com.ese2013.mub.util.SharedPrefsHandler;
 
 public class BootReceiver extends BroadcastReceiver {
 
 	@Override
 	public void onReceive(Context context, Intent intent) {
-		Preferences pref = new Preferences();	
-		if (pref.getDoNotification(context)) {
-			
+		SharedPrefsHandler pref = new SharedPrefsHandler(context);
+		if (pref.getDoNotification()) {
 			Calendar tenOClock = Calendar.getInstance(Locale.getDefault());
-			
-			tenOClock.set(Calendar.YEAR, Calendar.MONTH, Calendar.DAY_OF_MONTH,
-					10, 0, 0);
-			
-			AlarmManager alarm = (AlarmManager) context
-					.getSystemService(Context.ALARM_SERVICE);
-			
-			PendingIntent operation = PendingIntent.getBroadcast(context, 0,
-					new Intent(context, AlarmReceiver.class),
+			tenOClock.set(Calendar.YEAR, Calendar.MONTH, Calendar.DAY_OF_MONTH, 10, 0, 0);
+			AlarmManager alarm = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
+			PendingIntent operation = PendingIntent.getBroadcast(context, 0, new Intent(context, AlarmReceiver.class),
 					PendingIntent.FLAG_CANCEL_CURRENT);
-
-			
-			alarm.setInexactRepeating(AlarmManager.RTC,
-					tenOClock.getTimeInMillis(), AlarmManager.INTERVAL_DAY,
-					operation);
+			alarm.setInexactRepeating(AlarmManager.RTC, tenOClock.getTimeInMillis(), AlarmManager.INTERVAL_DAY, operation);
 		}
 	}
 }

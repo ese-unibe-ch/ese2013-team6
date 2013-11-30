@@ -202,8 +202,8 @@ public class MensaDataSource {
 	private void storeMenu(Menu menu, Mensa mensa) {
 		ContentValues values = new ContentValues();
 		values.put(MenusTable.COL_ID, menu.getId());
-		values.put(MenusTable.COL_TITLE, menu.getTitle());
-		values.put(MenusTable.COL_DESC, menu.getDescription());
+		values.put(MenusTable.COL_TITLE, menu.getOrigTitle());
+		values.put(MenusTable.COL_DESC, menu.getOrigDescription());
 		values.put(MenusTable.COL_TRANSL_TITLE, menu.getTranslatedTitle());
 		values.put(MenusTable.COL_TRANSL_DESC, menu.getTranslatedDescription());
 		values.put(MenusTable.COL_USERRATING, menu.getUserRating());

@@ -10,7 +10,7 @@ import com.ese2013.mub.util.ModelCreationTask;
 import com.ese2013.mub.util.ModelCreationTaskCallback;
 import com.ese2013.mub.util.ModelSavingTask;
 import com.ese2013.mub.util.Observable;
-import com.ese2013.mub.util.Preferences;
+import com.ese2013.mub.util.SharedPrefsHandler;
 import com.ese2013.mub.util.TranslationTask;
 import com.ese2013.mub.util.TranslationTaskCallback;
 import com.ese2013.mub.util.database.MensaDataSource;
@@ -36,7 +36,7 @@ public class Model extends Observable implements ModelCreationTaskCallback, Tran
 
 	private void init() {
 		menuManager = new MenuManager();
-		menuManager.setTranslationsEnabled(new Preferences().getDoTranslation(context));
+		menuManager.setTranslationsEnabled(new SharedPrefsHandler(context).getDoTranslation());
 		dataSource = MensaDataSource.getInstance();
 		dataSource.init(context, menuManager);
 

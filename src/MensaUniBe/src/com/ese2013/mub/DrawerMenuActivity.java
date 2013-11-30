@@ -1,6 +1,10 @@
 package com.ese2013.mub;
 
+import android.accounts.AccountManager;
 import android.app.ActionBar;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.app.Fragment;
@@ -20,9 +24,10 @@ import android.widget.Spinner;
 
 import com.ese2013.mub.model.Mensa;
 import com.ese2013.mub.model.Model;
-
 import com.ese2013.mub.service.NotificationService;
-
+import com.ese2013.mub.util.SharedPrefsHandler;
+import com.google.android.gms.auth.GoogleAuthUtil;
+import com.google.android.gms.common.AccountPicker;
 import com.memetix.mst.translate.Translate;
 import com.parse.Parse;
 
@@ -40,6 +45,39 @@ public class DrawerMenuActivity extends FragmentActivity {
 	private static final int HOME_INDEX = 0, MAP_INDEX = 2, NOTIFICATION_INDEX = 3, NOTHING_INDEX = 4;
 	private static final String POSITION = "com.ese2013.mub.position";
 	private Model model;
+	private static final int PICK_ACCOUNT_REQUEST = 1;
+
+	private void showGoogleAccountPicker() {
+		Intent googlePicker = AccountPicker.newChooseAccountIntent(null, null,
+				new String[] { GoogleAuthUtil.GOOGLE_ACCOUNT_TYPE }, true, null, null, null, null);
+		startActivityForResult(googlePicker, PICK_ACCOUNT_REQUEST);
+	}
+
+	@Override
+	protected void onActivityResult(final int requestCode, final int resultCode, final Intent data) {
+		if (requestCode == PICK_ACCOUNT_REQUEST) {
+			switch (resultCode) {
+			case RESULT_OK:
+				String accountName = data.getStringExtra(AccountManager.KEY_ACCOUNT_NAME);
+				new SharedPrefsHandler(this).setUserEmail(accountName);
+				break;
+			case RESULT_CANCELED:
+				showRegistrationMessage();
+				break;
+			}
+		}
+	}
+
+	private void showRegistrationMessage() {
+		new AlertDialog.Builder(this).setMessage(R.string.user_registration_declined_message)
+				.setTitle(R.string.user_yes_registration).setCancelable(true)
+				.setNegativeButton(R.string.user_no_registration, null)
+				.setPositiveButton(R.string.user_register, new DialogInterface.OnClickListener() {
+					public void onClick(DialogInterface dialog, int whichButton) {
+						showGoogleAccountPicker();
+					}
+				}).show();
+	}
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -47,6 +85,9 @@ public class DrawerMenuActivity extends FragmentActivity {
 		Parse.initialize(this, "ZmdQMR7FctP2XgMJN5lvj98Aj9IA2Bf8mJrny11n", "yVVh3GiearTRsRXZqgm2FG6xfWvcQPjINX6dGJNu");
 		Translate.setClientId("MensaUniBe");
 		Translate.setClientSecret("T35oR9q6ukB/GbuYAg4nsL09yRsp9j5afWjULfWfmuY=");
+
+		if (!new SharedPrefsHandler(this).isUserRegistred())
+			showGoogleAccountPicker();
 
 		model = new Model(getApplicationContext());
 

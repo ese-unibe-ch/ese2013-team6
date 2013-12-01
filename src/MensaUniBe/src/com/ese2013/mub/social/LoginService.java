@@ -19,7 +19,7 @@ public class LoginService {
 				@Override
 				protected CurrentUser doInBackground(CurrentUser... user) {
 					try {
-						return handler.loginUser(user[0]);
+						return handler.getCurrentUser(user[0]);
 					} catch (ParseException e) {
 						return null;
 					}

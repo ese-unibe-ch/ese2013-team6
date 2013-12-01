@@ -15,6 +15,10 @@ public class FriendsList implements Iterable<User> {
 		friends.remove(user);
 	}
 
+	public User get(int i) {
+		return friends.get(i);
+	}
+
 	@Override
 	public Iterator<User> iterator() {
 		return friends.iterator();

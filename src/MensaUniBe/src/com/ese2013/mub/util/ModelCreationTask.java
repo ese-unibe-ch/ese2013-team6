@@ -1,6 +1,7 @@
 package com.ese2013.mub.util;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
@@ -12,6 +13,7 @@ import org.json.JSONObject;
 import android.os.AsyncTask;
 
 import com.ese2013.mub.model.Mensa;
+import com.ese2013.mub.model.MenuManager;
 import com.ese2013.mub.model.Model;
 import com.ese2013.mub.util.database.MensaDataSource;
 
@@ -26,9 +28,19 @@ import com.ese2013.mub.util.database.MensaDataSource;
  */
 public class ModelCreationTask extends AsyncTask<Void, Void, Void> {
 	private JSONArray updateStatusJson;
-	private MensaDataSource dataSource = MensaDataSource.getInstance();
+	private MensaDataSource dataSource;
 	private List<Mensa> mensas;
 	private boolean successful, localDataOutdated, downloadedNewData;
+	private MenuManager menuManager;
+	private List<ModelCreationTaskCallback> callbacks = new ArrayList<ModelCreationTaskCallback>();
+
+	public ModelCreationTask(MenuManager menuManager, MensaDataSource dataSource, ModelCreationTaskCallback... callbacks) {
+		this.menuManager = menuManager;
+		this.dataSource = dataSource;
+
+		for (ModelCreationTaskCallback callback : callbacks)
+			this.callbacks.add(callback);
+	}
 
 	/**
 	 * Asynchronously creates the mensa list by using
@@ -43,7 +55,7 @@ public class ModelCreationTask extends AsyncTask<Void, Void, Void> {
 		AbstractMensaFactory fac;
 		localDataOutdated = localDataNeedsUpdate();
 		if (localDataOutdated) {
-			fac = new MensaFromWebFactory(updateStatusJson, Model.getInstance().getMenuManager());
+			fac = new MensaFromWebFactory(updateStatusJson, menuManager);
 			downloadedNewData = true;
 		} else {
 			fac = new MensaFromLocalFactory();
@@ -131,7 +143,7 @@ public class ModelCreationTask extends AsyncTask<Void, Void, Void> {
 			dataSource.open();
 			if (menusNotFromCurrentWeek() || webDataUpdated())
 				return true;
-			
+
 		} catch (Exception e) {
 			// if anything happens during checking, we just update the local
 			// data.
@@ -148,7 +160,9 @@ public class ModelCreationTask extends AsyncTask<Void, Void, Void> {
 	 */
 	@Override
 	protected void onPostExecute(Void v) {
-		Model.getInstance().onCreationFinished(this);
+		super.onPostExecute(v);
+		for (ModelCreationTaskCallback callback : callbacks)
+			callback.onTaskFinished(this);
 	}
 
 	private void retrieveUpdatesPage() throws JSONException, IOException {

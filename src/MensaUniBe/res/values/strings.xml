@@ -44,5 +44,10 @@
     <string name="servedInMensa">served in:</string>
     <string name="givenMenu">Menu</string>
     <string name="noMatches">\nNone of your criteria are a match oder you have not defined any!</string>
+    <string name="rating_msg_already_rated">You have already rated this menu!</string>
+    <string name="user_registration_declined_message">Some features will not be available if you don\'t register with your Google Account. You can always register at a later time by going to the Settings.</string>
+    <string name="user_no_registration">DON\'T REGISTER</string>
+    <string name="user_yes_registration">Registration</string>
+    <string name="user_register">REGISTER</string>
     
 </resources>

@@ -11,9 +11,8 @@ public class MenusMensasTable extends AbstractTable {
 			MensasTable.COL_ID + " integer not null references " + MensasTable.TABLE_MENSAS + "(" + MensasTable.COL_ID + ") on delete cascade," +
 			COL_DATE + " text not null," + 
 			"primary key(" + MenusTable.COL_ID + ","+ MensasTable.COL_ID + "));";
-	
+
 	public MenusMensasTable() {
 		super(TABLE_MENUS_MENSAS, TABLE_MENUS_MENSAS_CREATE);
 	}
-
 }

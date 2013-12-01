@@ -1,25 +1,28 @@
 package com.ese2013.mub.model;
 
-import com.ese2013.mub.model.Menu.MenuBuilder;
-
 /**
  * Stores all data which make up a menu. Always created using the
  * Menu.MenuBuilder class.
  */
 public class Menu {
-	private String id, title, description;
+	private String id, origTitle, origDescription, translatedTitle, translatedDescription;
 	private Day date;
-	private int userRating =0;
-	private int ratingSum=0, ratingCount=0;
-	public int getRatingSum() {
-		return ratingSum;
-	}
-
-	public int getRatingCount() {
-		return ratingCount;
-	}
-
+	private int userRating = 0;
+	private int ratingSum = 0, ratingCount = 0;
 	private boolean beenRated = false;
+
+	public Menu(String id, String title, String description, String translTitle, String translDesc, Day day,
+			int ratingCount, int ratingSum, int userRating) {
+		this.id = id;
+		this.origTitle = title;
+		this.origDescription = description;
+		this.translatedTitle = translTitle;
+		this.translatedDescription = translDesc;
+		this.date = day;
+		this.ratingCount = ratingCount;
+		this.ratingSum = ratingSum;
+		this.userRating = userRating;
+	}
 
 	/**
 	 * Creates a Menu from a given MenuBuilder. Is private to ensure that Menus
@@ -31,8 +34,10 @@ public class Menu {
 	 */
 	private Menu(MenuBuilder builder) {
 		this.id = builder.id;
-		this.title = builder.title;
-		this.description = builder.description;
+		this.origTitle = builder.title;
+		this.origDescription = builder.description;
+		this.translatedTitle = builder.translTitle;
+		this.translatedDescription = builder.translDesc;
 		this.date = builder.date;
 		this.ratingCount = builder.ratingCount;
 		this.ratingSum = builder.ratingSum;
@@ -45,48 +50,73 @@ public class Menu {
 	}
 
 	public String getTitle() {
-		return title;
-	}
-
-	public void setTitle(String title) {
-		this.title = title;
+		return getOrigTitle();
 	}
 
 	public String getDescription() {
-		return description;
+		return getOrigDescription();
 	}
 
-	public void setDescription(String description) {
-		this.description = description;
+	public String getOrigTitle() {
+		return origTitle;
+	}
+
+	public String getOrigDescription() {
+		return origDescription;
+	}
+
+	public String getTranslatedTitle() {
+		return translatedTitle;
+	}
+
+	public String getTranslatedDescription() {
+		return translatedDescription;
+	}
+
+	public void setTranslatedTitle(String translatedTitle) {
+		this.translatedTitle = translatedTitle;
+	}
+
+	public void setTranslatedDescription(String translatedDescription) {
+		this.translatedDescription = translatedDescription;
 	}
 
 	public Day getDate() {
 		return date;
 	}
-	
+
 	public int getUserRating() {
 		return userRating;
 	}
 
 	public void setUserRating(int userRating) {
-		beenRated=true;
 		this.userRating = userRating;
+		ratingSum += userRating;
+		ratingCount++;
+		beenRated = true;
 	}
-	
+
 	public boolean hasBeenRated() {
 		return beenRated;
 	}
 
-	public float getAvarageRating(){
-		if (ratingCount == 0){
+	public float getAverageRating() {
+		if (ratingCount == 0)
 			return 0;
-		}else{
-			return roundToHalf(ratingSum/ratingCount);
-		}
+		else
+			return roundToHalf(ratingSum / ratingCount);
 	}
-	
+
 	private static float roundToHalf(float x) {
-	    return (float) (Math.ceil(x * 2) / 2);
+		return (float) (Math.ceil(x * 2) / 2);
+	}
+
+	public int getRatingSum() {
+		return ratingSum;
+	}
+
+	public int getRatingCount() {
+		return ratingCount;
 	}
 
 	/**
@@ -110,9 +140,9 @@ public class Menu {
 				return false;
 			if (otherMenu.getDate() == null ? this.date != null : !otherMenu.getDate().equals(this.date))
 				return false;
-			if (!otherMenu.getTitle().equals(this.title))
+			if (!otherMenu.getOrigTitle().equals(this.origTitle))
 				return false;
-			if (!otherMenu.getDescription().equals(this.description))
+			if (!otherMenu.getOrigDescription().equals(this.origDescription))
 				return false;
 			return true;
 		} else {
@@ -124,15 +154,15 @@ public class Menu {
 	public int hashCode() {
 		int result = 17;
 		result = 31 * result + id.hashCode();
-		result = 31 * result + title.hashCode();
-		result = 31 * result + description.hashCode();
+		result = 31 * result + origTitle.hashCode();
+		result = 31 * result + origDescription.hashCode();
 		result = 31 * result + date.hashCode();
 		return result;
 	}
 
 	@Override
 	public String toString() {
-		return "Menu " + id + " { \n" + "  Title: " + title + "\n  Description: " + description + "\n  Date: "
+		return "Menu " + id + " { \n" + "  Title: " + origTitle + "\n  Description: " + origDescription + "\n  Date: "
 				+ getDateString() + " \n }";
 	}
 
@@ -140,17 +170,13 @@ public class Menu {
 	 * Standard builder class used to construct Menu objects.
 	 */
 	public static class MenuBuilder {
-		
-
-		
-
 		public int userRating;
 		public boolean beenRated = false;
 		public int ratingSum;
 		public int ratingCount;
 		public static final String INVALID_ID = "INVALID";
 		private static final String DEFAULT = "N//A";
-		private String id = INVALID_ID, title = DEFAULT, description = DEFAULT;
+		private String id = INVALID_ID, title = DEFAULT, description = DEFAULT, translTitle = "", translDesc = "";
 		private Day date;
 
 		public MenuBuilder setId(String id) {
@@ -168,11 +194,21 @@ public class Menu {
 			return this;
 		}
 
+		public MenuBuilder setTranslatedTitle(String title) {
+			this.translTitle = title;
+			return this;
+		}
+
+		public MenuBuilder setTranslatedDescription(String description) {
+			this.translDesc = description;
+			return this;
+		}
+
 		public MenuBuilder setDate(Day date) {
 			this.date = date;
 			return this;
 		}
-		
+
 		public MenuBuilder setRatingSum(int ratingSum) {
 			this.ratingSum = ratingSum;
 			return this;
@@ -182,12 +218,12 @@ public class Menu {
 			this.ratingCount = ratingCount;
 			return this;
 		}
-		
+
 		public MenuBuilder setBeenRated(boolean beenRated) {
 			this.beenRated = beenRated;
 			return this;
 		}
-		
+
 		public MenuBuilder setUserRating(int userRating) {
 			this.userRating = userRating;
 			return this;

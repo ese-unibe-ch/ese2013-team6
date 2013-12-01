@@ -59,4 +59,6 @@
     <string name="user_logged_in">Logged in with existing account. Welcome back!</string>
     <string name="user_login_failed">Failed to login.</string>
 	<string name="add_friend">add Friend</string>
+    <string name="invitation_new_message">"New invitation from "</string>
+
 </resources>

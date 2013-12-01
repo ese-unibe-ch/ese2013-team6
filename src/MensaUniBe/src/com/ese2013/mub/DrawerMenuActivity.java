@@ -28,6 +28,8 @@ import com.ese2013.mub.social.LoginService;
 import com.ese2013.mub.util.SharedPrefsHandler;
 import com.memetix.mst.translate.Translate;
 import com.parse.Parse;
+import com.parse.ParseInstallation;
+import com.parse.PushService;
 
 /**
  * This class is the main activity for the mub app. Everything else to be
@@ -66,6 +68,11 @@ public class DrawerMenuActivity extends FragmentActivity{
 			registrationDialog = new RegistrationDialog(this);
 		else if (prefs.isUserRegistred() && !LoginService.registerAndLogin(new CurrentUser(prefs.getUserEmail())))
 			Toast.makeText(this, R.string.user_login_failed, Toast.LENGTH_LONG).show();
+
+		if (LoginService.isLoggedIn()) {
+			String channelId = "user_" + LoginService.getLoggedInUser().getId();
+			PushService.subscribe(this, channelId, DrawerMenuActivity.class);
+		}
 	}
 
 	private void createActionBar() {
@@ -115,6 +122,9 @@ public class DrawerMenuActivity extends FragmentActivity{
 
 	private void initOnlineServices() {
 		Parse.initialize(this, "ZmdQMR7FctP2XgMJN5lvj98Aj9IA2Bf8mJrny11n", "yVVh3GiearTRsRXZqgm2FG6xfWvcQPjINX6dGJNu");
+		PushService.setDefaultPushCallback(this, DrawerMenuActivity.class);
+		ParseInstallation.getCurrentInstallation().saveInBackground();
+
 		Translate.setClientId("MensaUniBe");
 		Translate.setClientSecret("T35oR9q6ukB/GbuYAg4nsL09yRsp9j5afWjULfWfmuY=");
 	}

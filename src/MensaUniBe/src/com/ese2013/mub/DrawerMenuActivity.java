@@ -38,7 +38,7 @@ import com.parse.Parse;
  * This class is the main activity for the mub app. Everything else to be
  * displayed with a drawer menu, needs to be created here.
  */
-public class DrawerMenuActivity extends FragmentActivity {
+public class DrawerMenuActivity extends FragmentActivity{
 
 	private ActionBarDrawerToggle drawerToggle;
 	private DrawerLayout drawerLayout;
@@ -225,7 +225,7 @@ public class DrawerMenuActivity extends FragmentActivity {
 				setDisplayedFragment(frag);
 				break;
 			case 3:
-				frag = new NotificationFragment();
+				frag = new InvitationBaseFragment();
 				setDisplayedFragment(frag);
 				break;
 			}

@@ -118,32 +118,29 @@ Parse.Cloud.job("menuUpdate", function(request, status) {
 	});
 });
 
-/*
-Parse.Cloud.job("translateTest", function(request, status) {
-
-	var text = "Use pixels to express measurements for padding and margins.";
-	var from = "en";
-	var to = "de";
-
-	var uri = "http://api.microsofttranslator.com/v2/Http.svc/Translate?text=" + encodeURIComponent(text) + "&from=" + from + "&to=" + to;
-	console.log(uri);
-	var authToken = "Bearer" + " " + "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier=0166541233&http://schemas.microsoft.com/accesscontrolservice/2010/07/claims/identityprovider=https://datamarket.accesscontrol.windows.net/&Audience=http://api.microsofttranslator.com&ExpiresOn=1322323459&Issuer=https://datamarket.accesscontrol.windows.net/&HMACSHA256=0qIUvO513ttc4iBzJN+9An3GmUbnggQwT8R5Y3pVSWs=" + "T35oR9q6ukB/GbuYAg4nsL09yRsp9j5afWjULfWfmuY=";
-
-	
-	Parse.Cloud.httpRequest({
-	method: 'GET',
-		headers: {
-			'Authorization': authToken
-		},
-      url: uri,
-      success: function(httpResponse) {
-		console.log(httpResponse.text);
-		status.success('translate succeeded');
-      },
-      error: function(httpResponse) {
-		console.log(httpResponse.text);
-		status.success('translate failed');
-      }
-    });
-});*/
-		
+Parse.Cloud.beforeSave("Friendship", function(request, response) {
+	var query = new Parse.Query("Friendship");
+	var ct = 0;
+	var existing;
+	query.find({
+		  success: function(results) {
+			_.each(results, function(result) {
+				if ((request.object.get("user1").id == result.get("user1").id && request.object.get("user2").id == result.get("user2").id) ||
+					(request.object.get("user1").id == result.get("user2").id && request.object.get("user2").id == result.get("user2").id)) {
+					result.destroy();
+					ct += 1;
+				}
+			});
+			if (ct == 1) {
+				console.log("Added already existing friendship");
+			}
+			if (ct > 1){
+				console.log("Friendship more than once in database, should not happen!");
+			}
+			response.success();
+		  },
+		  error: function(error) {
+			response.error("Saving failed");
+		  }
+	});
+});

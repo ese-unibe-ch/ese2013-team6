@@ -1,5 +1,8 @@
 package com.ese2013.mub;
 
+import java.util.List;
+
+import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -10,6 +13,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ListView;
+
+import com.ese2013.mub.social.User;
 
 public class FriendsListFragment extends Fragment implements
 		IFragmentsInvitation {
@@ -50,10 +55,17 @@ public class FriendsListFragment extends Fragment implements
 		super.onDestroy();
 	}
 	class FriendsListAdapter extends BaseAdapter{
-		
+		List<User> friends;
+		List<User> request;
+		LayoutInflater inflater;
 		@Override
 		public View getView(int position, View convertView, ViewGroup parent) {
 			// TODO Auto-generated method stub
+			View view = convertView;
+	        if (view == null) 
+	        	inflater = (LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+
+			friends.get(position);
 			return null;
 		}
 

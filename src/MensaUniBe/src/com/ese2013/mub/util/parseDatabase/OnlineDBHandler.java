@@ -6,7 +6,6 @@ import java.util.List;
 
 import com.ese2013.mub.model.Menu;
 import com.ese2013.mub.social.CurrentUser;
-import com.ese2013.mub.social.FriendsList;
 import com.ese2013.mub.social.Invitation;
 import com.ese2013.mub.social.User;
 import com.parse.GetCallback;
@@ -71,10 +70,9 @@ public class OnlineDBHandler {
 
 	public void retrieveFriends(CurrentUser user) throws ParseException {
 		List<ParseObject> parseRelationships = getFriendsQuery(user).find();
-		FriendsList friends = user.getFriends();
+		List<User> friends = user.getFriends();
 		for (ParseObject parseRelationship : parseRelationships)
-			friends.addFriend(getOtherUser(parseRelationship, user));
-
+			friends.add(getOtherUser(parseRelationship, user));
 	}
 
 	private ParseQuery<ParseObject> getFriendsQuery(User user) {
@@ -95,8 +93,8 @@ public class OnlineDBHandler {
 		return parseUser(otherUser);
 	}
 
-	private User parseUser(ParseObject otherUser) {
-		return new User(otherUser.getObjectId(), otherUser.getString(USER_EMAIL), otherUser.getString(USER_NICKNAME));
+	private User parseUser(ParseObject parseUser) {
+		return new User(parseUser.getObjectId(), parseUser.getString(USER_EMAIL), parseUser.getString(USER_NICKNAME));
 	}
 
 	public void sendInvitation(Invitation invitation) {
@@ -154,5 +152,29 @@ public class OnlineDBHandler {
 			);
 		}
 		return invitations;
+	}
+
+	public List<Invitation> getSentInvitations(User user) throws ParseException {
+		ParseQuery<ParseObject> query = ParseQuery.getQuery(INVITATION);
+		query.whereEqualTo(INVITATION_FROM, ParseObject.createWithoutData(USER, user.getId()));
+		List<ParseObject> parseInvitations = query.find();
+		List<Invitation> invitations = new ArrayList<Invitation>();
+		for (ParseObject parseInvite : parseInvitations)
+			invitations.add(new Invitation(user, getInvitees(parseInvite), parseInvite.getString(INVITATION_MESSAGE),
+					parseInvite.getInt(INVITATION_MENSA), parseInvite.getDate(INVITATION_TIME)));
+
+		return invitations;
+	}
+
+	private List<User> getInvitees(ParseObject parseInvite) throws ParseException {
+		ParseQuery<ParseObject> inviteesQuery = ParseQuery.getQuery(INVITATION_USER);
+		inviteesQuery.whereEqualTo(INV_USER_INVITATION, parseInvite);
+		inviteesQuery.include(INV_USER_INVITEE);
+		List<ParseObject> parseInvitees = inviteesQuery.find();
+		List<User> invitees = new ArrayList<User>();
+		for (ParseObject parseUser : parseInvitees)
+			invitees.add(parseUser(parseUser.getParseObject(INV_USER_INVITEE)));
+
+		return invitees;
 	}
 }

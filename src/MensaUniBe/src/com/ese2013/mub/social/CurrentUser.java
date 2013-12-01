@@ -1,8 +1,11 @@
 package com.ese2013.mub.social;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class CurrentUser extends User {
 
-	private FriendsList friends = new FriendsList();
+	private List<User> friends = new ArrayList<User>();
 
 	public CurrentUser(String email) {
 		super(email);
@@ -16,7 +19,7 @@ public class CurrentUser extends User {
 		super(id, email, nick);
 	}
 
-	public FriendsList getFriends() {
+	public List<User> getFriends() {
 		return friends;
 	}
 }

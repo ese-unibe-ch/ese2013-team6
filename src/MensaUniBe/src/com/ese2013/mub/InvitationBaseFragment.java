@@ -65,14 +65,21 @@ public class InvitationBaseFragment extends Fragment implements ActionBar.TabLis
 	public void onTabUnselected(Tab tab, FragmentTransaction ft) {
 		// TODO Auto-generated method stub
 	}
+	@Override
+	public void onDestroy() {
+		super.onDestroy();
+		actionBar.removeAllTabs();
+		actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
+	}
 	class InvitationPageAdapter extends FragmentPagerAdapter{
 		
-		private List<InvitationFragments> fragments = new ArrayList<InvitationFragments>();
+		private List<IFragmentsInvitation> fragments = new ArrayList<IFragmentsInvitation>();
 		
 		public InvitationPageAdapter(FragmentManager fm) {
 			super(fm);
 			//TODO add Fragments;
 			fragments.add(new InvitesFragment());
+			//fragments.add(new InvitationFragment());
 			fragments.add(new FriendsListFragment());
 		}
 

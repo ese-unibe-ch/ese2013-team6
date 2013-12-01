@@ -14,6 +14,7 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ListView;
 
+import com.ese2013.mub.social.LoginService;
 import com.ese2013.mub.social.User;
 
 public class FriendsListFragment extends Fragment implements
@@ -55,7 +56,7 @@ public class FriendsListFragment extends Fragment implements
 		super.onDestroy();
 	}
 	class FriendsListAdapter extends BaseAdapter{
-		List<User> friends;
+		List<User> friends = LoginService.getLoggedInUser().getFriends();
 		List<User> request;
 		LayoutInflater inflater;
 		@Override
@@ -72,13 +73,15 @@ public class FriendsListFragment extends Fragment implements
 		@Override
 		public int getCount() {
 			// TODO Auto-generated method stub
-			return 0;
+			return friends.size() + request.size();
 		}
 
 		@Override
 		public Object getItem(int position) {
-			// TODO Auto-generated method stub
-			return null;
+			if(position <= request.size())
+				return request.get(position);
+			else
+				return friends.get(request.size() + position);
 		}
 
 		@Override

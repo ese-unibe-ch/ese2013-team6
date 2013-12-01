@@ -13,6 +13,10 @@ public class User {
 		this(null, email, nick);
 	}
 
+	public User(String email) {
+		this(null, email, null);
+	}
+
 	public String getId() {
 		return id;
 	}
@@ -23,6 +27,10 @@ public class User {
 
 	public String getEmail() {
 		return email;
+	}
+
+	public void setNick(String nick) {
+		this.nick = nick;
 	}
 
 	public String getNick() {

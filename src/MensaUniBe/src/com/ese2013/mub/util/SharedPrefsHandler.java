@@ -8,7 +8,7 @@ import android.content.SharedPreferences;
  * preferences of the application.
  */
 public class SharedPrefsHandler {
-	private static final String USERMAIL = "usermail", NOTIFICATION_FOOD = "notificationFood",
+	private static final String FIRST_TIME = "first_time", USERMAIL = "usermail", NOTIFICATION_FOOD = "notificationFood",
 			NOTIFICATION_MENSAS = "notificationMensas", DO_NOTIFICATION = "doNotification", LANGUAGE = "language",
 			DO_TRANSLATION = "doTranslation";
 	private Context context;
@@ -67,6 +67,14 @@ public class SharedPrefsHandler {
 
 	public void setUserEmail(String usermail) {
 		getPrefs(context).edit().putString(USERMAIL, usermail).commit();
+	}
+
+	public boolean isFirstTime() {
+		return getPrefs(context).getBoolean(FIRST_TIME, true);
+	}
+
+	public void setIsFirstTime(boolean firstTime) {
+		getPrefs(context).edit().putBoolean(FIRST_TIME, firstTime).commit();
 	}
 
 	public boolean isUserRegistred() {

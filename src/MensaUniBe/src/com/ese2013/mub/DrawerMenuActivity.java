@@ -1,9 +1,6 @@
 package com.ese2013.mub;
 
-import android.accounts.AccountManager;
 import android.app.ActionBar;
-import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.ActionBarDrawerToggle;
@@ -19,18 +16,16 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.ArrayAdapter;
-import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Spinner;
+import android.widget.Toast;
 
 import com.ese2013.mub.model.Mensa;
 import com.ese2013.mub.model.Model;
 import com.ese2013.mub.service.NotificationService;
+import com.ese2013.mub.social.CurrentUser;
 import com.ese2013.mub.social.LoginService;
-import com.ese2013.mub.social.User;
 import com.ese2013.mub.util.SharedPrefsHandler;
-import com.google.android.gms.auth.GoogleAuthUtil;
-import com.google.android.gms.common.AccountPicker;
 import com.memetix.mst.translate.Translate;
 import com.parse.Parse;
 
@@ -48,88 +43,53 @@ public class DrawerMenuActivity extends FragmentActivity {
 	private static final int HOME_INDEX = 0, MAP_INDEX = 2, NOTIFICATION_INDEX = 3, NOTHING_INDEX = 4;
 	private static final String POSITION = "com.ese2013.mub.position";
 	private Model model;
-	private static final int PICK_ACCOUNT_REQUEST = 1;
-
-	private void showGoogleAccountPicker() {
-		Intent googlePicker = AccountPicker.newChooseAccountIntent(null, null,
-				new String[] { GoogleAuthUtil.GOOGLE_ACCOUNT_TYPE }, true, null, null, null, null);
-		startActivityForResult(googlePicker, PICK_ACCOUNT_REQUEST);
-	}
+	private RegistrationDialog registrationDialog;
 
 	@Override
 	protected void onActivityResult(final int requestCode, final int resultCode, final Intent data) {
-		if (requestCode == PICK_ACCOUNT_REQUEST) {
-			switch (resultCode) {
-			case RESULT_OK:
-				final String accountName = data.getStringExtra(AccountManager.KEY_ACCOUNT_NAME);
-				SharedPrefsHandler prefs = new SharedPrefsHandler(this);
-				prefs.setUserEmail(accountName);
-				AlertDialog.Builder alert = new AlertDialog.Builder(this).setTitle("Enter Nickname").setMessage("Name");
-				final EditText input = new EditText(this);
-				alert.setView(input).setPositiveButton("Ok", new DialogInterface.OnClickListener() {
-					public void onClick(DialogInterface dialog, int whichButton) {
-						String nickname = input.getText().toString();
-						LoginService.login(new User(accountName, nickname));
-					}
-				}).setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-					public void onClick(DialogInterface dialog, int whichButton) {
-						// Canceled.
-					}
-				});
-				alert.show();
-
-				break;
-			case RESULT_CANCELED:
-				showRegistrationMessage();
-				break;
-			}
-		}
-	}
-
-	private void showRegistrationMessage() {
-		new AlertDialog.Builder(this).setMessage(R.string.user_registration_declined_message)
-				.setTitle(R.string.user_yes_registration).setCancelable(true)
-				.setNegativeButton(R.string.user_no_registration, null)
-				.setPositiveButton(R.string.user_register, new DialogInterface.OnClickListener() {
-					public void onClick(DialogInterface dialog, int whichButton) {
-						showGoogleAccountPicker();
-					}
-				}).show();
+		registrationDialog.onActivityResult(requestCode, resultCode, data);
 	}
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		Parse.initialize(this, "ZmdQMR7FctP2XgMJN5lvj98Aj9IA2Bf8mJrny11n", "yVVh3GiearTRsRXZqgm2FG6xfWvcQPjINX6dGJNu");
-		Translate.setClientId("MensaUniBe");
-		Translate.setClientSecret("T35oR9q6ukB/GbuYAg4nsL09yRsp9j5afWjULfWfmuY=");
-
-		if (!new SharedPrefsHandler(this).isUserRegistred())
-			showGoogleAccountPicker();
-
+		initOnlineServices();
+		handleLogin();
 		model = new Model(getApplicationContext());
+		createActionBar();
+		createDrawerMenu(savedInstanceState);
+	}
 
-		setContentView(R.layout.activity_drawer_menu);
-		drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
-		drawerLayout.setDrawerShadow(R.drawable.drawer_shadow, GravityCompat.START);
-		drawerList = (ListView) findViewById(R.id.left_drawer);
+	private void handleLogin() {
+		SharedPrefsHandler prefs = new SharedPrefsHandler(this);
+		if (prefs.isFirstTime())
+			registrationDialog = new RegistrationDialog(this);
+		else if (prefs.isUserRegistred() && !LoginService.registerAndLogin(new CurrentUser(prefs.getUserEmail())))
+			Toast.makeText(this, R.string.user_login_failed, Toast.LENGTH_LONG).show();
+	}
 
-		// Set the adapter for the drawer menu list
-		String[] menuItemNames = { "Home", "Mensa List", "Map", "Notifications" };
-		drawerList.setAdapter(new ArrayAdapter<String>(this, R.layout.drawer_list_item, menuItemNames));
-
+	private void createActionBar() {
 		// enable ActionBar app icon to behave as action to toggle nav drawer
 		ActionBar actionBar = getActionBar();
 		actionBar.setDisplayHomeAsUpEnabled(true);
 		actionBar.setHomeButtonEnabled(true);
 
 		// Set up the action bar to show a dropdown list.
-		createSpinner();
+		createActionBarSpinner();
 		actionBar.setDisplayShowTitleEnabled(false);
 		actionBar.setCustomView(spinner);
 		actionBar.setDisplayShowCustomEnabled(false);
+	}
 
-		// select home in drawer menu
+	private void createDrawerMenu(Bundle savedInstanceState) {
+		setContentView(R.layout.activity_drawer_menu);
+		drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
+		drawerLayout.setDrawerShadow(R.drawable.drawer_shadow, GravityCompat.START);
+		drawerList = (ListView) findViewById(R.id.left_drawer);
+
+		String[] menuItemNames = { "Home", "Mensa List", "Map", "Notifications" };
+		drawerList.setAdapter(new ArrayAdapter<String>(this, R.layout.drawer_list_item, menuItemNames));
+
 		if (savedInstanceState != null)
 			selectItem(savedInstanceState.getInt(POSITION, HOME_INDEX), true);
 		else if (getIntent().getBooleanExtra(NotificationService.START_FROM_N, false))
@@ -153,7 +113,13 @@ public class DrawerMenuActivity extends FragmentActivity {
 		drawerList.setOnItemClickListener(new DrawerItemClickListener());
 	}
 
-	private void createSpinner() {
+	private void initOnlineServices() {
+		Parse.initialize(this, "ZmdQMR7FctP2XgMJN5lvj98Aj9IA2Bf8mJrny11n", "yVVh3GiearTRsRXZqgm2FG6xfWvcQPjINX6dGJNu");
+		Translate.setClientId("MensaUniBe");
+		Translate.setClientSecret("T35oR9q6ukB/GbuYAg4nsL09yRsp9j5afWjULfWfmuY=");
+	}
+
+	private void createActionBarSpinner() {
 		ArrayAdapter<CharSequence> spinnerAdapter = ArrayAdapter.createFromResource(this, R.array.spinner_list,
 				android.R.layout.simple_spinner_dropdown_item);
 		spinner = new Spinner(this);

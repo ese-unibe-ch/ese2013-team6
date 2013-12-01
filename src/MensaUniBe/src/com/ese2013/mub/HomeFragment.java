@@ -60,26 +60,6 @@ public class HomeFragment extends Fragment implements Observer {
 
 	@Override
 	public void onNotifyChanges() {
-
-		try {
-			if (LoginService.isLoggedIn()) {
-				new OnlineDBHandler().retrieveFriends(LoginService.getLoggedInUser());
-				ArrayList<User> invitees = new ArrayList<User>();
-				invitees.add(LoginService.getLoggedInUser().getFriends().get(0));
-				invitees.add(LoginService.getLoggedInUser());
-				// new OnlineDBHandler().sendInvitation(new
-				// Invitation(LoginService.getLoggedInUser(), invitees,
-				// "Come eating you fool", 1, new java.util.Date()));
-				List<Invitation> invitations = new OnlineDBHandler().getRetrievedInvitations(LoginService.getLoggedInUser());
-				for (Invitation i : invitations) {
-					System.out.println(i.getFrom().getNick() + "," + i.getFrom().getEmail() + ", " + i.getMessage());
-				}
-			}
-		} catch (ParseException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-
 		sectionsPagerAdapter.notifyDataSetChanged();
 	}
 

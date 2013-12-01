@@ -17,12 +17,7 @@ import android.view.ViewGroup;
 import com.ese2013.mub.model.Day;
 import com.ese2013.mub.model.Mensa;
 import com.ese2013.mub.model.Model;
-import com.ese2013.mub.social.Invitation;
-import com.ese2013.mub.social.LoginService;
-import com.ese2013.mub.social.User;
 import com.ese2013.mub.util.Observer;
-import com.ese2013.mub.util.parseDatabase.OnlineDBHandler;
-import com.parse.ParseException;
 
 public class HomeFragment extends Fragment implements Observer {
 

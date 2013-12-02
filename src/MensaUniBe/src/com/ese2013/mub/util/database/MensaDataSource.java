@@ -206,7 +206,7 @@ public class MensaDataSource {
 		values.put(MenusTable.COL_DESC, menu.getOrigDescription());
 		values.put(MenusTable.COL_TRANSL_TITLE, menu.getTranslatedTitle());
 		values.put(MenusTable.COL_TRANSL_DESC, menu.getTranslatedDescription());
-		values.put(MenusTable.COL_USERRATING, menu.getUserRating());
+		values.put(MenusTable.COL_USERRATING, 0);
 		values.put(MenusTable.COL_RATINGSUM, menu.getRatingSum());
 		values.put(MenusTable.COL_RATINGCOUNT, menu.getRatingCount());
 
@@ -247,7 +247,7 @@ public class MensaDataSource {
 			try {
 				p.add(menuManager.createMenu(c.getString(POS_ID), c.getString(POS_TITLE), c.getString(POS_DESC),
 						c.getString(POS_TRANSL_TITLE), c.getString(POS_TRANSL_DESC),
-						new Day(fm.parse(c.getString(POS_DATE))), c.getInt(POS_RATINGCOUNT), c.getInt(POS_RATINGSUM),
+						new Day(fm.parse(c.getString(POS_DATE))), 0,0,
 						c.getInt(POS_USERRATING)));
 			} catch (ParseException e) {
 				throw new AssertionError("Database did not save properly");

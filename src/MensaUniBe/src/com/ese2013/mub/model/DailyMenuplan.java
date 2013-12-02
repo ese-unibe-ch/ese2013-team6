@@ -1,7 +1,6 @@
 package com.ese2013.mub.model;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 /**
@@ -24,11 +23,10 @@ public class DailyMenuplan {
 	/**
 	 * Returns the list of menus.
 	 * 
-	 * @return List containing the menus, is immutable as menus should only be
-	 *         added using the add method of DailyMenuplan.
+	 * @return List containing the menus.
 	 */
 	public List<Menu> getMenus() {
-		return Collections.unmodifiableList(menus);
+		return menus;
 	}
 
 	/**

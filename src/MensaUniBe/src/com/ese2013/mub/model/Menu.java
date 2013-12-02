@@ -7,12 +7,10 @@ package com.ese2013.mub.model;
 public class Menu {
 	private String id, origTitle, origDescription, translatedTitle, translatedDescription;
 	private Day date;
-	private int userRating = 0;
 	private int ratingSum = 0, ratingCount = 0;
-	private boolean beenRated = false;
 
 	public Menu(String id, String title, String description, String translTitle, String translDesc, Day day,
-			int ratingCount, int ratingSum, int userRating) {
+			int ratingCount, int ratingSum) {
 		this.id = id;
 		this.origTitle = title;
 		this.origDescription = description;
@@ -21,7 +19,6 @@ public class Menu {
 		this.date = day;
 		this.ratingCount = ratingCount;
 		this.ratingSum = ratingSum;
-		this.userRating = userRating;
 	}
 
 	/**
@@ -41,8 +38,6 @@ public class Menu {
 		this.date = builder.date;
 		this.ratingCount = builder.ratingCount;
 		this.ratingSum = builder.ratingSum;
-		this.userRating = builder.userRating;
-		this.beenRated = builder.beenRated;
 	}
 
 	public String getId() {
@@ -85,21 +80,11 @@ public class Menu {
 		return date;
 	}
 
-	public int getUserRating() {
-		return userRating;
-	}
-
 	public void setUserRating(int userRating) {
-		this.userRating = userRating;
 		ratingSum += userRating;
 		ratingCount++;
-		beenRated = true;
 	}
-
-	public boolean hasBeenRated() {
-		return beenRated;
-	}
-
+	
 	public float getAverageRating() {
 		if (ratingCount == 0)
 			return 0;
@@ -109,6 +94,14 @@ public class Menu {
 
 	private static float roundToHalf(float x) {
 		return (float) (Math.ceil(x * 2) / 2);
+	}
+
+	public void setRatingSum(int ratingSum) {
+		this.ratingSum = ratingSum;
+	}
+
+	public void setRatingCount(int ratingCount) {
+		this.ratingCount = ratingCount;
 	}
 
 	public int getRatingSum() {
@@ -170,8 +163,6 @@ public class Menu {
 	 * Standard builder class used to construct Menu objects.
 	 */
 	public static class MenuBuilder {
-		public int userRating;
-		public boolean beenRated = false;
 		public int ratingSum;
 		public int ratingCount;
 		public static final String INVALID_ID = "INVALID";
@@ -216,16 +207,6 @@ public class Menu {
 
 		public MenuBuilder setRatingCount(int ratingCount) {
 			this.ratingCount = ratingCount;
-			return this;
-		}
-
-		public MenuBuilder setBeenRated(boolean beenRated) {
-			this.beenRated = beenRated;
-			return this;
-		}
-
-		public MenuBuilder setUserRating(int userRating) {
-			this.userRating = userRating;
 			return this;
 		}
 

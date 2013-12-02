@@ -65,5 +65,11 @@
     <string name="accept_request">accept_request</string>
     <string name="delete_friend">delete friend</string>
     <string name="dailyplanfragment_no_menus_available">No menus available for this day</string>
-
+	<string name="today">today</string>
+	<string name="show_invited">show invited</string>
+	<string name="no_invites">You have no Invitations! You can Invite now someone to go to lunch!</string>
+	<string name="not_loged_in">You are not Loged in! Please Log in to use this feature!</string>
+	<string name="no_friends">You have no Friends yet! You can add friends by clicking the addButton on Top!</string>
+	<string name="enter_friend">Enter E-Mail</string>
+	<string name="search_friend">search friend</string>
 </resources>

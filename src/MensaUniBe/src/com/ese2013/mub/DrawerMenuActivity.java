@@ -235,6 +235,7 @@ public class DrawerMenuActivity extends FragmentActivity implements LoginTaskCal
 		FragmentManager fragmentManager = getSupportFragmentManager();
 		FragmentTransaction transaction = fragmentManager.beginTransaction();
 		transaction.replace(R.id.drawer_layout_frag_container, frag);
+		//transaction.addToBackStack(null);
 		transaction.commit();
 	}
 
@@ -322,5 +323,17 @@ public class DrawerMenuActivity extends FragmentActivity implements LoginTaskCal
 		if (selectedPosition != -1)
 			outState.putInt(POSITION, selectedPosition);
 		super.onSaveInstanceState(outState);
+	}
+
+	public void goToAddFriendFragment() {
+		setDisplayedFragment(new AddFriendFragment());
+		selectedPosition = Integer.MAX_VALUE;
+		
+	}
+
+	public void goBackToFriendsList() {
+		InvitationBaseFragment frag = new InvitationBaseFragment();
+		frag.setPagerToFriends();
+		setDisplayedFragment(frag);
 	}
 }

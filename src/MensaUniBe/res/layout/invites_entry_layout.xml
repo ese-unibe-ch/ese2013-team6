@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:paddingBottom="6dp"
+    android:paddingLeft="6dp"
+    android:paddingRight="6dp"
+    android:paddingTop="6dp"
+    android:background="@drawable/invite_list_background" >
+
+    <TextView
+        android:id="@+id/from_whom_text_field"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true" />
+
+    <TextView
+        android:id="@+id/when_text_field"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_toRightOf="@id/from_whom_text_field" />
+
+    <TextView
+        android:id="@+id/where_text_field"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/from_whom_text_field" />
+
+    <ImageButton
+        android:id="@+id/show_invited"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:contentDescription="@string/show_invited" />
+
+</RelativeLayout>

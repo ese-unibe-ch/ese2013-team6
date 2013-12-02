@@ -60,5 +60,6 @@
     <string name="user_login_failed">Failed to login.</string>
 	<string name="add_friend">add Friend</string>
     <string name="invitation_new_message">"New invitation from "</string>
+    <string name="dailyplanfragment_no_menus_available">No menus available for this day</string>
 
 </resources>

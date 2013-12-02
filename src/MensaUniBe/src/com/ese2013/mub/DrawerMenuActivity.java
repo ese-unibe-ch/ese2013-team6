@@ -66,7 +66,7 @@ public class DrawerMenuActivity extends FragmentActivity {
 		SharedPrefsHandler prefs = new SharedPrefsHandler(this);
 		if (prefs.isFirstTime())
 			registrationDialog = new RegistrationDialog(this);
-		else if (prefs.isUserRegistred() && !LoginService.registerAndLogin(new CurrentUser(prefs.getUserEmail())))
+		else if (prefs.isUserRegistred() && !LoginService.login(new CurrentUser(prefs.getUserEmail())))
 			Toast.makeText(this, R.string.user_login_failed, Toast.LENGTH_LONG).show();
 
 		if (LoginService.isLoggedIn()) {

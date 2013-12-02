@@ -29,8 +29,7 @@ public class HomeFragment extends Fragment implements Observer {
 	private static boolean showAllByDay = false;
 
 	@Override
-	public View onCreateView(LayoutInflater inflater, ViewGroup container,
-			Bundle savedInstanceState) {
+	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 		View view = inflater.inflate(R.layout.fragment_home, container, false);
 
 		int dayOfWeek = Calendar.getInstance().get(Calendar.DAY_OF_WEEK);
@@ -143,8 +142,7 @@ public class HomeFragment extends Fragment implements Observer {
 			if (model.noMensasLoaded())
 				days = new ArrayList<Day>();
 			else
-				days = new ArrayList<Day>(model.getMensas().get(0)
-						.getMenuplan().getDays());
+				days = new ArrayList<Day>(model.getMensas().get(0).getMenuplan().getDays());
 		}
 
 		/**
@@ -173,8 +171,7 @@ public class HomeFragment extends Fragment implements Observer {
 		@Override
 		public void notifyDataSetChanged() {
 			if (!model.noMensasLoaded())
-				days = new ArrayList<Day>(model.getMensas().get(0)
-						.getMenuplan().getDays());
+				days = new ArrayList<Day>(model.getMensas().get(0).getMenuplan().getDays());
 			super.notifyDataSetChanged();
 		}
 	}

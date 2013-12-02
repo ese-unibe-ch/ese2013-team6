@@ -13,12 +13,6 @@ public class MenuManager {
 		return menuMap.values();
 	}
 
-	public Menu createMenu(String id, String title, String description, Day day, int ratingCount, int ratingSum,
-			int userRating) {
-
-		return createMenu(id, title, description, "", "", day, ratingCount, ratingSum, userRating);
-	}
-
 	public Menu createMenu(String id, String title, String description, String translTitle, String translDesc, Day day,
 			int ratingCount, int ratingSum, int userRating) {
 
@@ -26,7 +20,7 @@ public class MenuManager {
 		if (menu != null)
 			return menu;
 
-		menu = new Menu(id, title, description, translTitle, translDesc, day, ratingCount, ratingSum, userRating);
+		menu = new Menu(id, title, description, translTitle, translDesc, day, ratingCount, ratingSum);
 
 		// // menu = new
 		// MenuBuilder().setDate(day).setTitle(title).setDescription(description).setId(id)
@@ -62,5 +56,9 @@ public class MenuManager {
 
 	public void setTranslationsAvailable(boolean translationsAvailable) {
 		this.translationsAvailable = translationsAvailable;
+	}
+
+	public Menu getMenu(String objectId) {
+		return menuMap.get(objectId);
 	}
 }

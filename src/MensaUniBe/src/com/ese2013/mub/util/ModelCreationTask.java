@@ -16,6 +16,8 @@ import com.ese2013.mub.model.Mensa;
 import com.ese2013.mub.model.MenuManager;
 import com.ese2013.mub.model.Model;
 import com.ese2013.mub.util.database.MensaDataSource;
+import com.ese2013.mub.util.parseDatabase.OnlineMensaDBHandler;
+import com.parse.ParseException;
 
 /**
  * This class creates the list of mensas by either using the mensa web service
@@ -60,26 +62,37 @@ public class ModelCreationTask extends AsyncTask<Void, Void, Void> {
 		} else {
 			fac = new MensaFromLocalFactory();
 		}
-
 		try {
 			mensas = fac.createMensaList();
+			getRatings();
 			successful = true;
 		} catch (MensaDownloadException e) {
 			downloadedNewData = false;
-			retryUsingLocalData();
+			retryUsingLocalData(true);
 		} catch (MensaLoadException e) {
 			successful = false;
+		} catch (ParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 		return null;
 	}
 
-	private void retryUsingLocalData() {
+	private void getRatings() throws ParseException {
+		new OnlineMensaDBHandler().getMenuRatings(menuManager);
+	}
+
+	private void retryUsingLocalData(boolean getRatings) {
 		AbstractMensaFactory fac = new MensaFromLocalFactory();
 		try {
 			mensas = fac.createMensaList();
+			if (getRatings)
+				getRatings();
 			successful = true;
 		} catch (IOException e) {
 			successful = false;
+		} catch (ParseException e) {
+			retryUsingLocalData(false);
 		}
 	}
 

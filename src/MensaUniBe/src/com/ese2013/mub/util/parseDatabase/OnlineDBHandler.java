@@ -19,8 +19,9 @@ public class OnlineDBHandler {
 	private static final String INV_USER_RESPONSE = "Response", INV_USER_INVITEE = "Invitee",
 			INV_USER_INVITATION = "Invitation", INVITATION_TIME = "Time", INVITATION_FROM = "From",
 			INVITATION_MENSA = "Mensa", INVITATION_MESSAGE = "Message", INVITATION = "Invitation",
-			INVITATION_USER = "InvitationUser", FRIENDSHIP = "Friendship", USER_NICKNAME = "nickname", USER_EMAIL = "email", USER = "AppUser", USER_1 = "user1", USER_2 = "user2", FRIEND_REQUEST_TO = "To",
-			FRIEND_REQUEST_FROM = "From", FRIEND_REQUEST = "FriendRequest";
+			INVITATION_USER = "InvitationUser", FRIENDSHIP = "Friendship", USER_NICKNAME = "nickname", USER_EMAIL = "email",
+			USER = "AppUser", USER_1 = "user1", USER_2 = "user2", FRIEND_REQUEST_TO = "To", FRIEND_REQUEST_FROM = "From",
+			FRIEND_REQUEST = "FriendRequest";
 
 	public User getUser(User user) throws ParseException {
 		ParseObject u = getUserByMail(user);
@@ -33,7 +34,7 @@ public class OnlineDBHandler {
 		ParseObject u = getUserByMail(user);
 		user.setId(u.getObjectId());
 		user.setNick(u.getString(USER_NICKNAME));
-		
+
 		List<String> menuIds = new OnlineMensaDBHandler().getRatedMenus(user);
 		user.setRatedMenuIds(menuIds);
 		return user;
@@ -150,9 +151,8 @@ public class OnlineDBHandler {
 		for (ParseObject invitation : parseInvitations) {
 			ParseObject parseInv = invitation.getParseObject(INV_USER_INVITATION);
 			ParseObject parseFrom = parseInv.getParseObject(INVITATION_FROM);
-			invitations.add(new Invitation(parseInv.getObjectId(), parseUser(parseFrom), new ArrayList<User>(),
-					parseInv.getString(INVITATION_MESSAGE), parseInv.getInt(INVITATION_MENSA), parseInv
-							.getDate(INVITATION_TIME))
+			invitations.add(new Invitation(parseInv.getObjectId(), parseUser(parseFrom), new ArrayList<User>(), parseInv
+					.getString(INVITATION_MESSAGE), parseInv.getInt(INVITATION_MENSA), parseInv.getDate(INVITATION_TIME))
 
 			);
 		}

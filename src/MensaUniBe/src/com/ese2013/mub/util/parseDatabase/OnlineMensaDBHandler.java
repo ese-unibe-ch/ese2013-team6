@@ -55,7 +55,7 @@ public class OnlineMensaDBHandler {
 	}
 
 	public List<String> getRatedMenus(User user) throws ParseException {
-		ParseQuery<ParseObject> query = ParseQuery.getQuery("USER_RATING");
+		ParseQuery<ParseObject> query = ParseQuery.getQuery(USER_RATING);
 		query.whereEqualTo(USER_RATING_USER, ParseObject.createWithoutData(USER, user.getId()));
 		List<String> keys = new ArrayList<String>();
 		keys.add(USER_RATING_MENU);
@@ -64,7 +64,7 @@ public class OnlineMensaDBHandler {
 		List<ParseObject> parseUserRatings = query.find();
 		List<String> menuIds = new ArrayList<String>();
 		for (ParseObject parseUserRating : parseUserRatings)
-			menuIds.add(parseUserRating.getString(USER_RATING_MENU));
+			menuIds.add(parseUserRating.getParseObject(USER_RATING_MENU).getObjectId());
 		return menuIds;
 	}
 }

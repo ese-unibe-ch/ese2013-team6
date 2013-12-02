@@ -15,6 +15,7 @@ import android.widget.Toast;
 import com.ese2013.mub.model.Menu;
 import com.ese2013.mub.model.MenuManager;
 import com.ese2013.mub.model.Model;
+import com.ese2013.mub.social.CurrentUser;
 import com.ese2013.mub.social.LoginService;
 import com.ese2013.mub.util.ViewUtil;
 import com.ese2013.mub.util.parseDatabase.OnlineMensaDBHandler;
@@ -60,9 +61,11 @@ public class MenuView extends LinearLayout {
 				Menu menu = MenuView.this.menu;
 				if (fromUser) {
 					if (LoginService.isLoggedIn() && !LoginService.getLoggedInUser().hasBeenRated(menu)) {
+						CurrentUser user = LoginService.getLoggedInUser();
 						int userRating = (int) rating;
 						menu.setUserRating(userRating);
-						new OnlineMensaDBHandler().saveMenuRating(LoginService.getLoggedInUser(), menu, userRating);
+						user.addToRated(menu);
+						new OnlineMensaDBHandler().saveMenuRating(user, menu, userRating);
 						ratingBar.setIsIndicator(true);
 						setCountDisplay();
 						ratingBar.setRating(menu.getAverageRating());

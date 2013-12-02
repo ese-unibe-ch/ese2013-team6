@@ -27,12 +27,14 @@ public class CurrentUser extends User {
 	}
 
 	public void setRatedMenuIds(List<String> menuIds) {
-		for (String s : menuIds)
-			System.out.println(s);
 		this.menuIds = menuIds;
 	}
 
 	public boolean hasBeenRated(Menu menu) {
 		return menuIds.contains(menu.getId());
+	}
+
+	public void addToRated(Menu menu) {
+		menuIds.add(menu.getId());
 	}
 }

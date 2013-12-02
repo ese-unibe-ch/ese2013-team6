@@ -42,7 +42,7 @@ public class RegistrationDialog {
 		switch (resultCode) {
 		case Activity.RESULT_OK:
 			final String accountName = data.getStringExtra(AccountManager.KEY_ACCOUNT_NAME);
-			if (LoginService.login(new CurrentUser(accountName))) {
+			if (LoginService.loginSyncWithTimeout(accountName, 2)) {
 				Toast.makeText(parentActivity, R.string.user_logged_in, Toast.LENGTH_SHORT).show();
 				prefs.setUserEmail(accountName);
 			} else {
@@ -64,7 +64,7 @@ public class RegistrationDialog {
 					public void onClick(DialogInterface dialog, int whichButton) {
 						prefs.setUserEmail(accountName);
 						String nickname = input.getText().toString();
-						if (!LoginService.registerAndLogin(new CurrentUser(accountName, nickname))) {
+						if (!LoginService.registerAndLoginWithTimout(new CurrentUser(accountName, nickname), 2)) {
 							Toast.makeText(parentActivity, R.string.user_registration_failed, Toast.LENGTH_LONG).show();
 						}
 					}

@@ -13,12 +13,10 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.ArrayAdapter;
-import android.widget.ImageButton;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.RadioGroup.OnCheckedChangeListener;
@@ -44,7 +42,8 @@ import com.google.android.gms.maps.model.Marker;
  * 
  * At startup the closest Mensa is selected if possible, else a favorite Mensa
  * if one exists. If no closest or favorite Mensa are available, just the first
- * Mensa in the Mensa List is selected.
+ * Mensa in the Mensa List is selected. The path to the selected mensa is drawn
+ * if possible.
  * 
  */
 public class MapFragment extends Fragment {
@@ -59,7 +58,6 @@ public class MapFragment extends Fragment {
 	private LocationManager locationManager;
 	private Spinner locationSpinner;
 	private Model model;
-	private boolean drawPath;
 	private String travelMode = TRAVEL_MODE_WALKING;
 
 	/**
@@ -78,10 +76,6 @@ public class MapFragment extends Fragment {
 		setLocationListener();
 		setRadioGroupListener(view);
 
-		ImageButton getDirButton = (ImageButton) view.findViewById(R.id.get_directions_button);
-		setDirectionsButtonListener(getDirButton);
-		getDirButton.setImageResource(R.drawable.ic_action_directions);
-
 		namedLocations = new NamedLocationList();
 		namedLocations.addMensas(model.getMensas());
 
@@ -89,7 +83,7 @@ public class MapFragment extends Fragment {
 		locationSpinner = (Spinner) view.findViewById(R.id.focus_spinner);
 		locationSpinner.setAdapter(namedLocationsAdapter);
 		setSpinnerItemSelectionListener(locationSpinner);
-		
+
 		setMarkerClickListener();
 
 		setupInitValues(view);
@@ -110,7 +104,7 @@ public class MapFragment extends Fragment {
 			if (mensaId != null) {
 				selectedLocation = namedLocations.getNamedLocation(mensaId);
 				setSpinnerTo(selectedLocation);
-				onClickDirectionsButton(view.findViewById(R.id.get_directions_button));
+				// onClickDirectionsButton(view.findViewById(R.id.get_directions_button));
 			}
 		}
 	}
@@ -133,25 +127,6 @@ public class MapFragment extends Fragment {
 			selectedLocation = namedLocations.getNamedLocation(selectedMensa);
 		}
 		setSpinnerTo(selectedLocation);
-	}
-
-	private void setDirectionsButtonListener(ImageButton button) {
-		button.setOnClickListener(new OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				onClickDirectionsButton(v);
-			}
-		});
-	}
-
-	private void onClickDirectionsButton(View view) {
-		if (currentLocationAvailable()) {
-			drawPath = !drawPath;
-			ImageButton getDirButton = (ImageButton) view;
-			getDirButton.setImageResource(drawPath ? R.drawable.ic_action_directions_active
-					: R.drawable.ic_action_directions);
-			repaintMap();
-		}
 	}
 
 	private void setMarkerClickListener() {
@@ -277,7 +252,7 @@ public class MapFragment extends Fragment {
 	private void repaintMap() {
 		map.clear();
 		drawAllLocations();
-		if (drawPath) {
+		if (currentLocationAvailable()) {
 			drawRouteFromTo(currentLocation, selectedLocation);
 			zoomOnContent();
 		}
@@ -288,7 +263,7 @@ public class MapFragment extends Fragment {
 	 * show the current location and the target Mensa.
 	 */
 	private void zoomOnContent() {
-		if (drawPath)
+		if (currentLocationAvailable() && selectedLocation != null)
 			zoomOnContent(currentLocation, selectedLocation);
 		else
 			zoomOnContent(namedLocations.getList());
@@ -296,6 +271,10 @@ public class MapFragment extends Fragment {
 
 	private void zoomOnContent(NamedLocation loc1, NamedLocation loc2) {
 		List<NamedLocation> list = new ArrayList<NamedLocation>();
+		if (loc1 == null)
+			System.out.println("loc1 null");
+		if (loc2 == null)
+			System.out.println("loc2 null");
 		list.add(loc1);
 		list.add(loc2);
 		zoomOnContent(list);

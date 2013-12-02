@@ -8,9 +8,6 @@ public class MenusTable extends AbstractTable {
 	public static final String COL_DESC = "desc";
 	public static final String COL_TRANSL_TITLE = "translated_title";
 	public static final String COL_TRANSL_DESC = "translated_desc";
-	public static final String COL_USERRATING = "user_rating";
-	public static final String COL_RATINGSUM = "rating_sum";
-	public static final String COL_RATINGCOUNT = "rating_count";
 	
 	private static final String TABLE_MENUS_CREATE = 
 			"create table " + TABLE_MENUS + "(" + 
@@ -18,10 +15,7 @@ public class MenusTable extends AbstractTable {
 			COL_TITLE + " text not null, " + 
 			COL_DESC + " text not null, " +
 			COL_TRANSL_TITLE + " text not null, " + 
-			COL_TRANSL_DESC + " text not null, " +
-			COL_USERRATING + " integer not null, " +
-			COL_RATINGSUM + " integer not null," +
-			COL_RATINGCOUNT + " integer not null" +
+			COL_TRANSL_DESC + " text not null " +
 			");";
 	
 	public MenusTable() {

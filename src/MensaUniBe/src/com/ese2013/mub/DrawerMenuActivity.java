@@ -23,8 +23,9 @@ import android.widget.Toast;
 import com.ese2013.mub.model.Mensa;
 import com.ese2013.mub.model.Model;
 import com.ese2013.mub.service.NotificationService;
-import com.ese2013.mub.social.CurrentUser;
 import com.ese2013.mub.social.LoginService;
+import com.ese2013.mub.util.LoginTask;
+import com.ese2013.mub.util.LoginTaskCallback;
 import com.ese2013.mub.util.SharedPrefsHandler;
 import com.memetix.mst.translate.Translate;
 import com.parse.Parse;
@@ -35,7 +36,7 @@ import com.parse.PushService;
  * This class is the main activity for the mub app. Everything else to be
  * displayed with a drawer menu, needs to be created here.
  */
-public class DrawerMenuActivity extends FragmentActivity {
+public class DrawerMenuActivity extends FragmentActivity implements LoginTaskCallback {
 
 	private ActionBarDrawerToggle drawerToggle;
 	private DrawerLayout drawerLayout;
@@ -64,11 +65,22 @@ public class DrawerMenuActivity extends FragmentActivity {
 
 	private void handleLogin() {
 		SharedPrefsHandler prefs = new SharedPrefsHandler(this);
-		if (prefs.isFirstTime())
+		if (prefs.isFirstTime()) 
 			registrationDialog = new RegistrationDialog(this);
-		else if (prefs.isUserRegistred() && !LoginService.login(new CurrentUser(prefs.getUserEmail())))
-			Toast.makeText(this, R.string.user_login_failed, Toast.LENGTH_LONG).show();
+		else if (prefs.isUserRegistred()) 
+			new LoginTask(this).execute(prefs.getUserEmail());
+		
+	}
 
+	@Override
+	public void onTaskFinished(LoginTask task) {
+		if (!task.hasSucceeded())
+			Toast.makeText(this, R.string.user_login_failed, Toast.LENGTH_LONG).show();
+		else
+			subscribeToPush();
+	}
+
+	private void subscribeToPush() {
 		if (LoginService.isLoggedIn()) {
 			String channelId = "user_" + LoginService.getLoggedInUser().getId();
 			PushService.subscribe(this, channelId, DrawerMenuActivity.class);

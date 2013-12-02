@@ -13,7 +13,14 @@ public class LoginService {
 	private static CurrentUser loggedInUser;
 	private static OnlineDBHandler handler = new OnlineDBHandler();
 
-	public static boolean login(CurrentUser user) {
+	public static boolean login(String email) throws ParseException {
+		CurrentUser user = new CurrentUser(email);
+		loggedInUser = handler.getCurrentUser(user);
+		return true;
+	}
+
+	public static boolean loginSyncWithTimeout(String email, int timeoutSeconds) {
+		CurrentUser user = new CurrentUser(email);
 		try {
 			loggedInUser = new AsyncTask<CurrentUser, Void, CurrentUser>() {
 				@Override
@@ -24,7 +31,7 @@ public class LoginService {
 						return null;
 					}
 				}
-			}.execute(user).get(2, TimeUnit.SECONDS);
+			}.execute(user).get(timeoutSeconds, TimeUnit.SECONDS);
 			return true;
 		} catch (InterruptedException e) {
 			return false;
@@ -35,7 +42,7 @@ public class LoginService {
 		}
 	}
 
-	public static boolean registerAndLogin(CurrentUser user) {
+	public static boolean registerAndLoginWithTimout(CurrentUser user, int timoutSeconds) {
 		try {
 			loggedInUser = new AsyncTask<CurrentUser, Void, CurrentUser>() {
 				@Override
@@ -46,7 +53,7 @@ public class LoginService {
 						return null;
 					}
 				}
-			}.execute(user).get(2, TimeUnit.SECONDS);
+			}.execute(user).get(timoutSeconds, TimeUnit.SECONDS);
 			return true;
 		} catch (InterruptedException e) {
 			return false;

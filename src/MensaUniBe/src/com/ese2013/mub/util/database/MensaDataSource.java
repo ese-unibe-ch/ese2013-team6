@@ -206,9 +206,6 @@ public class MensaDataSource {
 		values.put(MenusTable.COL_DESC, menu.getOrigDescription());
 		values.put(MenusTable.COL_TRANSL_TITLE, menu.getTranslatedTitle());
 		values.put(MenusTable.COL_TRANSL_DESC, menu.getTranslatedDescription());
-		values.put(MenusTable.COL_USERRATING, 0);
-		values.put(MenusTable.COL_RATINGSUM, menu.getRatingSum());
-		values.put(MenusTable.COL_RATINGCOUNT, menu.getRatingCount());
 
 		database.replace(MenusTable.TABLE_MENUS, null, values);
 
@@ -238,17 +235,13 @@ public class MensaDataSource {
 		final int POS_TRANSL_TITLE = c.getColumnIndex(MenusTable.COL_TRANSL_TITLE);
 		final int POS_TRANSL_DESC = c.getColumnIndex(MenusTable.COL_TRANSL_DESC);
 		final int POS_DATE = c.getColumnIndex(MenusMensasTable.COL_DATE);
-		final int POS_USERRATING = c.getColumnIndex(MenusTable.COL_USERRATING);
-		final int POS_RATINGCOUNT = c.getColumnIndex(MenusTable.COL_RATINGCOUNT);
-		final int POS_RATINGSUM = c.getColumnIndex(MenusTable.COL_RATINGSUM);
 		WeeklyMenuplan p = new WeeklyMenuplan();
 		c.moveToFirst();
 		do {
 			try {
 				p.add(menuManager.createMenu(c.getString(POS_ID), c.getString(POS_TITLE), c.getString(POS_DESC),
 						c.getString(POS_TRANSL_TITLE), c.getString(POS_TRANSL_DESC),
-						new Day(fm.parse(c.getString(POS_DATE))), 0,0,
-						c.getInt(POS_USERRATING)));
+						new Day(fm.parse(c.getString(POS_DATE)))));
 			} catch (ParseException e) {
 				throw new AssertionError("Database did not save properly");
 			}

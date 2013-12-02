@@ -9,16 +9,13 @@ public class Menu {
 	private Day date;
 	private int ratingSum = 0, ratingCount = 0;
 
-	public Menu(String id, String title, String description, String translTitle, String translDesc, Day day,
-			int ratingCount, int ratingSum) {
+	public Menu(String id, String title, String description, String translTitle, String translDesc, Day day) {
 		this.id = id;
 		this.origTitle = title;
 		this.origDescription = description;
 		this.translatedTitle = translTitle;
 		this.translatedDescription = translDesc;
 		this.date = day;
-		this.ratingCount = ratingCount;
-		this.ratingSum = ratingSum;
 	}
 
 	/**
@@ -84,7 +81,7 @@ public class Menu {
 		ratingSum += userRating;
 		ratingCount++;
 	}
-	
+
 	public float getAverageRating() {
 		if (ratingCount == 0)
 			return 0;

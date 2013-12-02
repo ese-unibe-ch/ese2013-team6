@@ -15,7 +15,6 @@ import com.parse.ParsePush;
 import com.parse.ParseQuery;
 
 public class OnlineDBHandler {
-	// TODO Refactor to different classes
 	private static final String INV_USER_RESPONSE = "Response", INV_USER_INVITEE = "Invitee",
 			INV_USER_INVITATION = "Invitation", INVITATION_TIME = "Time", INVITATION_FROM = "From",
 			INVITATION_MENSA = "Mensa", INVITATION_MESSAGE = "Message", INVITATION = "Invitation",

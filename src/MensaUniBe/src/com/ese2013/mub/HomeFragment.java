@@ -2,6 +2,7 @@ package com.ese2013.mub;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 import android.os.Bundle;
@@ -17,7 +18,13 @@ import android.view.ViewGroup;
 import com.ese2013.mub.model.Day;
 import com.ese2013.mub.model.Mensa;
 import com.ese2013.mub.model.Model;
+import com.ese2013.mub.social.CurrentUser;
+import com.ese2013.mub.social.Invitation;
+import com.ese2013.mub.social.LoginService;
+import com.ese2013.mub.social.User;
 import com.ese2013.mub.util.Observer;
+import com.ese2013.mub.util.parseDatabase.OnlineDBHandler;
+import com.parse.ParseException;
 
 public class HomeFragment extends Fragment implements Observer {
 
@@ -29,8 +36,7 @@ public class HomeFragment extends Fragment implements Observer {
 	private static boolean showAllByDay = false;
 
 	@Override
-	public View onCreateView(LayoutInflater inflater, ViewGroup container,
-			Bundle savedInstanceState) {
+	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 		View view = inflater.inflate(R.layout.fragment_home, container, false);
 
 		int dayOfWeek = Calendar.getInstance().get(Calendar.DAY_OF_WEEK);
@@ -56,6 +62,30 @@ public class HomeFragment extends Fragment implements Observer {
 
 	@Override
 	public void onNotifyChanges() {
+		OnlineDBHandler h = new OnlineDBHandler();
+		CurrentUser u = LoginService.getLoggedInUser();
+		if (u != null) {
+			try {
+				Calendar c = Calendar.getInstance();
+				c.set(Calendar.DAY_OF_MONTH, 30);
+				c.set(Calendar.MONTH, 10);
+				c.set(Calendar.YEAR, 2013);
+				h.retrieveFriends(u);
+				h.sendInvitation(new Invitation(null, u, u.getFriends(), "This is an old invitation should be deleted",
+						1, c.getTime()));
+//				for (Invitation i : h.getSentInvitations(u)) {
+//					System.out.println(i.getId());
+//					for (User user : i.getTo()) {
+//						System.out.println(i.getResponseOf(user));
+//					}
+//				}
+
+				h.answerInvitation(h.getRetrievedInvitations(u).get(1), Invitation.Response.UNKNOWN, u);
+			} catch (ParseException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
 		sectionsPagerAdapter.notifyDataSetChanged();
 	}
 
@@ -143,8 +173,7 @@ public class HomeFragment extends Fragment implements Observer {
 			if (model.noMensasLoaded())
 				days = new ArrayList<Day>();
 			else
-				days = new ArrayList<Day>(model.getMensas().get(0)
-						.getMenuplan().getDays());
+				days = new ArrayList<Day>(model.getMensas().get(0).getMenuplan().getDays());
 		}
 
 		/**
@@ -173,8 +202,7 @@ public class HomeFragment extends Fragment implements Observer {
 		@Override
 		public void notifyDataSetChanged() {
 			if (!model.noMensasLoaded())
-				days = new ArrayList<Day>(model.getMensas().get(0)
-						.getMenuplan().getDays());
+				days = new ArrayList<Day>(model.getMensas().get(0).getMenuplan().getDays());
 			super.notifyDataSetChanged();
 		}
 	}

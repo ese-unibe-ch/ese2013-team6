@@ -1,4 +1,6 @@
 var _ = require('underscore');
+var moment = require('moment');
+
 var tok = '?tok=6112255ca02b3040711015bbbda8d955';
 
 function dropTable(name) {
@@ -142,5 +144,43 @@ Parse.Cloud.beforeSave("Friendship", function(request, response) {
 		  error: function(error) {
 			response.error("Saving failed");
 		  }
+	});
+});
+
+Parse.Cloud.job("invitationsUpdate", function(request, status) {
+	var query = new Parse.Query("Invitation");
+	var now = moment();
+	now.subtract('days', 1);
+	query.lessThan("Time", now.toDate());
+	var invitations = new Array();
+	query.find({
+		  success: function(results) {
+			_.each(results, function(result) {
+				invitations.push(result);
+			});
+		  },
+		  error: function(error) {
+			status.error("Outer query failed");
+		  }
+	}).then( function() {
+		var promise = Parse.Promise.as();
+		_.each(invitations, function(invite) {				
+			var invUserQuery = new Parse.Query("InvitationUser");
+			invUserQuery.equalTo("Invitation", invite);
+			promise = promise.then(function() {
+					return invUserQuery.find({
+						success: function(results2) {
+							Parse.Object.destroyAll(results2);
+						},
+						error: function(error2) {
+							status.error("Update failed (inner query)");
+						}
+					});
+				});
+		});
+		promise = promise.then(function() {
+			Parse.Object.destroyAll(invitations)
+			status.success();
+		});
 	});
 });

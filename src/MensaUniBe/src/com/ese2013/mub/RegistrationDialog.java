@@ -22,8 +22,8 @@ public class RegistrationDialog {
 	public RegistrationDialog(Activity parentActivity) {
 		this.parentActivity = parentActivity;
 		this.prefs = new SharedPrefsHandler(parentActivity);
-		prefs.setIsFirstTime(false);
 		showGoogleAccountPicker();
+		prefs.setIsFirstTime(false);
 	}
 
 	private void showGoogleAccountPicker() {
@@ -42,10 +42,12 @@ public class RegistrationDialog {
 		switch (resultCode) {
 		case Activity.RESULT_OK:
 			final String accountName = data.getStringExtra(AccountManager.KEY_ACCOUNT_NAME);
-			if (LoginService.login(new CurrentUser(accountName)))
+			if (LoginService.login(new CurrentUser(accountName))) {
 				Toast.makeText(parentActivity, R.string.user_logged_in, Toast.LENGTH_SHORT).show();
-			else
+				prefs.setUserEmail(accountName);
+			} else {
 				showNicknameDialog(accountName);
+			}
 			break;
 		case Activity.RESULT_CANCELED:
 			showRegistrationMessage();

@@ -64,5 +64,6 @@
     <string name="cancel_request">cancel_request</string>
     <string name="accept_request">accept_request</string>
     <string name="delete_friend">delete friend</string>
+    <string name="dailyplanfragment_no_menus_available">No menus available for this day</string>
 
 </resources>

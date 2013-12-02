@@ -2,24 +2,26 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical" >
+    android:orientation="vertical"
+    android:background="@drawable/invite_list_background" >
 
     <ImageButton
         android:id="@+id/cancel_request"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:contentDescription="@string/cancel_request"
-        android:background="?android:attr/selectableItemBackground" />
+        android:background="?android:attr/selectableItemBackground"
+        android:src="@drawable/cancel" />
     <ImageButton
         android:id="@+id/accept_request"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:contentDescription="@string/accept_request"
-        android:background="?android:attr/selectableItemBackground" />
+        android:background="?android:attr/selectableItemBackground"
+        android:src="@drawable/accept" />
     <TextView
         android:id="@+id/friend_name_request"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
-    
 
 </RelativeLayout>

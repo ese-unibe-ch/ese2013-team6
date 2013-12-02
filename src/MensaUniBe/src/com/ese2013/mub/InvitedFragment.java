@@ -25,17 +25,17 @@ import com.ese2013.mub.social.LoginService;
 import com.ese2013.mub.util.parseDatabase.OnlineDBHandler;
 import com.parse.ParseException;
 
-public class InvitesFragment extends Fragment implements IFragmentsInvitation {
+public class InvitedFragment extends Fragment implements IFragmentsInvitation {
 	
 	private ListView invitedList;
-	private InvitesListAdapter adapter;
+	private InvitedListAdapter adapter;
 	
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
-		adapter = new InvitesListAdapter();
-		View view = inflater.inflate(R.layout.fragment_invites, null);
-		invitedList = (ListView) view.findViewById(R.id.invites_list);
+		adapter = new InvitedListAdapter();
+		View view = inflater.inflate(R.layout.fragment_invited, null);
+		invitedList = (ListView) view.findViewById(R.id.invited_list);
 		View emptyView = inflater.inflate(R.layout.invititation_empty_view, null);
 		TextView showMessage = (TextView)emptyView.findViewById(R.id.show_message);
 		
@@ -51,15 +51,15 @@ public class InvitesFragment extends Fragment implements IFragmentsInvitation {
 		return this;
 	}
 
-	class InvitesListAdapter extends BaseAdapter {
+	class InvitedListAdapter extends BaseAdapter {
 
 		private LayoutInflater inflater;
 		private List<Invitation> invitations = new ArrayList<Invitation>();
 
-		public InvitesListAdapter() {
+		public InvitedListAdapter() {
 			try {
 				if(LoginService.isLoggedIn())
-				invitations = new OnlineDBHandler().getSentInvitations(LoginService.getLoggedInUser());
+					invitations = new OnlineDBHandler().getRetrievedInvitations(LoginService.getLoggedInUser());
 			} catch (ParseException e) {
 				e.printStackTrace();
 			}
@@ -71,28 +71,15 @@ public class InvitesFragment extends Fragment implements IFragmentsInvitation {
 			if (view == null)
 				inflater = (LayoutInflater) getActivity().getSystemService(
 						Context.LAYOUT_INFLATER_SERVICE);
-			view = inflater.inflate(R.layout.invites_entry_layout, null);
+			view = inflater.inflate(R.layout.invited_entry_layout, null);
 			Invitation invite = invitations.get(position);
 
 			setUpFromTextView(view, invite);
 			setUpWhereTextView(view, invite);
 			setUpWhenTextView(view, invite);
-			
-			setUpShowInvitedButton(view);
-			
+			setUpCancelButton(view);
+			setUpAcceptButton(view, invite);
 			return view;
-		}
-
-		private void setUpShowInvitedButton(View view) {
-			ImageButton showInvitedButton = (ImageButton) view.findViewById(R.id.show_invited);
-			showInvitedButton.setOnClickListener(new OnClickListener() {
-				
-				@Override
-				public void onClick(View v) {
-					// TODO Auto-generated method stub
-					
-				}
-			});
 		}
 
 		private void setUpWhenTextView(View view, Invitation invite) {
@@ -111,6 +98,19 @@ public class InvitesFragment extends Fragment implements IFragmentsInvitation {
 						+ sdf.format(invite.getTime()));
 		}
 
+		private void setUpCancelButton(View view) {
+			ImageButton cancelRequestButton = (ImageButton) view
+					.findViewById(R.id.cancel_invitation);
+			cancelRequestButton.setOnClickListener(new OnClickListener() {
+
+				@Override
+				public void onClick(View v) {
+					// TODO Auto-generated method stub
+
+				}
+			});
+		}
+
 		private void setUpFromTextView(View view, Invitation invite) {
 			TextView fromWhomTextView = (TextView) view
 					.findViewById(R.id.from_whom_text_field);
@@ -126,6 +126,23 @@ public class InvitesFragment extends Fragment implements IFragmentsInvitation {
 					mensa = m;
 			}
 			whereTextView.setText(mensa.getName());
+		}
+
+		private void setUpAcceptButton(View view, Invitation invite) {
+			if (invite.getResponseOf(LoginService.getLoggedInUser()) ==
+					Invitation.Response.UNKNOWN) {
+				ImageButton acceptRequestButton = (ImageButton) view
+						.findViewById(R.id.accept_invitiation);
+				//acceptRequestButton.setImageResource(resId);
+				acceptRequestButton.setOnClickListener(new OnClickListener() {
+
+					@Override
+					public void onClick(View v) {
+						// TODO Auto-generated method stub
+
+					}
+				});
+			}
 		}
 
 		@Override

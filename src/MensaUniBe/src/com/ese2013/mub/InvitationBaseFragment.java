@@ -66,11 +66,29 @@ public class InvitationBaseFragment extends Fragment implements ActionBar.TabLis
 		// TODO Auto-generated method stub
 	}
 	@Override
-	public void onDestroy() {
-		super.onDestroy();
+	public void onPause() {
 		actionBar.removeAllTabs();
 		actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
+		super.onPause();
 	}
+	@Override
+	public void onResume() {
+		actionBar = getActivity().getActionBar();
+		actionBar.removeAllTabs();
+		actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);  
+		 for (String tab_name : tabs) {
+	            actionBar.addTab(actionBar.newTab().setText(tab_name)
+	                    .setTabListener(this));
+	        }
+		 super.onResume();
+	}
+	@Override
+	public void onDestroy() {
+		actionBar.removeAllTabs();
+		actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
+		super.onDestroy();
+	}
+	
 	class InvitationPageAdapter extends FragmentPagerAdapter{
 		
 		private List<IFragmentsInvitation> fragments = new ArrayList<IFragmentsInvitation>();
@@ -79,7 +97,7 @@ public class InvitationBaseFragment extends Fragment implements ActionBar.TabLis
 			super(fm);
 			//TODO add Fragments;
 			fragments.add(new InvitesFragment());
-			//fragments.add(new InvitationFragment());
+			fragments.add(new InvitedFragment());
 			fragments.add(new FriendsListFragment());
 		}
 
@@ -91,5 +109,10 @@ public class InvitationBaseFragment extends Fragment implements ActionBar.TabLis
 		public int getCount() {
 			return fragments.size();
 		}
+	}
+
+	public void setPagerToFriends() {
+		viewPager.setCurrentItem(2);
+		actionBar.selectTab(actionBar.getTabAt(2));
 	}
 }

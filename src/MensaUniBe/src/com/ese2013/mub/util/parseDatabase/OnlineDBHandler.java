@@ -5,12 +5,10 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 
-import com.ese2013.mub.model.Menu;
 import com.ese2013.mub.social.CurrentUser;
 import com.ese2013.mub.social.FriendRequest;
 import com.ese2013.mub.social.Invitation;
 import com.ese2013.mub.social.User;
-import com.parse.GetCallback;
 import com.parse.ParseException;
 import com.parse.ParseObject;
 import com.parse.ParsePush;
@@ -21,23 +19,9 @@ public class OnlineDBHandler {
 	private static final String INV_USER_RESPONSE = "Response", INV_USER_INVITEE = "Invitee",
 			INV_USER_INVITATION = "Invitation", INVITATION_TIME = "Time", INVITATION_FROM = "From",
 			INVITATION_MENSA = "Mensa", INVITATION_MESSAGE = "Message", INVITATION = "Invitation",
-			INVITATION_USER = "InvitationUser", FRIENDSHIP = "Friendship", MENU_RATING_SUM = "ratingSum",
-			MENU_RATING_CT = "ratingCount", USER_NICKNAME = "nickname", USER_EMAIL = "email", MENU = "Menu",
-			USER = "AppUser", USER_1 = "user1", USER_2 = "user2", FRIEND_REQUEST_TO = "To",
-			FRIEND_REQUEST_FROM = "From", FRIEND_REQUEST = "FriendRequest";
-
-	public void saveMenuRating(Menu menu, final int rating) {
-		ParseQuery<ParseObject> query = ParseQuery.getQuery(MENU);
-		query.getInBackground(menu.getId(), new GetCallback<ParseObject>() {
-			public void done(ParseObject parseMenu, ParseException e) {
-				if (e == null) {
-					parseMenu.increment(MENU_RATING_CT);
-					parseMenu.increment(MENU_RATING_SUM, rating);
-					parseMenu.saveInBackground();
-				}
-			}
-		});
-	}
+			INVITATION_USER = "InvitationUser", FRIENDSHIP = "Friendship", USER_NICKNAME = "nickname", USER_EMAIL = "email",
+			USER = "AppUser", USER_1 = "user1", USER_2 = "user2", FRIEND_REQUEST_TO = "To", FRIEND_REQUEST_FROM = "From",
+			FRIEND_REQUEST = "FriendRequest";
 
 	public User getUser(User user) throws ParseException {
 		ParseObject u = getUserByMail(user);
@@ -50,6 +34,9 @@ public class OnlineDBHandler {
 		ParseObject u = getUserByMail(user);
 		user.setId(u.getObjectId());
 		user.setNick(u.getString(USER_NICKNAME));
+
+		List<String> menuIds = new OnlineMensaDBHandler().getRatedMenus(user);
+		user.setRatedMenuIds(menuIds);
 		return user;
 	}
 
@@ -164,9 +151,8 @@ public class OnlineDBHandler {
 		for (ParseObject invitation : parseInvitations) {
 			ParseObject parseInv = invitation.getParseObject(INV_USER_INVITATION);
 			ParseObject parseFrom = parseInv.getParseObject(INVITATION_FROM);
-			invitations.add(new Invitation(parseInv.getObjectId(), parseUser(parseFrom), new ArrayList<User>(),
-					parseInv.getString(INVITATION_MESSAGE), parseInv.getInt(INVITATION_MENSA), parseInv
-							.getDate(INVITATION_TIME))
+			invitations.add(new Invitation(parseInv.getObjectId(), parseUser(parseFrom), new ArrayList<User>(), parseInv
+					.getString(INVITATION_MESSAGE), parseInv.getInt(INVITATION_MENSA), parseInv.getDate(INVITATION_TIME))
 
 			);
 		}
@@ -179,9 +165,9 @@ public class OnlineDBHandler {
 		List<ParseObject> parseInvitations = query.find();
 		List<Invitation> invitations = new ArrayList<Invitation>();
 		for (ParseObject parseInvite : parseInvitations)
-			invitations.add(new Invitation(parseInvite.getObjectId(), user, getInviteesAndResponses(parseInvite), parseInvite
-					.getString(INVITATION_MESSAGE), parseInvite.getInt(INVITATION_MENSA), parseInvite
-					.getDate(INVITATION_TIME)));
+			invitations.add(new Invitation(parseInvite.getObjectId(), user, getInviteesAndResponses(parseInvite),
+					parseInvite.getString(INVITATION_MESSAGE), parseInvite.getInt(INVITATION_MENSA), parseInvite
+							.getDate(INVITATION_TIME)));
 
 		return invitations;
 	}

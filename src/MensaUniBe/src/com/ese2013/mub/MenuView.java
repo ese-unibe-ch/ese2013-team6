@@ -15,8 +15,10 @@ import android.widget.Toast;
 import com.ese2013.mub.model.Menu;
 import com.ese2013.mub.model.MenuManager;
 import com.ese2013.mub.model.Model;
+import com.ese2013.mub.social.CurrentUser;
+import com.ese2013.mub.social.LoginService;
 import com.ese2013.mub.util.ViewUtil;
-import com.ese2013.mub.util.parseDatabase.OnlineDBHandler;
+import com.ese2013.mub.util.parseDatabase.OnlineMensaDBHandler;
 
 public class MenuView extends LinearLayout {
 	private Menu menu;
@@ -52,26 +54,43 @@ public class MenuView extends LinearLayout {
 	private void initRatingBar() {
 		RatingBar ratingBar = (RatingBar) this.findViewById(R.id.menu_rating_bar);
 		ratingBar.setRating(menu.getAverageRating());
-		ratingBar.setIsIndicator(menu.hasBeenRated());
+		ratingBar.setIsIndicator(true);
 		ratingBar.setOnRatingBarChangeListener(new RatingBar.OnRatingBarChangeListener() {
 			@Override
 			public void onRatingChanged(RatingBar ratingBar, float rating, boolean fromUser) {
-				if (fromUser && !MenuView.this.menu.hasBeenRated()) {
-					int userRating = (int) rating;
-					Menu menu = MenuView.this.menu;
-					menu.setUserRating(userRating);
-					new OnlineDBHandler().saveMenuRating(menu, userRating);
-					ratingBar.setIsIndicator(true);
-					setCountDisplay();
-					ratingBar.setRating(menu.getAverageRating());
+				Menu menu = MenuView.this.menu;
+				if (fromUser) {
+					if (LoginService.isLoggedIn() && !LoginService.getLoggedInUser().hasBeenRated(menu)) {
+						CurrentUser user = LoginService.getLoggedInUser();
+						int userRating = (int) rating;
+						menu.setUserRating(userRating);
+						user.addToRated(menu);
+						new OnlineMensaDBHandler().saveMenuRating(user, menu, userRating);
+						ratingBar.setIsIndicator(true);
+						setCountDisplay();
+						ratingBar.setRating(menu.getAverageRating());
+					} else {
+						Toast.makeText(MenuView.this.getContext(), "You have to be logged in to rate a menu.",
+								Toast.LENGTH_SHORT).show();
+					}
 				}
 			}
 		});
 		ratingBar.setOnTouchListener(new OnTouchListener() {
 			@Override
 			public boolean onTouch(View v, MotionEvent event) {
-				if (MenuView.this.menu.hasBeenRated())
-					Toast.makeText(MenuView.this.getContext(), R.string.rating_msg_already_rated, Toast.LENGTH_SHORT).show();
+				if (LoginService.isLoggedIn()) {
+					RatingBar ratingBar = (RatingBar) v;
+					if (LoginService.getLoggedInUser().hasBeenRated(MenuView.this.menu)) {
+						setCountDisplay();
+						ratingBar.setIsIndicator(true);
+						ratingBar.setRating(menu.getAverageRating());
+						Toast.makeText(MenuView.this.getContext(), R.string.rating_msg_already_rated,
+								Toast.LENGTH_SHORT).show();
+					} else {
+						ratingBar.setIsIndicator(false);
+					}
+				}
 				return false;
 			}
 		});

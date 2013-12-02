@@ -3,6 +3,23 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical" >
+
+    <ImageButton
+        android:id="@+id/cancel_request"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:contentDescription="@string/cancel_request"
+        android:background="?android:attr/selectableItemBackground" />
+    <ImageButton
+        android:id="@+id/accept_request"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:contentDescription="@string/accept_request"
+        android:background="?android:attr/selectableItemBackground" />
+    <TextView
+        android:id="@+id/friend_name_request"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
     
 
 </RelativeLayout>

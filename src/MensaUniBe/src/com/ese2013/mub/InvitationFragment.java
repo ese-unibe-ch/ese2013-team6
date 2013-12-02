@@ -57,33 +57,4 @@ public class InvitationFragment extends Fragment {
 		});
 		return test;
 	}
-	
-	
-
-
-//	@Override
-//	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-////		View view = inflater.inflate(R.layout.fragment_invitation, container, false);
-////		Button button = (Button) view.findViewById(R.id.send_invitation);
-////		button.setText("Invite");
-////	    button.setOnClickListener(new View.OnClickListener() {
-////	      @Override
-////	      public void onClick(View v) {
-////	    	  Intent i = new Intent(Intent.ACTION_SEND);
-////	    	  i.setType("message/rfc822");
-////	    	  i.putExtra(Intent.EXTRA_EMAIL  , new String[]{"recipient@example.com"});
-////	    	  i.putExtra(Intent.EXTRA_SUBJECT, "subject of email");
-////	    	  i.putExtra(Intent.EXTRA_TEXT   , "body of email");
-////	    	  try {
-////	    	      startActivity(Intent.createChooser(i, "Send mail..."));
-////	    	  } catch (android.content.ActivityNotFoundException ex) {
-////	    	      Toast.makeText(getActivity(), "There are no email clients installed.", Toast.LENGTH_SHORT).show();
-////	    	  }
-////	        
-////	      }
-////	    });
-//		return container;
-//		
-//	}
-
 }

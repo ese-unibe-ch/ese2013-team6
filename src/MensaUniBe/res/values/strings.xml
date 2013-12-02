@@ -60,5 +60,9 @@
     <string name="user_login_failed">Failed to login.</string>
 	<string name="add_friend">add Friend</string>
     <string name="invitation_new_message">"New invitation from "</string>
+    
+    <string name="cancel_request">cancel_request</string>
+    <string name="accept_request">accept_request</string>
+    <string name="delete_friend">delete friend</string>
 
 </resources>

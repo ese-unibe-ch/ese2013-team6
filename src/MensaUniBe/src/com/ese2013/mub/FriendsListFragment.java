@@ -10,9 +10,12 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.ImageButton;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import com.ese2013.mub.social.LoginService;
 import com.ese2013.mub.social.User;
@@ -55,24 +58,47 @@ public class FriendsListFragment extends Fragment implements
 	public void onDestroy() {
 		super.onDestroy();
 	}
-	class FriendsListAdapter extends BaseAdapter{
-		List<User> friends = LoginService.getLoggedInUser().getFriends();
-		List<User> request;
-		LayoutInflater inflater;
+	private class FriendsListAdapter extends BaseAdapter{
+		private List<User> friends = LoginService.getLoggedInUser().getFriends();
+		private List<User> request;
+		private LayoutInflater inflater;
 		@Override
 		public View getView(int position, View convertView, ViewGroup parent) {
-			// TODO Auto-generated method stub
 			View view = convertView;
 	        if (view == null) 
 	        	inflater = (LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 
+	        
+	    	if(position < request.size()){
+				view = inflater.inflate(R.layout.friend_request_layout, null);
+				//request.get(position);
+				TextView requestName = (TextView)view.findViewById(R.id.friend_name_request);
+				//requestName.setText();
+				ImageButton cancelRequestButton = (ImageButton)view.findViewById(R.id.cancel_request);
+				ImageButton acceptRequestButton = (ImageButton)view.findViewById(R.id.accept_request);
+	    	}
+			else{
+				view = inflater.inflate(R.layout.friend_entry_layout, null);
+				User friend = friends.get(position - request.size() - 1);
+				TextView friendName = (TextView)view.findViewById(R.id.friend_name);
+				friendName.setText(friend.getNick());
+				ImageButton deleteFriend = (ImageButton)view.findViewById(R.id.delete_friend);
+				deleteFriend.setOnClickListener(new OnClickListener() {
+					
+					@Override
+					public void onClick(View v) {
+						// Delete!
+						
+					}
+				});
+			}
+	    	
 			friends.get(position);
 			return null;
 		}
 
 		@Override
 		public int getCount() {
-			// TODO Auto-generated method stub
 			return friends.size() + request.size();
 		}
 
@@ -81,14 +107,12 @@ public class FriendsListFragment extends Fragment implements
 			if(position <= request.size())
 				return request.get(position);
 			else
-				return friends.get(request.size() + position);
+				return friends.get(position - request.size() - 1);
 		}
 
 		@Override
 		public long getItemId(int position) {
-			// TODO Auto-generated method stub
-			return 0;
+			return position;
 		}
-		
 	}
 }

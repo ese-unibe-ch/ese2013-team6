@@ -25,6 +25,19 @@
         android:paddingLeft="16dp"
         android:paddingRight="16dp"
         android:text="@string/language_switch" />
+    
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingLeft="4dp"
+        android:paddingTop="24dp"
+        android:text="@string/title_registration" />
+    
+    <Button
+            android:id="@+id/register"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Register" />
 
     
     <TextView

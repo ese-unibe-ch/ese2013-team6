@@ -68,11 +68,15 @@ public class DrawerMenuActivity extends FragmentActivity implements LoginTaskCal
 
 	private void handleLogin() {
 		SharedPrefsHandler prefs = new SharedPrefsHandler(this);
-		if (prefs.isFirstTime()) 
-			registrationDialog = new RegistrationDialog(this);
+		if (prefs.isFirstTime())
+			showRegistrationDialog();
 		else if (prefs.isUserRegistred()) 
 			new LoginTask(this).execute(prefs.getUserEmail());
 		
+	}
+
+	public void showRegistrationDialog() {
+		registrationDialog = new RegistrationDialog(this);
 	}
 
 	@Override

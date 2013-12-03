@@ -1,5 +1,7 @@
 package com.ese2013.mub;
 
+import java.util.Stack;
+
 import android.app.ActionBar;
 import android.content.Intent;
 import android.os.Bundle;
@@ -47,6 +49,7 @@ public class DrawerMenuActivity extends FragmentActivity implements LoginTaskCal
 	private static final String POSITION = "com.ese2013.mub.position";
 	private Model model;
 	private RegistrationDialog registrationDialog;
+	private Stack<Integer> menuSelectionBackStack = new Stack<Integer>();
 
 	@Override
 	protected void onActivityResult(final int requestCode, final int resultCode, final Intent data) {
@@ -235,12 +238,12 @@ public class DrawerMenuActivity extends FragmentActivity implements LoginTaskCal
 	 *            the Fragment to be displayed. Shouldn't be null.
 	 */
 	private void setDisplayedFragment(Fragment frag) {
-		assert (frag != null);
 		FragmentManager fragmentManager = getSupportFragmentManager();
 		FragmentTransaction transaction = fragmentManager.beginTransaction();
 		transaction.replace(R.id.drawer_layout_frag_container, frag);
-		//transaction.addToBackStack(null);
+		transaction.addToBackStack(null);
 		transaction.commit();
+		menuSelectionBackStack.push(selectedPosition);
 	}
 
 	/**
@@ -260,6 +263,15 @@ public class DrawerMenuActivity extends FragmentActivity implements LoginTaskCal
 		return selectedPosition == HOME_INDEX;
 	}
 
+	@Override
+	public void onBackPressed() {
+		int select = menuSelectionBackStack.pop();
+		selectedPosition = select;
+		if (select != NOTHING_INDEX)
+			drawerList.setItemChecked(select, true);
+		super.onBackPressed();
+	}
+	
 	/**
 	 * Called after creation of the activity.
 	 */
@@ -275,10 +287,10 @@ public class DrawerMenuActivity extends FragmentActivity implements LoginTaskCal
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		if (!drawerToggle.onOptionsItemSelected(item) && item.getItemId() == R.id.action_settings) {
+			selectedPosition = NOTHING_INDEX;
 			drawerList.setItemChecked(selectedPosition, false);
 			Fragment frag = new SettingsFragment();
-			setDisplayedFragment(frag);
-			selectedPosition = NOTHING_INDEX;
+			setDisplayedFragment(frag);	
 			return true;
 		}
 		return super.onOptionsItemSelected(item);

@@ -63,6 +63,7 @@ public class MenuView extends LinearLayout {
 					if (LoginService.isLoggedIn() && !LoginService.getLoggedInUser().hasBeenRated(menu)) {
 						CurrentUser user = LoginService.getLoggedInUser();
 						int userRating = (int) rating;
+						//TODO make one method in user: rateMenu
 						menu.setUserRating(userRating);
 						user.addToRated(menu);
 						new OnlineMensaDBHandler().saveMenuRating(user, menu, userRating);

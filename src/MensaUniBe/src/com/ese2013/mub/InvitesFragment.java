@@ -25,7 +25,7 @@ import com.ese2013.mub.social.LoginService;
 import com.ese2013.mub.util.GetSentInvitationsTask;
 import com.ese2013.mub.util.GetSentInvitationsTaskCallback;
 
-public class InvitesFragment extends Fragment implements IFragmentsInvitation {
+public class InvitesFragment extends Fragment{
 
 	private ListView invitedList;
 	private InvitesListAdapter adapter;
@@ -45,11 +45,6 @@ public class InvitesFragment extends Fragment implements IFragmentsInvitation {
 		invitedList.setEmptyView(showMessage);
 		invitedList.setAdapter(adapter);
 		return view;
-	}
-
-	@Override
-	public Fragment getInstance() {
-		return this;
 	}
 
 	class InvitesListAdapter extends BaseAdapter implements GetSentInvitationsTaskCallback {
@@ -80,20 +75,14 @@ public class InvitesFragment extends Fragment implements IFragmentsInvitation {
 			setUpWhereTextView(view, invite);
 			setUpWhenTextView(view, invite);
 
-			setUpShowInvitedButton(view);
+			setUpShowInvitedButton(view, invite);
 
 			return view;
 		}
 
-		private void setUpShowInvitedButton(View view) {
+		private void setUpShowInvitedButton(View view, Invitation invite) {
 			ImageButton showInvitedButton = (ImageButton) view.findViewById(R.id.show_invited);
-			showInvitedButton.setOnClickListener(new OnClickListener() {
-
-				@Override
-				public void onClick(View v) {
-					// TODO Auto-generated method stub
-				}
-			});
+			showInvitedButton.setOnClickListener(new ShowInvitedListener(invite));
 		}
 
 		private void setUpWhenTextView(View view, Invitation invite) {

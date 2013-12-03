@@ -26,8 +26,7 @@ import com.ese2013.mub.social.User;
 import com.ese2013.mub.util.parseDatabase.OnlineDBHandler;
 import com.parse.ParseException;
 
-public class FriendsListFragment extends Fragment implements
-		IFragmentsInvitation {
+public class FriendsListFragment extends Fragment{
 	
 	private ListView friends;
 	private FriendsListAdapter adapter;
@@ -54,10 +53,7 @@ public class FriendsListFragment extends Fragment implements
 		setHasOptionsMenu(true);
 		return view;
 	}
-	@Override
-	public Fragment getInstance(){
-		return this;
-	}
+
 	@Override
 	public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
 		if(LoginService.isLoggedIn())

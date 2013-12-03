@@ -25,7 +25,7 @@ import com.ese2013.mub.social.LoginService;
 import com.ese2013.mub.util.parseDatabase.OnlineDBHandler;
 import com.parse.ParseException;
 
-public class InvitedFragment extends Fragment implements IFragmentsInvitation {
+public class InvitedFragment extends Fragment{
 	
 	private ListView invitedList;
 	private InvitedListAdapter adapter;
@@ -50,10 +50,6 @@ public class InvitedFragment extends Fragment implements IFragmentsInvitation {
 		return view;
 	}
 
-	@Override
-	public Fragment getInstance() {
-		return this;
-	}
 
 	class InvitedListAdapter extends BaseAdapter {
 
@@ -92,7 +88,7 @@ public class InvitedFragment extends Fragment implements IFragmentsInvitation {
 			setUpFromTextView(view, invite);
 			setUpWhereTextView(view, invite);
 			setUpWhenTextView(view, invite);
-			setUpCancelButton(view);
+			setUpCancelButton(view, invite);
 			setUpAcceptButton(view, invite);
 			return view;
 		}
@@ -113,19 +109,6 @@ public class InvitedFragment extends Fragment implements IFragmentsInvitation {
 						+ sdf.format(invite.getTime()));
 		}
 
-		private void setUpCancelButton(View view) {
-			ImageButton cancelRequestButton = (ImageButton) view
-					.findViewById(R.id.cancel_invitation);
-			cancelRequestButton.setOnClickListener(new OnClickListener() {
-
-				@Override
-				public void onClick(View v) {
-					// TODO Auto-generated method stub
-
-				}
-			});
-		}
-
 		private void setUpFromTextView(View view, Invitation invite) {
 			TextView fromWhomTextView = (TextView) view
 					.findViewById(R.id.from_whom_text_field);
@@ -143,20 +126,19 @@ public class InvitedFragment extends Fragment implements IFragmentsInvitation {
 			whereTextView.setText(mensa.getName());
 		}
 
+		private void setUpCancelButton(View view, Invitation invite) {
+			ImageButton cancelRequestButton = (ImageButton) view
+					.findViewById(R.id.cancel_invitation);
+			cancelRequestButton.setOnClickListener(new CancelInviteRequest(invite));
+		}
+
 		private void setUpAcceptButton(View view, Invitation invite) {
 			if (invite.getResponseOf(LoginService.getLoggedInUser()) ==
 					Invitation.Response.UNKNOWN) {
 				ImageButton acceptRequestButton = (ImageButton) view
 						.findViewById(R.id.accept_invitiation);
-				//acceptRequestButton.setImageResource(resId);
-				acceptRequestButton.setOnClickListener(new OnClickListener() {
-
-					@Override
-					public void onClick(View v) {
-						// TODO Auto-generated method stub
-
-					}
-				});
+				acceptRequestButton.setImageResource(R.drawable.accept);
+				acceptRequestButton.setOnClickListener(new AcceptInviteListener(invite));
 			}
 		}
 

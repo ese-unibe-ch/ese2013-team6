@@ -74,5 +74,9 @@
 	<string name="enter_friend">Enter E-Mail</string>
 	<string name="search_friend">search friend</string>
 	<string name="title_registration">Register to use social functionality</string>
+	<string name="invitation_create_cancel">Cancel</string>
+	<string name="invitation_create_send">Send Invitation</string>
+	<string name="invitation_create_title">Create new Invitation</string>
+	<string name="invitation_create_select_recipients">Select recipients</string>
 	
 </resources>

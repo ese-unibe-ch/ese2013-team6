@@ -68,11 +68,15 @@ public class DrawerMenuActivity extends FragmentActivity implements LoginTaskCal
 
 	private void handleLogin() {
 		SharedPrefsHandler prefs = new SharedPrefsHandler(this);
-		if (prefs.isFirstTime()) 
-			registrationDialog = new RegistrationDialog(this);
+		if (prefs.isFirstTime())
+			showRegistrationDialog();
 		else if (prefs.isUserRegistred()) 
 			new LoginTask(this).execute(prefs.getUserEmail());
 		
+	}
+
+	public void showRegistrationDialog() {
+		registrationDialog = new RegistrationDialog(this);
 	}
 
 	@Override
@@ -265,10 +269,13 @@ public class DrawerMenuActivity extends FragmentActivity implements LoginTaskCal
 
 	@Override
 	public void onBackPressed() {
-		int select = menuSelectionBackStack.pop();
-		selectedPosition = select;
-		if (select != NOTHING_INDEX)
-			drawerList.setItemChecked(select, true);
+		if (!menuSelectionBackStack.isEmpty()){
+			int select = menuSelectionBackStack.pop();
+			selectedPosition = select;
+			if (select != NOTHING_INDEX)
+				drawerList.setItemChecked(select, true);
+		}
+		
 		super.onBackPressed();
 	}
 	

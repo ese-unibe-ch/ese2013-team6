@@ -15,7 +15,8 @@ public class LoginService {
 
 	public static boolean login(String email) throws ParseException {
 		CurrentUser user = new CurrentUser(email);
-		loggedInUser = handler.getCurrentUser(user);
+		if (user != null)
+			loggedInUser = handler.getCurrentUser(user);
 		return true;
 	}
 

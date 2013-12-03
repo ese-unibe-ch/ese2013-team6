@@ -9,6 +9,7 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.Spinner;
@@ -43,9 +44,34 @@ public class SettingsFragment extends Fragment {
 				.findViewById(R.id.notification_spinner);
 		EditText notificationEditText = ((EditText) view
 				.findViewById(R.id.edit_text_notification));
+		
+		addReregisterButton(view);
 
 		languageSwitch.setChecked(prefs.getDoTranslation());
 
+		setUpOnChangeListerner(languageSwitch);
+
+		// languageSpinner.setSelection(prefs.getLanguage());
+		notificationSwitch.setChecked(prefs.getDoNotification());
+		notificationSpinner.setSelection(prefs.getNotificationMensas());
+		notificationEditText.setText(prefs.getNotificationFood());
+		return view;
+	}
+
+	private void addReregisterButton(View view) {
+		Button button = (Button) view.findViewById(R.id.register);
+		
+		button.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				DrawerMenuActivity a = (DrawerMenuActivity) getActivity();
+				a.showRegistrationDialog();
+//				new RegistrationDialog(getActivity());
+			}
+		});
+	}
+
+	private void setUpOnChangeListerner(Switch languageSwitch) {
 		languageSwitch
 				.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
 					public void onCheckedChanged(CompoundButton buttonView,
@@ -66,12 +92,6 @@ public class SettingsFragment extends Fragment {
 						}
 					}
 				});
-
-		// languageSpinner.setSelection(prefs.getLanguage());
-		notificationSwitch.setChecked(prefs.getDoNotification());
-		notificationSpinner.setSelection(prefs.getNotificationMensas());
-		notificationEditText.setText(prefs.getNotificationFood());
-		return view;
 	}
 
 	@Override

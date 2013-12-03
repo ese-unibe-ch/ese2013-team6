@@ -33,7 +33,7 @@
     </string-array>
 
     <string name="title_translation">Translation</string>
-    <string name="language_switch">Translate menus</string>
+    <string name="language_switch">Translate menus to english</string>
     <string name="language_spinner">Choose language</string>
     <string name="title_notifications">Notifications</string>
     <string name="notification_switch">Notify me</string>

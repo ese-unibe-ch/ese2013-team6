@@ -25,21 +25,7 @@
         android:paddingLeft="16dp"
         android:paddingRight="16dp"
         android:text="@string/language_switch" />
-    
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:paddingLeft="16dp"
-        android:paddingTop="24dp"
-        android:text="@string/language_spinner" />
-    
-    <Spinner
-    	android:id="@+id/language_spinner"
-    	android:layout_width="fill_parent"
-    	android:layout_height="wrap_content"
-        android:layout_marginLeft="8dp"
-    	android:layout_marginRight="16dp"
-    	android:entries= "@array/settings_languages" />
+
     
     <TextView
         android:layout_width="match_parent"

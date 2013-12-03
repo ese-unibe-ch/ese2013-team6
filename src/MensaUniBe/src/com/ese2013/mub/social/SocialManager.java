@@ -92,4 +92,8 @@ public class SocialManager extends Observable implements GetSentInvitationsTaskC
 	public void onFriendsTaskFinished() {
 		notifyChanges();
 	}
+
+	public void sendInvitation(Invitation invitation) {
+		onlineDBHandler.sendInvitation(invitation);
+	}
 }

@@ -106,7 +106,7 @@ public class DrawerMenuActivity extends FragmentActivity implements LoginTaskCal
 		drawerLayout.setDrawerShadow(R.drawable.drawer_shadow, GravityCompat.START);
 		drawerList = (ListView) findViewById(R.id.left_drawer);
 
-		String[] menuItemNames = { "Home", "Mensa List", "Map", "Notifications" };
+		String[] menuItemNames = { "Home", "Mensa List", "Map", "Invitations" ,"Notifications" };
 		drawerList.setAdapter(new ArrayAdapter<String>(this, R.layout.drawer_list_item, menuItemNames));
 
 		if (savedInstanceState != null)
@@ -214,6 +214,10 @@ public class DrawerMenuActivity extends FragmentActivity implements LoginTaskCal
 				break;
 			case 3:
 				frag = new InvitationBaseFragment();
+				setDisplayedFragment(frag);
+				break;
+			case 4:
+				frag = new NotificationFragment();
 				setDisplayedFragment(frag);
 				break;
 			}

@@ -1,7 +1,6 @@
 package com.ese2013.mub;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import android.app.ActionBar;
@@ -16,14 +15,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.ese2013.mub.social.CurrentUser;
-import com.ese2013.mub.social.FriendRequest;
-import com.ese2013.mub.social.Invitation;
-import com.ese2013.mub.social.LoginService;
-import com.ese2013.mub.social.User;
-import com.ese2013.mub.util.parseDatabase.OnlineDBHandler;
-import com.parse.ParseException;
-
 public class InvitationBaseFragment extends Fragment implements ActionBar.TabListener{
 	private ViewPager viewPager;
 	private ActionBar actionBar;
@@ -31,7 +22,7 @@ public class InvitationBaseFragment extends Fragment implements ActionBar.TabLis
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-		setDBEntries();
+		
 		View view = inflater.inflate(R.layout.fragment_base_invitations, container, false);
 		viewPager = (ViewPager)view.findViewById(R.id.invitation_pager);
 		viewPager.setAdapter(new InvitationPageAdapter(getChildFragmentManager()));
@@ -124,38 +115,5 @@ public class InvitationBaseFragment extends Fragment implements ActionBar.TabLis
 	public void setPagerToFriends() {
 		viewPager.setCurrentItem(2);
 		actionBar.selectTab(actionBar.getTabAt(2));
-	}
-	/**
-	 * mock tha database
-	 */
-	private void setDBEntries(){
-		OnlineDBHandler handler = new OnlineDBHandler();
-		try {
-			CurrentUser user1 = new CurrentUser("hans_fehr@bluewin.ch", "hausi");
-			CurrentUser user2 = new CurrentUser("felix_müri@gmail.com", "luzifer");
-			CurrentUser user3 = new CurrentUser("ch-mörgeli@hotmail.com", "chregi");
-			
-			handler.registerIfNotExists(user1);
-			handler.registerIfNotExists(user2);
-			handler.registerIfNotExists(user2);
-			
-			handler.addAsFriend(LoginService.getLoggedInUser(), "hans_fehr@bluewin.ch");
-			handler.addAsFriend(LoginService.getLoggedInUser(), "felix_müri@gmail.com");
-			handler.sendFriendRequest(new FriendRequest(user3, LoginService.getLoggedInUser()));
-			
-			List<User> user = new ArrayList<User>();
-			user.add(user1);
-			handler.sendInvitation(new Invitation("bla", LoginService.getLoggedInUser(), user, "hi buddy", 1, new Date()));
-	
-			
-			
-			
-			
-			
-		} catch (ParseException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		
 	}
 }

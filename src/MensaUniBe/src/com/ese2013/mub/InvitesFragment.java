@@ -29,7 +29,6 @@ public class InvitesFragment extends Fragment implements IFragmentsInvitation {
 	
 	private ListView invitedList;
 	private InvitesListAdapter adapter;
-	private OnlineDBHandler onlineDBHandler;
 	
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,

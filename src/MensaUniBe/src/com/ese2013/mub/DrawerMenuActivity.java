@@ -43,7 +43,7 @@ public class DrawerMenuActivity extends FragmentActivity implements LoginTaskCal
 	private ListView drawerList;
 	private Spinner spinner;
 	private int selectedPosition = -1;
-	private static final int HOME_INDEX = 0, MAP_INDEX = 2, NOTIFICATION_INDEX = 3, NOTHING_INDEX = 4;
+	private static final int HOME_INDEX = 0, MAP_INDEX = 2, NOTIFICATION_INDEX = 3, NOTHING_INDEX = -1;
 	private static final String POSITION = "com.ese2013.mub.position";
 	private Model model;
 	private RegistrationDialog registrationDialog;

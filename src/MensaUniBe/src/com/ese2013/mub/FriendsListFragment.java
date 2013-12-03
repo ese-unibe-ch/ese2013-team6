@@ -133,7 +133,6 @@ public class FriendsListFragment extends Fragment {
 				deleteFriend.setOnClickListener(new DeleteFriendListener(friend));
 			}
 
-			friends.get(position);
 			return view;
 		}
 		

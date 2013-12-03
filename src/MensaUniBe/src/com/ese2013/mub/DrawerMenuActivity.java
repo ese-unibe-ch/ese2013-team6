@@ -162,19 +162,19 @@ public class DrawerMenuActivity extends FragmentActivity implements LoginTaskCal
 				case 0:
 					frag.setFavorites(true);
 					frag.setShowAllByDay(false);
-					setDisplayedFragmentWoutBack(frag);
+					setDisplayedFragmentWithoutBack(frag);
 					break;
 
 				case 1:
 					frag.setFavorites(false);
 					frag.setShowAllByDay(false);
-					setDisplayedFragmentWoutBack(frag);
+					setDisplayedFragmentWithoutBack(frag);
 					break;
 
 				case 2:
 					frag.setFavorites(true);
 					frag.setShowAllByDay(true);
-					setDisplayedFragmentWoutBack(frag);
+					setDisplayedFragmentWithoutBack(frag);
 					break;
 				}
 			}
@@ -210,7 +210,7 @@ public class DrawerMenuActivity extends FragmentActivity implements LoginTaskCal
 			switch (position) {
 			case 0:
 				frag = new HomeFragment();
-				setDisplayedFragmentWoutBack(frag);
+				setDisplayedFragmentWithoutBack(frag);
 				break;
 			case 1:
 				frag = new MensaListFragment();
@@ -251,7 +251,7 @@ public class DrawerMenuActivity extends FragmentActivity implements LoginTaskCal
 		menuSelectionBackStack.push(selectedPosition);
 	}
 
-	private void setDisplayedFragmentWoutBack(Fragment frag) {
+	private void setDisplayedFragmentWithoutBack(Fragment frag) {
 		FragmentManager fragmentManager = getSupportFragmentManager();
 		FragmentTransaction transaction = fragmentManager.beginTransaction();
 		transaction.replace(R.id.drawer_layout_frag_container, frag);
@@ -305,7 +305,7 @@ public class DrawerMenuActivity extends FragmentActivity implements LoginTaskCal
 			selectedPosition = NOTHING_INDEX;
 			drawerList.setItemChecked(selectedPosition, false);
 			Fragment frag = new SettingsFragment();
-			setDisplayedFragment(frag);
+			setDisplayedFragmentWithoutBack(frag);
 			return true;
 		}
 		return super.onOptionsItemSelected(item);

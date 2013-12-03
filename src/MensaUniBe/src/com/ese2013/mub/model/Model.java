@@ -79,6 +79,13 @@ public class Model extends Observable implements ModelCreationTaskCallback, Tran
 		return false;
 	}
 
+	public Mensa getMensaById(int mensaId) {
+		Mensa mensa = null;
+		for (Mensa m : mensas)
+			if (m.getId() == mensaId)
+				mensa = m;
+		return mensa;
+	}
 	public void saveFavorites() {
 		dataSource.open();
 		dataSource.storeFavorites(mensas);

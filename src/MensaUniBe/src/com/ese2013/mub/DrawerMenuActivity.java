@@ -71,9 +71,9 @@ public class DrawerMenuActivity extends FragmentActivity implements LoginTaskCal
 		SharedPrefsHandler prefs = new SharedPrefsHandler(this);
 		if (prefs.isFirstTime())
 			showRegistrationDialog();
-		else if (prefs.isUserRegistred()) 
+		else if (prefs.isUserRegistred())
 			new LoginTask(this).execute(prefs.getUserEmail());
-		
+
 	}
 
 	public void showRegistrationDialog() {
@@ -114,7 +114,7 @@ public class DrawerMenuActivity extends FragmentActivity implements LoginTaskCal
 		drawerLayout.setDrawerShadow(R.drawable.drawer_shadow, GravityCompat.START);
 		drawerList = (ListView) findViewById(R.id.left_drawer);
 
-		String[] menuItemNames = { "Home", "Mensa List", "Map", "Invitations" ,"Notifications" };
+		String[] menuItemNames = { "Home", "Mensa List", "Map", "Invitations", "Notifications" };
 		drawerList.setAdapter(new ArrayAdapter<String>(this, R.layout.drawer_list_item, menuItemNames));
 
 		if (savedInstanceState != null)
@@ -250,7 +250,7 @@ public class DrawerMenuActivity extends FragmentActivity implements LoginTaskCal
 		transaction.commit();
 		menuSelectionBackStack.push(selectedPosition);
 	}
-	
+
 	private void setDisplayedFragmentWoutBack(Fragment frag) {
 		FragmentManager fragmentManager = getSupportFragmentManager();
 		FragmentTransaction transaction = fragmentManager.beginTransaction();
@@ -278,16 +278,15 @@ public class DrawerMenuActivity extends FragmentActivity implements LoginTaskCal
 
 	@Override
 	public void onBackPressed() {
-		if (!menuSelectionBackStack.isEmpty()){
+		if (!menuSelectionBackStack.isEmpty()) {
 			int select = menuSelectionBackStack.pop();
 			selectedPosition = select;
 			if (select != NOTHING_INDEX)
 				drawerList.setItemChecked(select, true);
 		}
-		
 		super.onBackPressed();
 	}
-	
+
 	/**
 	 * Called after creation of the activity.
 	 */
@@ -306,7 +305,7 @@ public class DrawerMenuActivity extends FragmentActivity implements LoginTaskCal
 			selectedPosition = NOTHING_INDEX;
 			drawerList.setItemChecked(selectedPosition, false);
 			Fragment frag = new SettingsFragment();
-			setDisplayedFragment(frag);	
+			setDisplayedFragment(frag);
 			return true;
 		}
 		return super.onOptionsItemSelected(item);
@@ -348,6 +347,7 @@ public class DrawerMenuActivity extends FragmentActivity implements LoginTaskCal
 		mapFragment.setArguments(args);
 		setDisplayedFragment(mapFragment);
 		selectItem(MAP_INDEX, false);
+		getActionBar().setDisplayShowCustomEnabled(false);
 	}
 
 	@Override
@@ -358,10 +358,10 @@ public class DrawerMenuActivity extends FragmentActivity implements LoginTaskCal
 	}
 
 	public void createInvitation(Mensa mensa, Day day) {
-		
+
 	}
 
 	public void createInvitation() {
-		
+
 	}
 }

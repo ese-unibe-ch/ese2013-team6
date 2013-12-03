@@ -1,5 +1,6 @@
 package com.ese2013.mub.social;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import com.ese2013.mub.util.GetFriendsTask;
@@ -14,8 +15,8 @@ import com.parse.ParseException;
 
 public class SocialManager extends Observable implements GetSentInvitationsTaskCallback, GetFriendsTaskCallback,
 		GetInvitationsTaskCallback {
-	private List<Invitation> sentInvitations;
-	private List<Invitation> receivedInvitations;
+	private List<Invitation> sentInvitations = new ArrayList<Invitation>();
+	private List<Invitation> receivedInvitations = new ArrayList<Invitation>();
 	private static SocialManager instance;
 	private OnlineDBHandler onlineDBHandler = new OnlineDBHandler();
 

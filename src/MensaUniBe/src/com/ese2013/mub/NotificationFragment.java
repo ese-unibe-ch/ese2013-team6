@@ -3,7 +3,6 @@ package com.ese2013.mub;
 import java.util.List;
 import java.util.Locale;
 import java.util.Set;
-import java.util.TreeSet;
 
 import android.content.Context;
 import android.os.Bundle;
@@ -47,11 +46,6 @@ public class NotificationFragment extends Fragment implements Observer {
 
 		View view = inflater.inflate(R.layout.fragment_notification, container, false);
 
-		// if(criteriaList.isEmpty()){
-		// TextView text = (TextView) view.findViewById(R.id.no_crit_text);
-		// text.setText(R.string.noMatches);
-		// return view;
-		// }
 		notificationAdapter = new NotificationAdapter();
 
 		list = (ListView) view.findViewById(R.id.notification_list);
@@ -158,8 +152,7 @@ public class NotificationFragment extends Fragment implements Observer {
 			SharedPrefsHandler pref = new SharedPrefsHandler(NotificationFragment.this.getActivity());
 
 			// TODO get set of Criteria not just criteria;
-			Set<String> criteria = new TreeSet<String>();
-			criteria.add(pref.getNotificationFood());
+			Set<String> criteria = pref.getNotificationListItems();
 			boolean allMensas = pref.getNotificationMensas() == 0 ? true : false;
 
 			List<Mensa> mensas = allMensas ? Model.getInstance().getMensas() : Model.getInstance().getFavoriteMensas();

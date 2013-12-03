@@ -2,7 +2,6 @@ package com.ese2013.mub.service;
 
 import java.util.List;
 import java.util.Set;
-import java.util.TreeSet;
 
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -108,8 +107,7 @@ public class NotificationService extends Service implements Observer {
 	public List<Criteria> createCriteriaList() {
 		SharedPrefsHandler pref = new SharedPrefsHandler(this);
 
-		Set<String> criteria = new TreeSet<String>();
-		criteria.add(pref.getNotificationFood());
+		Set<String> criteria = pref.getNotificationListItems();
 		boolean allMensas = pref.getNotificationMensas() == 0 ? true : false;
 		CriteriaMatcher criteriaMatcher = new CriteriaMatcher();
 		List<Mensa> mensas = allMensas ? Model.getInstance().getMensas() : Model.getInstance().getFavoriteMensas();

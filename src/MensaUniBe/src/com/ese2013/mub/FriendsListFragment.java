@@ -3,7 +3,9 @@ package com.ese2013.mub;
 import java.util.ArrayList;
 import java.util.List;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -11,9 +13,9 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -29,24 +31,25 @@ public class FriendsListFragment extends Fragment implements
 	
 	private ListView friends;
 	private FriendsListAdapter adapter;
+	private LayoutInflater inflater;
 	
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
+		this.inflater = inflater;
 		View view = inflater.inflate(R.layout.fragment_friends, container,false);
 		friends = (ListView) view.findViewById(R.id.friends_list);
 		adapter = new FriendsListAdapter();
 		friends.setAdapter(adapter);
 		
-		View emptyView = inflater.inflate(R.layout.empty_friends_list_view, null);
-		TextView showMessage = (TextView)emptyView.findViewById(R.id.no_friends_text_view);
+		TextView showMessage = (TextView)view.findViewById(R.id.no_friends_text_view);
 		
 		if(LoginService.isLoggedIn())
 			showMessage.setText(R.string.no_friends);
 		else
 			showMessage.setText(R.string.not_loged_in);
 		
-		friends.setEmptyView(emptyView);
+		friends.setEmptyView(showMessage);
 		
 		setHasOptionsMenu(true);
 		return view;
@@ -57,7 +60,8 @@ public class FriendsListFragment extends Fragment implements
 	}
 	@Override
 	public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-		inflater.inflate(R.menu.friend_list_menu, menu);
+		if(LoginService.isLoggedIn())
+			inflater.inflate(R.menu.friend_list_menu, menu);
 	}
 	
 	@Override
@@ -65,9 +69,22 @@ public class FriendsListFragment extends Fragment implements
 		switch(item.getItemId()){
 		case R.id.add_friend_button:
 			
-			
 			//TODO
-			((DrawerMenuActivity) getActivity()).goToAddFriendFragment();
+			View dialogView = inflater.inflate(R.layout.add_friends_dialog, null);
+			EditText edit = (EditText) dialogView.findViewById(R.id.enter_name);
+			AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+			builder.setView(dialogView);
+			builder.setTitle(R.string.add_friend);
+			builder.setNegativeButton("Cancel", new android.content.DialogInterface.OnClickListener() {
+				
+				@Override
+				public void onClick(DialogInterface dialog, int which) {
+					dialog.dismiss();
+				}
+			});
+			builder.setPositiveButton("OK", new PositiveButtonListener(edit, getActivity()));
+			builder.create().show();
+		
 			return true;
 		default: 
 			return super.onOptionsItemSelected(item);
@@ -124,23 +141,9 @@ public class FriendsListFragment extends Fragment implements
 				TextView requestName = (TextView)view.findViewById(R.id.friend_name_request);
 				requestName.setText(friendRequest.getFrom().getNick());
 				ImageButton cancelRequestButton = (ImageButton)view.findViewById(R.id.cancel_request);
-				cancelRequestButton.setOnClickListener(new OnClickListener() {
-					
-					@Override
-					public void onClick(View v) {
-						//onlineDBHandler.
-						notifyDataSetChanged();
-					}
-				});
+				cancelRequestButton.setOnClickListener(new AnswerFriendRequest(friendRequest, false));
 				ImageButton acceptRequestButton = (ImageButton)view.findViewById(R.id.accept_request);
-				acceptRequestButton.setOnClickListener(new OnClickListener() {
-					
-					@Override
-					public void onClick(View v) {
-						// TODO acceptReqest;
-						notifyDataSetChanged();
-					}
-				});
+				acceptRequestButton.setOnClickListener(new AnswerFriendRequest(friendRequest, true));
 	    	}
 			else{
 				view = inflater.inflate(R.layout.friend_entry_layout, null);
@@ -148,15 +151,8 @@ public class FriendsListFragment extends Fragment implements
 				TextView friendName = (TextView)view.findViewById(R.id.friend_name);
 				friendName.setText(friend.getNick());
 				ImageButton deleteFriend = (ImageButton)view.findViewById(R.id.delete_friend);
-				deleteFriend.setOnClickListener(new OnClickListener() {
-					
-					@Override
-					public void onClick(View v) {
-						// Delete!
-						notifyDataSetChanged();
-						
-					}
-				});
+				//TODO do we need a delete friends function?
+				deleteFriend.setOnClickListener(new DeleteFriendListener(friend));
 			}
 	    	
 			friends.get(position);

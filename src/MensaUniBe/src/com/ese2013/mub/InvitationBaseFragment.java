@@ -22,6 +22,7 @@ public class InvitationBaseFragment extends Fragment implements ActionBar.TabLis
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+		
 		View view = inflater.inflate(R.layout.fragment_base_invitations, container, false);
 		viewPager = (ViewPager)view.findViewById(R.id.invitation_pager);
 		viewPager.setAdapter(new InvitationPageAdapter(getChildFragmentManager()));

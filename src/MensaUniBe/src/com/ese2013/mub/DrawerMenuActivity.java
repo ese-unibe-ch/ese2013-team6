@@ -106,7 +106,7 @@ public class DrawerMenuActivity extends FragmentActivity implements LoginTaskCal
 		drawerLayout.setDrawerShadow(R.drawable.drawer_shadow, GravityCompat.START);
 		drawerList = (ListView) findViewById(R.id.left_drawer);
 
-		String[] menuItemNames = { "Home", "Mensa List", "Map", "Notifications" };
+		String[] menuItemNames = { "Home", "Mensa List", "Map", "Invitations" ,"Notifications" };
 		drawerList.setAdapter(new ArrayAdapter<String>(this, R.layout.drawer_list_item, menuItemNames));
 
 		if (savedInstanceState != null)
@@ -216,6 +216,10 @@ public class DrawerMenuActivity extends FragmentActivity implements LoginTaskCal
 				frag = new InvitationBaseFragment();
 				setDisplayedFragment(frag);
 				break;
+			case 4:
+				frag = new NotificationFragment();
+				setDisplayedFragment(frag);
+				break;
 			}
 		}
 		selectedPosition = position;
@@ -323,17 +327,5 @@ public class DrawerMenuActivity extends FragmentActivity implements LoginTaskCal
 		if (selectedPosition != -1)
 			outState.putInt(POSITION, selectedPosition);
 		super.onSaveInstanceState(outState);
-	}
-
-	public void goToAddFriendFragment() {
-		setDisplayedFragment(new AddFriendFragment());
-		selectedPosition = Integer.MAX_VALUE;
-		
-	}
-
-	public void goBackToFriendsList() {
-		InvitationBaseFragment frag = new InvitationBaseFragment();
-		frag.setPagerToFriends();
-		setDisplayedFragment(frag);
 	}
 }

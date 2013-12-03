@@ -36,13 +36,17 @@ public class InvitedFragment extends Fragment implements IFragmentsInvitation {
 		adapter = new InvitedListAdapter();
 		View view = inflater.inflate(R.layout.fragment_invited, null);
 		invitedList = (ListView) view.findViewById(R.id.invited_list);
-		View emptyView = inflater.inflate(R.layout.invititation_empty_view, null);
-		TextView showMessage = (TextView)emptyView.findViewById(R.id.show_message);
 		
-		showMessage.setText((LoginService.isLoggedIn())? R.string.no_invites : R.string.not_loged_in);
+	
+		TextView showMessage = (TextView)view.findViewById(R.id.show_message);
+		if(LoginService.isLoggedIn())
+			showMessage.setText(R.string.no_friends);
+		else
+			showMessage.setText(R.string.not_loged_in);
+		invitedList.setEmptyView(showMessage);
 		
-		invitedList.setEmptyView(emptyView);
 		invitedList.setAdapter(adapter);
+		adapter.fill();
 		return view;
 	}
 
@@ -61,6 +65,17 @@ public class InvitedFragment extends Fragment implements IFragmentsInvitation {
 				if(LoginService.isLoggedIn())
 					invitations = new OnlineDBHandler().getRetrievedInvitations(LoginService.getLoggedInUser());
 			} catch (ParseException e) {
+				invitations.clear();
+				e.printStackTrace();
+			}
+		}
+
+		public void fill() {
+			try {
+				if(LoginService.isLoggedIn())
+					invitations = new OnlineDBHandler().getRetrievedInvitations(LoginService.getLoggedInUser());
+			} catch (ParseException e) {
+				invitations.clear();
 				e.printStackTrace();
 			}
 		}
@@ -149,16 +164,24 @@ public class InvitedFragment extends Fragment implements IFragmentsInvitation {
 		public int getCount() {
 			return invitations.size();
 		}
-
+		@Override
+		public void notifyDataSetChanged() {
+			try {
+				if(LoginService.isLoggedIn())
+					invitations = new OnlineDBHandler().getRetrievedInvitations(LoginService.getLoggedInUser());
+			} catch (ParseException e) {
+				invitations.clear();
+				e.printStackTrace();
+			}
+			super.notifyDataSetChanged();
+		}
 		@Override
 		public Object getItem(int position) {
-			// TODO Auto-generated method stub
-			return null;
+			return invitations.get(position);
 		}
 
 		@Override
 		public long getItemId(int position) {
-			// TODO Auto-generated method stub
 			return position;
 		}
 	}

@@ -5,6 +5,7 @@
 package com.ese2013.mub;
 
 import java.util.ArrayList;
+import java.util.TreeSet;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -61,7 +62,7 @@ public class SettingsFragment extends Fragment {
 		notificationSpinner.setSelection(prefs.getNotificationMensas());
 		notificationEditText.setText(prefs.getNotificationFood());
 		
-		notificationListItems = prefs.getNotificationListItems();
+		notificationListItems = new ArrayList<String>(prefs.getNotificationListItems());
 		adapter = new SettingsListAdapter(getActivity().getApplicationContext(), notificationListItems);
 		notificationList.setAdapter(adapter);
 		
@@ -129,7 +130,7 @@ public class SettingsFragment extends Fragment {
 				R.id.notification_spinner)).getSelectedItemPosition());
 		//prefs.setNotificationFood(((EditText) this.getView().findViewById(
 			//	R.id.edit_text_notification)).getText().toString());
-		prefs.setNotificationListItems(notificationListItems);
+		prefs.setNotificationListItems(new TreeSet<String>(notificationListItems));
 	}
 
 }

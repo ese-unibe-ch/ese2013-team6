@@ -36,7 +36,7 @@
         android:layout_below="@+id/accept_invitiation"
         android:background="?android:attr/selectableItemBackground"
         android:contentDescription="@string/cancel_request"
-        android:src="@drawable/cancel" />
+        />
 
     <ImageButton
         android:id="@+id/accept_invitiation"
@@ -47,6 +47,6 @@
         android:layout_marginRight="14dp"
         android:background="?android:attr/selectableItemBackground"
         android:contentDescription="@string/accept_request"
-        android:src="@drawable/accept" />
+       />
 
 </RelativeLayout>

@@ -24,10 +24,10 @@ import com.ese2013.mub.model.Mensa;
 import com.ese2013.mub.model.Model;
 import com.ese2013.mub.social.Invitation;
 import com.ese2013.mub.social.LoginService;
-import com.ese2013.mub.util.GetSentInvitationsTask;
-import com.ese2013.mub.util.GetSentInvitationsTaskCallback;
+import com.ese2013.mub.social.SocialManager;
+import com.ese2013.mub.util.Observer;
 
-public class InvitesFragment extends Fragment{
+public class InvitesFragment extends Fragment {
 
 	private ListView invitedList;
 	private InvitesListAdapter adapter;
@@ -48,11 +48,13 @@ public class InvitesFragment extends Fragment{
 		invitedList.setAdapter(adapter);
 		return view;
 	}
+
 	@Override
 	public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
 		if (LoginService.isLoggedIn())
 			inflater.inflate(R.menu.invites_menu, menu);
 	}
+
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch (item.getItemId()) {
@@ -63,20 +65,15 @@ public class InvitesFragment extends Fragment{
 			return false;
 		}
 	}
-	class InvitesListAdapter extends BaseAdapter implements GetSentInvitationsTaskCallback {
+
+	class InvitesListAdapter extends BaseAdapter implements Observer {
 
 		private LayoutInflater inflater;
 		private List<Invitation> invitations = new ArrayList<Invitation>();
 
 		public InvitesListAdapter() {
-			if (LoginService.isLoggedIn())
-				new GetSentInvitationsTask(this).execute(LoginService.getLoggedInUser());
-		}
-
-		@Override
-		public void onTaskFinished(List<Invitation> invitations) {
-			this.invitations = invitations;
-			notifyDataSetChanged();
+			SocialManager.getInstance().addObserver(this);
+			SocialManager.getInstance().loadSentInvites();
 		}
 
 		@Override
@@ -135,14 +132,18 @@ public class InvitesFragment extends Fragment{
 
 		@Override
 		public Object getItem(int position) {
-			// TODO Auto-generated method stub
 			return invitations.get(position);
 		}
 
 		@Override
 		public long getItemId(int position) {
-			// TODO Auto-generated method stub
 			return position;
+		}
+
+		@Override
+		public void onNotifyChanges() {
+			this.invitations = SocialManager.getInstance().getSentInvitations();
+			notifyDataSetChanged();
 		}
 	}
 }

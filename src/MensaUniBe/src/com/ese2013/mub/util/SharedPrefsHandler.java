@@ -1,10 +1,10 @@
 package com.ese2013.mub.util;
 
-import java.util.ArrayList;
+import java.util.Set;
+import java.util.TreeSet;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.util.Log;
 
 /**
  * Encapsulates access to shared preferences. Needs a context to get the shared
@@ -13,7 +13,8 @@ import android.util.Log;
 public class SharedPrefsHandler {
 	private static final String FIRST_TIME = "first_time", USERMAIL = "usermail", NOTIFICATION_FOOD = "notificationFood",
 			NOTIFICATION_MENSAS = "notificationMensas", DO_NOTIFICATION = "doNotification", LANGUAGE = "language",
-			DO_TRANSLATION = "doTranslation";
+			DO_TRANSLATION = "doTranslation", CRITERIA_SET = "citeriaSet";
+	
 	private Context context;
 
 	public SharedPrefsHandler(Context context) {
@@ -44,14 +45,8 @@ public class SharedPrefsHandler {
 		return getPrefs(context).getString(NOTIFICATION_FOOD, "");
 	}
 	
-	public ArrayList<String> getNotificationListItems(){
-		ArrayList<String> loadedNotificationList = new ArrayList<String>();
-		int size = getPrefs(context).getInt("notificationList_size", 0);
-	    for(int i=0;i<size;i++) {
-	    	String str = getPrefs(context).getString("notificationItem_"+i, "fail");
-	    	loadedNotificationList.add(str);
-	    }
-	    return loadedNotificationList;
+	public Set<String> getNotificationListItems(){
+		return getPrefs(context).getStringSet(CRITERIA_SET, new TreeSet<String>());
 	}
 
 	public void setDoTranslation(boolean doTranslation) {
@@ -74,14 +69,9 @@ public class SharedPrefsHandler {
 		getPrefs(context).edit().putString(NOTIFICATION_FOOD, notificationFood).commit();
 	}
 	
-	public void setNotificationListItems(ArrayList<String> notificationListItems){
-		getPrefs(context).edit().putInt("notificationList_size", notificationListItems.size()).commit();
-		int i = 0;
-		for(String notificationListItem : notificationListItems) {
-	        getPrefs(context).edit().putString("notificationItem_" + i, notificationListItem).commit();
-	        Log.d("prefs", "save string: "+notificationListItem);
-	        i++;
-		}
+	public void setNotificationListItems(Set<String> notificationListItems){
+		getPrefs(context).edit().putStringSet(CRITERIA_SET, notificationListItems).commit();
+		
 	}
 
 	public String getUserEmail() {

@@ -3,6 +3,7 @@ package com.ese2013.mub.social;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.ese2013.mub.social.Invitation.Response;
 import com.ese2013.mub.util.GetFriendsTask;
 import com.ese2013.mub.util.GetFriendsTaskCallback;
 import com.ese2013.mub.util.GetInvitationsTask;
@@ -63,7 +64,10 @@ public class SocialManager extends Observable implements GetSentInvitationsTaskC
 		currentUser().getFriends().remove(user);
 		notifyChanges();
 	}
-
+	public void answerInvitation(Invitation invitation, Response response) throws ParseException{
+		new OnlineDBHandler().answerInvitation(invitation, response, currentUser());
+		notifyChanges();
+	}
 	public void loadInvites() {
 		if (LoginService.isLoggedIn())
 			new GetInvitationsTask(this).execute(LoginService.getLoggedInUser());

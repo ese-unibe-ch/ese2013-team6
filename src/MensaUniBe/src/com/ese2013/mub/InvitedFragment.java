@@ -93,8 +93,11 @@ public class InvitedFragment extends Fragment {
 		}
 
 		private void setUpCancelButton(View view, Invitation invite) {
-			ImageButton cancelRequestButton = (ImageButton) view.findViewById(R.id.cancel_invitation);
-			cancelRequestButton.setOnClickListener(new CancelInviteRequest(invite));
+			if (invite.getResponseOf(LoginService.getLoggedInUser()) == Invitation.Response.UNKNOWN) {
+				ImageButton cancelRequestButton = (ImageButton) view.findViewById(R.id.cancel_invitation);
+				cancelRequestButton.setImageResource(R.drawable.cancel);
+				cancelRequestButton.setOnClickListener(new CancelInviteRequest(invite));
+			}
 		}
 
 		private void setUpAcceptButton(View view, Invitation invite) {

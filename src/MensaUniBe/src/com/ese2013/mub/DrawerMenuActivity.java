@@ -69,11 +69,15 @@ public class DrawerMenuActivity extends FragmentActivity implements LoginTaskCal
 
 	private void handleLogin() {
 		SharedPrefsHandler prefs = new SharedPrefsHandler(this);
-		if (prefs.isFirstTime()) 
-			registrationDialog = new RegistrationDialog(this);
+		if (prefs.isFirstTime())
+			showRegistrationDialog();
 		else if (prefs.isUserRegistred()) 
 			new LoginTask(this).execute(prefs.getUserEmail());
 		
+	}
+
+	public void showRegistrationDialog() {
+		registrationDialog = new RegistrationDialog(this);
 	}
 
 	@Override
@@ -158,19 +162,19 @@ public class DrawerMenuActivity extends FragmentActivity implements LoginTaskCal
 				case 0:
 					frag.setFavorites(true);
 					frag.setShowAllByDay(false);
-					setDisplayedFragment(frag);
+					setDisplayedFragmentWoutBack(frag);
 					break;
 
 				case 1:
 					frag.setFavorites(false);
 					frag.setShowAllByDay(false);
-					setDisplayedFragment(frag);
+					setDisplayedFragmentWoutBack(frag);
 					break;
 
 				case 2:
 					frag.setFavorites(true);
 					frag.setShowAllByDay(true);
-					setDisplayedFragment(frag);
+					setDisplayedFragmentWoutBack(frag);
 					break;
 				}
 			}
@@ -206,7 +210,7 @@ public class DrawerMenuActivity extends FragmentActivity implements LoginTaskCal
 			switch (position) {
 			case 0:
 				frag = new HomeFragment();
-				setDisplayedFragment(frag);
+				setDisplayedFragmentWoutBack(frag);
 				break;
 			case 1:
 				frag = new MensaListFragment();
@@ -246,6 +250,14 @@ public class DrawerMenuActivity extends FragmentActivity implements LoginTaskCal
 		transaction.commit();
 		menuSelectionBackStack.push(selectedPosition);
 	}
+	
+	private void setDisplayedFragmentWoutBack(Fragment frag) {
+		FragmentManager fragmentManager = getSupportFragmentManager();
+		FragmentTransaction transaction = fragmentManager.beginTransaction();
+		transaction.replace(R.id.drawer_layout_frag_container, frag);
+		transaction.commit();
+		menuSelectionBackStack.push(selectedPosition);
+	}
 
 	/**
 	 * Called whenever we call invalidateOptionsMenu() Hides all action par menu
@@ -266,10 +278,13 @@ public class DrawerMenuActivity extends FragmentActivity implements LoginTaskCal
 
 	@Override
 	public void onBackPressed() {
-		int select = menuSelectionBackStack.pop();
-		selectedPosition = select;
-		if (select != NOTHING_INDEX)
-			drawerList.setItemChecked(select, true);
+		if (!menuSelectionBackStack.isEmpty()){
+			int select = menuSelectionBackStack.pop();
+			selectedPosition = select;
+			if (select != NOTHING_INDEX)
+				drawerList.setItemChecked(select, true);
+		}
+		
 		super.onBackPressed();
 	}
 	

@@ -28,12 +28,13 @@
     <string name="map_travelmode_bicycle">Bicycle</string>
 
     <string-array name="settings_languages">
-        <item>German</item>
         <item>English</item>
+        <item>French</item>
+        <item>Italian</item>
     </string-array>
 
     <string name="title_translation">Translation</string>
-    <string name="language_switch">Translate menus to english</string>
+    <string name="language_switch">Translate menus to English</string>
     <string name="language_spinner">Choose language</string>
     <string name="title_notifications">Notifications</string>
     <string name="notification_switch">Notify me</string>
@@ -72,4 +73,6 @@
 	<string name="no_friends">You have no Friends yet! You can add friends by clicking the addButton on Top!</string>
 	<string name="enter_friend">Enter E-Mail</string>
 	<string name="search_friend">search friend</string>
+	<string name="title_registration">Register to use social functionality</string>
+	
 </resources>

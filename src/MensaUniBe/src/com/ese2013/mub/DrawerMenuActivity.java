@@ -324,16 +324,4 @@ public class DrawerMenuActivity extends FragmentActivity implements LoginTaskCal
 			outState.putInt(POSITION, selectedPosition);
 		super.onSaveInstanceState(outState);
 	}
-
-	public void goToAddFriendFragment() {
-		setDisplayedFragment(new AddFriendFragment());
-		selectedPosition = Integer.MAX_VALUE;
-		
-	}
-
-	public void goBackToFriendsList() {
-		InvitationBaseFragment frag = new InvitationBaseFragment();
-		frag.setPagerToFriends();
-		setDisplayedFragment(frag);
-	}
 }

@@ -8,13 +8,20 @@
     <TextView
         android:id="@+id/friend_name"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginTop="27dp"
+        android:textSize="20sp" />
 
     <ImageButton
         android:id="@+id/delete_friend"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_alignRight="@+id/friend_name"
+        android:layout_alignTop="@+id/friend_name"
         android:background="?android:attr/selectableItemBackground"
-        android:contentDescription="@string/delete_friend" />
+        android:contentDescription="@string/delete_friend"
+        android:src="@drawable/cancel" />
 
 </RelativeLayout>

@@ -12,11 +12,6 @@
         android:hint="@string/enter_friend"
         android:inputType="text" />
 
-    <ImageButton
-        android:id="@+id/search_friend"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:contentDescription="@string/search_friend"
-        android:src="@drawable/search_logo" />
+  
 
 </LinearLayout>

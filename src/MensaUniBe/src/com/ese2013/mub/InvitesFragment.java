@@ -29,6 +29,7 @@ public class InvitesFragment extends Fragment implements IFragmentsInvitation {
 	
 	private ListView invitedList;
 	private InvitesListAdapter adapter;
+	private OnlineDBHandler onlineDBHandler;
 	
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -36,12 +37,14 @@ public class InvitesFragment extends Fragment implements IFragmentsInvitation {
 		adapter = new InvitesListAdapter();
 		View view = inflater.inflate(R.layout.fragment_invites, null);
 		invitedList = (ListView) view.findViewById(R.id.invites_list);
-		View emptyView = inflater.inflate(R.layout.invititation_empty_view, null);
-		TextView showMessage = (TextView)emptyView.findViewById(R.id.show_message);
+		TextView showMessage = (TextView)view.findViewById(R.id.show_message);
 		
-		showMessage.setText((LoginService.isLoggedIn())? R.string.no_invites : R.string.not_loged_in);
+		if(LoginService.isLoggedIn())
+			showMessage.setText(R.string.no_friends);
+		else
+			showMessage.setText(R.string.not_loged_in);
 		
-		invitedList.setEmptyView(emptyView);
+		invitedList.setEmptyView(showMessage);
 		invitedList.setAdapter(adapter);
 		return view;
 	}
@@ -101,7 +104,7 @@ public class InvitesFragment extends Fragment implements IFragmentsInvitation {
 			Day day = new Day(invite.getTime());
 			SimpleDateFormat timeOfDay = new SimpleDateFormat("HH:mm",
 					Locale.getDefault());
-			SimpleDateFormat sdf = new SimpleDateFormat("dd.MM",
+			SimpleDateFormat sdf = new SimpleDateFormat("dd.MMMM",
 					Locale.getDefault());
 			if (day.equals(Day.today()))
 				whenTextView.setText(R.string.today

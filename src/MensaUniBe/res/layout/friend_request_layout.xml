@@ -9,19 +9,26 @@
         android:id="@+id/cancel_request"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:contentDescription="@string/cancel_request"
+        android:layout_alignLeft="@+id/accept_request"
         android:background="?android:attr/selectableItemBackground"
+        android:contentDescription="@string/cancel_request"
         android:src="@drawable/cancel" />
+
+    <TextView
+        android:id="@+id/friend_name_request"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/cancel_request"
+        android:layout_alignParentLeft="true" />
+
     <ImageButton
         android:id="@+id/accept_request"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:contentDescription="@string/accept_request"
+        android:layout_alignRight="@+id/friend_name_request"
+        android:layout_below="@+id/cancel_request"
         android:background="?android:attr/selectableItemBackground"
+        android:contentDescription="@string/accept_request"
         android:src="@drawable/accept" />
-    <TextView
-        android:id="@+id/friend_name_request"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
 
 </RelativeLayout>

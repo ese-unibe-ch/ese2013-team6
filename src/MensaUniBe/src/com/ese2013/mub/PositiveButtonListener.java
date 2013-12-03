@@ -22,6 +22,7 @@ public class PositiveButtonListener implements OnClickListener {
 	public void onClick(DialogInterface dialog, int which) {
 		try {
 			SocialManager.getInstance().sendFriendRequest(emailEdit.getText().toString());
+			Toast.makeText(context, "Friend request sent", Toast.LENGTH_SHORT).show();
 		} catch (ParseException e) {
 			Toast.makeText(context, "Friend not Found", Toast.LENGTH_SHORT).show();
 		}

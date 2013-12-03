@@ -42,4 +42,11 @@ public class CurrentUser extends User {
 	public void addToRated(Menu menu) {
 		ratedMenuIds.add(menu.getId());
 	}
+
+	public boolean hasFriendWith(String email) {
+		for (User u : friends)
+			if (u.getEmail().equals(email))
+				return true;
+		return false;
+	}
 }

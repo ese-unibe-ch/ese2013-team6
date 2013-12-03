@@ -64,7 +64,6 @@ public class FriendsListFragment extends Fragment {
 		switch (item.getItemId()) {
 		case R.id.add_friend_button:
 
-			// TODO
 			View dialogView = inflater.inflate(R.layout.add_friends_dialog, null);
 			EditText edit = (EditText) dialogView.findViewById(R.id.enter_name);
 			AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
@@ -158,6 +157,9 @@ public class FriendsListFragment extends Fragment {
 		public void onNotifyChanges() {
 			friends = LoginService.getLoggedInUser().getFriends();
 			requests = LoginService.getLoggedInUser().getFriendRequests();
+			for(User u :friends)
+				System.out.println(u.getEmail());
+			System.out.println(friends.size());
 			notifyDataSetChanged();
 		}
 	}

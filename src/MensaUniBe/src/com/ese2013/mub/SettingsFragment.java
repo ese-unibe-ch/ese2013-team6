@@ -4,6 +4,8 @@
 
 package com.ese2013.mub;
 
+import java.util.ArrayList;
+
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -12,6 +14,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.EditText;
+import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.Switch;
 import android.widget.Toast;
@@ -24,6 +27,8 @@ import com.memetix.mst.language.Language;
 public class SettingsFragment extends Fragment {
 
 	private SharedPrefsHandler prefs;
+	private ArrayList<String> notificationListItems;
+	private SettingsListAdapter adapter;
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -42,19 +47,35 @@ public class SettingsFragment extends Fragment {
 				.findViewById(R.id.notification_switch);
 		Spinner notificationSpinner = (Spinner) view
 				.findViewById(R.id.notification_spinner);
-		EditText notificationEditText = ((EditText) view
+		final EditText notificationEditText = ((EditText) view
 				.findViewById(R.id.edit_text_notification));
+		ListView notificationList = (ListView) view.findViewById(R.id.notification_list);
 		
 		addReregisterButton(view);
 
 		languageSwitch.setChecked(prefs.getDoTranslation());
-
-		setUpOnChangeListerner(languageSwitch);
-
+		setUpOnChangeListener(languageSwitch);
+		
 		// languageSpinner.setSelection(prefs.getLanguage());
 		notificationSwitch.setChecked(prefs.getDoNotification());
 		notificationSpinner.setSelection(prefs.getNotificationMensas());
 		notificationEditText.setText(prefs.getNotificationFood());
+		
+		notificationListItems = prefs.getNotificationListItems();
+		adapter = new SettingsListAdapter(getActivity().getApplicationContext(), notificationListItems);
+		notificationList.setAdapter(adapter);
+		
+		Button plusButton = (Button) view.findViewById(R.id.plus_button);
+		plusButton.setOnClickListener(new View.OnClickListener() {
+		    public void onClick(View v) {
+		    	if ( !notificationEditText.getText().toString().equals("") ){
+		    		notificationListItems.add(notificationEditText.getText().toString());
+			        adapter.notifyDataSetChanged();
+			        notificationEditText.setText("");
+		    	}
+		    }
+		});
+				
 		return view;
 	}
 
@@ -71,7 +92,7 @@ public class SettingsFragment extends Fragment {
 		});
 	}
 
-	private void setUpOnChangeListerner(Switch languageSwitch) {
+	private void setUpOnChangeListener(Switch languageSwitch) {
 		languageSwitch
 				.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
 					public void onCheckedChanged(CompoundButton buttonView,
@@ -106,8 +127,9 @@ public class SettingsFragment extends Fragment {
 				R.id.notification_switch)).isChecked());
 		prefs.setNotificationMensas(((Spinner) this.getView().findViewById(
 				R.id.notification_spinner)).getSelectedItemPosition());
-		prefs.setNotificationFood(((EditText) this.getView().findViewById(
-				R.id.edit_text_notification)).getText().toString());
+		//prefs.setNotificationFood(((EditText) this.getView().findViewById(
+			//	R.id.edit_text_notification)).getText().toString());
+		prefs.setNotificationListItems(notificationListItems);
 	}
 
 }

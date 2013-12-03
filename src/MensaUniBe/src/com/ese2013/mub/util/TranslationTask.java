@@ -25,6 +25,12 @@ public class TranslationTask extends AbstractAsyncTask<Void, Void, Void> {
 		for (TranslationTaskCallback callback : callbacks)
 			this.callbacks.add(callback);
 	}
+	
+	public TranslationTask(MenuManager menuManager, Language newLang) {
+		this.newLang = newLang;
+		this.menuManager = menuManager;
+		this.menus = menuManager.getMenus();
+	}
 
 	public TranslationTask(Collection<Menu> menus, Language newLang) {
 		this.newLang = newLang;
@@ -68,6 +74,7 @@ public class TranslationTask extends AbstractAsyncTask<Void, Void, Void> {
 			menuManager.setTranslationsAvailable(false);
 			logException("TRANSLATION", "Could not translate");
 		}
+		System.out.println("TransTask finished");
 		for (TranslationTaskCallback callback : callbacks)
 			callback.onTaskFinished(this);
 	}

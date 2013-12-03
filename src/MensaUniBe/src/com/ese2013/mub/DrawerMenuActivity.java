@@ -269,10 +269,13 @@ public class DrawerMenuActivity extends FragmentActivity implements LoginTaskCal
 
 	@Override
 	public void onBackPressed() {
-		int select = menuSelectionBackStack.pop();
-		selectedPosition = select;
-		if (select != NOTHING_INDEX)
-			drawerList.setItemChecked(select, true);
+		if (!menuSelectionBackStack.isEmpty()){
+			int select = menuSelectionBackStack.pop();
+			selectedPosition = select;
+			if (select != NOTHING_INDEX)
+				drawerList.setItemChecked(select, true);
+		}
+		
 		super.onBackPressed();
 	}
 	

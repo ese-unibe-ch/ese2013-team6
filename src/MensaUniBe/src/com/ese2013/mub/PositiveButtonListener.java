@@ -6,6 +6,7 @@ import android.content.DialogInterface.OnClickListener;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.ese2013.mub.social.FriendRequest;
 import com.ese2013.mub.social.LoginService;
 import com.ese2013.mub.social.User;
 import com.ese2013.mub.util.parseDatabase.OnlineDBHandler;
@@ -33,11 +34,11 @@ public class PositiveButtonListener implements OnClickListener {
 			Toast.makeText(context, "Friend not Found", Toast.LENGTH_SHORT).show();
 		}
 		try {
-			onlineDBHandler.addAsFriend(LoginService.getLoggedInUser(), email);
+			onlineDBHandler.sendFriendRequest(new FriendRequest(LoginService.getLoggedInUser(), friend));
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-
+		// TODO implement to SocialManager.getInstance().
 	}
 
 }

@@ -22,11 +22,9 @@ import android.widget.TextView;
 
 import com.ese2013.mub.social.FriendRequest;
 import com.ese2013.mub.social.LoginService;
+import com.ese2013.mub.social.SocialManager;
 import com.ese2013.mub.social.User;
-import com.ese2013.mub.util.GetFriendsTask;
-import com.ese2013.mub.util.GetFriendsTaskCallback;
-import com.ese2013.mub.util.parseDatabase.OnlineDBHandler;
-import com.parse.ParseException;
+import com.ese2013.mub.util.Observer;
 
 public class FriendsListFragment extends Fragment {
 
@@ -100,16 +98,15 @@ public class FriendsListFragment extends Fragment {
 		super.onDestroy();
 	}
 
-	private class FriendsListAdapter extends BaseAdapter implements GetFriendsTaskCallback {
+	private class FriendsListAdapter extends BaseAdapter implements Observer {
 		private List<User> friends = new ArrayList<User>();
 		private List<FriendRequest> requests = new ArrayList<FriendRequest>();
 		private LayoutInflater inflater;
-		private OnlineDBHandler onlineDBHandler = new OnlineDBHandler();
 
 		public FriendsListAdapter() {
 			super();
-			if (LoginService.isLoggedIn())
-				new GetFriendsTask(this).execute(LoginService.getLoggedInUser());
+			SocialManager.getInstance().addObserver(this);
+			SocialManager.getInstance().loadFriends();
 		}
 
 		@Override
@@ -124,23 +121,22 @@ public class FriendsListFragment extends Fragment {
 				TextView requestName = (TextView) view.findViewById(R.id.friend_name_request);
 				requestName.setText(friendRequest.getFrom().getNick());
 				ImageButton cancelRequestButton = (ImageButton) view.findViewById(R.id.cancel_request);
-				cancelRequestButton.setOnClickListener(new AnswerFriendRequest(friendRequest, false));
+				cancelRequestButton.setOnClickListener(new AnswerFriendRequestListener(friendRequest, false));
 				ImageButton acceptRequestButton = (ImageButton) view.findViewById(R.id.accept_request);
-				acceptRequestButton.setOnClickListener(new AnswerFriendRequest(friendRequest, true));
+				acceptRequestButton.setOnClickListener(new AnswerFriendRequestListener(friendRequest, true));
 			} else {
 				view = inflater.inflate(R.layout.friend_entry_layout, null);
 				User friend = friends.get(position - requests.size());
 				TextView friendName = (TextView) view.findViewById(R.id.friend_name);
 				friendName.setText(friend.getNick());
 				ImageButton deleteFriend = (ImageButton) view.findViewById(R.id.delete_friend);
-				// TODO do we need a delete friends function?
 				deleteFriend.setOnClickListener(new DeleteFriendListener(friend));
 			}
 
 			friends.get(position);
 			return view;
 		}
-
+		
 		@Override
 		public int getCount() {
 			return friends.size() + requests.size();
@@ -151,7 +147,7 @@ public class FriendsListFragment extends Fragment {
 			if (position <= requests.size())
 				return requests.get(position);
 			else
-				return friends.get(position - requests.size() - 1);
+				return friends.get(position - requests.size());
 		}
 
 		@Override
@@ -160,11 +156,9 @@ public class FriendsListFragment extends Fragment {
 		}
 
 		@Override
-		public void onFriendsTaskFinished() {
+		public void onNotifyChanges() {
 			friends = LoginService.getLoggedInUser().getFriends();
 			requests = LoginService.getLoggedInUser().getFriendRequests();
-			for (User u : friends)
-				System.out.println(u.getEmail());
 			notifyDataSetChanged();
 		}
 	}

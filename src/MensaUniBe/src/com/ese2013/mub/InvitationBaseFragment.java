@@ -92,11 +92,11 @@ public class InvitationBaseFragment extends Fragment implements ActionBar.TabLis
 	
 	class InvitationPageAdapter extends FragmentPagerAdapter{
 		
-		private List<IFragmentsInvitation> fragments = new ArrayList<IFragmentsInvitation>();
+		private List<Fragment> fragments = new ArrayList<Fragment>();
 		
 		public InvitationPageAdapter(FragmentManager fm) {
 			super(fm);
-			//TODO add Fragments;
+			
 			fragments.add(new InvitesFragment());
 			fragments.add(new InvitedFragment());
 			fragments.add(new FriendsListFragment());
@@ -104,7 +104,7 @@ public class InvitationBaseFragment extends Fragment implements ActionBar.TabLis
 
 		@Override
 		public Fragment getItem(int position) {
-			return fragments.get(position).getInstance();
+			return fragments.get(position);
 		}
 		@Override
 		public int getCount() {

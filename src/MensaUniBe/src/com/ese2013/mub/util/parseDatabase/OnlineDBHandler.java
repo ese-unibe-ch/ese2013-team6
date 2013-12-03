@@ -73,23 +73,23 @@ public class OnlineDBHandler {
 		friendship.saveEventually();
 	}
 
-	public void removeFriendship(User user1, User user2) {		
+	public void removeFriendship(User user1, User user2) {
 		List<ParseQuery<ParseObject>> or = new ArrayList<ParseQuery<ParseObject>>();
 		ParseObject user1Object = ParseObject.createWithoutData(USER, user1.getId());
 		ParseObject user2Object = ParseObject.createWithoutData(USER, user2.getId());
-		
+
 		ParseQuery<ParseObject> query1 = ParseQuery.getQuery(FRIENDSHIP);
 		query1.whereEqualTo(USER_1, user1Object);
 		query1.whereEqualTo(USER_2, user2Object);
-		
+
 		ParseQuery<ParseObject> query2 = ParseQuery.getQuery(FRIENDSHIP);
 		query2.whereEqualTo(USER_2, user1Object);
 		query2.whereEqualTo(USER_1, user2Object);
-		
+
 		or.add(query1);
 		or.add(query2);
 		ParseQuery<ParseObject> query = ParseQuery.or(or);
-		
+
 		query.findInBackground(new FindCallback<ParseObject>() {
 			@Override
 			public void done(List<ParseObject> objects, ParseException e) {
@@ -101,11 +101,12 @@ public class OnlineDBHandler {
 		});
 	}
 
-	public void retrieveFriends(CurrentUser user) throws ParseException {
+	public List<User> getFriends(CurrentUser user) throws ParseException {
 		List<ParseObject> parseRelationships = getFriendsQuery(user).find();
-		List<User> friends = user.getFriends();
+		List<User> friends = new ArrayList<User>();
 		for (ParseObject parseRelationship : parseRelationships)
 			friends.add(getOtherUser(parseRelationship, user));
+		return friends;
 	}
 
 	private ParseQuery<ParseObject> getFriendsQuery(User user) {
@@ -235,12 +236,10 @@ public class OnlineDBHandler {
 		return requests;
 	}
 
-	public void answerFriendRequest(FriendRequest request, boolean acceptFriendship) throws ParseException {
-		ParseQuery<ParseObject> query = ParseQuery.getQuery(FRIEND_REQUEST);
-		ParseObject parseRequest = query.get(request.getId());
+	public void answerFriendRequest(FriendRequest request, boolean acceptFriendship) {
 		if (acceptFriendship)
 			addFriendship(request.getTo(), request.getFrom());
-		parseRequest.deleteInBackground();
+		ParseObject.createWithoutData(FRIEND_REQUEST, request.getId()).deleteInBackground();
 	}
 
 	public void answerInvitation(Invitation invitation, Invitation.Response response, User user) throws ParseException {

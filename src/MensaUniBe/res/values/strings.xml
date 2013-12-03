@@ -73,4 +73,6 @@
 	<string name="no_friends">You have no Friends yet! You can add friends by clicking the addButton on Top!</string>
 	<string name="enter_friend">Enter E-Mail</string>
 	<string name="search_friend">search friend</string>
+	<string name="title_registration">Register to use social functionality</string>
+	
 </resources>

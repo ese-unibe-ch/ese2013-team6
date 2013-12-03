@@ -50,9 +50,49 @@ public class SettingsFragment extends Fragment {
 		final EditText notificationEditText = ((EditText) view
 				.findViewById(R.id.edit_text_notification));
 		ListView notificationList = (ListView) view.findViewById(R.id.notification_list);
+		
+		addReregisterButton(view);
 
 		languageSwitch.setChecked(prefs.getDoTranslation());
+		setUpOnChangeListener(languageSwitch);
+		
+		// languageSpinner.setSelection(prefs.getLanguage());
+		notificationSwitch.setChecked(prefs.getDoNotification());
+		notificationSpinner.setSelection(prefs.getNotificationMensas());
+		notificationEditText.setText(prefs.getNotificationFood());
+		
+		notificationListItems = prefs.getNotificationListItems();
+		adapter = new SettingsListAdapter(getActivity().getApplicationContext(), notificationListItems);
+		notificationList.setAdapter(adapter);
+		
+		Button plusButton = (Button) view.findViewById(R.id.plus_button);
+		plusButton.setOnClickListener(new View.OnClickListener() {
+		    public void onClick(View v) {
+		    	if ( !notificationEditText.getText().toString().equals("") ){
+		    		notificationListItems.add(notificationEditText.getText().toString());
+			        adapter.notifyDataSetChanged();
+			        notificationEditText.setText("");
+		    	}
+		    }
+		});
+				
+		return view;
+	}
 
+	private void addReregisterButton(View view) {
+		Button button = (Button) view.findViewById(R.id.register);
+		
+		button.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				DrawerMenuActivity a = (DrawerMenuActivity) getActivity();
+				a.showRegistrationDialog();
+//				new RegistrationDialog(getActivity());
+			}
+		});
+	}
+
+	private void setUpOnChangeListener(Switch languageSwitch) {
 		languageSwitch
 				.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
 					public void onCheckedChanged(CompoundButton buttonView,
@@ -73,28 +113,6 @@ public class SettingsFragment extends Fragment {
 						}
 					}
 				});
-
-		// languageSpinner.setSelection(prefs.getLanguage());
-		notificationSwitch.setChecked(prefs.getDoNotification());
-		notificationSpinner.setSelection(prefs.getNotificationMensas());
-		notificationEditText.setText(prefs.getNotificationFood());
-		
-		notificationListItems = prefs.getNotificationListItems();
-		adapter = new SettingsListAdapter(getActivity().getApplicationContext(), notificationListItems);
-		notificationList.setAdapter(adapter);
-		
-		Button plusButton = (Button) view.findViewById(R.id.plus_button);
-		plusButton.setOnClickListener(new View.OnClickListener() {
-		    public void onClick(View v) {
-		    	if ( !notificationEditText.getText().toString().equals("") ){
-		    		notificationListItems.add(notificationEditText.getText().toString());
-			        adapter.notifyDataSetChanged();
-			        notificationEditText.setText("");
-		    	}
-		    }
-		});
-		
-		return view;
 	}
 
 	@Override

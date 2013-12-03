@@ -1,5 +1,7 @@
 package com.ese2013.mub;
 
+import java.util.Stack;
+
 import android.app.ActionBar;
 import android.content.Intent;
 import android.os.Bundle;
@@ -43,10 +45,11 @@ public class DrawerMenuActivity extends FragmentActivity implements LoginTaskCal
 	private ListView drawerList;
 	private Spinner spinner;
 	private int selectedPosition = -1;
-	private static final int HOME_INDEX = 0, MAP_INDEX = 2, NOTIFICATION_INDEX = 3, NOTHING_INDEX = 4;
+	private static final int HOME_INDEX = 0, MAP_INDEX = 2, NOTIFICATION_INDEX = 3, NOTHING_INDEX = -1;
 	private static final String POSITION = "com.ese2013.mub.position";
 	private Model model;
 	private RegistrationDialog registrationDialog;
+	private Stack<Integer> menuSelectionBackStack = new Stack<Integer>();
 
 	@Override
 	protected void onActivityResult(final int requestCode, final int resultCode, final Intent data) {
@@ -65,11 +68,15 @@ public class DrawerMenuActivity extends FragmentActivity implements LoginTaskCal
 
 	private void handleLogin() {
 		SharedPrefsHandler prefs = new SharedPrefsHandler(this);
-		if (prefs.isFirstTime()) 
-			registrationDialog = new RegistrationDialog(this);
+		if (prefs.isFirstTime())
+			showRegistrationDialog();
 		else if (prefs.isUserRegistred()) 
 			new LoginTask(this).execute(prefs.getUserEmail());
 		
+	}
+
+	public void showRegistrationDialog() {
+		registrationDialog = new RegistrationDialog(this);
 	}
 
 	@Override
@@ -154,19 +161,19 @@ public class DrawerMenuActivity extends FragmentActivity implements LoginTaskCal
 				case 0:
 					frag.setFavorites(true);
 					frag.setShowAllByDay(false);
-					setDisplayedFragment(frag);
+					setDisplayedFragmentWoutBack(frag);
 					break;
 
 				case 1:
 					frag.setFavorites(false);
 					frag.setShowAllByDay(false);
-					setDisplayedFragment(frag);
+					setDisplayedFragmentWoutBack(frag);
 					break;
 
 				case 2:
 					frag.setFavorites(true);
 					frag.setShowAllByDay(true);
-					setDisplayedFragment(frag);
+					setDisplayedFragmentWoutBack(frag);
 					break;
 				}
 			}
@@ -202,7 +209,7 @@ public class DrawerMenuActivity extends FragmentActivity implements LoginTaskCal
 			switch (position) {
 			case 0:
 				frag = new HomeFragment();
-				setDisplayedFragment(frag);
+				setDisplayedFragmentWoutBack(frag);
 				break;
 			case 1:
 				frag = new MensaListFragment();
@@ -235,12 +242,20 @@ public class DrawerMenuActivity extends FragmentActivity implements LoginTaskCal
 	 *            the Fragment to be displayed. Shouldn't be null.
 	 */
 	private void setDisplayedFragment(Fragment frag) {
-		assert (frag != null);
 		FragmentManager fragmentManager = getSupportFragmentManager();
 		FragmentTransaction transaction = fragmentManager.beginTransaction();
 		transaction.replace(R.id.drawer_layout_frag_container, frag);
-		//transaction.addToBackStack(null);
+		transaction.addToBackStack(null);
 		transaction.commit();
+		menuSelectionBackStack.push(selectedPosition);
+	}
+	
+	private void setDisplayedFragmentWoutBack(Fragment frag) {
+		FragmentManager fragmentManager = getSupportFragmentManager();
+		FragmentTransaction transaction = fragmentManager.beginTransaction();
+		transaction.replace(R.id.drawer_layout_frag_container, frag);
+		transaction.commit();
+		menuSelectionBackStack.push(selectedPosition);
 	}
 
 	/**
@@ -260,6 +275,18 @@ public class DrawerMenuActivity extends FragmentActivity implements LoginTaskCal
 		return selectedPosition == HOME_INDEX;
 	}
 
+	@Override
+	public void onBackPressed() {
+		if (!menuSelectionBackStack.isEmpty()){
+			int select = menuSelectionBackStack.pop();
+			selectedPosition = select;
+			if (select != NOTHING_INDEX)
+				drawerList.setItemChecked(select, true);
+		}
+		
+		super.onBackPressed();
+	}
+	
 	/**
 	 * Called after creation of the activity.
 	 */
@@ -275,10 +302,10 @@ public class DrawerMenuActivity extends FragmentActivity implements LoginTaskCal
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		if (!drawerToggle.onOptionsItemSelected(item) && item.getItemId() == R.id.action_settings) {
+			selectedPosition = NOTHING_INDEX;
 			drawerList.setItemChecked(selectedPosition, false);
 			Fragment frag = new SettingsFragment();
-			setDisplayedFragment(frag);
-			selectedPosition = NOTHING_INDEX;
+			setDisplayedFragment(frag);	
 			return true;
 		}
 		return super.onOptionsItemSelected(item);

@@ -10,7 +10,6 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -114,7 +113,7 @@ public class DailyPlanFragment extends Fragment {
 
 	private void setUpInvitationButton(RelativeLayout relativeLayout,
 			Mensa mensa, Day dayOfInvitation) {
-		Button invitationButton = (Button) relativeLayout.getChildAt(3);
+		ImageButton invitationButton = (ImageButton) relativeLayout.getChildAt(3);
 		invitationButton.setOnClickListener(new InvitationButtonListener(mensa,
 				dayOfInvitation, this));
 		// TODO Auto-generated method stub

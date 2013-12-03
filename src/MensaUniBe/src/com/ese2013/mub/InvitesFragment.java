@@ -9,8 +9,10 @@ import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
-import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageButton;
@@ -46,7 +48,21 @@ public class InvitesFragment extends Fragment{
 		invitedList.setAdapter(adapter);
 		return view;
 	}
-
+	@Override
+	public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+		if (LoginService.isLoggedIn())
+			inflater.inflate(R.menu.invites_menu, menu);
+	}
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		switch (item.getItemId()) {
+		case R.id.new_invite_button:
+			((DrawerMenuActivity) getActivity()).createInvitation();
+			return true;
+		default:
+			return false;
+		}
+	}
 	class InvitesListAdapter extends BaseAdapter implements GetSentInvitationsTaskCallback {
 
 		private LayoutInflater inflater;
@@ -120,7 +136,7 @@ public class InvitesFragment extends Fragment{
 		@Override
 		public Object getItem(int position) {
 			// TODO Auto-generated method stub
-			return null;
+			return invitations.get(position);
 		}
 
 		@Override

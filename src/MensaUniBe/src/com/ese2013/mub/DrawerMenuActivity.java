@@ -22,6 +22,7 @@ import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.Toast;
 
+import com.ese2013.mub.model.Day;
 import com.ese2013.mub.model.Mensa;
 import com.ese2013.mub.model.Model;
 import com.ese2013.mub.service.NotificationService;
@@ -339,5 +340,13 @@ public class DrawerMenuActivity extends FragmentActivity implements LoginTaskCal
 		if (selectedPosition != -1)
 			outState.putInt(POSITION, selectedPosition);
 		super.onSaveInstanceState(outState);
+	}
+
+	public void createInvitation(Mensa mensa, Day day) {
+		
+	}
+
+	public void createInvitation() {
+		
 	}
 }

@@ -34,9 +34,11 @@ public class SocialManager extends Observable implements GetSentInvitationsTaskC
 	}
 
 	public void sendFriendRequest(String email) throws ParseException {
-		User friend = new User(email);
-		onlineDBHandler.getUser(friend);
-		sendFriendRequest(new FriendRequest(currentUser(), friend));
+		if (!currentUser().hasFriendWith(email)) {
+			User friend = new User(email);
+			onlineDBHandler.getUser(friend);
+			sendFriendRequest(new FriendRequest(currentUser(), friend));
+		}
 	}
 
 	public void sendFriendRequest(FriendRequest request) {

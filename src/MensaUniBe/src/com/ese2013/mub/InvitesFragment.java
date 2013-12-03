@@ -38,7 +38,7 @@ public class InvitesFragment extends Fragment{
 		TextView showMessage = (TextView) view.findViewById(R.id.show_message);
 
 		if (LoginService.isLoggedIn())
-			showMessage.setText(R.string.no_friends);
+			showMessage.setText(R.string.no_invites);
 		else
 			showMessage.setText(R.string.not_loged_in);
 

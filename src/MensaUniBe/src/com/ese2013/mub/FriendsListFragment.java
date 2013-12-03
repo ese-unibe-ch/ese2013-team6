@@ -23,6 +23,8 @@ import android.widget.TextView;
 import com.ese2013.mub.social.FriendRequest;
 import com.ese2013.mub.social.LoginService;
 import com.ese2013.mub.social.User;
+import com.ese2013.mub.util.GetFriendsTask;
+import com.ese2013.mub.util.GetFriendsTaskCallback;
 import com.ese2013.mub.util.parseDatabase.OnlineDBHandler;
 import com.parse.ParseException;
 
@@ -96,34 +98,15 @@ public class FriendsListFragment extends Fragment{
 		onDestroyOptionsMenu();
 		super.onDestroy();
 	}
-	private class FriendsListAdapter extends BaseAdapter{
+	private class FriendsListAdapter extends BaseAdapter implements GetFriendsTaskCallback{
 		private List<User> friends = new ArrayList<User>();
-		private List<FriendRequest> request = new ArrayList<FriendRequest>();
+		private List<FriendRequest> requests = new ArrayList<FriendRequest>();
 		private LayoutInflater inflater;
 		private OnlineDBHandler onlineDBHandler = new OnlineDBHandler(); 
 		public FriendsListAdapter(){
 			super();
-			if(LoginService.isLoggedIn()){
-			try {
-				request = onlineDBHandler.getFriendRequests(LoginService.getLoggedInUser());
-			} catch (ParseException e) {
-				e.printStackTrace();
-			}
-			friends = LoginService.getLoggedInUser().getFriends();
-			}
-		}
-		@Override
-		public void notifyDataSetChanged() {
-			if(LoginService.isLoggedIn()){
-			try {
-				
-				request = onlineDBHandler.getFriendRequests(LoginService.getLoggedInUser());
-			} catch (ParseException e) {
-				e.printStackTrace();
-			}
-			friends = LoginService.getLoggedInUser().getFriends();
-		}
-			super.notifyDataSetChanged();
+			if(LoginService.isLoggedIn())
+				new GetFriendsTask(this);
 		}
 		@Override
 		public View getView(int position, View convertView, ViewGroup parent) {
@@ -131,9 +114,9 @@ public class FriendsListFragment extends Fragment{
 	        if (view == null)
 	        	inflater = (LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 
-	    	if(position < request.size()){
+	    	if(position < requests.size()){
 				view = inflater.inflate(R.layout.friend_request_layout, null);
-				FriendRequest friendRequest = request.get(position);
+				FriendRequest friendRequest = requests.get(position);
 				TextView requestName = (TextView)view.findViewById(R.id.friend_name_request);
 				requestName.setText(friendRequest.getFrom().getNick());
 				ImageButton cancelRequestButton = (ImageButton)view.findViewById(R.id.cancel_request);
@@ -143,7 +126,7 @@ public class FriendsListFragment extends Fragment{
 	    	}
 			else{
 				view = inflater.inflate(R.layout.friend_entry_layout, null);
-				User friend = friends.get(position - request.size() - 1);
+				User friend = friends.get(position - requests.size() - 1);
 				TextView friendName = (TextView)view.findViewById(R.id.friend_name);
 				friendName.setText(friend.getNick());
 				ImageButton deleteFriend = (ImageButton)view.findViewById(R.id.delete_friend);
@@ -157,20 +140,26 @@ public class FriendsListFragment extends Fragment{
 		
 		@Override
 		public int getCount() {
-			return friends.size() + request.size();
+			return friends.size() + requests.size();
 		}
 
 		@Override
 		public Object getItem(int position) {
-			if(position <= request.size())
-				return request.get(position);
+			if(position <= requests.size())
+				return requests.get(position);
 			else
-				return friends.get(position - request.size() - 1);
+				return friends.get(position - requests.size() - 1);
 		}
 
 		@Override
 		public long getItemId(int position) {
 			return position;
+		}
+		@Override
+		public void onFriendsTaskFinished() {
+			friends = LoginService.getLoggedInUser().getFriends();
+			requests = LoginService.getLoggedInUser().getFriendRequests();
+			notifyDataSetChanged();
 		}
 	}
 }

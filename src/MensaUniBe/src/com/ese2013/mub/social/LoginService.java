@@ -32,7 +32,7 @@ public class LoginService {
 					}
 				}
 			}.execute(user).get(timeoutSeconds, TimeUnit.SECONDS);
-			return true;
+			return loggedInUser != null;
 		} catch (InterruptedException e) {
 			return false;
 		} catch (ExecutionException e) {
@@ -54,7 +54,7 @@ public class LoginService {
 					}
 				}
 			}.execute(user).get(timoutSeconds, TimeUnit.SECONDS);
-			return true;
+			return loggedInUser != null;
 		} catch (InterruptedException e) {
 			return false;
 		} catch (ExecutionException e) {

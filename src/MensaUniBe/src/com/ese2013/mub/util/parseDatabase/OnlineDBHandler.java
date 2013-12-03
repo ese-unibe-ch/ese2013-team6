@@ -101,11 +101,12 @@ public class OnlineDBHandler {
 		});
 	}
 
-	public void retrieveFriends(CurrentUser user) throws ParseException {
+	public List<User> getFriends(CurrentUser user) throws ParseException {
 		List<ParseObject> parseRelationships = getFriendsQuery(user).find();
-		List<User> friends = user.getFriends();
+		List<User> friends = new ArrayList<User>();
 		for (ParseObject parseRelationship : parseRelationships)
 			friends.add(getOtherUser(parseRelationship, user));
+		return friends;
 	}
 
 	private ParseQuery<ParseObject> getFriendsQuery(User user) {

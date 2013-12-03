@@ -42,11 +42,18 @@ public class CreateInvitationFragment extends Fragment implements OnClickListene
 	private List<User> recipients = new ArrayList<User>();
 	private Button pickDateButton, pickTimeButton;
 	private static final String DATE_KEY = "date";
+	public static final String MENSA_INDEX = "mensaIndex";
+	public static final String DATE_FROM_VIEW = "DateFromView";
+	private int mensaIndex;
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 		View view = inflater.inflate(R.layout.fragment_create_invitation, container, false);
-
+		if(getArguments() != null){
+			mensaIndex = getArguments().getInt(MENSA_INDEX,0);
+			date = new Date(getArguments().getLong(DATE_FROM_VIEW, new Date().getTime()));
+		}
+		
 		pickDateButton = (Button) view.findViewById(R.id.invitation_create_pick_date);
 		pickDateButton.setOnClickListener(new android.view.View.OnClickListener() {
 			@Override
@@ -105,10 +112,11 @@ public class CreateInvitationFragment extends Fragment implements OnClickListene
 			}
 		});
 
-		createSpinner(view);
+		createSpinner(view, mensaIndex);
 
 		onTimeSet(null, 12, 0);
 		Calendar c = Calendar.getInstance();
+		c.setTime(date);
 		onDateSet(null, c.get(Calendar.YEAR), c.get(Calendar.MONTH), c.get(Calendar.DAY_OF_MONTH));
 		return view;
 	}
@@ -130,16 +138,23 @@ public class CreateInvitationFragment extends Fragment implements OnClickListene
 		}
 	}
 
-	private void createSpinner(View view) {
+	private void createSpinner(View view, int startIndex) {
 		Spinner spinner = (Spinner) view.findViewById(R.id.invitation_create_mensaSpinner);
 		List<Mensa> list = new ArrayList<Mensa>();
 		List<Mensa> mensas = Model.getInstance().getMensas();
-		for (Mensa m : mensas)
+		Mensa mensa = null;
+		for (Mensa m : mensas){
 			list.add(m);
+			if(startIndex == m.getId())
+				mensa = m;
+		}
+		
 		ArrayAdapter<Mensa> dataAdapter = new ArrayAdapter<Mensa>(this.getActivity(), android.R.layout.simple_spinner_item,
 				list);
 		dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 		spinner.setAdapter(dataAdapter);
+		
+		spinner.setSelection(mensas.indexOf(mensa));
 	}
 
 	@Override

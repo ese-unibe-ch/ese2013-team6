@@ -358,10 +358,16 @@ public class DrawerMenuActivity extends FragmentActivity implements LoginTaskCal
 	}
 
 	public void createInvitation(Mensa mensa, Day day) {
-
+		CreateInvitationFragment frag = new CreateInvitationFragment();
+		Bundle args = new Bundle();
+		args.putInt(CreateInvitationFragment.MENSA_INDEX, mensa.getId());
+		args.putLong(CreateInvitationFragment.DATE_FROM_VIEW, day.getDate().getTime());
+		frag.setArguments(args);
+		setDisplayedFragment(frag);
 	}
 
 	public void createInvitation() {
-
+		CreateInvitationFragment frag = new CreateInvitationFragment();
+		setDisplayedFragment(frag);
 	}
 }

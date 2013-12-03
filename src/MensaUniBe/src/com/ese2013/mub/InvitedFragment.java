@@ -74,11 +74,12 @@ public class InvitedFragment extends Fragment {
 			TextView whenTextView = (TextView) view.findViewById(R.id.when_text_field);
 			Day day = new Day(invite.getTime());
 			SimpleDateFormat timeOfDay = new SimpleDateFormat("HH:mm", Locale.getDefault());
-			SimpleDateFormat sdf = new SimpleDateFormat("dd.MM", Locale.getDefault());
+			
 			if (day.equals(Day.today()))
-				whenTextView.setText(R.string.today + timeOfDay.format(invite.getTime()));
+				whenTextView.setText(R.string.today + ": " + timeOfDay.format(invite.getTime()));
 			else
-				whenTextView.setText(R.string.today + sdf.format(invite.getTime()));
+				whenTextView.setText(day.format(new SimpleDateFormat(
+				"dd. MMMM yyyy", Locale.getDefault())));
 		}
 
 		private void setUpFromTextView(View view, Invitation invite) {

@@ -1,5 +1,6 @@
 package com.ese2013.mub;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 import java.util.Set;
@@ -18,6 +19,7 @@ import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.ese2013.mub.model.Day;
 import com.ese2013.mub.model.Mensa;
 import com.ese2013.mub.model.Menu;
 import com.ese2013.mub.model.Model;
@@ -99,7 +101,6 @@ public class NotificationFragment extends Fragment implements Observer {
 			LinearLayout layout = (LinearLayout) view.findViewById(R.id.notification_list_sublayout);
 
 			Criteria criteria = adapterList.get(position);
-			// needs proper layout..
 			TextView criteriaTitle = (TextView) view.findViewById(R.id.criteria_title);
 			criteriaTitle.setText(criteria.getName().toUpperCase(Locale.getDefault()));
 
@@ -118,8 +119,12 @@ public class NotificationFragment extends Fragment implements Observer {
 					text.setText(mensa.getName());
 					ImageButton favoriteButton = (ImageButton) rel.getChildAt(1);
 					favoriteButton.setOnClickListener(new FavoriteButtonListener(mensa, favoriteButton));
+					favoriteButton.setImageResource(R.id.favorite_button);
 					ImageButton mapButton = (ImageButton) rel.getChildAt(2);
+					mapButton.setImageResource(R.id.map_button);
 					mapButton.setOnClickListener(new MapButtonListener(mensa, NotificationFragment.this));
+					ImageButton inviteButton = (ImageButton)view.findViewById(R.id.section_title_invitation_button);
+					inviteButton.setOnClickListener(new InvitationButtonListener(mensa, new Day(new Date()), NotificationFragment.this));
 					layout.addView(rel);
 				}
 			}
@@ -151,7 +156,6 @@ public class NotificationFragment extends Fragment implements Observer {
 		private List<Criteria> createList() {
 			SharedPrefsHandler pref = new SharedPrefsHandler(NotificationFragment.this.getActivity());
 
-			// TODO get set of Criteria not just criteria;
 			Set<String> criteria = pref.getNotificationListItems();
 			boolean allMensas = pref.getNotificationMensas() == 0 ? true : false;
 

@@ -20,7 +20,7 @@
         android:id="@+id/when_text_field"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_toRightOf="@id/from_whom_text_field" />
+        android:layout_toLeftOf="@+id/show_invited" />
 
     <TextView
         android:id="@+id/where_text_field"

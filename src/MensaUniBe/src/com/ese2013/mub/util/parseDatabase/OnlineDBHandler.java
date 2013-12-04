@@ -180,9 +180,11 @@ public class OnlineDBHandler {
 		for (ParseObject invitation : parseInvitations) {
 			ParseObject parseInv = invitation.getParseObject(INV_USER_INVITATION);
 			ParseObject parseFrom = parseInv.getParseObject(INVITATION_FROM);
-			invitations.add(new Invitation(parseInv.getObjectId(), parseUser(parseFrom), new ArrayList<User>(),
-					parseInv.getString(INVITATION_MESSAGE), parseInv.getInt(INVITATION_MENSA), parseInv
-							.getDate(INVITATION_TIME))
+			HashMap<User, Invitation.Response> responses = new HashMap<User, Invitation.Response>();
+			responses.put(user, Invitation.Response.values()[invitation.getInt(INV_USER_RESPONSE)]);
+			invitations.add(new Invitation(parseInv.getObjectId(), parseUser(parseFrom), responses, parseInv
+					.getString(INVITATION_MESSAGE), parseInv.getInt(INVITATION_MENSA), parseInv
+					.getDate(INVITATION_TIME))
 
 			);
 		}

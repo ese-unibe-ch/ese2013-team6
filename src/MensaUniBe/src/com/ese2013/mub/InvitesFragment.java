@@ -85,7 +85,6 @@ public class InvitesFragment extends Fragment {
 			view = inflater.inflate(R.layout.invites_entry_layout, null);
 			Invitation invite = invitations.get(position);
 
-			setUpFromTextView(view, invite);
 			setUpWhereTextView(view, invite);
 			setUpWhenTextView(view, invite);
 
@@ -109,12 +108,6 @@ public class InvitesFragment extends Fragment {
 				whenTextView.setText(dateFormat.format(invite.getTime()));
 			else
 				whenTextView.setText(dateFormat2.format(invite.getTime()));
-		}
-
-		private void setUpFromTextView(View view, Invitation invite) {
-			TextView fromWhomTextView = (TextView) view.findViewById(R.id.from_whom_text_field);
-			fromWhomTextView.setText(invite.getFrom().getNick());
-
 		}
 
 		private void setUpWhereTextView(View view, Invitation invite) {

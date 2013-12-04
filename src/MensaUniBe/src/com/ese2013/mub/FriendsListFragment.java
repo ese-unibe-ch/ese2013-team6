@@ -157,9 +157,6 @@ public class FriendsListFragment extends Fragment {
 		public void onNotifyChanges() {
 			friends = LoginService.getLoggedInUser().getFriends();
 			requests = LoginService.getLoggedInUser().getFriendRequests();
-			for(User u :friends)
-				System.out.println(u.getEmail());
-			System.out.println(friends.size());
 			notifyDataSetChanged();
 		}
 	}

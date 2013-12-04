@@ -123,7 +123,7 @@ public class NotificationFragment extends Fragment implements Observer {
 					ImageButton mapButton = (ImageButton) rel.getChildAt(2);
 					mapButton.setImageResource(R.id.map_button);
 					mapButton.setOnClickListener(new MapButtonListener(mensa, NotificationFragment.this));
-					ImageButton inviteButton = (ImageButton)view.findViewById(R.id.section_title_invitation_button);
+					ImageButton inviteButton = (ImageButton)rel.getChildAt(3);
 					inviteButton.setOnClickListener(new InvitationButtonListener(mensa, new Day(new Date()), NotificationFragment.this));
 					layout.addView(rel);
 				}

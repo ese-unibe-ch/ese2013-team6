@@ -210,7 +210,10 @@ public class CreateInvitationFragment extends Fragment implements OnClickListene
 			int year = c.get(Calendar.YEAR);
 			int month = c.get(Calendar.MONTH);
 			int day = c.get(Calendar.DAY_OF_MONTH);
-			return new DatePickerDialog(getActivity(), listener, year, month, day);
+			DatePickerDialog datePickerDialog = new DatePickerDialog(getActivity(), listener, year, month, day);
+			// minimum date to display in the date picker, can't be exactly now, thus the " - 1000" ms.
+			datePickerDialog.getDatePicker().setMinDate(System.currentTimeMillis() - 1000);
+			return datePickerDialog;
 		}
 	}
 

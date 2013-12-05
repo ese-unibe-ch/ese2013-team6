@@ -12,6 +12,7 @@ import android.widget.RatingBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.ese2013.mub.model.Day;
 import com.ese2013.mub.model.Menu;
 import com.ese2013.mub.model.MenuManager;
 import com.ese2013.mub.model.Model;
@@ -53,44 +54,40 @@ public class MenuView extends LinearLayout {
 
 	private void initRatingBar() {
 		RatingBar ratingBar = (RatingBar) this.findViewById(R.id.menu_rating_bar);
+		setCountDisplay();
 		ratingBar.setRating(menu.getAverageRating());
 		ratingBar.setIsIndicator(true);
 		ratingBar.setOnRatingBarChangeListener(new RatingBar.OnRatingBarChangeListener() {
 			@Override
 			public void onRatingChanged(RatingBar ratingBar, float rating, boolean fromUser) {
-				Menu menu = MenuView.this.menu;
 				if (fromUser) {
-					if (LoginService.isLoggedIn() && !LoginService.getLoggedInUser().hasBeenRated(menu)) {
-						CurrentUser user = LoginService.getLoggedInUser();
-						int userRating = (int) rating;
-						//TODO make one method in user: rateMenu
-						menu.setUserRating(userRating);
-						user.addToRated(menu);
-						new OnlineMensaDBHandler().saveMenuRating(user, menu, userRating);
-						ratingBar.setIsIndicator(true);
-						setCountDisplay();
-						ratingBar.setRating(menu.getAverageRating());
-					} else {
-						Toast.makeText(MenuView.this.getContext(), "You have to be logged in to rate a menu.",
-								Toast.LENGTH_SHORT).show();
-					}
+					Menu menu = MenuView.this.menu;
+					CurrentUser user = LoginService.getLoggedInUser();
+					int userRating = (int) rating;
+					menu.setUserRating(userRating);
+					user.addToRated(menu);
+					new OnlineMensaDBHandler().saveMenuRating(user, menu, userRating);
+					ratingBar.setIsIndicator(true);
+					setCountDisplay();
+					ratingBar.setRating(menu.getAverageRating());
 				}
 			}
 		});
 		ratingBar.setOnTouchListener(new OnTouchListener() {
 			@Override
 			public boolean onTouch(View v, MotionEvent event) {
+				Context context = MenuView.this.getContext();
 				if (LoginService.isLoggedIn()) {
 					RatingBar ratingBar = (RatingBar) v;
 					if (LoginService.getLoggedInUser().hasBeenRated(MenuView.this.menu)) {
-						setCountDisplay();
-						ratingBar.setIsIndicator(true);
-						ratingBar.setRating(menu.getAverageRating());
-						Toast.makeText(MenuView.this.getContext(), R.string.rating_msg_already_rated,
-								Toast.LENGTH_SHORT).show();
+						Toast.makeText(context, R.string.rating_msg_already_rated, Toast.LENGTH_SHORT).show();
+					} else if (menu.getDate().compareTo(Day.today()) > 0) {
+						Toast.makeText(context, R.string.rating_msg_from_future, Toast.LENGTH_SHORT).show();
 					} else {
 						ratingBar.setIsIndicator(false);
 					}
+				} else {
+					Toast.makeText(context, R.string.rating_msg_not_logged_in, Toast.LENGTH_SHORT).show();
 				}
 				return false;
 			}
@@ -99,7 +96,7 @@ public class MenuView extends LinearLayout {
 	}
 
 	private void setCountDisplay() {
-		((TextView) this.findViewById(R.id.menu_rating_count)).setText("" + menu.getRatingCount());
+		((TextView) findViewById(R.id.menu_rating_count)).setText("" + menu.getRatingCount());
 	}
 
 	public MenuView(Context context) {

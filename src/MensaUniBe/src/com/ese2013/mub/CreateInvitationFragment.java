@@ -37,23 +37,22 @@ import com.ese2013.mub.social.SocialManager;
 import com.ese2013.mub.social.User;
 
 public class CreateInvitationFragment extends Fragment implements OnClickListener, OnDateSetListener, OnTimeSetListener {
+	private static final String DATE_KEY = "date";
+	public static final String MENSA_INDEX = "mensaIndex", DATE_FROM_VIEW = "DateFromView";
 
 	private Date date = new Date();
 	private List<User> recipients = new ArrayList<User>();
 	private Button pickDateButton, pickTimeButton;
-	private static final String DATE_KEY = "date";
-	public static final String MENSA_INDEX = "mensaIndex";
-	public static final String DATE_FROM_VIEW = "DateFromView";
 	private int mensaIndex;
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 		View view = inflater.inflate(R.layout.fragment_create_invitation, container, false);
-		if(getArguments() != null){
-			mensaIndex = getArguments().getInt(MENSA_INDEX,0);
+		if (getArguments() != null) {
+			mensaIndex = getArguments().getInt(MENSA_INDEX, 1);
 			date = new Date(getArguments().getLong(DATE_FROM_VIEW, new Date().getTime()));
 		}
-		
+
 		pickDateButton = (Button) view.findViewById(R.id.invitation_create_pick_date);
 		pickDateButton.setOnClickListener(new android.view.View.OnClickListener() {
 			@Override
@@ -93,8 +92,7 @@ public class CreateInvitationFragment extends Fragment implements OnClickListene
 						R.id.invitation_create_mensaSpinner);
 				Mensa m = (Mensa) spinner.getSelectedItem();
 
-				Invitation invite = new Invitation(null, LoginService.getLoggedInUser(), recipients, message, m.getId(),
-						date);
+				Invitation invite = new Invitation(LoginService.getLoggedInUser(), recipients, message, m.getId(), date);
 				if (isComplete(invite)) {
 					SocialManager.getInstance().sendInvitation(invite);
 					Toast.makeText(getActivity(), "Sending invitation...", Toast.LENGTH_SHORT).show();
@@ -121,13 +119,13 @@ public class CreateInvitationFragment extends Fragment implements OnClickListene
 		return view;
 	}
 
-	private boolean isComplete(Invitation i) {
+	private boolean isComplete(Invitation invitation) {
 		String error = "";
-		if (i.getFrom() == null)
+		if (invitation.getFrom() == null)
 			error += "You are not logged in" + "\n";
-		if (i.getMessage().length() == 0)
+		if (invitation.getMessage().length() == 0)
 			error = "Please enter a message" + "\n";
-		if (i.getTo().isEmpty())
+		if (invitation.getTo().isEmpty())
 			error += "Please add at least one recipient" + "\n";
 
 		if (error.length() != 0) {
@@ -143,17 +141,17 @@ public class CreateInvitationFragment extends Fragment implements OnClickListene
 		List<Mensa> list = new ArrayList<Mensa>();
 		List<Mensa> mensas = Model.getInstance().getMensas();
 		Mensa mensa = null;
-		for (Mensa m : mensas){
+		for (Mensa m : mensas) {
 			list.add(m);
-			if(startIndex == m.getId())
+			if (startIndex == m.getId())
 				mensa = m;
 		}
-		
+
 		ArrayAdapter<Mensa> dataAdapter = new ArrayAdapter<Mensa>(this.getActivity(), android.R.layout.simple_spinner_item,
 				list);
 		dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 		spinner.setAdapter(dataAdapter);
-		
+
 		spinner.setSelection(mensas.indexOf(mensa));
 	}
 
@@ -211,7 +209,8 @@ public class CreateInvitationFragment extends Fragment implements OnClickListene
 			int month = c.get(Calendar.MONTH);
 			int day = c.get(Calendar.DAY_OF_MONTH);
 			DatePickerDialog datePickerDialog = new DatePickerDialog(getActivity(), listener, year, month, day);
-			// minimum date to display in the date picker, can't be exactly now, thus the " - 1000" ms.
+			// minimum date to display in the date picker, can't be exactly now,
+			// thus the " - 1000".
 			datePickerDialog.getDatePicker().setMinDate(System.currentTimeMillis() - 1000);
 			return datePickerDialog;
 		}

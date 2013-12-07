@@ -95,13 +95,13 @@ public class InvitesFragment extends Fragment {
 
 		private void setUpShowInvitedButton(View view, Invitation invite) {
 			ImageButton showInvitedButton = (ImageButton) view.findViewById(R.id.show_invited);
-			showInvitedButton.setOnClickListener(new ShowInvitedListener(invite));
+			showInvitedButton.setOnClickListener(new ShowInvitedListener(getActivity(), invite));
 		}
 
 		private void setUpWhenTextView(View view, Invitation invite) {
 			TextView whenTextView = (TextView) view.findViewById(R.id.when_text_field);
 			Day day = new Day(invite.getTime());
-			
+
 			DateFormat dateFormat = DateFormat.getDateInstance(DateFormat.SHORT, Locale.getDefault());
 			DateFormat dateFormat2 = DateFormat.getDateInstance(DateFormat.MEDIUM, Locale.getDefault());
 			if (day.equals(Day.today()))

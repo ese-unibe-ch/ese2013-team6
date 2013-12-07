@@ -86,7 +86,7 @@ public class DailyPlanFragment extends Fragment {
 			for (Menu menu : dailyPlan.getMenus())
 				menuLayout.addView(new MenuView(container.getContext(), menu, day));
 		} else {
-			TextView noMenusText = new TextView(this.getActivity());
+			TextView noMenusText = new TextView(getActivity());
 			noMenusText.setText(R.string.dailyplanfragment_no_menus_available);
 			noMenusText.setPadding(48, 0, 0, 0);
 			menuLayout.addView(noMenusText);

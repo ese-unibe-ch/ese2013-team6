@@ -80,5 +80,6 @@
 	<string name="invitation_create_select_recipients">Select recipients</string>
 	<string name="rating_msg_from_future">You cannot rate a menu from the future</string>
 	<string name="rating_msg_not_logged_in">You have to be logged in to rate a menu.</string>
+	<string name="responses_image_view_description">Shows response of a friend to an invite</string>
 	
 </resources>

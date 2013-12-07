@@ -32,8 +32,6 @@ public class HomeFragment extends Fragment implements Observer {
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 		View view = inflater.inflate(R.layout.fragment_home, container, false);
 
-		int dayOfWeek = Calendar.getInstance().get(Calendar.DAY_OF_WEEK);
-
 		FragmentManager fm = getChildFragmentManager();
 		if (showFavorites)
 			sectionsPagerAdapter = new MenuSectionsPagerAdapter(fm);
@@ -45,6 +43,7 @@ public class HomeFragment extends Fragment implements Observer {
 
 		onAttach(getActivity());
 
+		int dayOfWeek = Calendar.getInstance().get(Calendar.DAY_OF_WEEK);
 		if (showFavorites && dayOfWeek < 6 && dayOfWeek > 1)
 			viewPager.setCurrentItem(dayOfWeek - 2);
 		handleGivenArguments();

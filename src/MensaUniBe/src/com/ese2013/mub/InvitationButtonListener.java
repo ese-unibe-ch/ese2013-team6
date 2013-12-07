@@ -8,7 +8,6 @@ import com.ese2013.mub.model.Day;
 import com.ese2013.mub.model.Mensa;
 
 public class InvitationButtonListener implements OnClickListener {
-
 	private Mensa mensa;
 	private Day day;
 	private Fragment target;
@@ -21,7 +20,6 @@ public class InvitationButtonListener implements OnClickListener {
 
 	@Override
 	public void onClick(View arg0) {
-
-		((DrawerMenuActivity)target.getActivity()).createInvitation(mensa, day);
+		((DrawerMenuActivity) target.getActivity()).createInvitation(mensa, day);
 	}
 }

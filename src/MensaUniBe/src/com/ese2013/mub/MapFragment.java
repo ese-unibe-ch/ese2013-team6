@@ -271,10 +271,6 @@ public class MapFragment extends Fragment {
 
 	private void zoomOnContent(NamedLocation loc1, NamedLocation loc2) {
 		List<NamedLocation> list = new ArrayList<NamedLocation>();
-		if (loc1 == null)
-			System.out.println("loc1 null");
-		if (loc2 == null)
-			System.out.println("loc2 null");
 		list.add(loc1);
 		list.add(loc2);
 		zoomOnContent(list);

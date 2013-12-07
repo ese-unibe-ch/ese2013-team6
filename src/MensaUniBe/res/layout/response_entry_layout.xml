@@ -21,7 +21,6 @@
         android:layout_height="wrap_content"
         android:layout_alignRight="@+id/friend_name"
         android:layout_alignTop="@+id/friend_name"
-        android:background="?android:attr/selectableItemBackground"
         android:clickable="false"
         android:contentDescription="@string/responses_image_view_description"
         android:padding="5dip"

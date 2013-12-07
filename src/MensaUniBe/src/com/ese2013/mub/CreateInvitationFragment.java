@@ -53,33 +53,27 @@ public class CreateInvitationFragment extends Fragment implements OnClickListene
 			date = new Date(getArguments().getLong(DATE_FROM_VIEW, new Date().getTime()));
 		}
 
-		pickDateButton = (Button) view.findViewById(R.id.invitation_create_pick_date);
-		pickDateButton.setOnClickListener(new android.view.View.OnClickListener() {
+		createPickDateButton(view);
+		createPickTimeButton(view);
+		createSelectRecipientsButton(view);
+		createCreateButton(view);
+		createCancelButton(view);
+		createSpinner(view, mensaIndex);
+
+		return view;
+	}
+
+	private void createCancelButton(View view) {
+		Button cancelButton = (Button) view.findViewById(R.id.invitation_create_cancelButton);
+		cancelButton.setOnClickListener(new android.view.View.OnClickListener() {
 			@Override
-			public void onClick(View button) {
-				DialogFragment newFragment = DatePickerFragment.newInstance(CreateInvitationFragment.this, date);
-				newFragment.show(getActivity().getSupportFragmentManager(), "datePicker");
+			public void onClick(View v) {
+				getFragmentManager().popBackStack();
 			}
 		});
+	}
 
-		pickTimeButton = (Button) view.findViewById(R.id.invitation_create_pick_time);
-		pickTimeButton.setOnClickListener(new android.view.View.OnClickListener() {
-			@Override
-			public void onClick(View button) {
-				DialogFragment newFragment = TimePickerFragment.newInstance(CreateInvitationFragment.this, date);
-				newFragment.show(getActivity().getSupportFragmentManager(), "timePicker");
-			}
-		});
-
-		Button selectRecipientsButton = (Button) view.findViewById(R.id.invitation_create_select_recipients);
-		selectRecipientsButton.setOnClickListener(new android.view.View.OnClickListener() {
-			@Override
-			public void onClick(View button) {
-				DialogFragment newFragment = RecipientsPickerFragment.newInstance(CreateInvitationFragment.this, recipients);
-				newFragment.show(getActivity().getSupportFragmentManager(), "recipientsPicker");
-			}
-		});
-
+	private void createCreateButton(View view) {
 		Button createButton = (Button) view.findViewById(R.id.invitation_create_createButton);
 		createButton.setOnClickListener(new android.view.View.OnClickListener() {
 			@Override
@@ -101,22 +95,43 @@ public class CreateInvitationFragment extends Fragment implements OnClickListene
 
 			}
 		});
+	}
 
-		Button cancelButton = (Button) view.findViewById(R.id.invitation_create_cancelButton);
-		cancelButton.setOnClickListener(new android.view.View.OnClickListener() {
+	private void createSelectRecipientsButton(View view) {
+		Button selectRecipientsButton = (Button) view.findViewById(R.id.invitation_create_select_recipients);
+		selectRecipientsButton.setOnClickListener(new android.view.View.OnClickListener() {
 			@Override
-			public void onClick(View v) {
-				getFragmentManager().popBackStack();
+			public void onClick(View button) {
+				DialogFragment newFragment = RecipientsPickerFragment.newInstance(CreateInvitationFragment.this, recipients);
+				newFragment.show(getActivity().getSupportFragmentManager(), "recipientsPicker");
 			}
 		});
+	}
 
-		createSpinner(view, mensaIndex);
-
+	private void createPickTimeButton(View view) {
+		pickTimeButton = (Button) view.findViewById(R.id.invitation_create_pick_time);
+		pickTimeButton.setOnClickListener(new android.view.View.OnClickListener() {
+			@Override
+			public void onClick(View button) {
+				DialogFragment newFragment = TimePickerFragment.newInstance(CreateInvitationFragment.this, date);
+				newFragment.show(getActivity().getSupportFragmentManager(), "timePicker");
+			}
+		});
 		onTimeSet(null, 12, 0);
+	}
+
+	private void createPickDateButton(View view) {
+		pickDateButton = (Button) view.findViewById(R.id.invitation_create_pick_date);
+		pickDateButton.setOnClickListener(new android.view.View.OnClickListener() {
+			@Override
+			public void onClick(View button) {
+				DialogFragment newFragment = DatePickerFragment.newInstance(CreateInvitationFragment.this, date);
+				newFragment.show(getActivity().getSupportFragmentManager(), "datePicker");
+			}
+		});
 		Calendar c = Calendar.getInstance();
 		c.setTime(date);
 		onDateSet(null, c.get(Calendar.YEAR), c.get(Calendar.MONTH), c.get(Calendar.DAY_OF_MONTH));
-		return view;
 	}
 
 	private boolean isComplete(Invitation invitation) {
@@ -177,10 +192,18 @@ public class CreateInvitationFragment extends Fragment implements OnClickListene
 	}
 
 	@Override
-	public void onClick(DialogInterface dialog, int which) {
+	public void onClick(DialogInterface recipientsSelectionDialog, int which) {
 		switch (which) {
 		case DialogInterface.BUTTON_POSITIVE:
-			// TODO possibly display recipients in the "main gui" here
+			Button selectRecipientsButton = (Button) getView().findViewById(R.id.invitation_create_select_recipients);
+			if (recipients.size() > 0) {
+				String out = recipients.get(0).toString();
+				for (int i = 1; i < recipients.size(); i++)
+					out += ", " + recipients.get(i).toString();
+				selectRecipientsButton.setText(out);
+			} else {
+				selectRecipientsButton.setText(R.string.invitation_create_select_recipients);
+			}
 			break;
 		}
 	}

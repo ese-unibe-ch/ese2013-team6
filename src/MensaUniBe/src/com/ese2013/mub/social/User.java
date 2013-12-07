@@ -36,4 +36,9 @@ public class User {
 	public String getNick() {
 		return nick;
 	}
+
+	@Override
+	public String toString() {
+		return nick;
+	}
 }

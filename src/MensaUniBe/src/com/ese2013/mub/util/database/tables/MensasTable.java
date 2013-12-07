@@ -9,7 +9,6 @@ public class MensasTable extends AbstractTable {
 	public static final String COL_ZIP = "zip";
 	public static final String COL_LON = "lon";
 	public static final String COL_LAT = "lat";
-	public static final String COL_TIMESTAMP = "timestamp";
 	
 	private static final String TABLE_MENSAS_CREATE = 
 			"create table " + TABLE_MENSAS + "(" + 
@@ -18,8 +17,7 @@ public class MensasTable extends AbstractTable {
 			COL_STREET + " text not null, " +
 			COL_ZIP + " text not null, " +
 			COL_LON + " real not null, " +
-			COL_LAT + " real not null, " +
-			COL_TIMESTAMP + " integer not null);";
+			COL_LAT + " real not null);";
 	
 	public MensasTable() {
 		super(TABLE_MENSAS, TABLE_MENSAS_CREATE);

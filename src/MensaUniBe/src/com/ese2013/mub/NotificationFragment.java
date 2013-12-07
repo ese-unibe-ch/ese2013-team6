@@ -108,7 +108,7 @@ public class NotificationFragment extends Fragment implements Observer {
 				TextView menuHeader = new TextView(getActivity());
 				menuHeader.setText(R.string.givenMenu);
 				layout.addView(menuHeader);
-				layout.addView(new MenuView(getActivity(), menu));
+				layout.addView(new MenuView(getActivity(), menu, Day.today()));
 				TextView mensaHeader = new TextView(getActivity());
 				mensaHeader.setText(R.string.servedInMensa);
 				layout.addView(mensaHeader);
@@ -123,8 +123,9 @@ public class NotificationFragment extends Fragment implements Observer {
 					ImageButton mapButton = (ImageButton) rel.getChildAt(2);
 					mapButton.setImageResource(R.id.map_button);
 					mapButton.setOnClickListener(new MapButtonListener(mensa, NotificationFragment.this));
-					ImageButton inviteButton = (ImageButton)rel.getChildAt(3);
-					inviteButton.setOnClickListener(new InvitationButtonListener(mensa, new Day(new Date()), NotificationFragment.this));
+					ImageButton inviteButton = (ImageButton) rel.getChildAt(3);
+					inviteButton.setOnClickListener(new InvitationButtonListener(mensa, new Day(new Date()),
+							NotificationFragment.this));
 					layout.addView(rel);
 				}
 			}
@@ -143,7 +144,6 @@ public class NotificationFragment extends Fragment implements Observer {
 
 		@Override
 		public long getItemId(int position) {
-
 			return position;
 		}
 

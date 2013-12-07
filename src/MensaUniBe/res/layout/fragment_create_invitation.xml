@@ -11,17 +11,20 @@
         android:layout_height="wrap_content" />
 
     <LinearLayout
+        style="?android:attr/buttonBarStyle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" >
 
         <Button
             android:id="@+id/invitation_create_pick_date"
+            style="?android:attr/buttonBarButtonStyle"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_weight="0.5" />
 
         <Button
             android:id="@+id/invitation_create_pick_time"
+            style="?android:attr/buttonBarButtonStyle"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_weight="0.5" />
@@ -38,21 +41,23 @@
         android:id="@+id/invitation_create_editMessage"
         android:layout_width="match_parent"
         android:layout_height="0dip"
+        android:layout_margin="5dip"
         android:layout_weight="1"
         android:background="@+color/white"
         android:gravity="top"
         android:inputType="textMultiLine"
-        android:layout_margin="5dip"
         android:minLines="6"
         android:padding="10dip" />
 
     <LinearLayout
+        style="?android:attr/buttonBarStyle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom" >
 
         <Button
             android:id="@+id/invitation_create_cancelButton"
+            style="?android:attr/buttonBarButtonStyle"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_weight="0.5"
@@ -60,6 +65,7 @@
 
         <Button
             android:id="@+id/invitation_create_createButton"
+            style="?android:attr/buttonBarButtonStyle"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_weight="0.5"

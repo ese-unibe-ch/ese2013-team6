@@ -6,10 +6,6 @@ import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import android.os.AsyncTask;
 
 import com.ese2013.mub.model.Mensa;
@@ -29,7 +25,6 @@ import com.parse.ParseException;
  * 
  */
 public class ModelCreationTask extends AsyncTask<Void, Void, Void> {
-	private JSONArray updateStatusJson;
 	private MensaDataSource dataSource;
 	private List<Mensa> mensas;
 	private boolean successful, localDataOutdated, downloadedNewData;
@@ -57,7 +52,7 @@ public class ModelCreationTask extends AsyncTask<Void, Void, Void> {
 		AbstractMensaFactory fac;
 		localDataOutdated = localDataNeedsUpdate();
 		if (localDataOutdated) {
-			fac = new MensaFromWebFactory(updateStatusJson, menuManager);
+			fac = new MensaFromWebFactory(menuManager);
 			downloadedNewData = true;
 		} else {
 			fac = new MensaFromLocalFactory();
@@ -152,9 +147,8 @@ public class ModelCreationTask extends AsyncTask<Void, Void, Void> {
 	 */
 	private boolean localDataNeedsUpdate() {
 		try {
-			retrieveUpdatesPage();
 			dataSource.open();
-			if (menusNotFromCurrentWeek() || webDataUpdated())
+			if (menusNotFromCurrentWeek())
 				return true;
 
 		} catch (Exception e) {
@@ -178,11 +172,6 @@ public class ModelCreationTask extends AsyncTask<Void, Void, Void> {
 			callback.onTaskFinished(this);
 	}
 
-	private void retrieveUpdatesPage() throws JSONException, IOException {
-		MensaWebserviceJsonRequest updateStatusRequest = new MensaWebserviceJsonRequest(ServiceUri.GET_UPDATE_STATUS);
-		updateStatusJson = updateStatusRequest.execute().getJSONObject("result").getJSONArray("content");
-	}
-
 	private boolean menusNotFromCurrentWeek() {
 		int currentWeek = Calendar.getInstance(Locale.GERMAN).get(Calendar.WEEK_OF_YEAR);
 		int menusWeek = dataSource.getWeekOfStoredMenus();
@@ -190,22 +179,5 @@ public class ModelCreationTask extends AsyncTask<Void, Void, Void> {
 			return true;
 		else
 			return false;
-	}
-
-	/**
-	 * This is used only as a additional check, as the updates page sometimes is
-	 * still buggy.
-	 * 
-	 * @return
-	 * @throws JSONException
-	 */
-	private boolean webDataUpdated() throws JSONException {
-		for (int i = 0; i < updateStatusJson.length(); i++) {
-			JSONObject mensaJson = updateStatusJson.getJSONObject(i);
-			int timestamp = dataSource.getMensaTimestamp(mensaJson.getInt("id"));
-			if (timestamp < mensaJson.getInt("timestamp"))
-				return true;
-		}
-		return false;
 	}
 }

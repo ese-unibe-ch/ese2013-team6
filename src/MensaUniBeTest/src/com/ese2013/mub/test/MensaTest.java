@@ -26,7 +26,6 @@ public class MensaTest extends TestCase {
 		builder.setLongitude(14.12451);
 		builder.setName("Some mensa");
 		builder.setStreet("Some Street 123");
-		builder.setTimestamp(123456789);
 		builder.setZip("3010 Bern");
 		mensa = builder.build();
 	}
@@ -52,7 +51,6 @@ public class MensaTest extends TestCase {
 		assertEquals(mensa.getName(), "Some mensa");
 		assertEquals(mensa.getStreet(), "Some Street 123");
 		assertEquals(mensa.getZip(), "3010 Bern");
-		assertEquals(mensa.getTimestamp(), 123456789);
 		assertNull(mensa.getMenuplan());
 	}
 
@@ -86,11 +84,6 @@ public class MensaTest extends TestCase {
 		assertNotEquals(mensa, changedMensa);
 	}
 
-	public void testTimestampComparison() {
-		changedMensa = builder.setTimestamp(98976213).build();
-		assertNotEquals(mensa, changedMensa);
-	}
-
 	public void testLongitudeComparison() {
 		changedMensa = builder.setLongitude(12.123).build();
 		assertNotEquals(mensa, changedMensa);
@@ -111,14 +104,14 @@ public class MensaTest extends TestCase {
 		mensa = changedMensa;
 		changedMensa = builder.build();
 		WeeklyMenuplan plan = new WeeklyMenuplan();
-		Menu menu = new MenuBuilder().setDate(new Day(28, 10, 2013)).setTitle("menu title").build();
-		plan.add(menu);
+		Menu menu = new MenuBuilder().setTitle("menu title").build();
+		plan.add(menu, new Day(28, 10, 2013));
 		changedMensa.setMenuplan(plan);
 		assertNotEquals(mensa, changedMensa);
 
-		// tests if weeklyplans are compared recursivly
+		// tests if weekly plans are compared recursively.
 		WeeklyMenuplan plan2 = new WeeklyMenuplan();
-		plan2.add(menu);
+		plan2.add(menu, new Day(28, 10, 2013));
 		assertNotEquals(mensa, changedMensa);
 	}
 }

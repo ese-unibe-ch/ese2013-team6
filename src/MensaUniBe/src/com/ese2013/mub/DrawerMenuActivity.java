@@ -30,7 +30,6 @@ import com.ese2013.mub.social.LoginService;
 import com.ese2013.mub.util.LoginTask;
 import com.ese2013.mub.util.LoginTaskCallback;
 import com.ese2013.mub.util.SharedPrefsHandler;
-import com.memetix.mst.translate.Translate;
 import com.parse.Parse;
 import com.parse.ParseInstallation;
 import com.parse.PushService;
@@ -144,9 +143,6 @@ public class DrawerMenuActivity extends FragmentActivity implements LoginTaskCal
 		Parse.initialize(this, "ZmdQMR7FctP2XgMJN5lvj98Aj9IA2Bf8mJrny11n", "yVVh3GiearTRsRXZqgm2FG6xfWvcQPjINX6dGJNu");
 		PushService.setDefaultPushCallback(this, DrawerMenuActivity.class);
 		ParseInstallation.getCurrentInstallation().saveInBackground();
-
-		Translate.setClientId("MensaUniBe");
-		Translate.setClientSecret("T35oR9q6ukB/GbuYAg4nsL09yRsp9j5afWjULfWfmuY=");
 	}
 
 	private void createActionBarSpinner() {

@@ -8,7 +8,7 @@ package com.ese2013.mub.model;
 public class Mensa {
 	private String name, street, zip;
 	private double longitude, latitude;
-	private int id, timestamp;
+	private int id;
 	private boolean isFavorite;
 	private WeeklyMenuplan menuplan;
 
@@ -28,7 +28,6 @@ public class Mensa {
 		this.longitude = builder.longitude;
 		this.latitude = builder.latitude;
 		this.isFavorite = builder.isFavorite;
-		this.timestamp = builder.timestamp;
 	}
 
 	public int getId() {
@@ -57,10 +56,6 @@ public class Mensa {
 
 	public boolean isFavorite() {
 		return isFavorite;
-	}
-
-	public int getTimestamp() {
-		return timestamp;
 	}
 
 	/**
@@ -112,8 +107,6 @@ public class Mensa {
 				return false;
 			if (!otherMensa.getZip().equals(this.zip))
 				return false;
-			if (otherMensa.getTimestamp() != this.timestamp)
-				return false;
 			if (otherMensa.isFavorite() != this.isFavorite)
 				return false;
 			if (otherMensa.getMenuplan() == null ? this.menuplan != null : !otherMensa.getMenuplan().equals(this.menuplan))
@@ -131,7 +124,6 @@ public class Mensa {
 		result = 31 * result + name.hashCode();
 		result = 31 * result + street.hashCode();
 		result = 31 * result + zip.hashCode();
-		result = 31 * result + timestamp;
 		result = 31 * result + (isFavorite ? 1 : 0);
 		result = 31 * result + (menuplan == null ? 0 : menuplan.hashCode());
 		long latLong = Double.doubleToLongBits(latitude);
@@ -151,7 +143,7 @@ public class Mensa {
 		private static final String DEFAULT = "N//A";
 		private String name = DEFAULT, street = DEFAULT, zip = DEFAULT;
 		private double longitude, latitude;
-		private int id, timestamp;
+		private int id;
 
 		public MensaBuilder setId(int id) {
 			this.id = id;
@@ -180,11 +172,6 @@ public class Mensa {
 
 		public MensaBuilder setLatitude(double latitude) {
 			this.latitude = latitude;
-			return this;
-		}
-
-		public MensaBuilder setTimestamp(int timestamp) {
-			this.timestamp = timestamp;
 			return this;
 		}
 

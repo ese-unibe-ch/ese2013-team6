@@ -22,9 +22,9 @@ public class WeeklyMenuplanTest extends TestCase {
 
 	public void testAddMenu() {
 		Day day = new Day(4, 11, 2013);
-		Menu menu = createMenu("a", "title 1", day);
+		Menu menu = createMenu("a", "title 1");
 		assertNull(plan.getDailymenuplan(day));
-		plan.add(menu);
+		plan.add(menu, day);
 		List<Menu> menus = plan.getDailymenuplan(day).getMenus();
 		assertEquals(menus.size(), 1);
 		assertEquals(menus.get(0), menu);
@@ -33,10 +33,10 @@ public class WeeklyMenuplanTest extends TestCase {
 	public void testMultipleMenusOnSameDay() {
 		Day day = new Day(4, 11, 2013);
 		assertNull(plan.getDailymenuplan(day));
-		Menu menu = createMenu("a", "title 1", day);
-		plan.add(menu);
-		Menu menu2 = createMenu("b", "title 2", day);
-		plan.add(menu2);
+		Menu menu = createMenu("a", "title 1");
+		plan.add(menu, day);
+		Menu menu2 = createMenu("b", "title 2");
+		plan.add(menu2, day);
 		List<Menu> menus = plan.getDailymenuplan(day).getMenus();
 		assertEquals(menus.size(), 2);
 		assertTrue(menus.contains(menu));
@@ -46,13 +46,13 @@ public class WeeklyMenuplanTest extends TestCase {
 	public void testMultipleMenusOnDifferentDays() {
 		Day day1 = new Day(4, 11, 2013);
 		assertNull(plan.getDailymenuplan(day1));
-		Menu menu = createMenu("a", "title 1", day1);
-		plan.add(menu);
+		Menu menu = createMenu("a", "title 1");
+		plan.add(menu, day1);
 
 		Day day2 = new Day(6, 11, 2013);
 		assertNull(plan.getDailymenuplan(day2));
-		Menu menu2 = createMenu("b", "title 2", day2);
-		plan.add(menu2);
+		Menu menu2 = createMenu("b", "title 2");
+		plan.add(menu2, day2);
 
 		List<Menu> menusDay1 = plan.getDailymenuplan(day1).getMenus();
 		assertEquals(menusDay1.size(), 1);
@@ -65,12 +65,12 @@ public class WeeklyMenuplanTest extends TestCase {
 
 	public void testGetDays() {
 		Day day1 = new Day(4, 11, 2013);
-		Menu menu = createMenu("a", "title 1", day1);
-		plan.add(menu);
+		Menu menu = createMenu("a", "title 1");
+		plan.add(menu, day1);
 
 		Day day2 = new Day(6, 11, 2013);
-		Menu menu2 = createMenu("b", "title 2", day2);
-		plan.add(menu2);
+		Menu menu2 = createMenu("b", "title 2");
+		plan.add(menu2, day2);
 
 		assertEquals(plan.getDays().size(), 2);
 		assertTrue(plan.getDays().contains(day1));
@@ -82,40 +82,40 @@ public class WeeklyMenuplanTest extends TestCase {
 
 	public void testGetWeekNumber() {
 		Day day = new Day(4, 11, 2013);
-		Menu menu = createMenu("a", "title 1", day);
-		plan.add(menu);
+		Menu menu = createMenu("a", "title 1");
+		plan.add(menu, day);
 		assertEquals(day.getWeekNumber(), plan.getWeekNumber());
 	}
 
 	public void testEquals() {
 		Day day1 = new Day(4, 11, 2013);
-		Menu menu = createMenu("a", "title 1", day1);
-		plan.add(menu);
+		Menu menu = createMenu("a", "title 1");
+		plan.add(menu, day1);
 
 		Day day2 = new Day(6, 11, 2013);
-		Menu menu2 = createMenu("b", "title 2", day2);
-		plan.add(menu2);
+		Menu menu2 = createMenu("b", "title 2");
+		plan.add(menu2, day2);
 
 		WeeklyMenuplan otherPlan = new WeeklyMenuplan();
 		// create new instances with same data, assures that equals recursively
 		// uses equals on the Menus.
-		menu = createMenu("a", "title 1", day1);
-		otherPlan.add(menu);
-		menu2 = createMenu("b", "title 2", day2);
-		otherPlan.add(menu2);
+		menu = createMenu("a", "title 1");
+		otherPlan.add(menu, day1);
+		menu2 = createMenu("b", "title 2");
+		otherPlan.add(menu2, day2);
 		assertEquals(plan, otherPlan);
 
-		Menu menu3 = createMenu("c", "title 2", day2);
-		otherPlan.add(menu3);
+		Menu menu3 = createMenu("c", "title 2");
+		otherPlan.add(menu3, day2);
 		assertNotEquals(plan, otherPlan);
 
-		menu3 = createMenu("d", "title 3", day2);
-		plan.add(menu3);
+		menu3 = createMenu("d", "title 3");
+		plan.add(menu3, day2);
 		assertNotEquals(plan, otherPlan);
 	}
 
-	private static Menu createMenu(String id, String title, Day day) {
-		return new MenuBuilder().setId(id).setTitle(title).setDescription("some description").setDate(day).build();
+	private static Menu createMenu(String id, String title) {
+		return new MenuBuilder().setId(id).setTitle(title).setDescription("some description").build();
 	}
 
 }

@@ -9,9 +9,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-
 import com.ese2013.mub.model.Day;
 import com.ese2013.mub.model.Mensa;
 import com.ese2013.mub.model.Mensa.MensaBuilder;
@@ -26,11 +23,9 @@ public class MensaFromWebFactory extends AbstractMensaFactory {
 
 	private MensaDataSource dataSource = MensaDataSource.getInstance();
 	private static SimpleDateFormat fm = new SimpleDateFormat("yyyy-MM-dd", Locale.GERMAN);
-	private JSONArray updateStatusJson;
 	private MenuManager menuManager;
 
-	public MensaFromWebFactory(JSONArray updateStatusJson, MenuManager menuManager) {
-		this.updateStatusJson = updateStatusJson;
+	public MensaFromWebFactory(MenuManager menuManager) {
 		this.menuManager = menuManager;
 	}
 
@@ -52,20 +47,16 @@ public class MensaFromWebFactory extends AbstractMensaFactory {
 				if (mensa != null) {
 					plan = mensa.getMenuplan();
 				} else {
-					int timestamp = getUpdateTimestamp(parseMensa);
 					plan = new WeeklyMenuplan();
-					mensa = parseMensa(parseMensa, timestamp);
+					mensa = parseMensa(parseMensa);
 					mensa.setMenuplan(plan);
 					mensaMap.put(parseMensa.getObjectId(), mensa);
 				}
-				plan.add(parseMenu(parseMenuMensa));
+				plan.add(parseMenu(parseMenuMensa), new Day(fm.parse(parseMenuMensa.getString("date"))));
 			}
 			List<Mensa> mensas = new ArrayList<Mensa>(mensaMap.values());
 			sortMensaList(mensas);
 			return mensas;
-		} catch (JSONException e) {
-			e.printStackTrace();
-			throw new MensaDownloadException(e);
 		} catch (ParseException e) {
 			e.printStackTrace();
 			throw new MensaDownloadException(e);
@@ -77,13 +68,6 @@ public class MensaFromWebFactory extends AbstractMensaFactory {
 		}
 	}
 
-	private int getUpdateTimestamp(ParseObject parseMensa) throws JSONException {
-		for (int j = 0; j < updateStatusJson.length(); j++)
-			if (updateStatusJson.getJSONObject(j).getInt("id") == Integer.parseInt(parseMensa.getString("mensaId")))
-				return updateStatusJson.getJSONObject(j).getInt("timestamp");
-		return 0;
-	}
-
 	private void sortMensaList(List<Mensa> mensas) {
 		Collections.sort(mensas, new Comparator<Mensa>() {
 			@Override
@@ -93,7 +77,7 @@ public class MensaFromWebFactory extends AbstractMensaFactory {
 		});
 	}
 
-	private Mensa parseMensa(ParseObject parseMensa, int timestamp) throws JSONException {
+	private Mensa parseMensa(ParseObject parseMensa) {
 		MensaBuilder builder = new MensaBuilder();
 		int mensaId = Integer.parseInt(parseMensa.getString("mensaId"));
 		builder.setId(mensaId);
@@ -103,14 +87,13 @@ public class MensaFromWebFactory extends AbstractMensaFactory {
 		builder.setLongitude(Double.parseDouble(parseMensa.getString("lon")));
 		builder.setLatitude(Double.parseDouble(parseMensa.getString("lat")));
 		builder.setIsFavorite(dataSource.isInFavorites(mensaId));
-		builder.setTimestamp(timestamp);
 		return builder.build();
 	}
 
 	private Menu parseMenu(ParseObject parseMenuMensa) throws ParseException {
 		ParseObject parseMenu = parseMenuMensa.getParseObject("menu");
 		Menu result = menuManager.createMenu(parseMenu.getObjectId(), parseMenu.getString("title"),
-				parseMenu.getString("description"), new Day(fm.parse(parseMenuMensa.getString("date"))));
+				parseMenu.getString("description"));
 		return result;
 	}
 }

@@ -23,10 +23,12 @@ import com.ese2013.mub.util.parseDatabase.OnlineMensaDBHandler;
 
 public class MenuView extends LinearLayout {
 	private Menu menu;
+	private Day day;
 
-	public MenuView(Context context, Menu menu) {
+	public MenuView(Context context, Menu menu, Day day) {
 		super(context);
 		this.menu = menu;
+		this.day = day;
 		setOrientation(VERTICAL);
 		setPadding(0, 0, 0, dimToPixels(R.dimen.menu_view_bottom_margin));
 
@@ -81,7 +83,7 @@ public class MenuView extends LinearLayout {
 					RatingBar ratingBar = (RatingBar) v;
 					if (LoginService.getLoggedInUser().hasBeenRated(MenuView.this.menu)) {
 						Toast.makeText(context, R.string.rating_msg_already_rated, Toast.LENGTH_SHORT).show();
-					} else if (menu.getDate().compareTo(Day.today()) > 0) {
+					} else if (menusIsFromFutureDate()) {
 						Toast.makeText(context, R.string.rating_msg_from_future, Toast.LENGTH_SHORT).show();
 					} else {
 						ratingBar.setIsIndicator(false);
@@ -93,6 +95,10 @@ public class MenuView extends LinearLayout {
 			}
 		});
 		ratingBar.setId(ViewUtil.generateViewId());
+	}
+
+	private boolean menusIsFromFutureDate() {
+		return day.compareTo(Day.today()) > 0;
 	}
 
 	private void setCountDisplay() {

@@ -56,7 +56,6 @@ public class SettingsFragment extends Fragment {
 		editCriteriaButton = (Button) view.findViewById(R.id.edit_notification_criteria);
 		updateEditCriteriaButton();
 		editCriteriaButton.setOnClickListener(new EditCriteriaButtonListener());
-
 		return view;
 	}
 

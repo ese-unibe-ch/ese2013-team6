@@ -104,8 +104,6 @@ public class DailyPlanFragment extends Fragment {
 	private void setUpInvitationButton(RelativeLayout relativeLayout, Mensa mensa, Day dayOfInvitation) {
 		ImageButton invitationButton = (ImageButton) relativeLayout.getChildAt(3);
 		invitationButton.setOnClickListener(new InvitationButtonListener(mensa, dayOfInvitation, this));
-		// TODO Auto-generated method stub
-
 	}
 
 	public void setUpFavoriteButton(RelativeLayout rel, Mensa mensa) {

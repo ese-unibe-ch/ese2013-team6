@@ -86,6 +86,7 @@ public class Model extends Observable implements ModelCreationTaskCallback, Tran
 				mensa = m;
 		return mensa;
 	}
+
 	public void saveFavorites() {
 		dataSource.open();
 		dataSource.storeFavorites(mensas);
@@ -97,10 +98,8 @@ public class Model extends Observable implements ModelCreationTaskCallback, Tran
 		Toast.makeText(context, context.getString(task.getStatusMsgResource()), Toast.LENGTH_LONG).show();
 		if (task.wasSuccessful()) {
 			mensas = task.getMensas();
-			if (menuManager.isTranslationEnabled() && !menuManager.translationsAvailable()) {
-				System.out.println("dooing translation");
+			if (menuManager.isTranslationEnabled() && !menuManager.translationsAvailable())
 				new TranslationTask(menuManager, Language.ENGLISH, this).execute();
-			}
 
 			if (task.hasDownloadedNewData())
 				saveModel();
@@ -108,19 +107,13 @@ public class Model extends Observable implements ModelCreationTaskCallback, Tran
 		}
 	}
 
-//	public void onTranslationFinised(TranslationTask task) {
-//		System.out.println("translation done");
-//		notifyChanges();
-//	}
+	@Override
+	public void onTaskFinished(TranslationTask task) {
+		notifyChanges();
+	}
 
 	public void saveModel() {
 		ModelSavingTask savingTask = new ModelSavingTask();
 		savingTask.execute();
-	}
-
-	@Override
-	public void onTaskFinished(TranslationTask task) {
-		notifyChanges();
-
 	}
 }

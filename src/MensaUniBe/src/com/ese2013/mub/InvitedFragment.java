@@ -67,7 +67,6 @@ public class InvitedFragment extends Fragment {
 			setUpWhenTextView(view, invite);
 			setUpCancelButton(view, invite);
 			setUpAcceptButton(view, invite);
-			System.out.println(invite.getResponseOf(LoginService.getLoggedInUser()));
 			return view;
 		}
 

@@ -14,7 +14,7 @@ public class SharedPrefsHandler {
 	private static final String FIRST_TIME = "first_time", USERMAIL = "usermail", NOTIFICATION_FOOD = "notificationFood",
 			NOTIFICATION_MENSAS = "notificationMensas", DO_NOTIFICATION = "doNotification", LANGUAGE = "language",
 			DO_TRANSLATION = "doTranslation", CRITERIA_SET = "citeriaSet";
-	
+
 	private Context context;
 
 	public SharedPrefsHandler(Context context) {
@@ -44,8 +44,8 @@ public class SharedPrefsHandler {
 	public String getNotificationFood() {
 		return getPrefs(context).getString(NOTIFICATION_FOOD, "");
 	}
-	
-	public Set<String> getNotificationListItems(){
+
+	public Set<String> getNotificationListItems() {
 		return getPrefs(context).getStringSet(CRITERIA_SET, new TreeSet<String>());
 	}
 
@@ -68,10 +68,10 @@ public class SharedPrefsHandler {
 	public void setNotificationFood(String notificationFood) {
 		getPrefs(context).edit().putString(NOTIFICATION_FOOD, notificationFood).commit();
 	}
-	
-	public void setNotificationListItems(Set<String> notificationListItems){
+
+	public void setNotificationListItems(Set<String> notificationListItems) {
 		getPrefs(context).edit().putStringSet(CRITERIA_SET, notificationListItems).commit();
-		
+
 	}
 
 	public String getUserEmail() {

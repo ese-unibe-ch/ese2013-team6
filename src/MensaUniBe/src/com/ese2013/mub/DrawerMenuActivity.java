@@ -59,7 +59,7 @@ public class DrawerMenuActivity extends FragmentActivity implements LoginTaskCal
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		initOnlineServices();
+		initParseService();
 		handleLogin();
 		model = new Model(getApplicationContext());
 		createActionBar();
@@ -139,7 +139,7 @@ public class DrawerMenuActivity extends FragmentActivity implements LoginTaskCal
 		drawerList.setOnItemClickListener(new DrawerItemClickListener());
 	}
 
-	private void initOnlineServices() {
+	private void initParseService() {
 		Parse.initialize(this, "ZmdQMR7FctP2XgMJN5lvj98Aj9IA2Bf8mJrny11n", "yVVh3GiearTRsRXZqgm2FG6xfWvcQPjINX6dGJNu");
 		PushService.setDefaultPushCallback(this, DrawerMenuActivity.class);
 		ParseInstallation.getCurrentInstallation().saveInBackground();
@@ -200,7 +200,6 @@ public class DrawerMenuActivity extends FragmentActivity implements LoginTaskCal
 	}
 
 	private void selectItem(int position, boolean instantiateFragment) {
-		// update the main content by replacing fragments
 		if (instantiateFragment && selectedPosition != position) {
 			Fragment frag;
 			switch (position) {
@@ -226,6 +225,7 @@ public class DrawerMenuActivity extends FragmentActivity implements LoginTaskCal
 				break;
 			}
 		}
+
 		selectedPosition = position;
 		drawerList.setItemChecked(selectedPosition, true);
 		drawerLayout.closeDrawer(drawerList);
@@ -251,15 +251,22 @@ public class DrawerMenuActivity extends FragmentActivity implements LoginTaskCal
 	}
 
 	/**
-	 * Called whenever we call invalidateOptionsMenu() Hides all action par menu
+	 * Called whenever we call invalidateOptionsMenu() Hides all action bar menu
 	 * options and redisplays them as needed
 	 */
 	@Override
 	public boolean onPrepareOptionsMenu(Menu menu) {
 		boolean drawerOpen = drawerLayout.isDrawerOpen(drawerList);
 		menu.findItem(R.id.action_settings).setVisible(!drawerOpen);
-		if (isShowingHomeFragment())
-			getActionBar().setDisplayShowCustomEnabled(!drawerOpen);
+		MenuItem item = menu.findItem(R.id.new_invite_button);
+		if (item != null)
+			item.setVisible(!drawerOpen);
+
+		item = menu.findItem(R.id.add_friend_button);
+		if (item != null)
+			item.setVisible(!drawerOpen);
+
+		getActionBar().setDisplayShowCustomEnabled(isShowingHomeFragment() && !drawerOpen);
 		return super.onPrepareOptionsMenu(menu);
 	}
 
@@ -296,8 +303,8 @@ public class DrawerMenuActivity extends FragmentActivity implements LoginTaskCal
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		if (!drawerToggle.onOptionsItemSelected(item) && item.getItemId() == R.id.action_settings) {
-			selectedPosition = NOTHING_INDEX;
 			drawerList.setItemChecked(selectedPosition, false);
+			selectedPosition = NOTHING_INDEX;
 			Fragment frag = new SettingsFragment();
 			setDisplayedFragment(frag, true);
 			return true;
@@ -362,6 +369,7 @@ public class DrawerMenuActivity extends FragmentActivity implements LoginTaskCal
 
 	public void createInvitation() {
 		CreateInvitationFragment frag = new CreateInvitationFragment();
+		getActionBar().setDisplayShowCustomEnabled(false);
 		setDisplayedFragment(frag, true);
 	}
 }

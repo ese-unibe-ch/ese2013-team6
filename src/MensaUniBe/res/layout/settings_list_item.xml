@@ -10,15 +10,19 @@
         android:layout_width="0dp"
         android:layout_height="fill_parent"
         android:layout_weight="1"
+        android:gravity="center_vertical"
         android:paddingLeft="16dp"
-        android:gravity="center_vertical"
-        android:textColor="#000000"
-        android:textAppearance="?android:attr/textAppearanceMedium" />
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:textColor="@color/black" />
 
-    <Button
+    <ImageButton
         android:id="@+id/minus_button"
-        android:layout_height="50dp"
-        android:layout_width="50dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="?android:attr/selectableItemBackground"
+        android:contentDescription="@string/settings_remove_notification_criteria"
         android:gravity="center_vertical"
-        android:background="@android:drawable/ic_menu_delete" />
+        android:padding="5dip"
+        android:src="@drawable/cancel" />
+
 </LinearLayout>

@@ -5,7 +5,6 @@ import java.util.List;
 
 import android.app.AlertDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -19,6 +18,7 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.ese2013.mub.social.FriendRequest;
 import com.ese2013.mub.social.LoginService;
@@ -31,6 +31,7 @@ public class FriendsListFragment extends Fragment {
 	private ListView friends;
 	private FriendsListAdapter adapter;
 	private LayoutInflater inflater;
+	private MenuItem menuItem;
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -63,22 +64,22 @@ public class FriendsListFragment extends Fragment {
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch (item.getItemId()) {
 		case R.id.add_friend_button:
-
 			View dialogView = inflater.inflate(R.layout.add_friends_dialog, null);
 			EditText edit = (EditText) dialogView.findViewById(R.id.enter_name);
 			AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
 			builder.setView(dialogView);
 			builder.setTitle(R.string.add_friend);
-			builder.setNegativeButton("Cancel", new android.content.DialogInterface.OnClickListener() {
-
-				@Override
-				public void onClick(DialogInterface dialog, int which) {
-					dialog.dismiss();
-				}
-			});
-			builder.setPositiveButton("OK", new PositiveButtonListener(edit, getActivity()));
+			builder.setNegativeButton(android.R.string.cancel, null);
+			builder.setPositiveButton(android.R.string.ok, new PositiveButtonListener(edit, getActivity()));
 			builder.create().show();
+			return true;
 
+		case R.id.refresh:
+			SocialManager.getInstance().loadFriends();
+			menuItem = item;
+			menuItem.setActionView(R.layout.progress_bar);
+			menuItem.expandActionView();
+			Toast.makeText(getActivity(), R.string.toast_refreshing_msg, Toast.LENGTH_SHORT).show();
 			return true;
 		default:
 			return super.onOptionsItemSelected(item);
@@ -94,7 +95,15 @@ public class FriendsListFragment extends Fragment {
 	@Override
 	public void onDestroy() {
 		onDestroyOptionsMenu();
+		SocialManager.getInstance().removeObserver(adapter);
 		super.onDestroy();
+	}
+
+	private void loadingFinished() {
+		if (menuItem != null) {
+			menuItem.collapseActionView();
+			menuItem.setActionView(null);
+		}
 	}
 
 	private class FriendsListAdapter extends BaseAdapter implements Observer {
@@ -105,7 +114,7 @@ public class FriendsListFragment extends Fragment {
 		public FriendsListAdapter() {
 			super();
 			SocialManager.getInstance().addObserver(this);
-			SocialManager.getInstance().loadFriends();
+			onNotifyChanges();
 		}
 
 		@Override
@@ -114,27 +123,34 @@ public class FriendsListFragment extends Fragment {
 			if (view == null)
 				inflater = (LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 
-			if (position < requests.size()) {
-				view = inflater.inflate(R.layout.friend_request_layout, null);
-				FriendRequest friendRequest = requests.get(position);
-				TextView requestName = (TextView) view.findViewById(R.id.friend_name_request);
-				requestName.setText(friendRequest.getFrom().getNick());
-				ImageButton cancelRequestButton = (ImageButton) view.findViewById(R.id.cancel_request);
-				cancelRequestButton.setOnClickListener(new AnswerFriendRequestListener(friendRequest, false));
-				ImageButton acceptRequestButton = (ImageButton) view.findViewById(R.id.accept_request);
-				acceptRequestButton.setOnClickListener(new AnswerFriendRequestListener(friendRequest, true));
-			} else {
-				view = inflater.inflate(R.layout.friend_entry_layout, null);
-				User friend = friends.get(position - requests.size());
-				TextView friendName = (TextView) view.findViewById(R.id.friend_name);
-				friendName.setText(friend.getNick());
-				ImageButton deleteFriend = (ImageButton) view.findViewById(R.id.delete_friend);
-				deleteFriend.setOnClickListener(new DeleteFriendListener(friend));
-			}
+			if (position < requests.size())
+				view = displayFriendRequest(requests.get(position));
+			else
+				view = displayFriend(friends.get(position - requests.size()));
 
 			return view;
 		}
-		
+
+		private View displayFriend(User friend) {
+			View view = inflater.inflate(R.layout.friend_entry_layout, null);
+			TextView friendName = (TextView) view.findViewById(R.id.friend_name);
+			friendName.setText(friend.getNick());
+			ImageButton deleteFriend = (ImageButton) view.findViewById(R.id.delete_friend);
+			deleteFriend.setOnClickListener(new DeleteFriendListener(friend));
+			return view;
+		}
+
+		private View displayFriendRequest(FriendRequest friendRequest) {
+			View view = inflater.inflate(R.layout.friend_request_layout, null);
+			TextView requestName = (TextView) view.findViewById(R.id.friend_name_request);
+			requestName.setText(friendRequest.getFrom().getNick());
+			ImageButton cancelRequestButton = (ImageButton) view.findViewById(R.id.cancel_request);
+			cancelRequestButton.setOnClickListener(new AnswerFriendRequestListener(friendRequest, false));
+			ImageButton acceptRequestButton = (ImageButton) view.findViewById(R.id.accept_request);
+			acceptRequestButton.setOnClickListener(new AnswerFriendRequestListener(friendRequest, true));
+			return view;
+		}
+
 		@Override
 		public int getCount() {
 			return friends.size() + requests.size();
@@ -158,6 +174,7 @@ public class FriendsListFragment extends Fragment {
 			friends = LoginService.getLoggedInUser().getFriends();
 			requests = LoginService.getLoggedInUser().getFriendRequests();
 			notifyDataSetChanged();
+			loadingFinished();
 		}
 	}
 }

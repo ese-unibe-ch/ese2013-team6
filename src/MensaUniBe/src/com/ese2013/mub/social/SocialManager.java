@@ -65,7 +65,7 @@ public class SocialManager extends Observable implements GetSentInvitationsTaskC
 		notifyChanges();
 	}
 	public void answerInvitation(Invitation invitation, Response response) throws ParseException{
-		new OnlineDBHandler().answerInvitation(invitation, response, currentUser());
+		onlineDBHandler.answerInvitation(invitation, response, currentUser());
 		notifyChanges();
 	}
 	public void loadInvites() {

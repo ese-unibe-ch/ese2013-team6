@@ -1,65 +1,86 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:padding="10dp" >
-
-    <Spinner
-        android:id="@+id/invitation_create_mensaSpinner"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" >
-
-        <Button
-            android:id="@+id/invitation_create_pick_date"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="0.5" />
-
-        <Button
-            android:id="@+id/invitation_create_pick_time"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="0.5" />
-    </LinearLayout>
-
-    <Button
-        android:id="@+id/invitation_create_select_recipients"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
-        android:text="@string/invitation_create_select_recipients" />
-
-    <EditText
-        android:id="@+id/invitation_create_editMessage"
-        android:layout_width="match_parent"
-        android:layout_height="0dip"
-        android:layout_weight="1"
-        android:inputType="textMultiLine"
-        android:minLines="6" />
+    android:fillViewport="true" >
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_gravity="bottom" >
+        android:orientation="vertical"
+        android:padding="10dp" >
+
+        <Spinner
+            android:id="@+id/invitation_create_mensaSpinner"
+            android:layout_width="match_parent"
+            android:layout_height="48dip" />
+
+        <LinearLayout
+            style="?android:attr/buttonBarStyle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" >
+
+            <Button
+                android:id="@+id/invitation_create_pick_date"
+                style="?android:attr/buttonBarButtonStyle"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="0.5" />
+
+            <Button
+                android:id="@+id/invitation_create_pick_time"
+                style="?android:attr/buttonBarButtonStyle"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="0.5" />
+        </LinearLayout>
 
         <Button
-            android:id="@+id/invitation_create_cancelButton"
+            android:id="@+id/invitation_create_select_recipients"
+            style="?android:attr/buttonBarButtonStyle"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="0.5"
-            android:text="@string/invitation_create_cancel" />
+            android:layout_marginTop="10dp"
+            android:ellipsize="end"
+            android:gravity="left|center_vertical"
+            android:maxLines="1"
+            android:text="@string/invitation_create_select_recipients" />
 
-        <Button
-            android:id="@+id/invitation_create_createButton"
-            android:layout_width="fill_parent"
+        <EditText
+            android:id="@+id/invitation_create_editMessage"
+            android:layout_width="match_parent"
+            android:layout_height="0dip"
+            android:layout_margin="5dip"
+            android:layout_weight="1"
+            android:background="@+color/white"
+            android:gravity="top"
+            android:hint="@string/invitation_create_enter_message_hint"
+            android:inputType="textMultiLine"
+            android:minLines="6"
+            android:padding="10dip" />
+
+        <LinearLayout
+            style="?android:attr/buttonBarStyle"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="0.5"
-            android:text="@string/invitation_create_send" />
+            android:layout_gravity="bottom" >
+
+            <Button
+                android:id="@+id/invitation_create_cancelButton"
+                style="?android:attr/buttonBarButtonStyle"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="0.5"
+                android:text="@string/invitation_create_cancel" />
+
+            <Button
+                android:id="@+id/invitation_create_createButton"
+                style="?android:attr/buttonBarButtonStyle"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="0.5"
+                android:text="@string/invitation_create_send" />
+        </LinearLayout>
     </LinearLayout>
 
-</LinearLayout>
+</ScrollView>

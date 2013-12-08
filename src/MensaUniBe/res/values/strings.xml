@@ -77,6 +77,17 @@
 	<string name="invitation_create_cancel">Cancel</string>
 	<string name="invitation_create_send">Send Invitation</string>
 	<string name="invitation_create_title">Create new Invitation</string>
-	<string name="invitation_create_select_recipients">Select recipients</string>
+	<string name="invitation_create_select_recipients">Select recipients...</string>
+	<string name="rating_msg_from_future">You cannot rate a menu from the future</string>
+	<string name="rating_msg_not_logged_in">You have to be logged in to rate a menu.</string>
+	<string name="responses_image_view_description">Shows response of a friend to an invite</string>
+	<string name="settings_remove_notification_criteria">Remove notification criteria</string>
+	<string name="settings_add_new_critera">Adds the newly entered criteria to the set of criterias.</string>
+	<string name="invitation_create_enter_message_hint">Enter a message...</string>
+	<string name="settings_add_criteria">Add Criteria...</string>
+	<string name="settings_edit_criteria">Edit Criteria...</string>
+	<string name="settings_edit_notification_criteria_title">Edit Notification Criteria</string>
+	<string name="translation_started">Translation started</string>
+	<string name="settings_registration_button">Register</string>
 	
 </resources>

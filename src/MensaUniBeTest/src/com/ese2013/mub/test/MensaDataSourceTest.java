@@ -74,14 +74,6 @@ public class MensaDataSourceTest extends AndroidTestCase {
 		}
 	}
 
-	public void testLoadMensaTimestamp() {
-		List<Mensa> mensas = createMensaList();
-		dataSource.storeMensaList(mensas);
-
-		for (Mensa m : mensas)
-			assertEquals(m.getTimestamp(), dataSource.getMensaTimestamp(m.getId()));
-	}
-
 	public void testStoreAndLoadMenuplan() {
 		List<Mensa> mensas = createMensaList();
 		List<WeeklyMenuplan> plans = createWeeklyplans();
@@ -114,17 +106,17 @@ public class MensaDataSourceTest extends AndroidTestCase {
 		ArrayList<Mensa> mensas = new ArrayList<Mensa>();
 		Mensa.MensaBuilder builder = new Mensa.MensaBuilder();
 		builder.setId(1).setName("Mensa Gesellschaftsstrasse").setStreet("Some street 123").setZip("3001 Bern")
-				.setLongitude(45.123).setLatitude(12.412).setIsFavorite(false).setTimestamp(123456789);
+				.setLongitude(45.123).setLatitude(12.412).setIsFavorite(false);
 		mensas.add(builder.build());
 
 		builder = new Mensa.MensaBuilder();
 		builder.setId(2).setName("Mensa Unitobler").setStreet("Some other street 123").setZip("3005 Bern")
-				.setLongitude(45.1).setLatitude(13.512).setIsFavorite(false).setTimestamp(123456789);
+				.setLongitude(45.1).setLatitude(13.512).setIsFavorite(false);
 		mensas.add(builder.build());
 
 		builder = new Mensa.MensaBuilder();
 		builder.setId(3).setName("Mensa Von Roll").setStreet("Some street 42").setZip("3012 Bern").setLongitude(43.123)
-				.setLatitude(12.212).setIsFavorite(false).setTimestamp(342312311);
+				.setLatitude(12.212).setIsFavorite(false);
 		mensas.add(builder.build());
 
 		assertNotNull(mensas);
@@ -143,38 +135,35 @@ public class MensaDataSourceTest extends AndroidTestCase {
 
 		calendar.set(2013, 10, 20);
 		Menu.MenuBuilder builder = new Menu.MenuBuilder();
-		builder.setId("a").setTitle("Vegi").setDescription("Something \n Served with some other Stuff")
-				.setDate(new Day(calendar.getTime()));
+		builder.setId("a").setTitle("Vegi").setDescription("Something \n Served with some other Stuff");
 		menus.add(builder.build());
-		builder.setId("b").setTitle("Nice Menu").setDescription("Something nice\n Served with nothing else")
-				.setDate(new Day(calendar.getTime()));
+		builder.setId("b").setTitle("Nice Menu").setDescription("Something nice\n Served with nothing else");
 		menus.add(builder.build());
 
 		calendar.set(2013, 10, 21);
-		builder.setId("c").setTitle("Vegi").setDescription("Something vegetarian").setDate(new Day(calendar.getTime()));
+		builder.setId("c").setTitle("Vegi").setDescription("Something vegetarian");
 		menus.add(builder.build());
-		builder.setId("d").setTitle("Expensive Menu").setDescription("Very expensive food")
-				.setDate(new Day(calendar.getTime()));
+		builder.setId("d").setTitle("Expensive Menu").setDescription("Very expensive food");
 		menus.add(builder.build());
 
 		calendar.set(2013, 10, 22);
-		builder.setId("e").setTitle("Nice Vegi Menu").setDescription("Something nice vegetarian")
-				.setDate(new Day(calendar.getTime()));
+		builder.setId("e").setTitle("Nice Vegi Menu").setDescription("Something nice vegetarian");
 		menus.add(builder.build());
-		builder.setId("f").setTitle("Special Menu").setDescription("Pizza").setDate(new Day(calendar.getTime()));
+		builder.setId("f").setTitle("Special Menu").setDescription("Pizza");
 		menus.add(builder.build());
 
 		WeeklyMenuplan plan1 = new WeeklyMenuplan();
-		plan1.add(menus.get(0));
-		plan1.add(menus.get(1));
-		plan1.add(menus.get(2));
-		plan1.add(menus.get(4));
+		Day day = new Day(23, 11, 2013);
+		plan1.add(menus.get(0), day);
+		plan1.add(menus.get(1), day);
+		plan1.add(menus.get(2), day);
+		plan1.add(menus.get(4), day);
 
 		WeeklyMenuplan plan2 = new WeeklyMenuplan();
-		plan2.add(menus.get(0));
-		plan2.add(menus.get(1));
-		plan2.add(menus.get(3));
-		plan2.add(menus.get(5));
+		plan2.add(menus.get(0), day);
+		plan2.add(menus.get(1), day);
+		plan2.add(menus.get(3), day);
+		plan2.add(menus.get(5), day);
 
 		plans.add(plan1);
 		plans.add(plan2);

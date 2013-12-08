@@ -13,13 +13,13 @@ public class MenuManager {
 		return menuMap.values();
 	}
 
-	public Menu createMenu(String id, String title, String description, String translTitle, String translDesc, Day day) {
+	public Menu createMenu(String id, String title, String description, String translTitle, String translDesc) {
 
 		Menu menu = menuMap.get(id);
 		if (menu != null)
 			return menu;
 
-		menu = new Menu(id, title, description, translTitle, translDesc, day);
+		menu = new Menu(id, title, description, translTitle, translDesc);
 
 		// // menu = new
 		// MenuBuilder().setDate(day).setTitle(title).setDescription(description).setId(id)
@@ -29,12 +29,12 @@ public class MenuManager {
 		return menu;
 	}
 
-	public Menu createMenu(String id, String title, String description, Day day) {
+	public Menu createMenu(String id, String title, String description) {
 		Menu menu = menuMap.get(id);
 		if (menu != null)
 			return menu;
 
-		menu = new MenuBuilder().setDate(day).setTitle(title).setDescription(description).setId(id).build();
+		menu = new MenuBuilder().setTitle(title).setDescription(description).setId(id).build();
 
 		menuMap.put(id, menu);
 		return menu;

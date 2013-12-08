@@ -9,24 +9,20 @@
     android:paddingTop="6dp"
     android:background="@drawable/invite_list_background" >
 
-    <TextView
-        android:id="@+id/from_whom_text_field"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentTop="true" />
+ 
 
     <TextView
         android:id="@+id/when_text_field"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_toRightOf="@id/from_whom_text_field" />
+         android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true" />
 
     <TextView
         android:id="@+id/where_text_field"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/from_whom_text_field" />
+        android:layout_below="@id/when_text_field" />
 
     <ImageButton
         android:id="@+id/show_invited"

@@ -6,16 +6,14 @@ package com.ese2013.mub.model;
  */
 public class Menu {
 	private String id, origTitle, origDescription, translatedTitle, translatedDescription;
-	private Day date;
 	private int ratingSum = 0, ratingCount = 0;
 
-	public Menu(String id, String title, String description, String translTitle, String translDesc, Day day) {
+	public Menu(String id, String title, String description, String translTitle, String translDesc) {
 		this.id = id;
 		this.origTitle = title;
 		this.origDescription = description;
 		this.translatedTitle = translTitle;
 		this.translatedDescription = translDesc;
-		this.date = day;
 	}
 
 	/**
@@ -32,7 +30,6 @@ public class Menu {
 		this.origDescription = builder.description;
 		this.translatedTitle = builder.translTitle;
 		this.translatedDescription = builder.translDesc;
-		this.date = builder.date;
 		this.ratingCount = builder.ratingCount;
 		this.ratingSum = builder.ratingSum;
 	}
@@ -73,10 +70,6 @@ public class Menu {
 		this.translatedDescription = translatedDescription;
 	}
 
-	public Day getDate() {
-		return date;
-	}
-
 	public void setUserRating(int userRating) {
 		ratingSum += userRating;
 		ratingCount++;
@@ -109,17 +102,6 @@ public class Menu {
 		return ratingCount;
 	}
 
-	/**
-	 * Converts the date when the menu is served to a string. This string
-	 * depends on the Locale settings and should only be used for visual output.
-	 * 
-	 * @return String containing the date of the menu in a long format (e.g.
-	 *         "Monday, 14. October 2013").
-	 */
-	public String getDateString() {
-		return date.toString();
-	}
-
 	@Override
 	public boolean equals(Object other) {
 		if (this == other)
@@ -127,8 +109,6 @@ public class Menu {
 		if (other instanceof Menu) {
 			Menu otherMenu = (Menu) other;
 			if (!otherMenu.getId().equals(this.id))
-				return false;
-			if (otherMenu.getDate() == null ? this.date != null : !otherMenu.getDate().equals(this.date))
 				return false;
 			if (!otherMenu.getOrigTitle().equals(this.origTitle))
 				return false;
@@ -146,14 +126,12 @@ public class Menu {
 		result = 31 * result + id.hashCode();
 		result = 31 * result + origTitle.hashCode();
 		result = 31 * result + origDescription.hashCode();
-		result = 31 * result + date.hashCode();
 		return result;
 	}
 
 	@Override
 	public String toString() {
-		return "Menu " + id + " { \n" + "  Title: " + origTitle + "\n  Description: " + origDescription + "\n  Date: "
-				+ getDateString() + " \n }";
+		return "Menu " + id + " { \n" + "  Title: " + origTitle + "\n  Description: " + origDescription + "\n }";
 	}
 
 	/**
@@ -165,7 +143,6 @@ public class Menu {
 		public static final String INVALID_ID = "INVALID";
 		private static final String DEFAULT = "N//A";
 		private String id = INVALID_ID, title = DEFAULT, description = DEFAULT, translTitle = "", translDesc = "";
-		private Day date;
 
 		public MenuBuilder setId(String id) {
 			this.id = id;
@@ -189,11 +166,6 @@ public class Menu {
 
 		public MenuBuilder setTranslatedDescription(String description) {
 			this.translDesc = description;
-			return this;
-		}
-
-		public MenuBuilder setDate(Day date) {
-			this.date = date;
 			return this;
 		}
 

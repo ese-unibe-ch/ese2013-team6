@@ -2,33 +2,34 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:background="@drawable/invite_list_background" >
-
-    <ImageButton
-        android:id="@+id/cancel_request"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignLeft="@+id/accept_request"
-        android:background="?android:attr/selectableItemBackground"
-        android:contentDescription="@string/cancel_request"
-        android:src="@drawable/cancel" />
+    android:background="@drawable/invite_list_background"
+    android:orientation="horizontal"
+    android:padding = "10dip" >
 
     <TextView
         android:id="@+id/friend_name_request"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignBottom="@+id/cancel_request"
-        android:layout_alignParentLeft="true" />
+        android:layout_alignParentLeft="true"
+        android:textSize="20sp" />
 
     <ImageButton
         android:id="@+id/accept_request"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignRight="@+id/friend_name_request"
-        android:layout_below="@+id/cancel_request"
+        android:layout_toLeftOf="@+id/cancel_request"
         android:background="?android:attr/selectableItemBackground"
         android:contentDescription="@string/accept_request"
+        android:paddingRight="5dip"
         android:src="@drawable/accept" />
+
+    <ImageButton
+        android:id="@+id/cancel_request"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignRight="@+id/friend_name_request"
+        android:background="?android:attr/selectableItemBackground"
+        android:contentDescription="@string/cancel_request"
+        android:src="@drawable/cancel" />
 
 </RelativeLayout>

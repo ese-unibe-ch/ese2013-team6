@@ -1,6 +1,6 @@
 package com.ese2013.mub;
 
-import java.text.SimpleDateFormat;
+import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
@@ -73,12 +73,12 @@ public class InvitedFragment extends Fragment {
 		private void setUpWhenTextView(View view, Invitation invite) {
 			TextView whenTextView = (TextView) view.findViewById(R.id.when_text_field);
 			Day day = new Day(invite.getTime());
-			SimpleDateFormat timeOfDay = new SimpleDateFormat("HH:mm", Locale.getDefault());
-			SimpleDateFormat sdf = new SimpleDateFormat("dd.MM", Locale.getDefault());
+			DateFormat dateFormat = DateFormat.getDateInstance(DateFormat.SHORT, Locale.getDefault());
+			DateFormat dateFormat2 = DateFormat.getDateInstance(DateFormat.MEDIUM, Locale.getDefault());
 			if (day.equals(Day.today()))
-				whenTextView.setText(R.string.today + timeOfDay.format(invite.getTime()));
+				whenTextView.setText(dateFormat.format(invite.getTime()));
 			else
-				whenTextView.setText(R.string.today + sdf.format(invite.getTime()));
+				whenTextView.setText(dateFormat2.format(invite.getTime()));
 		}
 
 		private void setUpFromTextView(View view, Invitation invite) {
@@ -96,7 +96,7 @@ public class InvitedFragment extends Fragment {
 			if (invite.getResponseOf(LoginService.getLoggedInUser()) == Invitation.Response.UNKNOWN) {
 				ImageButton cancelRequestButton = (ImageButton) view.findViewById(R.id.cancel_invitation);
 				cancelRequestButton.setImageResource(R.drawable.cancel);
-				cancelRequestButton.setOnClickListener(new CancelInviteRequest(invite));
+				cancelRequestButton.setOnClickListener(new AnswerInviteListener(invite, false));
 			}
 		}
 
@@ -104,7 +104,7 @@ public class InvitedFragment extends Fragment {
 			if (invite.getResponseOf(LoginService.getLoggedInUser()) == Invitation.Response.UNKNOWN) {
 				ImageButton acceptRequestButton = (ImageButton) view.findViewById(R.id.accept_invitiation);
 				acceptRequestButton.setImageResource(R.drawable.accept);
-				acceptRequestButton.setOnClickListener(new AcceptInviteListener(invite));
+				acceptRequestButton.setOnClickListener(new AnswerInviteListener(invite, true));
 			}
 		}
 

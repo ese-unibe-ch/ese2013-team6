@@ -16,15 +16,15 @@ public class ModelSavingTask extends AsyncTask<Void, Void, Void> {
 
 	@Override
 	protected Void doInBackground(Void... params) {
-		MensaDataSource dataManager = MensaDataSource.getInstance();
-		dataManager.open();
+		MensaDataSource dataSource = MensaDataSource.getInstance();
+		dataSource.open();
 		List<Mensa> mensas = Model.getInstance().getMensas();
-		dataManager.storeMensaList(mensas);
-		dataManager.deleteMenus();
-		for (Mensa m : mensas) {
-			dataManager.storeWeeklyMenuplan(m);
-		}
-		dataManager.close();
+		dataSource.storeMensaList(mensas);
+		dataSource.deleteMenus();
+		for (Mensa m : mensas)
+			dataSource.storeWeeklyMenuplan(m);
+		
+		dataSource.close();
 		return null;
 	}
 }

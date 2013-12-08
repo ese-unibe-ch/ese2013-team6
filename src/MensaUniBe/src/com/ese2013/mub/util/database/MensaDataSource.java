@@ -93,7 +93,6 @@ public class MensaDataSource {
 		values.put(MensasTable.COL_ZIP, m.getZip());
 		values.put(MensasTable.COL_LON, m.getLongitude());
 		values.put(MensasTable.COL_LAT, m.getLatitude());
-		values.put(MensasTable.COL_TIMESTAMP, m.getTimestamp());
 		database.replace(MensasTable.TABLE_MENSAS, null, values);
 	}
 
@@ -111,7 +110,6 @@ public class MensaDataSource {
 		final int POS_ZIP = c.getColumnIndex(MensasTable.COL_ZIP);
 		final int POS_LON = c.getColumnIndex(MensasTable.COL_LON);
 		final int POS_LAT = c.getColumnIndex(MensasTable.COL_LAT);
-		final int POS_TIMESTAMP = c.getColumnIndex(MensasTable.COL_TIMESTAMP);
 		c.moveToFirst();
 		do {
 			Mensa.MensaBuilder builder = new Mensa.MensaBuilder();
@@ -123,7 +121,6 @@ public class MensaDataSource {
 			builder.setLongitude(c.getDouble(POS_LON));
 			builder.setLatitude(c.getDouble(POS_LAT));
 			builder.setIsFavorite(isInFavorites(mensaId));
-			builder.setTimestamp(c.getInt(POS_TIMESTAMP));
 			mensas.add(builder.build());
 		} while (c.moveToNext());
 		c.close();
@@ -159,20 +156,6 @@ public class MensaDataSource {
 		Cursor c = database.rawQuery("select * from " + FavoritesTable.TABLE_FAV_MENSAS + " where " + MensasTable.COL_ID
 				+ "=" + mensaId, null);
 		return c.getCount() != 0;
-	}
-
-	/**
-	 * Returns the update time stamp for a given mensa id.
-	 * 
-	 * @param mensaId
-	 *            Int id of the mensa to retrieve the time stamp of.
-	 * @return Time stamp of the given mensa (represented by the id).
-	 */
-	public int getMensaTimestamp(int mensaId) {
-		Cursor c = database.rawQuery("select " + MensasTable.COL_TIMESTAMP + " from " + MensasTable.TABLE_MENSAS + " where "
-				+ MensasTable.COL_ID + "=" + mensaId, null);
-		c.moveToFirst();
-		return c.getInt(0);
 	}
 
 	/**
@@ -212,7 +195,7 @@ public class MensaDataSource {
 		ContentValues values2 = new ContentValues();
 		values2.put(MenusTable.COL_ID, menu.getId());
 		values2.put(MensasTable.COL_ID, mensa.getId());
-		values2.put(MenusMensasTable.COL_DATE, menu.getDate().format(fm));
+		values2.put(MenusMensasTable.COL_DATE, mensa.getMenuplan().getDayOfServing(menu).format(fm));
 		database.replace(MenusMensasTable.TABLE_MENUS_MENSAS, null, values2);
 	}
 
@@ -239,9 +222,9 @@ public class MensaDataSource {
 		c.moveToFirst();
 		do {
 			try {
-				p.add(menuManager.createMenu(c.getString(POS_ID), c.getString(POS_TITLE), c.getString(POS_DESC),
-						c.getString(POS_TRANSL_TITLE), c.getString(POS_TRANSL_DESC),
-						new Day(fm.parse(c.getString(POS_DATE)))));
+				Menu menu = menuManager.createMenu(c.getString(POS_ID), c.getString(POS_TITLE), c.getString(POS_DESC),
+						c.getString(POS_TRANSL_TITLE), c.getString(POS_TRANSL_DESC));
+				p.add(menu, new Day(fm.parse(c.getString(POS_DATE))));
 			} catch (ParseException e) {
 				throw new AssertionError("Database did not save properly");
 			}

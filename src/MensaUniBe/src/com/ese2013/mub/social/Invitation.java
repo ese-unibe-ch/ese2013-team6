@@ -6,6 +6,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * 
+ * @author Delio
+ * 
+ */
 public class Invitation {
 	private User from;
 	private Map<User, Response> to;
@@ -24,8 +29,11 @@ public class Invitation {
 			this.to.put(u, Response.UNKNOWN);
 	}
 
-	public Invitation(String id, User from, HashMap<User, Invitation.Response> to, String message, int mensaId,
-			Date time) {
+	public Invitation(User from, List<User> to, String message, int mensaId, Date time) {
+		this(null, from, to, message, mensaId, time);
+	}
+
+	public Invitation(String id, User from, HashMap<User, Invitation.Response> to, String message, int mensaId, Date time) {
 		this.id = id;
 		this.from = from;
 		this.message = message;

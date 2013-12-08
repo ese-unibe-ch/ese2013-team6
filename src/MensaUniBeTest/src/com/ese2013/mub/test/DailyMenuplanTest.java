@@ -12,12 +12,11 @@ public class DailyMenuplanTest extends TestCase {
 
 	protected void setUp() throws Exception {
 		super.setUp();
-		plan = new DailyMenuplan();
+		plan = new DailyMenuplan(new Day(23, 11, 2013));
 	}
 
 	public void testAddMenu() {
-		Menu menu = new MenuBuilder().setDate(new Day(23, 11, 2013)).setTitle("some title").setDescription("some desc.")
-				.setId("a").build();
+		Menu menu = new MenuBuilder().setTitle("some title").setDescription("some desc.").setId("a").build();
 		assertNotNull(plan.getMenus());
 		assertEquals(plan.getMenus().size(), 0);
 
@@ -27,8 +26,7 @@ public class DailyMenuplanTest extends TestCase {
 	}
 
 	public void testAddMultipleMenus() {
-		MenuBuilder builder = new MenuBuilder().setDate(new Day(23, 11, 2013)).setTitle("some title")
-				.setDescription("some desc.").setId("a");
+		MenuBuilder builder = new MenuBuilder().setTitle("some title").setDescription("some desc.").setId("a");
 		Menu menu1 = builder.build();
 		Menu menu2 = builder.setTitle("some other title").build();
 
@@ -40,12 +38,11 @@ public class DailyMenuplanTest extends TestCase {
 	}
 
 	public void testEquals() {
-		DailyMenuplan otherPlan = new DailyMenuplan();
+		DailyMenuplan otherPlan = new DailyMenuplan(new Day(23, 11, 2013));
 		assertEquals(plan, plan);
 		assertEquals(plan, otherPlan);
 
-		MenuBuilder builder = new MenuBuilder().setDate(new Day(23, 11, 2013)).setTitle("some title")
-				.setDescription("some desc.").setId("a");
+		MenuBuilder builder = new MenuBuilder().setTitle("some title").setDescription("some desc.").setId("a");
 		Menu menu1 = builder.build();
 		Menu menu2 = builder.setTitle("some other title").build();
 

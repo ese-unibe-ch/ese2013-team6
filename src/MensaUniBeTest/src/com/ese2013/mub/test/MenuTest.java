@@ -1,9 +1,8 @@
 package com.ese2013.mub.test;
 
-import junit.framework.TestCase;
 import static com.ese2013.mub.test.Util.assertNotEquals;
+import junit.framework.TestCase;
 
-import com.ese2013.mub.model.Day;
 import com.ese2013.mub.model.Menu;
 import com.ese2013.mub.model.Menu.MenuBuilder;
 
@@ -19,7 +18,6 @@ public class MenuTest extends TestCase {
 		builder.setId("a");
 		builder.setTitle("Menu title");
 		builder.setDescription("Menu description");
-		builder.setDate(new Day(4, 11, 2013));
 		menu = builder.build();
 	}
 
@@ -30,8 +28,6 @@ public class MenuTest extends TestCase {
 		// all string values have defaults
 		assertNotNull(menu.getTitle());
 		assertNotNull(menu.getDescription());
-		// at least the date needs to be set in a menu to make sense.
-		assertNull(menu.getDate());
 	}
 
 	public void testBuilder() {
@@ -39,7 +35,6 @@ public class MenuTest extends TestCase {
 		menu = builder.build();
 		assertEquals(menu.getTitle(), "Menu title");
 		assertEquals(menu.getDescription(), "Menu description");
-		assertEquals(menu.getDate(), new Day(4, 11, 2013));
 	}
 
 	public void testSelfEquals() {
@@ -61,14 +56,4 @@ public class MenuTest extends TestCase {
 		changedMenu = builder.setTitle("New Description").build();
 		assertNotEquals(menu, changedMenu);
 	}
-
-	public void testDateComparison() {
-		changedMenu = builder.setDate(new Day(5, 11, 2013)).build();
-		assertNotEquals(menu, changedMenu);
-
-		// test if Day.equals gets called and not only the Pointers are compared
-		changedMenu = builder.setDate(new Day(4, 11, 2013)).build();
-		assertEquals(menu, changedMenu);
-	}
-
 }

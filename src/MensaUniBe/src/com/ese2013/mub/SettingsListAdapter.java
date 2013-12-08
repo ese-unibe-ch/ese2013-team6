@@ -8,18 +8,18 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
-import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.TextView;
 
 public class SettingsListAdapter extends BaseAdapter {
-	 
-    private final Context context;
-    private final ArrayList<String> itemsArrayList;
 
-    public SettingsListAdapter(Context context, ArrayList<String> itemsArrayList) {
-        this.context = context;
-        this.itemsArrayList = itemsArrayList;
-    }
+	private final Context context;
+	private final ArrayList<String> itemsArrayList;
+
+	public SettingsListAdapter(Context context, ArrayList<String> itemsArrayList) {
+		this.context = context;
+		this.itemsArrayList = itemsArrayList;
+	}
 
 	@Override
 	public int getCount() {
@@ -36,41 +36,35 @@ public class SettingsListAdapter extends BaseAdapter {
 		return position;
 	}
 
-    @Override
-    public View getView(int position, View convertView, ViewGroup parent) {
+	@Override
+	public View getView(int position, View convertView, ViewGroup parent) {
+		LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+		View rowView = inflater.inflate(R.layout.settings_list_item, parent, false);
 
-        LayoutInflater inflater = (LayoutInflater) context
-            .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+		TextView text = (TextView) rowView.findViewById(android.R.id.text1);
+		text.setText(itemsArrayList.get(position));
+		ImageButton delete = (ImageButton) rowView.findViewById(R.id.minus_button);
+		delete.setOnClickListener(new DeleteOnClickListener(this, itemsArrayList.get(position)));
+		return rowView;
+	}
 
-        View rowView = inflater.inflate(R.layout.settings_list_item, parent, false);
+	public boolean delete(String element) {
+		return itemsArrayList.remove(element);
+	}
 
-        TextView text = (TextView) rowView.findViewById(android.R.id.text1);
-        Button delete = (Button) rowView.findViewById(R.id.minus_button);
+	private class DeleteOnClickListener implements OnClickListener {
+		private String element;
+		private SettingsListAdapter adapter;
 
-        text.setText(itemsArrayList.get(position));
-        delete.setOnClickListener( new DeleteOnClickListener(this, itemsArrayList.get(position)) );
+		public DeleteOnClickListener(SettingsListAdapter adapter, String element) {
+			this.element = element;
+			this.adapter = adapter;
+		}
 
-        return rowView;
-    }
-    
-    public boolean delete(String element) {
-    	return this.itemsArrayList.remove(element);
-    }
-    
-    
-    private class DeleteOnClickListener implements OnClickListener {
-    	private String element;
-    	private SettingsListAdapter adapter;
-    	public DeleteOnClickListener(SettingsListAdapter adapter, String element) {
-    		assert adapter != null;
-    		this.element = element;
-    		this.adapter = adapter;
-    	}
 		@Override
 		public void onClick(View v) {
-			adapter.delete(this.element);
+			adapter.delete(element);
 			adapter.notifyDataSetChanged();
 		}
-    	
-    }
+	}
 }

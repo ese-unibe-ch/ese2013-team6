@@ -50,7 +50,7 @@ public class Day implements Comparable<Day> {
 	 * 
 	 * @return Date set the the day represented by this Day object.
 	 */
-	private Date getDate() {
+	public Date getDate() {
 		return getCalendar().getTime();
 	}
 

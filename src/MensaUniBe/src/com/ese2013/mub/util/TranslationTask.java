@@ -1,8 +1,6 @@
 package com.ese2013.mub.util;
 
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
 
 import com.ese2013.mub.model.Menu;
 import com.ese2013.mub.model.MenuManager;
@@ -10,22 +8,24 @@ import com.memetix.mst.language.Language;
 import com.memetix.mst.translate.Translate;
 
 public class TranslationTask extends AbstractAsyncTask<Void, Void, Void> {
+	private static final String NEW_LINE_CODE = " ; ", DOUBLE_QUOTE_CODE = " ' ";
 	private Language newLang;
 	private Collection<Menu> menus;
 	private String[] newTitles, newDescriptions;
-	private static final String NEW_LINE = " ; ";
-	private List<TranslationTaskCallback> callbacks = new ArrayList<TranslationTaskCallback>();
+
+	private TranslationTaskCallback callback;
 	private MenuManager menuManager;
 
-	public TranslationTask(MenuManager menuManager, Language newLang, TranslationTaskCallback... callbacks) {
+	public TranslationTask(MenuManager menuManager, Language newLang, TranslationTaskCallback callback) {
+		Translate.setClientId("ESE-Mub");
+		Translate.setClientSecret("3N8wC0wPZPj2v6KTT6GR/B28UDythCvpJ/NSWolMzwU=");
+
 		this.newLang = newLang;
 		this.menuManager = menuManager;
 		this.menus = menuManager.getMenus();
-
-		for (TranslationTaskCallback callback : callbacks)
-			this.callbacks.add(callback);
+		this.callback = callback;
 	}
-	
+
 	public TranslationTask(MenuManager menuManager, Language newLang) {
 		this.newLang = newLang;
 		this.menuManager = menuManager;
@@ -44,16 +44,19 @@ public class TranslationTask extends AbstractAsyncTask<Void, Void, Void> {
 
 		int i = 0;
 		for (Menu menu : menus) {
-			menuTitles[i] = menu.getOrigTitle();
-			descriptions[i] = menu.getOrigDescription().replace("\n", NEW_LINE).replace("\"", "'");
+			menuTitles[i] = menu.getOrigTitle().replaceAll("[^\\x00-\\x7F]", "");
+			descriptions[i] = menu.getOrigDescription().replace("\n", NEW_LINE_CODE).replace("\"", DOUBLE_QUOTE_CODE);
 			i++;
 		}
 
 		try {
 			newTitles = Translate.execute(menuTitles, Language.GERMAN, newLang);
-			newDescriptions = Translate.execute(descriptions, Language.GERMAN, newLang);
+			newDescriptions = new String[descriptions.length];
+			for (int j = 0; j < newDescriptions.length; j++)
+				newDescriptions[j] = Translate.execute(descriptions[j], Language.GERMAN, newLang);
+
 		} catch (Exception e) {
-			// Api throws general exception...
+			// Api throws general exception class "Exception"...
 			setException(e);
 		}
 		return null;
@@ -66,7 +69,8 @@ public class TranslationTask extends AbstractAsyncTask<Void, Void, Void> {
 			int i = 0;
 			for (Menu menu : menus) {
 				menu.setTranslatedTitle(newTitles[i]);
-				menu.setTranslatedDescription(newDescriptions[i].replace(NEW_LINE.trim(), "\n").replace("'", "\""));
+				menu.setTranslatedDescription(newDescriptions[i].replace(NEW_LINE_CODE.trim(), "\n").replace(
+						DOUBLE_QUOTE_CODE, "\""));
 				i++;
 			}
 			menuManager.setTranslationsAvailable(true);
@@ -74,8 +78,6 @@ public class TranslationTask extends AbstractAsyncTask<Void, Void, Void> {
 			menuManager.setTranslationsAvailable(false);
 			logException("TRANSLATION", "Could not translate");
 		}
-		System.out.println("TransTask finished");
-		for (TranslationTaskCallback callback : callbacks)
-			callback.onTaskFinished(this);
+		callback.onTaskFinished(this);
 	}
 }

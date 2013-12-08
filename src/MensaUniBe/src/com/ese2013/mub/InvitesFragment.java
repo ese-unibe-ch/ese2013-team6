@@ -1,6 +1,6 @@
 package com.ese2013.mub;
 
-import java.text.SimpleDateFormat;
+import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
@@ -46,6 +46,7 @@ public class InvitesFragment extends Fragment {
 
 		invitedList.setEmptyView(showMessage);
 		invitedList.setAdapter(adapter);
+		setHasOptionsMenu(true);
 		return view;
 	}
 
@@ -84,7 +85,6 @@ public class InvitesFragment extends Fragment {
 			view = inflater.inflate(R.layout.invites_entry_layout, null);
 			Invitation invite = invitations.get(position);
 
-			setUpFromTextView(view, invite);
 			setUpWhereTextView(view, invite);
 			setUpWhenTextView(view, invite);
 
@@ -95,24 +95,19 @@ public class InvitesFragment extends Fragment {
 
 		private void setUpShowInvitedButton(View view, Invitation invite) {
 			ImageButton showInvitedButton = (ImageButton) view.findViewById(R.id.show_invited);
-			showInvitedButton.setOnClickListener(new ShowInvitedListener(invite));
+			showInvitedButton.setOnClickListener(new ShowInvitedListener(getActivity(), invite));
 		}
 
 		private void setUpWhenTextView(View view, Invitation invite) {
 			TextView whenTextView = (TextView) view.findViewById(R.id.when_text_field);
 			Day day = new Day(invite.getTime());
-			SimpleDateFormat timeOfDay = new SimpleDateFormat("HH:mm", Locale.getDefault());
-			SimpleDateFormat sdf = new SimpleDateFormat("dd.MMMM", Locale.getDefault());
+
+			DateFormat dateFormat = DateFormat.getDateInstance(DateFormat.SHORT, Locale.getDefault());
+			DateFormat dateFormat2 = DateFormat.getDateInstance(DateFormat.MEDIUM, Locale.getDefault());
 			if (day.equals(Day.today()))
-				whenTextView.setText(R.string.today + timeOfDay.format(invite.getTime()));
+				whenTextView.setText(dateFormat.format(invite.getTime()));
 			else
-				whenTextView.setText(R.string.today + sdf.format(invite.getTime()));
-		}
-
-		private void setUpFromTextView(View view, Invitation invite) {
-			TextView fromWhomTextView = (TextView) view.findViewById(R.id.from_whom_text_field);
-			fromWhomTextView.setText(invite.getFrom().getNick());
-
+				whenTextView.setText(dateFormat2.format(invite.getTime()));
 		}
 
 		private void setUpWhereTextView(View view, Invitation invite) {

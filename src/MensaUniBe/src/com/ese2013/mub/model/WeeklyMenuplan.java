@@ -20,14 +20,13 @@ public class WeeklyMenuplan implements Iterable<DailyMenuplan> {
 	 *            must assure to only add menus from the same week. If he
 	 *            doesn't, the class will be in an undefined state.
 	 */
-	public void add(Menu menu) {
-		Day date = menu.getDate();
-		if (dailymenus.containsKey(date)) {
-			dailymenus.get(date).add(menu);
+	public void add(Menu menu, Day day) {
+		if (dailymenus.containsKey(day)) {
+			dailymenus.get(day).add(menu);
 		} else {
-			DailyMenuplan plan = new DailyMenuplan();
+			DailyMenuplan plan = new DailyMenuplan(day);
 			plan.add(menu);
-			dailymenus.put(date, plan);
+			dailymenus.put(day, plan);
 		}
 	}
 
@@ -67,8 +66,16 @@ public class WeeklyMenuplan implements Iterable<DailyMenuplan> {
 	 * @return Int containing the number of the week in the year.
 	 */
 	public int getWeekNumber() {
-		Day d = getDays().iterator().next();
-		return d.getWeekNumber();
+		Day day = getDays().iterator().next();
+		return day.getWeekNumber();
+	}
+
+	public Day getDayOfServing(Menu menu) {
+		for (DailyMenuplan dailyPlan : this) {
+			if (dailyPlan.contains(menu))
+				return dailyPlan.getDay();
+		}
+		return null;
 	}
 
 	@Override

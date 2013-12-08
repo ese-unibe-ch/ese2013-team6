@@ -306,7 +306,7 @@ public class DrawerMenuActivity extends FragmentActivity implements LoginTaskCal
 			drawerList.setItemChecked(selectedPosition, false);
 			selectedPosition = NOTHING_INDEX;
 			Fragment frag = new SettingsFragment();
-			setDisplayedFragment(frag, true);
+			setDisplayedFragment(frag, false);
 			return true;
 		}
 		return super.onOptionsItemSelected(item);

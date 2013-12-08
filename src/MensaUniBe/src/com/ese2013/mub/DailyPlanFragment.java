@@ -20,6 +20,7 @@ import com.ese2013.mub.model.Day;
 import com.ese2013.mub.model.Mensa;
 import com.ese2013.mub.model.Menu;
 import com.ese2013.mub.model.Model;
+import com.ese2013.mub.social.LoginService;
 
 public class DailyPlanFragment extends Fragment {
 	private Day day;
@@ -102,8 +103,14 @@ public class DailyPlanFragment extends Fragment {
 	}
 
 	private void setUpInvitationButton(RelativeLayout relativeLayout, Mensa mensa, Day dayOfInvitation) {
-		ImageButton invitationButton = (ImageButton) relativeLayout.getChildAt(3);
-		invitationButton.setOnClickListener(new InvitationButtonListener(mensa, dayOfInvitation, this));
+		ImageButton invitationButton = (ImageButton) relativeLayout
+					.getChildAt(3);
+		if (LoginService.isLoggedIn()) {
+			invitationButton.setOnClickListener(new InvitationButtonListener(
+					mensa, dayOfInvitation, this));
+		}else{
+			invitationButton.setVisibility(View.GONE);
+		}
 	}
 
 	public void setUpFavoriteButton(RelativeLayout rel, Mensa mensa) {

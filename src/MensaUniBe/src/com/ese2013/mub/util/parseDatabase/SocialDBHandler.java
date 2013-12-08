@@ -15,12 +15,31 @@ import com.ese2013.mub.util.parseDatabase.tables.InvitationTable;
 import com.ese2013.mub.util.parseDatabase.tables.InvitationUserTable;
 import com.ese2013.mub.util.parseDatabase.tables.UserTable;
 import com.parse.FindCallback;
+import com.parse.GetCallback;
 import com.parse.ParseException;
 import com.parse.ParseObject;
 import com.parse.ParsePush;
 import com.parse.ParseQuery;
 
+/**
+ * Handles connection to the "Social database", this means it handles Friends,
+ * FriendRequests, Invitations, Invitation Responses. All the "get" calls are
+ * synchronous and all the "save"/"send" calls are asynchronous.
+ */
 public class SocialDBHandler {
+
+	/**
+	 * Tries to find the given user by it's email. The passed in user is updated
+	 * with id and nickname if he can be found on the Server.
+	 * 
+	 * @param user
+	 *            User to be searched. Only needs a valid email address, must
+	 *            not be null.
+	 * @return User (the same as passed in) with now id and nickname set if they
+	 *         could be found.
+	 * @throws ParseException
+	 *             if the user can't be found on the server.
+	 */
 	public User getUser(User user) throws ParseException {
 		ParseObject u = getUserByMail(user);
 		user.setId(u.getObjectId());
@@ -28,6 +47,19 @@ public class SocialDBHandler {
 		return user;
 	}
 
+	/**
+	 * Tries to find the given CurrentUser by it's email. The passed in
+	 * CurrentUser is updated with id, nickname and the list of menus he has
+	 * rated if he can be found on the server.
+	 * 
+	 * @param user
+	 *            CurrentUser to be searched. Only needs a valid email address,
+	 *            must not be null.
+	 * @return CurrentUser (the same as passed in) with id and nickname from the
+	 *         Server if they could be found.
+	 * @throws ParseException
+	 *             if the CurrentUser can't be found on the server.
+	 */
 	public CurrentUser getCurrentUser(CurrentUser user) throws ParseException {
 		ParseObject u = getUserByMail(user);
 		user.setId(u.getObjectId());
@@ -38,6 +70,19 @@ public class SocialDBHandler {
 		return user;
 	}
 
+	/**
+	 * Does the same as "getCurrentUser", except it creates the user if he can't
+	 * be found on the Server.
+	 * 
+	 * @param user
+	 *            CurrentUser to be searched or created. Needs a valid email
+	 *            address and nickname, must not be null.
+	 * @return CurrentUser (the same as passed in) with id from the Server
+	 *         (either new id if the User couldn't be found or existing id if
+	 *         the User was found).
+	 * @throws ParseException
+	 *             if the CurrentUser can't be found or created on the server.
+	 */
 	public CurrentUser registerIfNotExists(CurrentUser user) throws ParseException {
 		ParseObject u;
 		try {
@@ -53,6 +98,17 @@ public class SocialDBHandler {
 		return user;
 	}
 
+	/**
+	 * Adds the User represented by "otherEmail" to the passed in CurrentUser as
+	 * friend. (only on the server, caller must locally update CurrentUser!).
+	 * 
+	 * @param user
+	 *            CurrentUser to add the other person as friend to.
+	 * @param otherEmail
+	 *            email as String of the other user to be added.
+	 * @throws ParseException
+	 *             if the server can't find the other user.
+	 */
 	public void addAsFriend(CurrentUser user, String otherEmail) throws ParseException {
 		addFriendship(user, getUserByMail(otherEmail));
 	}
@@ -71,7 +127,30 @@ public class SocialDBHandler {
 		friendship.saveEventually();
 	}
 
+	/**
+	 * Removes the friendship between user1 and user2 from the server.
+	 * 
+	 * @param user1
+	 *            User which is a friend of user2. Must not be null and must
+	 *            have a valid id from the Parse-Server.
+	 * @param user2
+	 *            User which is a friend of user1. Must not be null and must
+	 *            have a valid id from the Parse-Server.
+	 */
 	public void removeFriendship(User user1, User user2) {
+		ParseQuery<ParseObject> query = buildRemoveFriendshipQuery(user1, user2);
+		query.findInBackground(new FindCallback<ParseObject>() {
+			@Override
+			public void done(List<ParseObject> objects, ParseException e) {
+				if (e == null) {
+					for (ParseObject p : objects)
+						p.deleteEventually();
+				}
+			}
+		});
+	}
+
+	private ParseQuery<ParseObject> buildRemoveFriendshipQuery(User user1, User user2) {
 		List<ParseQuery<ParseObject>> or = new ArrayList<ParseQuery<ParseObject>>();
 		ParseObject user1Object = ParseObject.createWithoutData(UserTable.TABLE_NAME, user1.getId());
 		ParseObject user2Object = ParseObject.createWithoutData(UserTable.TABLE_NAME, user2.getId());
@@ -87,18 +166,19 @@ public class SocialDBHandler {
 		or.add(query1);
 		or.add(query2);
 		ParseQuery<ParseObject> query = ParseQuery.or(or);
-
-		query.findInBackground(new FindCallback<ParseObject>() {
-			@Override
-			public void done(List<ParseObject> objects, ParseException e) {
-				if (e == null) {
-					for (ParseObject p : objects)
-						p.deleteEventually();
-				}
-			}
-		});
+		return query;
 	}
 
+	/**
+	 * Retrieves the List of Users which are friends of the given CurrentUser.
+	 * 
+	 * @param user
+	 *            CurrentUser to search friends of.
+	 * @return List of Users which are friends of the given CurrentUser. The
+	 *         Users in the List all have valid ids, emails and nicknames.
+	 * @throws ParseException
+	 *             if the List of friends can't be retrieved.
+	 */
 	public List<User> getFriends(CurrentUser user) throws ParseException {
 		List<ParseObject> parseRelationships = getFriendsQuery(user).find();
 		List<User> friends = new ArrayList<User>();
@@ -126,9 +206,19 @@ public class SocialDBHandler {
 	}
 
 	private User parseUser(ParseObject parseUser) {
-		return new User(parseUser.getObjectId(), parseUser.getString(UserTable.EMAIL), parseUser.getString(UserTable.NICKNAME));
+		return new User(parseUser.getObjectId(), parseUser.getString(UserTable.EMAIL),
+				parseUser.getString(UserTable.NICKNAME));
 	}
 
+	/**
+	 * Sends the given Invitation to the recipients. Also sends a push
+	 * notification to all recipients.
+	 * 
+	 * @param invitation
+	 *            Invitation to be sent. Must have a sender and at least one
+	 *            receiver. Also none of the other data should be null (i.e.
+	 *            message, time).
+	 */
 	public void sendInvitation(Invitation invitation) {
 		ParseObject i = new ParseObject(InvitationTable.TABLE_NAME);
 		i.put(InvitationTable.MESSAGE, invitation.getMessage());
@@ -150,12 +240,16 @@ public class SocialDBHandler {
 	private void sendPushNotfication(Invitation invitation) {
 		LinkedList<String> channels = new LinkedList<String>();
 		for (User u : invitation.getTo())
-			channels.add("user_" + u.getId());
+			channels.add(getPushChannelNameOf(u));
 
 		ParsePush push = new ParsePush();
 		push.setChannels(channels);
 		push.setMessage("New invitation from " + invitation.getFrom().getNick() + ": " + invitation.getMessage());
 		push.sendInBackground();
+	}
+
+	private static String getPushChannelNameOf(User user) {
+		return "user_" + user.getId();
 	}
 
 	private ParseObject getUserByMail(User user) throws ParseException {
@@ -168,6 +262,16 @@ public class SocialDBHandler {
 		return query.getFirst();
 	}
 
+	/**
+	 * Downloads the (upcoming) Invitations the given User has retrieved.
+	 * 
+	 * @param user
+	 *            User to get retrieved invitations. Must not be null and must
+	 *            have a valid id.
+	 * @return List of Invitations which have been sent to the given User.
+	 * @throws ParseException
+	 *             if the Invitations can't be retrieved.
+	 */
 	public List<Invitation> getRetrievedInvitations(User user) throws ParseException {
 		ParseQuery<ParseObject> query = ParseQuery.getQuery(InvitationUserTable.TABLE_NAME);
 		query.whereEqualTo(InvitationUserTable.INVITEE, ParseObject.createWithoutData(UserTable.TABLE_NAME, user.getId()));
@@ -181,13 +285,25 @@ public class SocialDBHandler {
 			HashMap<User, Invitation.Response> responses = new HashMap<User, Invitation.Response>();
 			responses.put(user, Invitation.Response.values()[invitation.getInt(InvitationUserTable.RESPONSE)]);
 			invitations.add(new Invitation(parseInv.getObjectId(), parseUser(parseFrom), responses, parseInv
-					.getString(InvitationTable.MESSAGE), parseInv.getInt(InvitationTable.MENSA), parseInv.getDate(InvitationTable.TIME))
+					.getString(InvitationTable.MESSAGE), parseInv.getInt(InvitationTable.MENSA), parseInv
+					.getDate(InvitationTable.TIME))
 
 			);
 		}
 		return invitations;
 	}
 
+	/**
+	 * Downloads the (upcoming) Invitations the given User has sent.
+	 * 
+	 * @param user
+	 *            User to get sent invitations. Must not be null and must have a
+	 *            valid id.
+	 * @return List of Invitations which have been sent by the given User,
+	 *         containing also the (current) responses of the addressees.
+	 * @throws ParseException
+	 *             if the Invitations can't be retrieved.
+	 */
 	public List<Invitation> getSentInvitations(User user) throws ParseException {
 		ParseQuery<ParseObject> query = ParseQuery.getQuery(InvitationTable.TABLE_NAME);
 		query.whereEqualTo(InvitationTable.FROM, ParseObject.createWithoutData(UserTable.TABLE_NAME, user.getId()));
@@ -215,14 +331,34 @@ public class SocialDBHandler {
 		return invitees;
 	}
 
+	/**
+	 * Sends the given FriendRequest.
+	 * 
+	 * @param request
+	 *            FriendRequest to be sent. Must have valid sender and receiver,
+	 *            i.e. they both should have valid Parse-Server ids and must not
+	 *            be null.
+	 */
 	public void sendFriendRequest(FriendRequest request) {
 		ParseObject parseRequest = ParseObject.create(FriendRequestTable.TABLE_NAME);
+		parseRequest.put(FriendRequestTable.FROM,
+				ParseObject.createWithoutData(UserTable.TABLE_NAME, request.getFrom().getId()));
 		parseRequest
-				.put(FriendRequestTable.FROM, ParseObject.createWithoutData(UserTable.TABLE_NAME, request.getFrom().getId()));
-		parseRequest.put(FriendRequestTable.TO, ParseObject.createWithoutData(UserTable.TABLE_NAME, request.getTo().getId()));
+				.put(FriendRequestTable.TO, ParseObject.createWithoutData(UserTable.TABLE_NAME, request.getTo().getId()));
 		parseRequest.saveEventually();
 	}
 
+	/**
+	 * Downloads the List of pending friend requests for the given User.
+	 * 
+	 * @param user
+	 *            User to download received FriendRequests. Must have a valid id
+	 *            and not be null.
+	 * @return List of FriendRequests the User has received and not yet
+	 *         answered.
+	 * @throws ParseException
+	 *             if the FriendRequests couldn't be retrieved.
+	 */
 	public List<FriendRequest> getFriendRequests(User user) throws ParseException {
 		ParseQuery<ParseObject> query = ParseQuery.getQuery(FriendRequestTable.TABLE_NAME);
 		query.whereEqualTo(FriendRequestTable.TO, ParseObject.createWithoutData(UserTable.TABLE_NAME, user.getId()));
@@ -236,18 +372,51 @@ public class SocialDBHandler {
 		return requests;
 	}
 
+	/**
+	 * Answers a FriendRequest. This means the FriendRequest is removed from the
+	 * server and, depending on "acceptFriendship", the new Friendship is added
+	 * or not.
+	 * 
+	 * @param request
+	 *            FriendRequest to be answered. Must have a valid id and not be
+	 *            null.
+	 * @param acceptFriendship
+	 *            true if the FriendShip should be accepted, false otherwise.
+	 */
 	public void answerFriendRequest(FriendRequest request, boolean acceptFriendship) {
 		if (acceptFriendship)
 			addFriendship(request.getTo(), request.getFrom());
 		ParseObject.createWithoutData(FriendRequestTable.TABLE_NAME, request.getId()).deleteInBackground();
 	}
 
-	public void answerInvitation(Invitation invitation, Invitation.Response response, User user) throws ParseException {
+	/**
+	 * Answers an invitation.
+	 * 
+	 * @param invitation
+	 *            Invitation to be answered. Must have a valid id and not be
+	 *            null.
+	 * @param response
+	 *            Response to the invitation. Must be either ACCEPT or DECLINE,
+	 *            not UNKNOWN and not null.
+	 * @param user
+	 *            User who answers the invitation. Must have a valid id and not
+	 *            be null.
+	 * @throws ParseException
+	 *             if the invitation can't be answered.
+	 */
+	public void answerInvitation(Invitation invitation, final Invitation.Response response, User user) throws ParseException {
 		ParseQuery<ParseObject> query = ParseQuery.getQuery(InvitationUserTable.TABLE_NAME);
-		query.whereEqualTo(InvitationUserTable.INVITATION, ParseObject.createWithoutData(InvitationTable.TABLE_NAME, invitation.getId()));
+		query.whereEqualTo(InvitationUserTable.INVITATION,
+				ParseObject.createWithoutData(InvitationTable.TABLE_NAME, invitation.getId()));
 		query.whereEqualTo(InvitationUserTable.INVITEE, ParseObject.createWithoutData(UserTable.TABLE_NAME, user.getId()));
-		ParseObject invitationUser = query.getFirst();
-		invitationUser.put(InvitationUserTable.RESPONSE, response.ordinal());
-		invitationUser.saveEventually();
+		query.getFirstInBackground(new GetCallback<ParseObject>() {
+			@Override
+			public void done(ParseObject invitationUser, ParseException e) {
+				if (e == null) {
+					invitationUser.put(InvitationUserTable.RESPONSE, response.ordinal());
+					invitationUser.saveInBackground();
+				}
+			}
+		});
 	}
 }

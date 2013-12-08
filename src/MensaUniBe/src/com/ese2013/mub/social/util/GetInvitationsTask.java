@@ -9,6 +9,10 @@ import com.ese2013.mub.util.AbstractAsyncTask;
 import com.ese2013.mub.util.parseDatabase.SocialDBHandler;
 import com.parse.ParseException;
 
+/**
+ * Downloads the received invitations of the passed in user asynchronously and
+ * makes a callback to the given interface when the download is done.
+ */
 public class GetInvitationsTask extends AbstractAsyncTask<CurrentUser, Void, List<Invitation>> {
 
 	private GetInvitationsTaskCallback callback;

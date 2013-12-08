@@ -8,8 +8,4 @@ public class MensaDownloadException extends IOException {
 	public MensaDownloadException(Throwable throwable) {
 		super(throwable);
 	}
-
-	public MensaDownloadException(String message) {
-		super(message);
-	}
 }

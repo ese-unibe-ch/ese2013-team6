@@ -179,7 +179,7 @@ public class Model extends Observable implements ModelCreationTaskCallback, Tran
 	 * Mensas and their Menus to the local database.
 	 */
 	public void saveModel() {
-		ModelSavingTask savingTask = new ModelSavingTask();
+		ModelSavingTask savingTask = new ModelSavingTask(mensas, dataSource);
 		savingTask.execute();
 	}
 }

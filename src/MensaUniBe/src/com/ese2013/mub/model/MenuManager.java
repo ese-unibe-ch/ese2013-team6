@@ -2,6 +2,7 @@ package com.ese2013.mub.model;
 
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.Set;
 
 import com.ese2013.mub.model.Menu.MenuBuilder;
 
@@ -17,6 +18,10 @@ public class MenuManager {
 
 	public Collection<Menu> getMenus() {
 		return menuMap.values();
+	}
+	
+	public Set<String> getMenuIds() {
+		return menuMap.keySet();
 	}
 
 	/**

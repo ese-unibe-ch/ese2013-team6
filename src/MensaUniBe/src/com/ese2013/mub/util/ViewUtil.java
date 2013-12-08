@@ -2,6 +2,10 @@ package com.ese2013.mub.util;
 
 import java.util.concurrent.atomic.AtomicInteger;
 
+/**
+ * Utility class for views, contains a method to generate unique view IDs from a
+ * newer Android version (v17).
+ */
 public class ViewUtil {
 
 	private static final AtomicInteger sNextGeneratedId = new AtomicInteger(1);

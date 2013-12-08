@@ -256,6 +256,7 @@ public class MapFragment extends Fragment {
 			drawRouteFromTo(currentLocation, selectedLocation);
 			zoomOnContent();
 		}
+		updateRadioGroup();
 	}
 
 	/**
@@ -329,6 +330,13 @@ public class MapFragment extends Fragment {
 
 	private Location getLocation() {
 		return locationManager.getLastKnownLocation(locationManager.getBestProvider(new Criteria(), true));
+	}
+
+	private void updateRadioGroup() {
+		RadioGroup radioGroup = (RadioGroup) getView().findViewById(R.id.rg_modes);
+		for (int i = 0; i < radioGroup.getChildCount(); i++)
+			((RadioButton) radioGroup.getChildAt(i)).setEnabled(currentLocationAvailable());
+
 	}
 
 	/**

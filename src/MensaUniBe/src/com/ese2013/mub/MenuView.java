@@ -37,6 +37,8 @@ public class MenuView extends LinearLayout {
 
 		MenuManager menuManager = Model.getInstance().getMenuManager();
 		String menuTitle, menuDesc;
+		System.out.println("isTranslationEnabled: "+menuManager.isTranslationEnabled());
+		System.out.println("translationsAvailable: "+menuManager.translationsAvailable());
 		if (menuManager.isTranslationEnabled() && menuManager.translationsAvailable()) {
 			menuTitle = menu.getTranslatedTitle();
 			menuDesc = menu.getTranslatedDescription();
@@ -97,7 +99,7 @@ public class MenuView extends LinearLayout {
 		if (title.contains("VEGI") || title.contains("VEGETARISCH"))
 			return getResources().getColor(R.color.green);
 
-		if (title.contains("EINFACH GUT") || title.contains("TAGESGERICHT") || title.contains("WARMES SCHÜSSELGERICHT"))
+		if (title.contains("EINFACH GUT") || title.contains("TAGESGERICHT") || title.contains("WARMES SCHï¿½SSELGERICHT"))
 			return getResources().getColor(R.color.yellow);
 
 		return getResources().getColor(R.color.blue);

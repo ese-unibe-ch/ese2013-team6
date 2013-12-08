@@ -34,7 +34,7 @@ public class NotificationService extends Service implements Observer {
 		dataSource.init(getApplicationContext());
 
 		Model model = Model.getInstance();
-		model.init(dataSource, new SharedPrefsHandler(getApplicationContext()).getDoTranslation());
+		model.init(dataSource, new SharedPrefsHandler(getApplicationContext()));
 		model.addObserver(this);
 		return START_STICKY;
 	}

@@ -67,7 +67,7 @@ public class DrawerMenuActivity extends FragmentActivity implements LoginTaskCal
 		MensaDataSource dataSource = MensaDataSource.getInstance();
 		dataSource.init(getApplicationContext());
 		model = Model.getInstance();
-		model.init(dataSource, new SharedPrefsHandler(getApplicationContext()).getDoTranslation());
+		model.init(dataSource, new SharedPrefsHandler(getApplicationContext()));
 
 		createActionBar();
 		createDrawerMenu(savedInstanceState);

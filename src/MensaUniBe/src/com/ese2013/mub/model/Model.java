@@ -7,6 +7,7 @@ import com.ese2013.mub.util.ModelCreationTask;
 import com.ese2013.mub.util.ModelCreationTaskCallback;
 import com.ese2013.mub.util.ModelSavingTask;
 import com.ese2013.mub.util.Observable;
+import com.ese2013.mub.util.SharedPrefsHandler;
 import com.ese2013.mub.util.TranslationTask;
 import com.ese2013.mub.util.TranslationTaskCallback;
 import com.ese2013.mub.util.database.MensaDataSource;
@@ -22,6 +23,7 @@ public class Model extends Observable implements ModelCreationTaskCallback, Tran
 	private List<Mensa> mensas = new ArrayList<Mensa>();
 	private MenuManager menuManager;
 	private MensaDataSource dataSource;
+	private SharedPrefsHandler prefs;
 	private static Model instance;
 
 	/**
@@ -51,17 +53,19 @@ public class Model extends Observable implements ModelCreationTaskCallback, Tran
 	 * 
 	 * @param dataSource
 	 *            MensaDataSource to be used for possible local data. Must not
-	 *            be null and must be initialised by calling init(Context) on
-	 *            it.
+	 *            be null and must be initialized by calling
+	 *            mensaDataSource.init(Context) on it.
 	 * @param doTranslation
 	 *            boolean to enable or disable translations. This boolean is
 	 *            passed in such as the Model does not need to access the
 	 *            preferences file using SharedPrefsHandler.
 	 */
-	public void init(MensaDataSource dataSource, boolean doTranslation) {
+	public void init(MensaDataSource dataSource, SharedPrefsHandler prefs) {
 		menuManager = new MenuManager();
-		menuManager.setTranslationsEnabled(doTranslation);
+		menuManager.setTranslationsEnabled(prefs.getDoTranslation());
+		menuManager.setTranslationsAvailable(prefs.getTranslationAvialable());
 		this.dataSource = dataSource;
+		this.prefs = prefs;
 
 		ModelCreationTask task = new ModelCreationTask(menuManager, dataSource, this);
 		task.execute();
@@ -153,13 +157,21 @@ public class Model extends Observable implements ModelCreationTaskCallback, Tran
 
 			if (task.hasDownloadedNewData())
 				saveModel();
-			notifyChanges(task.getStatusMsgResource());
 		}
+		notifyChanges(task.getStatusMsgResource());
 	}
 
 	@Override
-	public void onTaskFinished(TranslationTask task) {
-		notifyChanges();
+	public void onTranslationTaskFinished(TranslationTask task) {
+		if (task.hasSucceeded()) {
+			prefs.setTranslationAvailable(true);
+			menuManager.setTranslationsAvailable(true);
+			saveModel();
+			notifyChanges();
+		} else {
+			prefs.setTranslationAvailable(false);
+			menuManager.setTranslationsAvailable(false);
+		}
 	}
 
 	/**

@@ -8,33 +8,20 @@ import com.memetix.mst.language.Language;
 import com.memetix.mst.translate.Translate;
 
 public class TranslationTask extends AbstractAsyncTask<Void, Void, Void> {
-	private static final String NEW_LINE_CODE = " ; ", DOUBLE_QUOTE_CODE = " ' ";
+	private static final String NEW_LINE_CODE = " ; ", DOUBLE_QUOTE_CODE = " ' ",
+			NONE_ASCII_CHARACTERS_REGEX = "[^\\x00-\\x7F]";
 	private Language newLang;
 	private Collection<Menu> menus;
 	private String[] newTitles, newDescriptions;
-
 	private TranslationTaskCallback callback;
-	private MenuManager menuManager;
 
 	public TranslationTask(MenuManager menuManager, Language newLang, TranslationTaskCallback callback) {
 		Translate.setClientId("ESE-Mub");
 		Translate.setClientSecret("3N8wC0wPZPj2v6KTT6GR/B28UDythCvpJ/NSWolMzwU=");
 
 		this.newLang = newLang;
-		this.menuManager = menuManager;
 		this.menus = menuManager.getMenus();
 		this.callback = callback;
-	}
-
-	public TranslationTask(MenuManager menuManager, Language newLang) {
-		this.newLang = newLang;
-		this.menuManager = menuManager;
-		this.menus = menuManager.getMenus();
-	}
-
-	public TranslationTask(Collection<Menu> menus, Language newLang) {
-		this.newLang = newLang;
-		this.menus = menus;
 	}
 
 	@Override
@@ -44,7 +31,7 @@ public class TranslationTask extends AbstractAsyncTask<Void, Void, Void> {
 
 		int i = 0;
 		for (Menu menu : menus) {
-			menuTitles[i] = menu.getOrigTitle().replaceAll("[^\\x00-\\x7F]", "");
+			menuTitles[i] = menu.getOrigTitle().replaceAll(NONE_ASCII_CHARACTERS_REGEX, "");
 			descriptions[i] = menu.getOrigDescription().replace("\n", NEW_LINE_CODE).replace("\"", DOUBLE_QUOTE_CODE);
 			i++;
 		}
@@ -73,11 +60,9 @@ public class TranslationTask extends AbstractAsyncTask<Void, Void, Void> {
 						DOUBLE_QUOTE_CODE, "\""));
 				i++;
 			}
-			menuManager.setTranslationsAvailable(true);
 		} else {
-			menuManager.setTranslationsAvailable(false);
 			logException("TRANSLATION", "Could not translate");
 		}
-		callback.onTaskFinished(this);
+		callback.onTranslationTaskFinished(this);
 	}
 }

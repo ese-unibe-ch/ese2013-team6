@@ -9,16 +9,40 @@ import android.os.AsyncTask;
 import com.ese2013.mub.util.parseDatabase.OnlineDBHandler;
 import com.parse.ParseException;
 
+/**
+ * Allows to login (and register a user). This can be done synchronously without
+ * and with a given timeout. The logged in user is also stored by this class and
+ * can be retrieved by using "getLoggedInUser()".
+ * 
+ */
 public class LoginService {
 	private static CurrentUser loggedInUser;
 	private static OnlineDBHandler handler = new OnlineDBHandler();
 
-	public static boolean login(String email) throws ParseException {
+	/**
+	 * Tries to log in the user with the given email.
+	 * 
+	 * @param email
+	 *            String email address of the user to login. Must not be null.
+	 * @throws ParseException
+	 *             if the User can't be found or the Parse-Server is not
+	 *             available.
+	 */
+	public static void loginSync(String email) throws ParseException {
 		CurrentUser user = new CurrentUser(email);
 		loggedInUser = handler.getCurrentUser(user);
-		return true;
 	}
 
+	/**
+	 * Tries to login the user with the given email in the given time.
+	 * 
+	 * @param email
+	 *            String email address of the user to login. Must not be null.
+	 * @param timeoutSeconds
+	 *            Time to wait for the login.
+	 * @return true if the user could be logged in during the given time. False
+	 *         if the time wasn't enough to login.
+	 */
 	public static boolean loginSyncWithTimeout(String email, int timeoutSeconds) {
 		CurrentUser user = new CurrentUser(email);
 		try {
@@ -42,6 +66,18 @@ public class LoginService {
 		}
 	}
 
+	/**
+	 * Tries to register and login the user with the given email in the given
+	 * time.
+	 * 
+	 * @param email
+	 *            String email address of the user to login/register. Must not
+	 *            be null.
+	 * @param timeoutSeconds
+	 *            Time to wait for the login.
+	 * @return true if the user could be registred/logged in during the given
+	 *         time. False if the time wasn't enough to login.
+	 */
 	public static boolean registerAndLoginWithTimout(CurrentUser user, int timoutSeconds) {
 		try {
 			loggedInUser = new AsyncTask<CurrentUser, Void, CurrentUser>() {
@@ -64,6 +100,13 @@ public class LoginService {
 		}
 	}
 
+	/**
+	 * Returns the currently logged in user. Can be null if user is not logged
+	 * in.
+	 * 
+	 * @return CurrentUser which is logged in. Can be null if the login has
+	 *         failed or has never been tried.
+	 */
 	public static CurrentUser getLoggedInUser() {
 		return loggedInUser;
 	}

@@ -10,19 +10,19 @@ public class FavoriteButtonListener implements OnClickListener {
 	private Mensa mensa;
 	private ImageButton button;
 	private DailyPlanFragment frag;
-	private boolean isInDailyView;
+	private boolean isInDailyView, isInFavoritesOnlyView;
 
 	public FavoriteButtonListener(Mensa mensa, ImageButton button) {
 		this.mensa = mensa;
 		this.button = button;
 	}
 
-	public FavoriteButtonListener(Mensa mensa, ImageButton button,
-			DailyPlanFragment frag) {
+	public FavoriteButtonListener(Mensa mensa, ImageButton button, DailyPlanFragment frag, boolean isInFavoritesOnlyView) {
 		this.mensa = mensa;
 		this.button = button;
 		this.frag = frag;
 		this.isInDailyView = true;
+		this.isInFavoritesOnlyView = isInFavoritesOnlyView;
 	}
 
 	@Override
@@ -31,7 +31,7 @@ public class FavoriteButtonListener implements OnClickListener {
 
 		if (!mensa.isFavorite()) {
 			button.setImageResource(R.drawable.ic_fav_grey);
-			if (isInDailyView && !HomeFragment.getShowAllByDay())
+			if (isInDailyView && isInFavoritesOnlyView)
 				frag.refreshFavoriteView();
 		} else {
 			button.setImageResource(R.drawable.ic_fav);

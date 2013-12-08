@@ -164,20 +164,20 @@ public class DrawerMenuActivity extends FragmentActivity implements LoginTaskCal
 				HomeFragment frag = new HomeFragment();
 				switch (position) {
 				case 0:
-					frag.setFavorites(true);
-					frag.setShowAllByDay(false);
+					frag.setShowDailyPlans(true);
+					frag.setShowOnlyFavorites(true);
 					setDisplayedFragment(frag, false);
 					break;
 
 				case 1:
-					frag.setFavorites(false);
-					frag.setShowAllByDay(false);
+					frag.setShowDailyPlans(false);
+					frag.setShowOnlyFavorites(true);
 					setDisplayedFragment(frag, false);
 					break;
 
 				case 2:
-					frag.setFavorites(true);
-					frag.setShowAllByDay(true);
+					frag.setShowDailyPlans(true);
+					frag.setShowOnlyFavorites(false);
 					setDisplayedFragment(frag, false);
 					break;
 				}
@@ -328,8 +328,8 @@ public class DrawerMenuActivity extends FragmentActivity implements LoginTaskCal
 		Bundle args = new Bundle();
 		args.putInt(HomeFragment.POSITION, position);
 		frag.setArguments(args);
-		frag.setFavorites(false);
-		frag.setShowAllByDay(true);
+		frag.setShowDailyPlans(false);
+		frag.setShowOnlyFavorites(true);
 		spinner.setSelection(1);
 
 		selectItem(HOME_INDEX, false);
@@ -338,8 +338,8 @@ public class DrawerMenuActivity extends FragmentActivity implements LoginTaskCal
 
 	public void refreshHomeActivity() {
 		HomeFragment frag = new HomeFragment();
-		frag.setFavorites(true);
-		frag.setShowAllByDay(false);
+		frag.setShowDailyPlans(true);
+		frag.setShowOnlyFavorites(false);
 
 		selectItem(HOME_INDEX, false);
 		setDisplayedFragment(frag, true);

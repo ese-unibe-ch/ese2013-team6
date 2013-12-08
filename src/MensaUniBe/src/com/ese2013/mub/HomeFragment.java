@@ -26,15 +26,14 @@ public class HomeFragment extends Fragment implements Observer {
 	private FragmentStatePagerAdapter sectionsPagerAdapter;
 	private ViewPager viewPager;
 
-	private static boolean showFavorites = true;
-	private static boolean showAllByDay = false;
+	private boolean showDailyPlans = true, showOnlyFavorites = true;
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 		View view = inflater.inflate(R.layout.fragment_home, container, false);
 
 		FragmentManager fm = getChildFragmentManager();
-		if (showFavorites)
+		if (showDailyPlans)
 			sectionsPagerAdapter = new MenuSectionsPagerAdapter(fm);
 		else
 			sectionsPagerAdapter = new MensaSectionsPagerAdapter(fm);
@@ -45,7 +44,7 @@ public class HomeFragment extends Fragment implements Observer {
 		onAttach(getActivity());
 
 		int dayOfWeek = Calendar.getInstance().get(Calendar.DAY_OF_WEEK);
-		if (showFavorites && dayOfWeek < 6 && dayOfWeek > 1)
+		if (showDailyPlans && dayOfWeek < 6 && dayOfWeek > 1)
 			viewPager.setCurrentItem(dayOfWeek - 2);
 		handleGivenArguments();
 		Model.getInstance().addObserver(this);
@@ -56,7 +55,7 @@ public class HomeFragment extends Fragment implements Observer {
 	@Override
 	public void onNotifyChanges(Object... message) {
 		if (message.length > 0)
-			Toast.makeText(getActivity(), this.getActivity().getString((Integer) message[0]), Toast.LENGTH_SHORT).show();
+			Toast.makeText(getActivity(), getActivity().getString((Integer) message[0]), Toast.LENGTH_SHORT).show();
 		sectionsPagerAdapter.notifyDataSetChanged();
 	}
 
@@ -67,22 +66,12 @@ public class HomeFragment extends Fragment implements Observer {
 		Model.getInstance().removeObserver(this);
 	}
 
-	/**
-	 * Returns if all menus of a day should be displayed.
-	 * 
-	 * @return true if all menus should be displayed, false if only favorites
-	 *         should be displayed.
-	 */
-	public static boolean getShowAllByDay() {
-		return showAllByDay;
+	public void setShowDailyPlans(boolean showDailyPlans) {
+		this.showDailyPlans = showDailyPlans;
 	}
 
-	public void setFavorites(boolean bool) {
-		showFavorites = bool;
-	}
-
-	public void setShowAllByDay(boolean bool) {
-		showAllByDay = bool;
+	public void setShowOnlyFavorites(boolean showOnlyFavorites) {
+		this.showOnlyFavorites = showOnlyFavorites;
 	}
 
 	public void handleGivenArguments() {
@@ -152,7 +141,7 @@ public class HomeFragment extends Fragment implements Observer {
 		 */
 		@Override
 		public Fragment getItem(int position) {
-			return DailyPlanFragment.newInstance(days.get(position));
+			return DailyPlanFragment.newInstance(days.get(position), showOnlyFavorites);
 		}
 
 		@Override

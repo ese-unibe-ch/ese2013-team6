@@ -13,7 +13,7 @@ import android.content.SharedPreferences;
 public class SharedPrefsHandler {
 	private static final String FIRST_TIME = "first_time", USERMAIL = "usermail", NOTIFICATION_FOOD = "notificationFood",
 			NOTIFICATION_MENSAS = "notificationMensas", DO_NOTIFICATION = "doNotification", LANGUAGE = "language",
-			DO_TRANSLATION = "doTranslation", CRITERIA_SET = "citeriaSet";
+			DO_TRANSLATION = "doTranslation", TRANSLATION_AVAIL = "translationAvail", CRITERIA_SET = "citeriaSet";
 
 	private Context context;
 
@@ -27,6 +27,10 @@ public class SharedPrefsHandler {
 
 	public boolean getDoTranslation() {
 		return getPrefs(context).getBoolean(DO_TRANSLATION, false);
+	}
+	
+	public boolean getTranslationAvialable() {
+		return getPrefs(context).getBoolean(TRANSLATION_AVAIL, false);
 	}
 
 	public int getLanguage() {
@@ -51,6 +55,10 @@ public class SharedPrefsHandler {
 
 	public void setDoTranslation(boolean doTranslation) {
 		getPrefs(context).edit().putBoolean(DO_TRANSLATION, doTranslation).commit();
+	}
+	
+	public void setTranslationAvailable(boolean translationAvailable) {
+		getPrefs(context).edit().putBoolean(TRANSLATION_AVAIL, translationAvailable).commit();
 	}
 
 	public void setLanguage(int language) {

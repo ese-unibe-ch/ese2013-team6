@@ -37,6 +37,7 @@ public class Model extends Observable implements ModelCreationTaskCallback, Tran
 	public void init() {
 		menuManager = new MenuManager();
 		menuManager.setTranslationsEnabled(new SharedPrefsHandler(context).getDoTranslation());
+		menuManager.setTranslationsAvailable(new SharedPrefsHandler(context).getTranslationAvialable());
 		dataSource = MensaDataSource.getInstance();
 		dataSource.init(context, menuManager);
 
@@ -109,7 +110,16 @@ public class Model extends Observable implements ModelCreationTaskCallback, Tran
 
 	@Override
 	public void onTaskFinished(TranslationTask task) {
-		notifyChanges();
+		if (task.wasSuccessful()) {
+			new SharedPrefsHandler(context).setTranslationAvailable(true);
+			menuManager.setTranslationsAvailable(true);
+			saveModel();
+			notifyChanges();
+		}else{
+			new SharedPrefsHandler(context).setTranslationAvailable(false);
+			menuManager.setTranslationsAvailable(false);
+		}
+		
 	}
 
 	public void saveModel() {

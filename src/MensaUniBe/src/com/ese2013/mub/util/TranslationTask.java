@@ -14,21 +14,19 @@ public class TranslationTask extends AbstractAsyncTask<Void, Void, Void> {
 	private String[] newTitles, newDescriptions;
 
 	private TranslationTaskCallback callback;
-	private MenuManager menuManager;
+	private Boolean wasSuccessful = false;
 
 	public TranslationTask(MenuManager menuManager, Language newLang, TranslationTaskCallback callback) {
 		Translate.setClientId("ESE-Mub");
 		Translate.setClientSecret("3N8wC0wPZPj2v6KTT6GR/B28UDythCvpJ/NSWolMzwU=");
 
 		this.newLang = newLang;
-		this.menuManager = menuManager;
 		this.menus = menuManager.getMenus();
 		this.callback = callback;
 	}
 
 	public TranslationTask(MenuManager menuManager, Language newLang) {
 		this.newLang = newLang;
-		this.menuManager = menuManager;
 		this.menus = menuManager.getMenus();
 	}
 
@@ -73,11 +71,19 @@ public class TranslationTask extends AbstractAsyncTask<Void, Void, Void> {
 						DOUBLE_QUOTE_CODE, "\""));
 				i++;
 			}
-			menuManager.setTranslationsAvailable(true);
+			setWasSuccessful(true);
 		} else {
-			menuManager.setTranslationsAvailable(false);
+			setWasSuccessful(false);
 			logException("TRANSLATION", "Could not translate");
 		}
 		callback.onTaskFinished(this);
+	}
+
+	public Boolean wasSuccessful() {
+		return wasSuccessful;
+	}
+
+	private void setWasSuccessful(Boolean wasSuccessful) {
+		this.wasSuccessful = wasSuccessful;
 	}
 }

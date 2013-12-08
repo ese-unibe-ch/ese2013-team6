@@ -71,31 +71,48 @@ public class SettingsFragment extends Fragment {
 		TextView registerTitle = (TextView) view.findViewById(R.id.register_title);
 		Button button = (Button) view.findViewById(R.id.register);
 		View line = view.findViewById(R.id.register_line);
+		registerTitle.setVisibility(View.VISIBLE);
+		button.setVisibility(View.VISIBLE);
+		line.setVisibility(View.VISIBLE);
 		if (LoginService.isLoggedIn()){
 			registerTitle.setVisibility(View.GONE);
 			button.setVisibility(View.GONE);
 			line.setVisibility(View.GONE);
 		}else{
-			button.setOnClickListener(new OnClickListener() {
-				@Override
-				public void onClick(View v) {
-					DrawerMenuActivity a = (DrawerMenuActivity) getActivity();
-					a.showRegistrationDialog();
-				}
-			});
+			makeButtonClickOpenRegistationDialog(button);
 		}
 		
 	}
 
+	private void makeButtonClickOpenRegistationDialog(Button button) {
+		button.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				DrawerMenuActivity a = (DrawerMenuActivity) getActivity();
+				a.showRegistrationDialog();
+			}
+		});
+	}
+
+	/**
+	 * Starts translation if the @param languageSwitch is checked.
+	 * Translation is not stored on device.
+	 * 
+	 */
 	private void setUpOnChangeListener(Switch languageSwitch) {
 		languageSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
 			public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
 				if (isChecked) {
 					Model.getInstance().getMenuManager().setTranslationsEnabled(true);
-					TranslationTask transTask = new TranslationTask(Model.getInstance().getMenuManager(), Language.ENGLISH,
-							Model.getInstance());
-					transTask.execute();
-					Toast.makeText(getActivity(), R.string.translation_started, Toast.LENGTH_SHORT).show();
+					if (!Model.getInstance().getMenuManager().translationsAvailable()) {
+						TranslationTask transTask = new TranslationTask(Model
+								.getInstance().getMenuManager(),
+								Language.ENGLISH, Model.getInstance());
+						transTask.execute();
+						Toast.makeText(getActivity(),
+								R.string.translation_started,
+								Toast.LENGTH_SHORT).show();
+					}
 				} else {
 					Model.getInstance().getMenuManager().setTranslationsEnabled(false);
 				}

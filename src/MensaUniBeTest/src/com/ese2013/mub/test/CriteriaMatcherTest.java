@@ -13,8 +13,8 @@ import com.ese2013.mub.model.Day;
 import com.ese2013.mub.model.Mensa;
 import com.ese2013.mub.model.Menu;
 import com.ese2013.mub.model.WeeklyMenuplan;
+import com.ese2013.mub.service.Criteria;
 import com.ese2013.mub.service.CriteriaMatcher;
-import com.ese2013.mub.util.Criteria;
 
 public class CriteriaMatcherTest extends TestCase {
 	protected void setUp() throws Exception {

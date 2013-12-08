@@ -22,14 +22,15 @@ import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.Toast;
 
+import com.ese2013.mub.map.MapFragment;
 import com.ese2013.mub.model.Day;
 import com.ese2013.mub.model.Mensa;
 import com.ese2013.mub.model.Model;
 import com.ese2013.mub.service.NotificationService;
 import com.ese2013.mub.social.LoginService;
 import com.ese2013.mub.social.SocialManager;
-import com.ese2013.mub.util.LoginTask;
-import com.ese2013.mub.util.LoginTaskCallback;
+import com.ese2013.mub.social.util.LoginTask;
+import com.ese2013.mub.social.util.LoginTaskCallback;
 import com.ese2013.mub.util.SharedPrefsHandler;
 import com.ese2013.mub.util.database.MensaDataSource;
 import com.parse.Parse;

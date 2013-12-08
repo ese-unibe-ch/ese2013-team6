@@ -15,6 +15,7 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.ese2013.mub.map.MapButtonListener;
 import com.ese2013.mub.model.DailyMenuplan;
 import com.ese2013.mub.model.Day;
 import com.ese2013.mub.model.Mensa;

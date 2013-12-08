@@ -10,7 +10,6 @@ import com.ese2013.mub.model.Day;
 import com.ese2013.mub.model.Mensa;
 import com.ese2013.mub.model.Menu;
 import com.ese2013.mub.model.WeeklyMenuplan;
-import com.ese2013.mub.util.Criteria;
 
 public class CriteriaMatcher {
 	private List<Criteria> container;

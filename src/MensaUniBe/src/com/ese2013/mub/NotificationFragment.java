@@ -18,12 +18,13 @@ import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.ese2013.mub.map.MapButtonListener;
 import com.ese2013.mub.model.Day;
 import com.ese2013.mub.model.Mensa;
 import com.ese2013.mub.model.Menu;
 import com.ese2013.mub.model.Model;
+import com.ese2013.mub.service.Criteria;
 import com.ese2013.mub.service.CriteriaMatcher;
-import com.ese2013.mub.util.Criteria;
 import com.ese2013.mub.util.Observer;
 import com.ese2013.mub.util.SharedPrefsHandler;
 

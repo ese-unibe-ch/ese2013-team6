@@ -12,6 +12,8 @@ import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
@@ -58,8 +60,13 @@ public class SettingsFragment extends Fragment {
 		editCriteriaButton = (Button) view.findViewById(R.id.edit_notification_criteria);
 		updateEditCriteriaButton();
 		editCriteriaButton.setOnClickListener(new EditCriteriaButtonListener());
-
 		return view;
+	}
+
+	@Override
+	public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+		for (int i = 0; i< menu.size(); i++)
+			menu.getItem(i).setVisible(false);
 	}
 
 	private void updateEditCriteriaButton() {

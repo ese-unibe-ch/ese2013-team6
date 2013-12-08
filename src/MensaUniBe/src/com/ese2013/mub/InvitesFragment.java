@@ -18,6 +18,7 @@ import android.widget.BaseAdapter;
 import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.ese2013.mub.model.Day;
 import com.ese2013.mub.model.Mensa;
@@ -31,6 +32,7 @@ public class InvitesFragment extends Fragment {
 
 	private ListView invitedList;
 	private InvitesListAdapter adapter;
+	private MenuItem menuItem;
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -51,6 +53,12 @@ public class InvitesFragment extends Fragment {
 	}
 
 	@Override
+	public void onDestroy() {
+		super.onDestroy();
+		SocialManager.getInstance().removeObserver(adapter);
+	}
+
+	@Override
 	public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
 		if (LoginService.isLoggedIn())
 			inflater.inflate(R.menu.invites_menu, menu);
@@ -62,19 +70,33 @@ public class InvitesFragment extends Fragment {
 		case R.id.new_invite_button:
 			((DrawerMenuActivity) getActivity()).createInvitation();
 			return true;
+		case R.id.refresh:
+			SocialManager.getInstance().loadSentInvites();
+			menuItem = item;
+			menuItem.setActionView(R.layout.progress_bar);
+			menuItem.expandActionView();
+			Toast.makeText(getActivity(), R.string.toast_refreshing_msg, Toast.LENGTH_SHORT).show();
+			return true;
 		default:
 			return false;
 		}
 	}
+	
+	private void loadingFinished() {
+		if (menuItem != null) {
+			menuItem.collapseActionView();
+			menuItem.setActionView(null);
+		}
+	}
 
-	class InvitesListAdapter extends BaseAdapter implements Observer {
+	private class InvitesListAdapter extends BaseAdapter implements Observer {
 
 		private LayoutInflater inflater;
 		private List<Invitation> invitations = new ArrayList<Invitation>();
 
 		public InvitesListAdapter() {
 			SocialManager.getInstance().addObserver(this);
-			SocialManager.getInstance().loadSentInvites();
+			onNotifyChanges();
 		}
 
 		@Override
@@ -139,6 +161,7 @@ public class InvitesFragment extends Fragment {
 		public void onNotifyChanges() {
 			this.invitations = SocialManager.getInstance().getSentInvitations();
 			notifyDataSetChanged();
+			loadingFinished();
 		}
 	}
 }

@@ -27,6 +27,7 @@ import com.ese2013.mub.model.Mensa;
 import com.ese2013.mub.model.Model;
 import com.ese2013.mub.service.NotificationService;
 import com.ese2013.mub.social.LoginService;
+import com.ese2013.mub.social.SocialManager;
 import com.ese2013.mub.util.LoginTask;
 import com.ese2013.mub.util.LoginTaskCallback;
 import com.ese2013.mub.util.SharedPrefsHandler;
@@ -44,7 +45,7 @@ public class DrawerMenuActivity extends FragmentActivity implements LoginTaskCal
 	private DrawerLayout drawerLayout;
 	private ListView drawerList;
 	private Spinner spinner;
-	private int selectedPosition = -1;
+	private int selectedPosition = NOTHING_INDEX;
 	private static final int HOME_INDEX = 0, MAP_INDEX = 2, NOTIFICATION_INDEX = 3, NOTHING_INDEX = -1;
 	private static final String POSITION = "com.ese2013.mub.position";
 	private Model model;
@@ -83,8 +84,10 @@ public class DrawerMenuActivity extends FragmentActivity implements LoginTaskCal
 	public void onTaskFinished(LoginTask task) {
 		if (!task.hasSucceeded())
 			Toast.makeText(this, R.string.user_login_failed, Toast.LENGTH_LONG).show();
-		else
+		else {
 			subscribeToPush();
+			SocialManager.getInstance().load();
+		}
 	}
 
 	private void subscribeToPush() {
@@ -95,12 +98,10 @@ public class DrawerMenuActivity extends FragmentActivity implements LoginTaskCal
 	}
 
 	private void createActionBar() {
-		// enable ActionBar app icon to behave as action to toggle nav drawer
 		ActionBar actionBar = getActionBar();
 		actionBar.setDisplayHomeAsUpEnabled(true);
 		actionBar.setHomeButtonEnabled(true);
 
-		// Set up the action bar to show a dropdown list.
 		createActionBarSpinner();
 		actionBar.setDisplayShowTitleEnabled(false);
 		actionBar.setCustomView(spinner);
@@ -226,6 +227,7 @@ public class DrawerMenuActivity extends FragmentActivity implements LoginTaskCal
 			}
 		}
 
+		drawerList.setItemChecked(selectedPosition, false);
 		selectedPosition = position;
 		drawerList.setItemChecked(selectedPosition, true);
 		drawerLayout.closeDrawer(drawerList);
@@ -245,6 +247,8 @@ public class DrawerMenuActivity extends FragmentActivity implements LoginTaskCal
 		if (useBackStack) {
 			transaction.addToBackStack(null);
 		}
+
+		getActionBar().setDisplayShowCustomEnabled(isShowingHomeFragment());
 		menuSelectionBackStack.push(selectedPosition);
 		transaction.commit();
 
@@ -252,19 +256,13 @@ public class DrawerMenuActivity extends FragmentActivity implements LoginTaskCal
 
 	/**
 	 * Called whenever we call invalidateOptionsMenu() Hides all action bar menu
-	 * options and redisplays them as needed
+	 * options and redisplays them as needed.
 	 */
 	@Override
 	public boolean onPrepareOptionsMenu(Menu menu) {
 		boolean drawerOpen = drawerLayout.isDrawerOpen(drawerList);
-		menu.findItem(R.id.action_settings).setVisible(!drawerOpen);
-		MenuItem item = menu.findItem(R.id.new_invite_button);
-		if (item != null)
-			item.setVisible(!drawerOpen);
-
-		item = menu.findItem(R.id.add_friend_button);
-		if (item != null)
-			item.setVisible(!drawerOpen);
+		for (int i = 0; i < menu.size(); i++)
+			menu.getItem(i).setVisible(!drawerOpen);
 
 		getActionBar().setDisplayShowCustomEnabled(isShowingHomeFragment() && !drawerOpen);
 		return super.onPrepareOptionsMenu(menu);
@@ -303,10 +301,7 @@ public class DrawerMenuActivity extends FragmentActivity implements LoginTaskCal
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		if (!drawerToggle.onOptionsItemSelected(item) && item.getItemId() == R.id.action_settings) {
-			drawerList.setItemChecked(selectedPosition, false);
-			selectedPosition = NOTHING_INDEX;
-			Fragment frag = new SettingsFragment();
-			setDisplayedFragment(frag, false);
+			displaySettings();
 			return true;
 		}
 		return super.onOptionsItemSelected(item);
@@ -329,16 +324,18 @@ public class DrawerMenuActivity extends FragmentActivity implements LoginTaskCal
 		frag.setFavorites(false);
 		frag.setShowAllByDay(true);
 		spinner.setSelection(1);
-		setDisplayedFragment(frag, true);
+
 		selectItem(HOME_INDEX, false);
+		setDisplayedFragment(frag, true);
 	}
 
 	public void refreshHomeActivity() {
 		HomeFragment frag = new HomeFragment();
 		frag.setFavorites(true);
 		frag.setShowAllByDay(false);
-		setDisplayedFragment(frag, true);
+
 		selectItem(HOME_INDEX, false);
+		setDisplayedFragment(frag, true);
 	}
 
 	public void displayMapAtMensa(Mensa mensa) {
@@ -346,9 +343,9 @@ public class DrawerMenuActivity extends FragmentActivity implements LoginTaskCal
 		Bundle args = new Bundle();
 		args.putInt(MapFragment.MENSA_ID_LOCATION, mensa.getId());
 		mapFragment.setArguments(args);
-		setDisplayedFragment(mapFragment, true);
+
 		selectItem(MAP_INDEX, false);
-		getActionBar().setDisplayShowCustomEnabled(false);
+		setDisplayedFragment(mapFragment, true);
 	}
 
 	@Override
@@ -364,12 +361,22 @@ public class DrawerMenuActivity extends FragmentActivity implements LoginTaskCal
 		args.putInt(CreateInvitationFragment.MENSA_INDEX, mensa.getId());
 		args.putLong(CreateInvitationFragment.DATE_FROM_VIEW, day.getDate().getTime());
 		frag.setArguments(args);
+
+		selectItem(NOTHING_INDEX, false);
 		setDisplayedFragment(frag, true);
 	}
 
 	public void createInvitation() {
 		CreateInvitationFragment frag = new CreateInvitationFragment();
-		getActionBar().setDisplayShowCustomEnabled(false);
+
+		selectItem(NOTHING_INDEX, false);
+		setDisplayedFragment(frag, true);
+	}
+
+	private void displaySettings() {
+		Fragment frag = new SettingsFragment();
+		
+		selectItem(NOTHING_INDEX, false);
 		setDisplayedFragment(frag, true);
 	}
 }

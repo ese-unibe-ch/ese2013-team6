@@ -21,6 +21,9 @@ public class SocialManager extends Observable implements GetSentInvitationsTaskC
 	private static SocialManager instance;
 	private OnlineDBHandler onlineDBHandler = new OnlineDBHandler();
 
+	private SocialManager() {
+	}
+
 	public static SocialManager getInstance() {
 		if (instance == null)
 			instance = new SocialManager();
@@ -64,10 +67,18 @@ public class SocialManager extends Observable implements GetSentInvitationsTaskC
 		currentUser().getFriends().remove(user);
 		notifyChanges();
 	}
-	public void answerInvitation(Invitation invitation, Response response) throws ParseException{
+
+	public void answerInvitation(Invitation invitation, Response response) throws ParseException {
 		onlineDBHandler.answerInvitation(invitation, response, currentUser());
 		notifyChanges();
 	}
+
+	public void load() {
+		loadInvites();
+		loadSentInvites();
+		loadFriends();
+	}
+
 	public void loadInvites() {
 		if (LoginService.isLoggedIn())
 			new GetInvitationsTask(this).execute(LoginService.getLoggedInUser());
@@ -103,4 +114,5 @@ public class SocialManager extends Observable implements GetSentInvitationsTaskC
 	public void sendInvitation(Invitation invitation) {
 		onlineDBHandler.sendInvitation(invitation);
 	}
+
 }

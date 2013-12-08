@@ -55,7 +55,7 @@ public class ModelCreationTask extends AsyncTask<Void, Void, Void> {
 			fac = new MensaFromWebFactory(menuManager);
 			downloadedNewData = true;
 		} else {
-			fac = new MensaFromLocalFactory();
+			fac = new MensaFromLocalFactory(dataSource, menuManager);
 		}
 		try {
 			mensas = fac.createMensaList();
@@ -78,7 +78,7 @@ public class ModelCreationTask extends AsyncTask<Void, Void, Void> {
 	}
 
 	private void retryUsingLocalData(boolean getRatings) {
-		AbstractMensaFactory fac = new MensaFromLocalFactory();
+		AbstractMensaFactory fac = new MensaFromLocalFactory(dataSource, menuManager);
 		try {
 			mensas = fac.createMensaList();
 			if (getRatings)
@@ -169,7 +169,7 @@ public class ModelCreationTask extends AsyncTask<Void, Void, Void> {
 	protected void onPostExecute(Void v) {
 		super.onPostExecute(v);
 		for (ModelCreationTaskCallback callback : callbacks)
-			callback.onTaskFinished(this);
+			callback.onModelCreationTaskFinished(this);
 	}
 
 	private boolean menusNotFromCurrentWeek() {

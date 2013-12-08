@@ -16,9 +16,11 @@ public class WeeklyMenuplan implements Iterable<DailyMenuplan> {
 	 * Adds a menu to the plan.
 	 * 
 	 * @param menu
-	 *            Menu object to be added. Must not be null. Also, the caller
-	 *            must assure to only add menus from the same week. If he
-	 *            doesn't, the class will be in an undefined state.
+	 *            Menu object to be added. Must not be null.
+	 * @param day
+	 *            Day when the given Menu is served. Caller must assure to only
+	 *            add Day objects which are in the same week to a
+	 *            WeeklyMenuplan.
 	 */
 	public void add(Menu menu, Day day) {
 		if (dailymenus.containsKey(day)) {
@@ -53,8 +55,8 @@ public class WeeklyMenuplan implements Iterable<DailyMenuplan> {
 	/**
 	 * Returns all Days which belong to plan.
 	 * 
-	 * @return Set of Days contained in the plan. (which means days where menus
-	 *         are available)
+	 * @return Set of Days contained in the plan. (which means days which have
+	 *         menus associated to them)
 	 */
 	public Set<Day> getDays() {
 		return dailymenus.keySet();
@@ -70,6 +72,17 @@ public class WeeklyMenuplan implements Iterable<DailyMenuplan> {
 		return day.getWeekNumber();
 	}
 
+	/**
+	 * Returns the Day when a given Menu is served.
+	 * 
+	 * @param menu
+	 *            Menu to find the Day when it's served. Must not be null.
+	 * @return Day object for the day when the menu is served. Null if the Menu
+	 *         is never served. If the Menu is served multiplte times on
+	 *         different days, the first day of serving is returned. This should
+	 *         not happen as the Mensas usually don't have the same Menu on
+	 *         different days in one week.
+	 */
 	public Day getDayOfServing(Menu menu) {
 		for (DailyMenuplan dailyPlan : this) {
 			if (dailyPlan.contains(menu))

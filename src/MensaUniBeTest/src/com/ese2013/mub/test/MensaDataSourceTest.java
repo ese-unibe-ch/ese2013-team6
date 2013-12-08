@@ -22,7 +22,7 @@ public class MensaDataSourceTest extends AndroidTestCase {
 	protected void setUp() throws Exception {
 		super.setUp();
 		dataSource = MensaDataSource.getInstance();
-		dataSource.init(getContext(), new MenuManager());
+		dataSource.init(getContext());
 		assertNotNull(dataSource);
 		dataSource.open();
 		dataSource.cleanUpAllTables();
@@ -83,9 +83,9 @@ public class MensaDataSourceTest extends AndroidTestCase {
 		m2.setMenuplan(plans.get(1));
 		dataSource.storeWeeklyMenuplan(m1);
 		dataSource.storeWeeklyMenuplan(m2);
-
-		assertEquals(m1.getMenuplan(), dataSource.loadMenuplan(m1.getId()));
-		assertEquals(m2.getMenuplan(), dataSource.loadMenuplan(m2.getId()));
+		MenuManager menuManager = new MenuManager();
+		assertEquals(m1.getMenuplan(), dataSource.loadMenuplan(m1.getId(), menuManager));
+		assertEquals(m2.getMenuplan(), dataSource.loadMenuplan(m2.getId(), menuManager));
 	}
 
 	public void testGetWeekOfStoredMenus() {

@@ -31,6 +31,7 @@ import com.ese2013.mub.social.SocialManager;
 import com.ese2013.mub.util.LoginTask;
 import com.ese2013.mub.util.LoginTaskCallback;
 import com.ese2013.mub.util.SharedPrefsHandler;
+import com.ese2013.mub.util.database.MensaDataSource;
 import com.parse.Parse;
 import com.parse.ParseInstallation;
 import com.parse.PushService;
@@ -62,7 +63,12 @@ public class DrawerMenuActivity extends FragmentActivity implements LoginTaskCal
 		super.onCreate(savedInstanceState);
 		initParseService();
 		handleLogin();
-		model = new Model(getApplicationContext());
+
+		MensaDataSource dataSource = MensaDataSource.getInstance();
+		dataSource.init(getApplicationContext());
+		model = Model.getInstance();
+		model.init(dataSource, new SharedPrefsHandler(getApplicationContext()));
+
 		createActionBar();
 		createDrawerMenu(savedInstanceState);
 	}
@@ -375,7 +381,7 @@ public class DrawerMenuActivity extends FragmentActivity implements LoginTaskCal
 
 	private void displaySettings() {
 		Fragment frag = new SettingsFragment();
-		
+
 		selectItem(NOTHING_INDEX, false);
 		setDisplayedFragment(frag, true);
 	}

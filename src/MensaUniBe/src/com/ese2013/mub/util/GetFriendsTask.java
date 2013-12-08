@@ -37,9 +37,8 @@ public class GetFriendsTask extends AbstractAsyncTask<CurrentUser, Void, Void> {
 	@Override
 	protected void onPostExecute(Void result) {
 		super.onPostExecute(result);
-		currentUser.getFriends().clear();
-		currentUser.getFriends().addAll(friends);
-		currentUser.getFriendRequests().addAll(requests);
+		currentUser.setFriends(friends);
+		currentUser.setFriendRequests(requests);
 		callback.onFriendsTaskFinished();
 	}
 }

@@ -52,9 +52,9 @@ public class SocialManager extends Observable implements GetSentInvitationsTaskC
 
 	public void answerFriendRequest(FriendRequest request, boolean accept) {
 		onlineDBHandler.answerFriendRequest(request, accept);
-		currentUser().getFriendRequests().remove(request);
+		currentUser().removeFriendRequest(request);
 		if (accept)
-			currentUser().getFriends().add(request.getFrom());
+			currentUser().addFriend(request.getFrom());
 		notifyChanges();
 	}
 
@@ -64,7 +64,7 @@ public class SocialManager extends Observable implements GetSentInvitationsTaskC
 
 	public void removeFriend(User user) {
 		onlineDBHandler.removeFriendship(currentUser(), user);
-		currentUser().getFriends().remove(user);
+		currentUser().removeFriend(user);
 		notifyChanges();
 	}
 

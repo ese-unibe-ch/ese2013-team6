@@ -5,8 +5,13 @@ import java.util.List;
 
 import com.ese2013.mub.model.Menu;
 
+/**
+ * Represents the currently logged in User. An instance can be retrieved by
+ * using LoginService.getLoggedInUser(). Stores also the friends list and the
+ * unanswered friend requests.
+ * 
+ */
 public class CurrentUser extends User {
-
 	private List<User> friends = new ArrayList<User>();
 	private List<FriendRequest> requests = new ArrayList<FriendRequest>();
 	private List<String> ratedMenuIds;
@@ -23,12 +28,28 @@ public class CurrentUser extends User {
 		super(id, email, nick);
 	}
 
+	public void addFriend(User user) {
+		friends.add(user);
+	}
+
+	public void removeFriend(User user) {
+		friends.remove(user);
+	}
+
 	public List<User> getFriends() {
 		return friends;
 	}
 
+	public void setFriends(List<User> friends) {
+		this.friends = friends;
+	}
+
 	public List<FriendRequest> getFriendRequests() {
 		return requests;
+	}
+
+	public void removeFriendRequest(FriendRequest request) {
+		requests.remove(request);
 	}
 
 	public void setRatedMenuIds(List<String> ratedMenuIds) {
@@ -48,5 +69,9 @@ public class CurrentUser extends User {
 			if (u.getEmail().equals(email))
 				return true;
 		return false;
+	}
+
+	public void setFriendRequests(List<FriendRequest> requests) {
+		this.requests = requests;
 	}
 }

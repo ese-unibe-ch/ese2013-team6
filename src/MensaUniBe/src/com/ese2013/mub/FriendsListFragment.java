@@ -170,7 +170,7 @@ public class FriendsListFragment extends Fragment {
 		}
 
 		@Override
-		public void onNotifyChanges() {
+		public void onNotifyChanges(Object... message) {
 			friends = LoginService.getLoggedInUser().getFriends();
 			requests = LoginService.getLoggedInUser().getFriendRequests();
 			notifyDataSetChanged();

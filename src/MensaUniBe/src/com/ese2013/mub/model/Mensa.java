@@ -1,9 +1,9 @@
 package com.ese2013.mub.model;
 
 /**
- * Represents a mensa by holding information about name, address and
- * geographical location. Also provides a unique Id for the mensa and the time stamp 
- * of the last update.
+ * Represents a Mensa by holding information about name, address and
+ * geographical location and the served menus and if the Mensa is a favorite.
+ * Also provides a unique Id for the Mensa.
  */
 public class Mensa {
 	private String name, street, zip;
@@ -59,11 +59,10 @@ public class Mensa {
 	}
 
 	/**
-	 * Sets if a mensa is favorite or not. This is the only property of a mensa
-	 * which can change at runtime.
+	 * Sets if a Mensa is favorite or not.
 	 * 
 	 * @param isFavorite
-	 *            true if the mensa should be a favorite mensa, false otherwise
+	 *            true if the Mensa should be a favorite Mensa, false otherwise.
 	 */
 	public void setIsFavorite(boolean isFavorite) {
 		this.isFavorite = isFavorite;
@@ -120,22 +119,23 @@ public class Mensa {
 	@Override
 	public int hashCode() {
 		int result = 17;
-		result = 31 * result + id;
-		result = 31 * result + name.hashCode();
-		result = 31 * result + street.hashCode();
-		result = 31 * result + zip.hashCode();
-		result = 31 * result + (isFavorite ? 1 : 0);
-		result = 31 * result + (menuplan == null ? 0 : menuplan.hashCode());
+		final int multiplier = 31;
+		result = multiplier * result + id;
+		result = multiplier * result + name.hashCode();
+		result = multiplier * result + street.hashCode();
+		result = multiplier * result + zip.hashCode();
+		result = multiplier * result + (isFavorite ? 1 : 0);
+		result = multiplier * result + (menuplan == null ? 0 : menuplan.hashCode());
 		long latLong = Double.doubleToLongBits(latitude);
-		result = 31 * result + (int) (latLong ^ (latLong >>> 32));
+		result = multiplier * result + (int) (latLong ^ (latLong >>> 32));
 		long lonLong = Double.doubleToLongBits(longitude);
-		result = 31 * result + (int) (lonLong ^ (lonLong >>> 32));
+		result = multiplier * result + (int) (lonLong ^ (lonLong >>> 32));
 		return result;
 	}
 
 	/**
 	 * Standard builder class used to construct Mensa objects. All fields have
-	 * default values, this means a MensaBuilder can always successfully create
+	 * default values, this means a MensaBuilder can always "successfully" create
 	 * a Mensa object.
 	 */
 	public static class MensaBuilder {

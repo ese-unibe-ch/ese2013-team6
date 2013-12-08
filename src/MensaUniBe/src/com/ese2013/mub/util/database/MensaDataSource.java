@@ -30,9 +30,8 @@ import com.ese2013.mub.util.database.tables.MenusTable;
 public class MensaDataSource {
 	private SQLiteDatabase database;
 	private SqlDatabaseHelper dbHelper;
-	private static SimpleDateFormat fm = new SimpleDateFormat("yyyy-MM-dd", Locale.GERMAN);
+	private SimpleDateFormat fm = new SimpleDateFormat("yyyy-MM-dd", Locale.GERMAN);
 	private static MensaDataSource instance;
-	private MenuManager menuManager;
 
 	private MensaDataSource() {
 	}
@@ -50,9 +49,8 @@ public class MensaDataSource {
 	 *            Context in which the DataSource is used, i.e. the main
 	 *            activity. Must not be null.
 	 */
-	public void init(Context context, MenuManager menuManager) {
+	public void init(Context context) {
 		dbHelper = new SqlDatabaseHelper(context);
-		this.menuManager = menuManager;
 	}
 
 	/**
@@ -206,7 +204,7 @@ public class MensaDataSource {
 	 *            Id of the mensa.
 	 * @return WeeklyMenuplan of the given mensa.
 	 */
-	public WeeklyMenuplan loadMenuplan(int mensaId) {
+	public WeeklyMenuplan loadMenuplan(int mensaId, MenuManager menuManager) {
 		String query = "select * from " + MenusTable.TABLE_MENUS + " inner join " + MenusMensasTable.TABLE_MENUS_MENSAS
 				+ " on " + MenusTable.TABLE_MENUS + "." + MenusTable.COL_ID + " = " + MenusMensasTable.TABLE_MENUS_MENSAS
 				+ "." + MenusTable.COL_ID + " where " + MenusMensasTable.TABLE_MENUS_MENSAS + "." + MensasTable.COL_ID

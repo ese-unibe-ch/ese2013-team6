@@ -15,7 +15,7 @@ import com.ese2013.mub.model.Mensa;
 import com.ese2013.mub.model.Model;
 
 public class MensaListAdapter extends BaseAdapter implements IAdapter {
-	private static Context context;
+	private Context context;
 	private List<Mensa> menus = new ArrayList<Mensa>();
 	private LayoutInflater inflater;
 	private MensaListFragment target;

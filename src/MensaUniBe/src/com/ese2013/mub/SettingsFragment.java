@@ -76,7 +76,7 @@ public class SettingsFragment extends Fragment {
 
 	private void addReregisterButton(View view) {
 		TextView registerTitle = (TextView) view.findViewById(R.id.register_title);
-		Button button = (Button) view.findViewById(R.id.register);
+		final Button button = (Button) view.findViewById(R.id.register);
 		View line = view.findViewById(R.id.register_line);
 		registerTitle.setVisibility(View.VISIBLE);
 		button.setVisibility(View.VISIBLE);
@@ -86,24 +86,20 @@ public class SettingsFragment extends Fragment {
 			button.setVisibility(View.GONE);
 			line.setVisibility(View.GONE);
 		}else{
-			makeButtonClickOpenRegistationDialog(button);
+			button.setOnClickListener(new OnClickListener() {
+				@Override
+				public void onClick(View v) {
+					DrawerMenuActivity a = (DrawerMenuActivity) getActivity();
+					a.showRegistrationDialog();
+					button.setEnabled(false);
+				}
+			});
 		}
 		
 	}
 
-	private void makeButtonClickOpenRegistationDialog(Button button) {
-		button.setOnClickListener(new OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				DrawerMenuActivity a = (DrawerMenuActivity) getActivity();
-				a.showRegistrationDialog();
-			}
-		});
-	}
-
 	/**
-	 * Starts translation if the @param languageSwitch is checked.
-	 * Translation is not stored on device.
+	 * Starts translation if the @param languageSwitch is checked and if it is not already available.
 	 * 
 	 */
 	private void setUpOnChangeListener(Switch languageSwitch) {

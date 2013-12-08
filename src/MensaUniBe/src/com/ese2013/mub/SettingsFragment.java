@@ -24,9 +24,11 @@ import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.Switch;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.ese2013.mub.model.Model;
+import com.ese2013.mub.social.LoginService;
 import com.ese2013.mub.util.SharedPrefsHandler;
 import com.ese2013.mub.util.TranslationTask;
 import com.memetix.mst.language.Language;
@@ -73,14 +75,23 @@ public class SettingsFragment extends Fragment {
 	}
 
 	private void addReregisterButton(View view) {
+		TextView registerTitle = (TextView) view.findViewById(R.id.register_title);
 		Button button = (Button) view.findViewById(R.id.register);
-		button.setOnClickListener(new OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				DrawerMenuActivity a = (DrawerMenuActivity) getActivity();
-				a.showRegistrationDialog();
-			}
-		});
+		View line = view.findViewById(R.id.register_line);
+		if (LoginService.isLoggedIn()){
+			registerTitle.setVisibility(View.GONE);
+			button.setVisibility(View.GONE);
+			line.setVisibility(View.GONE);
+		}else{
+			button.setOnClickListener(new OnClickListener() {
+				@Override
+				public void onClick(View v) {
+					DrawerMenuActivity a = (DrawerMenuActivity) getActivity();
+					a.showRegistrationDialog();
+				}
+			});
+		}
+		
 	}
 
 	private void setUpOnChangeListener(Switch languageSwitch) {

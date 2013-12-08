@@ -4,12 +4,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.ese2013.mub.social.Invitation.Response;
-import com.ese2013.mub.util.GetFriendsTask;
-import com.ese2013.mub.util.GetFriendsTaskCallback;
-import com.ese2013.mub.util.GetInvitationsTask;
-import com.ese2013.mub.util.GetInvitationsTaskCallback;
-import com.ese2013.mub.util.GetSentInvitationsTask;
-import com.ese2013.mub.util.GetSentInvitationsTaskCallback;
+import com.ese2013.mub.social.util.GetFriendsTask;
+import com.ese2013.mub.social.util.GetFriendsTaskCallback;
+import com.ese2013.mub.social.util.GetInvitationsTask;
+import com.ese2013.mub.social.util.GetInvitationsTaskCallback;
+import com.ese2013.mub.social.util.GetSentInvitationsTask;
+import com.ese2013.mub.social.util.GetSentInvitationsTaskCallback;
 import com.ese2013.mub.util.Observable;
 import com.ese2013.mub.util.parseDatabase.OnlineDBHandler;
 import com.parse.ParseException;
@@ -136,19 +136,19 @@ public class SocialManager extends Observable implements GetSentInvitationsTaskC
 	}
 
 	@Override
-	public void onInvitesTaskFinished(List<Invitation> invitations) {
+	public void onGetInvitationsTaskFinished(List<Invitation> invitations) {
 		receivedInvitations = invitations;
 		notifyChanges();
 	}
 
 	@Override
-	public void onTaskFinished(List<Invitation> invitations) {
+	public void onGetSentInvitationsTaskFinished(List<Invitation> invitations) {
 		sentInvitations = invitations;
 		notifyChanges();
 	}
 
 	@Override
-	public void onFriendsTaskFinished() {
+	public void onGetFriendsTaskFinished() {
 		notifyChanges();
 	}
 

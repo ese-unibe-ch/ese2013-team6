@@ -11,6 +11,7 @@ import android.widget.BaseAdapter;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
+import com.ese2013.mub.map.MapButtonListener;
 import com.ese2013.mub.model.Mensa;
 import com.ese2013.mub.model.Model;
 

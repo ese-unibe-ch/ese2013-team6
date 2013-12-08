@@ -16,7 +16,6 @@ import com.ese2013.mub.DrawerMenuActivity;
 import com.ese2013.mub.R;
 import com.ese2013.mub.model.Mensa;
 import com.ese2013.mub.model.Model;
-import com.ese2013.mub.util.Criteria;
 import com.ese2013.mub.util.Observer;
 import com.ese2013.mub.util.SharedPrefsHandler;
 import com.ese2013.mub.util.database.MensaDataSource;

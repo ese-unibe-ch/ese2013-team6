@@ -7,39 +7,45 @@ import com.ese2013.mub.model.Mensa;
 import com.ese2013.mub.model.Menu;
 
 public class Criteria {
-	
+
 	private HashMap<Menu, List<Mensa>> map;
 	private String criteria;
-	
-	public Criteria(){
+
+	public Criteria() {
 		map = new HashMap<Menu, List<Mensa>>();
 		criteria = null;
 	}
+
 	public String getName() {
 		return criteria;
 	}
-	public HashMap<Menu, List<Mensa>> getMap(){
+
+	public HashMap<Menu, List<Mensa>> getMap() {
 		return map;
 	}
+
 	public void setName(String name) {
 		this.criteria = name;
 	}
-	public boolean equals(Object object){
-		if(object instanceof Criteria){
-			Criteria other = (Criteria)object;
-			if(object == this)
+
+	@Override
+	public boolean equals(Object object) {
+		if (object instanceof Criteria) {
+			Criteria other = (Criteria) object;
+			if (object == this)
 				return true;
-			if(!other.getName().equals(criteria))
+			if (!other.getName().equals(criteria))
 				return false;
 			return true;
-		}
-		else
+		} else
 			return false;
 	}
-	public int HashCode(){
+
+	@Override
+	public int hashCode() {
 		int result = 17;
 		result = 31 * result + criteria.hashCode();
 		return result;
 	}
-	
+
 }

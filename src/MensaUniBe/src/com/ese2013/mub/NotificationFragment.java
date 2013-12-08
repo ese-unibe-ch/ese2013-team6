@@ -68,7 +68,7 @@ public class NotificationFragment extends Fragment implements Observer {
 		super.onDestroy();
 	}
 
-	public void onNotifyChanges() {
+	public void onNotifyChanges(Object... message) {
 		notificationAdapter.notifyDataSetChanged();
 	}
 

@@ -6,15 +6,7 @@ package com.ese2013.mub.model;
  */
 public class Menu {
 	private String id, origTitle, origDescription, translatedTitle, translatedDescription;
-	private int ratingSum = 0, ratingCount = 0;
-
-	public Menu(String id, String title, String description, String translTitle, String translDesc) {
-		this.id = id;
-		this.origTitle = title;
-		this.origDescription = description;
-		this.translatedTitle = translTitle;
-		this.translatedDescription = translDesc;
-	}
+	private int ratingSum, ratingCount;
 
 	/**
 	 * Creates a Menu from a given MenuBuilder. Is private to ensure that Menus
@@ -123,9 +115,10 @@ public class Menu {
 	@Override
 	public int hashCode() {
 		int result = 17;
-		result = 31 * result + id.hashCode();
-		result = 31 * result + origTitle.hashCode();
-		result = 31 * result + origDescription.hashCode();
+		final int multiplier = 31;
+		result = multiplier * result + id.hashCode();
+		result = multiplier * result + origTitle.hashCode();
+		result = multiplier * result + origDescription.hashCode();
 		return result;
 	}
 
@@ -135,13 +128,12 @@ public class Menu {
 	}
 
 	/**
-	 * Standard builder class used to construct Menu objects.
+	 * Builder class used to construct Menu objects. Has default values for all
+	 * attributes.
 	 */
 	public static class MenuBuilder {
-		public int ratingSum;
-		public int ratingCount;
-		public static final String INVALID_ID = "INVALID";
-		private static final String DEFAULT = "N//A";
+		public int ratingSum, ratingCount;
+		private static final String INVALID_ID = "INVALID", DEFAULT = "N//A";
 		private String id = INVALID_ID, title = DEFAULT, description = DEFAULT, translTitle = "", translDesc = "";
 
 		public MenuBuilder setId(String id) {
@@ -174,11 +166,25 @@ public class Menu {
 			return this;
 		}
 
+		/**
+		 * Sets the number of ratings this menu got.
+		 * 
+		 * @param ratingCount
+		 *            int for the number of ratings, must be bigger than 0.
+		 * @return This MenuBuilder to allow chaining of setXXX calls.
+		 */
 		public MenuBuilder setRatingCount(int ratingCount) {
 			this.ratingCount = ratingCount;
 			return this;
 		}
 
+		/**
+		 * Creates a Menu object from the data of this builder. Caller needs to
+		 * make sure that the builder has a valid Id set by using
+		 * "setId(String)"
+		 * 
+		 * @return Menu object constructed from this MenuBuilder.
+		 */
 		public Menu build() {
 			return new Menu(this);
 		}

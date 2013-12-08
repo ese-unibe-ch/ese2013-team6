@@ -13,6 +13,7 @@ import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.ese2013.mub.model.Day;
 import com.ese2013.mub.model.Mensa;
@@ -53,7 +54,9 @@ public class HomeFragment extends Fragment implements Observer {
 	}
 
 	@Override
-	public void onNotifyChanges() {
+	public void onNotifyChanges(Object... message) {
+		if (message.length > 0)
+			Toast.makeText(getActivity(), this.getActivity().getString((Integer) message[0]), Toast.LENGTH_SHORT).show();
 		sectionsPagerAdapter.notifyDataSetChanged();
 	}
 

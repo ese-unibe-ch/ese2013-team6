@@ -13,8 +13,8 @@ public class Observable {
 		observers.remove(o);
 	}
 
-	public void notifyChanges() {
+	public void notifyChanges(Object... message) {
 		for (Observer o : observers)
-			o.onNotifyChanges();
+			o.onNotifyChanges(message);
 	}
 }

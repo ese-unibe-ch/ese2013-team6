@@ -41,7 +41,7 @@ public class DailyMenuplan {
 	}
 
 	/**
-	 * Returns if the menu is contained in this daily menuplan.
+	 * Returns if the menu is contained in this DailyMenuplan.
 	 * 
 	 * @param menu
 	 *            the Menu to be checked.

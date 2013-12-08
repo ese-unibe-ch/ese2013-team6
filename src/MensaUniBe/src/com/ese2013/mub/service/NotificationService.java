@@ -13,27 +13,29 @@ import android.os.IBinder;
 import android.support.v4.app.NotificationCompat;
 
 import com.ese2013.mub.DrawerMenuActivity;
-import com.ese2013.mub.NotificationFragment;
 import com.ese2013.mub.R;
 import com.ese2013.mub.model.Mensa;
 import com.ese2013.mub.model.Model;
 import com.ese2013.mub.util.Criteria;
 import com.ese2013.mub.util.Observer;
 import com.ese2013.mub.util.SharedPrefsHandler;
+import com.ese2013.mub.util.database.MensaDataSource;
 
 public class NotificationService extends Service implements Observer {
 
 	public static final String START_FROM_N = "com.ese2013.mub.service.startFromN";
 	private final IBinder nBinder = new NBinder();
 	private List<Criteria> criteriaList;
-	private NotificationFragment observer;
 	private boolean hasPushed;
 
 	@Override
 	public int onStartCommand(Intent intent, int flags, int startId) {
-		new Model(this.getApplicationContext());
-		Model.getInstance().addObserver(this);
+		MensaDataSource dataSource = MensaDataSource.getInstance();
+		dataSource.init(getApplicationContext());
 
+		Model model = Model.getInstance();
+		model.init(dataSource, new SharedPrefsHandler(getApplicationContext()).getDoTranslation());
+		model.addObserver(this);
 		return START_STICKY;
 	}
 
@@ -66,15 +68,6 @@ public class NotificationService extends Service implements Observer {
 		}
 	}
 
-	/**
-	 * Only Used for binding options
-	 * 
-	 * @param observer
-	 */
-	public void addObserver(NotificationFragment observer) {
-		this.observer = observer;
-	}
-
 	@Override
 	public IBinder onBind(Intent arg0) {
 		return nBinder;
@@ -95,15 +88,6 @@ public class NotificationService extends Service implements Observer {
 		return criteriaList;
 	}
 
-	@SuppressWarnings("unused")
-	/**
-	 * Only Used for Binding options
-	 */
-	private void notifyObserver() {
-		observer.onNotifyChanges();
-
-	}
-
 	public List<Criteria> createCriteriaList() {
 		SharedPrefsHandler pref = new SharedPrefsHandler(this);
 
@@ -116,7 +100,7 @@ public class NotificationService extends Service implements Observer {
 	}
 
 	@Override
-	public void onNotifyChanges() {
+	public void onNotifyChanges(Object... message) {
 		criteriaList = createCriteriaList();
 		push();
 		if (hasPushed)

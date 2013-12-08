@@ -130,10 +130,20 @@ public class Day implements Comparable<Day> {
 		return hashCode;
 	}
 
+	/**
+	 * Returns a new Day Object set to the current day.
+	 * 
+	 * @return Day object set to the current day.
+	 */
 	public static Day today() {
 		return new Day(Calendar.getInstance(Locale.getDefault()).getTime());
 	}
 
+	/**
+	 * Returns the day as string, i.e. 6.12.2013 as 20131206
+	 * 
+	 * @return
+	 */
 	private int asInt() {
 		int i = year;
 		i *= 100;

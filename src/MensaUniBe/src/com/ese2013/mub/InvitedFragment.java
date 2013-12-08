@@ -164,7 +164,7 @@ public class InvitedFragment extends Fragment {
 		}
 
 		@Override
-		public void onNotifyChanges() {
+		public void onNotifyChanges(Object... message) {
 			this.invitations = SocialManager.getInstance().getReceivedInvitations();
 			notifyDataSetChanged();
 			loadingFinished();

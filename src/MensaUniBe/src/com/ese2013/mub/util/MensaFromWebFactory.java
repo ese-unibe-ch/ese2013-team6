@@ -22,7 +22,7 @@ import com.parse.ParseQuery;
 public class MensaFromWebFactory extends AbstractMensaFactory {
 
 	private MensaDataSource dataSource = MensaDataSource.getInstance();
-	private static SimpleDateFormat fm = new SimpleDateFormat("yyyy-MM-dd", Locale.GERMAN);
+	private SimpleDateFormat fm = new SimpleDateFormat("yyyy-MM-dd", Locale.GERMAN);
 	private MenuManager menuManager;
 
 	public MensaFromWebFactory(MenuManager menuManager) {

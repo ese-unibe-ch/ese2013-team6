@@ -1,6 +1,9 @@
 package com.ese2013.mub.util;
 
+import java.util.Collections;
 import java.util.List;
+
+import android.database.sqlite.SQLiteException;
 
 import com.ese2013.mub.model.Mensa;
 import com.ese2013.mub.model.MenuManager;
@@ -8,7 +11,7 @@ import com.ese2013.mub.model.WeeklyMenuplan;
 import com.ese2013.mub.util.database.MensaDataSource;
 
 public class MensaFromLocalFactory extends AbstractMensaFactory {
-	private MensaDataSource dataSource = MensaDataSource.getInstance();
+	private MensaDataSource dataSource;
 	private MenuManager menuManager;
 
 	public MensaFromLocalFactory(MensaDataSource dataSource, MenuManager menuManager) {
@@ -25,8 +28,9 @@ public class MensaFromLocalFactory extends AbstractMensaFactory {
 				WeeklyMenuplan p = dataSource.loadMenuplan(m.getId(), menuManager);
 				m.setMenuplan(p);
 			}
+			Collections.sort(mensas);
 			return mensas;
-		} catch (Exception e) {
+		} catch (SQLiteException e) {
 			throw new MensaLoadException(e);
 		} finally {
 			dataSource.close();

@@ -108,8 +108,7 @@ public class MensaDataSource {
 		final int POS_ZIP = c.getColumnIndex(MensasTable.COL_ZIP);
 		final int POS_LON = c.getColumnIndex(MensasTable.COL_LON);
 		final int POS_LAT = c.getColumnIndex(MensasTable.COL_LAT);
-		c.moveToFirst();
-		do {
+		while (c.moveToNext()) {
 			Mensa.MensaBuilder builder = new Mensa.MensaBuilder();
 			int mensaId = c.getInt(POS_ID);
 			builder.setId(mensaId);
@@ -120,7 +119,7 @@ public class MensaDataSource {
 			builder.setLatitude(c.getDouble(POS_LAT));
 			builder.setIsFavorite(isInFavorites(mensaId));
 			mensas.add(builder.build());
-		} while (c.moveToNext());
+		}
 		c.close();
 		return mensas;
 	}
@@ -217,8 +216,7 @@ public class MensaDataSource {
 		final int POS_TRANSL_DESC = c.getColumnIndex(MenusTable.COL_TRANSL_DESC);
 		final int POS_DATE = c.getColumnIndex(MenusMensasTable.COL_DATE);
 		WeeklyMenuplan p = new WeeklyMenuplan();
-		c.moveToFirst();
-		do {
+		while (c.moveToNext()) {
 			try {
 				Menu menu = menuManager.createMenu(c.getString(POS_ID), c.getString(POS_TITLE), c.getString(POS_DESC),
 						c.getString(POS_TRANSL_TITLE), c.getString(POS_TRANSL_DESC));
@@ -226,7 +224,7 @@ public class MensaDataSource {
 			} catch (ParseException e) {
 				throw new AssertionError("Database did not save properly");
 			}
-		} while (c.moveToNext());
+		}
 		return p;
 	}
 
@@ -240,9 +238,8 @@ public class MensaDataSource {
 				null, MenusMensasTable.COL_DATE, null, null);
 
 		final int POS_DATE = c.getColumnIndex(MenusMensasTable.COL_DATE);
-		c.moveToFirst();
 		int minWeek = Integer.MAX_VALUE;
-		do {
+		while (c.moveToNext()) {
 			try {
 				String dateString = c.getString(POS_DATE);
 				Calendar cal = Calendar.getInstance(Locale.GERMAN);
@@ -252,8 +249,8 @@ public class MensaDataSource {
 			} catch (ParseException e) {
 				throw new AssertionError("Database did not save properly");
 			}
-		} while (c.moveToNext());
-		return minWeek;
+		}
+		return minWeek == Integer.MAX_VALUE ? -1 : minWeek;
 	}
 
 	/**

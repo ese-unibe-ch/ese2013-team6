@@ -51,20 +51,19 @@ public class InvitationBaseFragment extends Fragment implements ActionBar.TabLis
 	}
 
 	@Override
-	public void onTabReselected(Tab tab, FragmentTransaction ft) {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
 	public void onTabSelected(Tab tab, FragmentTransaction ft) {
 		viewPager.setCurrentItem(tab.getPosition());
 
 	}
 
 	@Override
+	public void onTabReselected(Tab tab, FragmentTransaction ft) {
+		// method from tab listener, no need to handle reselect.
+	}
+
+	@Override
 	public void onTabUnselected(Tab tab, FragmentTransaction ft) {
-		// TODO Auto-generated method stub
+		// method from tab listener, no need to handle unselect.
 	}
 
 	@Override
@@ -92,13 +91,16 @@ public class InvitationBaseFragment extends Fragment implements ActionBar.TabLis
 		super.onDestroy();
 	}
 
-	class InvitationPageAdapter extends FragmentPagerAdapter {
+	public void setPagerToFriends() {
+		viewPager.setCurrentItem(2);
+		actionBar.selectTab(actionBar.getTabAt(2));
+	}
 
+	private static class InvitationPageAdapter extends FragmentPagerAdapter {
 		private List<Fragment> fragments = new ArrayList<Fragment>();
 
 		public InvitationPageAdapter(FragmentManager fm) {
 			super(fm);
-
 			fragments.add(new InvitesFragment());
 			fragments.add(new InvitedFragment());
 			fragments.add(new FriendsListFragment());
@@ -113,10 +115,5 @@ public class InvitationBaseFragment extends Fragment implements ActionBar.TabLis
 		public int getCount() {
 			return fragments.size();
 		}
-	}
-
-	public void setPagerToFriends() {
-		viewPager.setCurrentItem(2);
-		actionBar.selectTab(actionBar.getTabAt(2));
 	}
 }

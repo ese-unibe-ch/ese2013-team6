@@ -6,7 +6,7 @@ import java.util.concurrent.TimeoutException;
 
 import android.os.AsyncTask;
 
-import com.ese2013.mub.util.parseDatabase.OnlineDBHandler;
+import com.ese2013.mub.util.parseDatabase.SocialDBHandler;
 import com.parse.ParseException;
 
 /**
@@ -17,7 +17,7 @@ import com.parse.ParseException;
  */
 public class LoginService {
 	private static CurrentUser loggedInUser;
-	private static OnlineDBHandler handler = new OnlineDBHandler();
+	private static SocialDBHandler handler = new SocialDBHandler();
 
 	/**
 	 * Tries to log in the user with the given email.

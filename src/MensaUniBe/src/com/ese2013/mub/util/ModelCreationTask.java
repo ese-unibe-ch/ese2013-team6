@@ -12,7 +12,7 @@ import com.ese2013.mub.model.Mensa;
 import com.ese2013.mub.model.MenuManager;
 import com.ese2013.mub.model.Model;
 import com.ese2013.mub.util.database.MensaDataSource;
-import com.ese2013.mub.util.parseDatabase.OnlineMensaDBHandler;
+import com.ese2013.mub.util.parseDatabase.MensaDBHandler;
 import com.parse.ParseException;
 
 /**
@@ -52,7 +52,7 @@ public class ModelCreationTask extends AsyncTask<Void, Void, Void> {
 		AbstractMensaFactory fac;
 		localDataOutdated = localDataNeedsUpdate();
 		if (localDataOutdated) {
-			fac = new MensaFromWebFactory(menuManager);
+			fac = new MensaFromWebFactory(dataSource, menuManager);
 			downloadedNewData = true;
 		} else {
 			fac = new MensaFromLocalFactory(dataSource, menuManager);
@@ -67,14 +67,17 @@ public class ModelCreationTask extends AsyncTask<Void, Void, Void> {
 		} catch (MensaLoadException e) {
 			successful = false;
 		} catch (ParseException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			// if this happens at least one of the other exceptions is thrown
+			// first usually. Also, the ParseException is only thrown when
+			// retrieving ratings (which is not that important)
+			downloadedNewData = false;
+			retryUsingLocalData(false);
 		}
 		return null;
 	}
 
 	private void getRatings() throws ParseException {
-		new OnlineMensaDBHandler().getMenuRatings(menuManager);
+		new MensaDBHandler().getMenuRatings(menuManager);
 	}
 
 	private void retryUsingLocalData(boolean getRatings) {

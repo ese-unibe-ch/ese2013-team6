@@ -10,18 +10,18 @@ import android.os.AsyncTask;
 
 import com.ese2013.mub.model.Mensa;
 import com.ese2013.mub.model.MenuManager;
-import com.ese2013.mub.model.Model;
 import com.ese2013.mub.util.database.MensaDataSource;
 import com.ese2013.mub.util.parseDatabase.MensaDBHandler;
 import com.parse.ParseException;
 
 /**
- * This class creates the list of mensas by either using the mensa web service
- * or loading from the local data.
+ * This class creates the list of mensas by either using the Parse-Server or
+ * loading from the local data. Also downloads the Menu ratings if possible
+ * every time the model is created (as the ratings change more often than the
+ * Menus/Mensas).
  * 
- * The decision which data source to use is taken by comparing if the stored
- * menus are from a past week and checking if the web service was updated (by
- * checking the updates page on the web service).
+ * The decision which data source to use for the Mensas/Menzs is taken by
+ * comparing if the stored menus are from a past week.
  * 
  */
 public class ModelCreationTask extends AsyncTask<Void, Void, Void> {
@@ -31,6 +31,18 @@ public class ModelCreationTask extends AsyncTask<Void, Void, Void> {
 	private MenuManager menuManager;
 	private List<ModelCreationTaskCallback> callbacks = new ArrayList<ModelCreationTaskCallback>();
 
+	/**
+	 * Creates a new ModelCreationTask.
+	 * 
+	 * @param menuManager
+	 *            MenuManager to store the Menus. Must not be null.
+	 * @param dataSource
+	 *            MensaDataSource to manage the local data. Must not be null and
+	 *            must have been initialized by calling init().
+	 * @param callbacks
+	 *            A list of ModelCreationTaskCallbacks to be notified if the
+	 *            Task is done.
+	 */
 	public ModelCreationTask(MenuManager menuManager, MensaDataSource dataSource, ModelCreationTaskCallback... callbacks) {
 		this.menuManager = menuManager;
 		this.dataSource = dataSource;
@@ -134,7 +146,7 @@ public class ModelCreationTask extends AsyncTask<Void, Void, Void> {
 	}
 
 	/**
-	 * Returns if the loading required using the web service. Also returns true
+	 * Returns if the loading required using the Parse-Server. Also returns true
 	 * if the loading tried using the web service but failed.
 	 * 
 	 * @return true if the web service has been used.
@@ -165,8 +177,9 @@ public class ModelCreationTask extends AsyncTask<Void, Void, Void> {
 	}
 
 	/**
-	 * Called after the task has been executed, informs the {@link Model} that
-	 * the Task is done (is now again in the Main Thread).
+	 * Called after the task has been executed, informs the
+	 * ModelCreationTaskCallbacks that the Task is done (is now again in the
+	 * Main Thread).
 	 */
 	@Override
 	protected void onPostExecute(Void v) {

@@ -7,6 +7,10 @@ import com.ese2013.mub.model.MenuManager;
 import com.memetix.mst.language.Language;
 import com.memetix.mst.translate.Translate;
 
+/**
+ * Asynchronous task to translate existing Menus from German to another Language
+ * using the Microsoft Translating Api.
+ */
 public class TranslationTask extends AbstractAsyncTask<Void, Void, Void> {
 	private static final String NEW_LINE_CODE = " ; ", DOUBLE_QUOTE_CODE = " ' ",
 			NONE_ASCII_CHARACTERS_REGEX = "[^\\x00-\\x7F]";
@@ -15,6 +19,19 @@ public class TranslationTask extends AbstractAsyncTask<Void, Void, Void> {
 	private String[] newTitles, newDescriptions;
 	private TranslationTaskCallback callback;
 
+	/**
+	 * Creates a new TranslationTask.
+	 * 
+	 * @param menuManager
+	 *            MenuManager which contains the Menus to be translated. Must
+	 *            not be null.
+	 * @param newLang
+	 *            Language which the Menus should be translated into.Must not be
+	 *            null.
+	 * @param callback
+	 *            TranslationTaskCallback to be called when the task is done.
+	 *            Must not be null.
+	 */
 	public TranslationTask(MenuManager menuManager, Language newLang, TranslationTaskCallback callback) {
 		Translate.setClientId("ESE-Mub");
 		Translate.setClientSecret("3N8wC0wPZPj2v6KTT6GR/B28UDythCvpJ/NSWolMzwU=");

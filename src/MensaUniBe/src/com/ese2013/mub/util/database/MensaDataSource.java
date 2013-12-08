@@ -46,8 +46,8 @@ public class MensaDataSource {
 	 * Should be called before the MensaDataSource is used.
 	 * 
 	 * @param context
-	 *            Context in which the DataSource is used, i.e. the main
-	 *            activity. Must not be null.
+	 *            Context in which the DataSource is used, i.e. the application
+	 *            context. Must not be null.
 	 */
 	public void init(Context context) {
 		dbHelper = new SqlDatabaseHelper(context);

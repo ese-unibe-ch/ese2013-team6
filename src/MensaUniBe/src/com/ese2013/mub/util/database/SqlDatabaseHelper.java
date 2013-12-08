@@ -13,6 +13,10 @@ import com.ese2013.mub.util.database.tables.MensasTable;
 import com.ese2013.mub.util.database.tables.MenusMensasTable;
 import com.ese2013.mub.util.database.tables.MenusTable;
 
+/**
+ * Controls creation/updating of the database. Most of the work is already done
+ * by SQLiteOpenHelper.
+ */
 public class SqlDatabaseHelper extends SQLiteOpenHelper {
 
 	public static final String DATABASE_NAME = "mensas.db";

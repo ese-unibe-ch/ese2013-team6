@@ -28,7 +28,7 @@ public class SharedPrefsHandler {
 	public boolean getDoTranslation() {
 		return getPrefs(context).getBoolean(DO_TRANSLATION, false);
 	}
-	
+
 	public boolean getTranslationAvialable() {
 		return getPrefs(context).getBoolean(TRANSLATION_AVAIL, false);
 	}
@@ -56,7 +56,7 @@ public class SharedPrefsHandler {
 	public void setDoTranslation(boolean doTranslation) {
 		getPrefs(context).edit().putBoolean(DO_TRANSLATION, doTranslation).commit();
 	}
-	
+
 	public void setTranslationAvailable(boolean translationAvailable) {
 		getPrefs(context).edit().putBoolean(TRANSLATION_AVAIL, translationAvailable).commit();
 	}

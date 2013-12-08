@@ -2,6 +2,12 @@ package com.ese2013.mub.util.database.tables;
 
 import android.database.sqlite.SQLiteDatabase;
 
+/**
+ * Base class for all other local database table classes. Every class should
+ * have it's own create statement and column name constants. This class just
+ * executes the create and delete statements.
+ * 
+ */
 public abstract class AbstractTable {
 	private final String db_name, createStatement;
 

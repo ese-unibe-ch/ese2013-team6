@@ -19,7 +19,7 @@ import com.ese2013.mub.model.Model;
 import com.ese2013.mub.social.CurrentUser;
 import com.ese2013.mub.social.LoginService;
 import com.ese2013.mub.util.ViewUtil;
-import com.ese2013.mub.util.parseDatabase.OnlineMensaDBHandler;
+import com.ese2013.mub.util.parseDatabase.MensaDBHandler;
 
 public class MenuView extends LinearLayout {
 	private Menu menu;
@@ -116,7 +116,7 @@ public class MenuView extends LinearLayout {
 				int userRating = (int) rating;
 				menu.setUserRating(userRating);
 				user.addToRated(menu);
-				new OnlineMensaDBHandler().saveMenuRating(user, menu, userRating);
+				new MensaDBHandler().saveMenuRating(user, menu, userRating);
 				ratingBar.setIsIndicator(true);
 				setCountDisplay();
 				ratingBar.setRating(menu.getAverageRating());

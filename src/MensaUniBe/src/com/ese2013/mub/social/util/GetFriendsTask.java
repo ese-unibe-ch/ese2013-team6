@@ -7,7 +7,7 @@ import com.ese2013.mub.social.CurrentUser;
 import com.ese2013.mub.social.FriendRequest;
 import com.ese2013.mub.social.User;
 import com.ese2013.mub.util.AbstractAsyncTask;
-import com.ese2013.mub.util.parseDatabase.OnlineDBHandler;
+import com.ese2013.mub.util.parseDatabase.SocialDBHandler;
 import com.parse.ParseException;
 
 public class GetFriendsTask extends AbstractAsyncTask<CurrentUser, Void, Void> {
@@ -25,8 +25,8 @@ public class GetFriendsTask extends AbstractAsyncTask<CurrentUser, Void, Void> {
 	protected Void doInBackground(CurrentUser... user) {
 		try {
 			currentUser = user[0];
-			requests = new OnlineDBHandler().getFriendRequests(currentUser);
-			friends = new OnlineDBHandler().getFriends(currentUser);
+			requests = new SocialDBHandler().getFriendRequests(currentUser);
+			friends = new SocialDBHandler().getFriends(currentUser);
 		} catch (ParseException e) {
 			requests = new ArrayList<FriendRequest>();
 			friends = new ArrayList<User>();

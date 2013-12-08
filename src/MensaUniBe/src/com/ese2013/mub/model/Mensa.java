@@ -5,7 +5,7 @@ package com.ese2013.mub.model;
  * geographical location and the served menus and if the Mensa is a favorite.
  * Also provides a unique Id for the Mensa.
  */
-public class Mensa {
+public class Mensa implements Comparable<Mensa> {
 	private String name, street, zip;
 	private double longitude, latitude;
 	private int id;
@@ -85,6 +85,11 @@ public class Mensa {
 	@Override
 	public String toString() {
 		return name;
+	}
+	
+	@Override
+	public int compareTo(Mensa other) {
+		return this.getId() - other.getId();
 	}
 
 	@Override

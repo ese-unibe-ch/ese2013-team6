@@ -11,7 +11,7 @@ import com.ese2013.mub.social.util.GetInvitationsTaskCallback;
 import com.ese2013.mub.social.util.GetSentInvitationsTask;
 import com.ese2013.mub.social.util.GetSentInvitationsTaskCallback;
 import com.ese2013.mub.util.Observable;
-import com.ese2013.mub.util.parseDatabase.OnlineDBHandler;
+import com.ese2013.mub.util.parseDatabase.SocialDBHandler;
 import com.parse.ParseException;
 
 /**
@@ -25,7 +25,7 @@ public class SocialManager extends Observable implements GetSentInvitationsTaskC
 	private List<Invitation> sentInvitations = new ArrayList<Invitation>();
 	private List<Invitation> receivedInvitations = new ArrayList<Invitation>();
 	private static SocialManager instance;
-	private OnlineDBHandler onlineDBHandler = new OnlineDBHandler();
+	private SocialDBHandler onlineDBHandler = new SocialDBHandler();
 
 	private SocialManager() {
 	}

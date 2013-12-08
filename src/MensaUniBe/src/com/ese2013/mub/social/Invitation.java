@@ -7,9 +7,8 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * 
- * @author Delio
- * 
+ * Represents an invitation from one User to a group of Users for a given Mensa
+ * and time. Also stores the responses of the addressees.
  */
 public class Invitation {
 	private User from;
@@ -18,8 +17,26 @@ public class Invitation {
 	private int mensaId;
 	private Date time;
 
-	public Invitation(String id, User from, List<User> to, String message, int mensaId, Date time) {
-		this.id = id;
+	/**
+	 * Creates a new Invitation which is not already on the Server. This
+	 * constructor should be used to create invitations to send.
+	 * 
+	 * @param from
+	 *            User which sends this invitation. Must not be null and have a
+	 *            valid id.
+	 * @param to
+	 *            List of Users which receive this invitation. Must not be null
+	 *            and all User objects in the list must have a valid id.
+	 * @param message
+	 *            String message to be sent. Must not be null.
+	 * @param mensaId
+	 *            int id of the Mensa where the User "from" invites to. Must be
+	 *            a valid Mensa id.
+	 * @param time
+	 *            Date when the appointment is. Must not be in the past and must
+	 *            not be null.
+	 */
+	public Invitation(User from, List<User> to, String message, int mensaId, Date time) {
 		this.from = from;
 		this.message = message;
 		this.mensaId = mensaId;
@@ -29,10 +46,31 @@ public class Invitation {
 			this.to.put(u, Response.UNKNOWN);
 	}
 
-	public Invitation(User from, List<User> to, String message, int mensaId, Date time) {
-		this(null, from, to, message, mensaId, time);
-	}
-
+	/**
+	 * Creates a new Invitation which is already on the Server. This constructor
+	 * should be used to create invitations which habe been received. All
+	 * arguments must be consistent with the data stored on the Parse-Server
+	 * under the given String id.
+	 * 
+	 * @param id
+	 *            String id of this Invitation on the Parse-Server.
+	 * 
+	 * @param from
+	 *            User which sends this invitation. Must not be null and have a
+	 *            valid id.
+	 * @param to
+	 *            Map of Users to their responses. Must not be null and all User
+	 *            objects in the list must have a valid id and all responses
+	 *            should be not null.
+	 * @param message
+	 *            String message to be sent. Must not be null.
+	 * @param mensaId
+	 *            int id of the Mensa where the User "from" invites to. Must be
+	 *            a valid Mensa id.
+	 * @param time
+	 *            Date when the appointment is. Must not be in the past and must
+	 *            not be null.
+	 */
 	public Invitation(String id, User from, HashMap<User, Invitation.Response> to, String message, int mensaId, Date time) {
 		this.id = id;
 		this.from = from;
@@ -40,6 +78,10 @@ public class Invitation {
 		this.mensaId = mensaId;
 		this.time = time;
 		this.to = new HashMap<User, Response>(to);
+	}
+
+	public String getId() {
+		return id;
 	}
 
 	public User getFrom() {
@@ -62,15 +104,21 @@ public class Invitation {
 		return time;
 	}
 
+	/**
+	 * Returns the response of a given User.
+	 * 
+	 * @param user
+	 *            User to get response of, must not be null and must be invited
+	 *            by this Invitation.
+	 * @return Response of the User, is not null as long as the given User is
+	 *         invited by this Invitation (i.e. is in the Collection of Users
+	 *         which can be retrieved by calling getTo()).
+	 */
 	public Response getResponseOf(User user) {
 		return to.get(user);
 	}
 
 	public static enum Response {
 		UNKNOWN, ACCEPTED, DECLINED;
-	}
-
-	public String getId() {
-		return id;
 	}
 }

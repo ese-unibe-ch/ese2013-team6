@@ -14,7 +14,7 @@ public class LoginTask extends AbstractAsyncTask<String, Void, Void> {
 	@Override
 	protected Void doInBackground(String... email) {
 		try {
-			LoginService.login(email[0]);
+			LoginService.loginSync(email[0]);
 		} catch (ParseException e) {
 			setException(e);
 		}

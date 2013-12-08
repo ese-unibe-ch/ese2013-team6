@@ -9,12 +9,16 @@ import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.ese2013.mub.model.Day;
 import com.ese2013.mub.model.Model;
@@ -27,6 +31,7 @@ public class InvitedFragment extends Fragment {
 
 	private ListView invitedList;
 	private InvitedListAdapter adapter;
+	private MenuItem menuItem;
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -42,7 +47,42 @@ public class InvitedFragment extends Fragment {
 		invitedList.setEmptyView(showMessage);
 
 		invitedList.setAdapter(adapter);
+		setHasOptionsMenu(true);
 		return view;
+	}
+
+	@Override
+	public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+		if (LoginService.isLoggedIn())
+			inflater.inflate(R.menu.invited_menu, menu);
+	}
+
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		switch (item.getItemId()) {
+		case R.id.refresh:
+			SocialManager.getInstance().loadInvites();
+			menuItem = item;
+			menuItem.setActionView(R.layout.progress_bar);
+			menuItem.expandActionView();
+			Toast.makeText(getActivity(), R.string.toast_refreshing_msg, Toast.LENGTH_SHORT).show();
+			return true;
+		default:
+			return false;
+		}
+	}
+
+	@Override
+	public void onDestroy() {
+		super.onDestroy();
+		SocialManager.getInstance().removeObserver(adapter);
+	}
+
+	private void loadingFinished() {
+		if (menuItem != null) {
+			menuItem.collapseActionView();
+			menuItem.setActionView(null);
+		}
 	}
 
 	private class InvitedListAdapter extends BaseAdapter implements Observer {
@@ -51,7 +91,7 @@ public class InvitedFragment extends Fragment {
 
 		public InvitedListAdapter() {
 			SocialManager.getInstance().addObserver(this);
-			SocialManager.getInstance().loadInvites();
+			onNotifyChanges();
 		}
 
 		@Override
@@ -127,6 +167,7 @@ public class InvitedFragment extends Fragment {
 		public void onNotifyChanges() {
 			this.invitations = SocialManager.getInstance().getReceivedInvitations();
 			notifyDataSetChanged();
+			loadingFinished();
 		}
 	}
 }

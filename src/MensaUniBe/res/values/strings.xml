@@ -89,5 +89,7 @@
 	<string name="settings_edit_notification_criteria_title">Edit Notification Criteria</string>
 	<string name="translation_started">Translation started</string>
 	<string name="settings_registration_button">Register</string>
+	<string name="refresh_content">Refresh content</string>
+	<string name="toast_refreshing_msg">Refreshing...</string>
 	
 </resources>

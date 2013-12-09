@@ -33,8 +33,6 @@ import com.ese2013.mub.social.util.LoginTask;
 import com.ese2013.mub.social.util.LoginTaskCallback;
 import com.ese2013.mub.util.SharedPrefsHandler;
 import com.ese2013.mub.util.database.MensaDataSource;
-import com.parse.Parse;
-import com.parse.ParseInstallation;
 import com.parse.PushService;
 
 /**
@@ -62,7 +60,6 @@ public class DrawerMenuActivity extends FragmentActivity implements LoginTaskCal
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		initParseService();
 		handleLogin();
 
 		MensaDataSource dataSource = MensaDataSource.getInstance();
@@ -145,12 +142,6 @@ public class DrawerMenuActivity extends FragmentActivity implements LoginTaskCal
 		drawerLayout.setDrawerListener(drawerToggle);
 		drawerToggle.syncState();
 		drawerList.setOnItemClickListener(new DrawerItemClickListener());
-	}
-
-	private void initParseService() {
-		Parse.initialize(this, "ZmdQMR7FctP2XgMJN5lvj98Aj9IA2Bf8mJrny11n", "yVVh3GiearTRsRXZqgm2FG6xfWvcQPjINX6dGJNu");
-		PushService.setDefaultPushCallback(this, DrawerMenuActivity.class);
-		ParseInstallation.getCurrentInstallation().saveInBackground();
 	}
 
 	private void createActionBarSpinner() {

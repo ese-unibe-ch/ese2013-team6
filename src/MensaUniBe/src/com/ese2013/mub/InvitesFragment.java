@@ -41,6 +41,7 @@ public class InvitesFragment extends Fragment {
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+		
 		adapter = new InvitesListAdapter();
 		View view = inflater.inflate(R.layout.fragment_invites, null);
 		invitesList = (ListView) view.findViewById(R.id.invites_list);
@@ -73,7 +74,11 @@ public class InvitesFragment extends Fragment {
 		if (LoginService.isLoggedIn())
 			inflater.inflate(R.menu.invites_menu, menu);
 	}
-
+	@Override
+	public void onResume() {
+		SocialManager.getInstance().loadSentInvites();
+		super.onResume();
+	}
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch (item.getItemId()) {
@@ -170,12 +175,15 @@ public class InvitesFragment extends Fragment {
 		public long getItemId(int position) {
 			return position;
 		}
-
 		@Override
 		public void onNotifyChanges(Object... message) {
-			this.invitations = SocialManager.getInstance().getSentInvitations();
 			notifyDataSetChanged();
 			loadingFinished();
+		}
+		@Override
+		public void notifyDataSetChanged() {
+			this.invitations = SocialManager.getInstance().getSentInvitations();
+			super.notifyDataSetChanged();
 		}
 	}
 }

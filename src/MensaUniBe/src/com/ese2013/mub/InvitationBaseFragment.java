@@ -26,7 +26,12 @@ public class InvitationBaseFragment extends Fragment implements
 	private ViewPager viewPager;
 	private ActionBar actionBar;
 	private String[] tabs = { "Invites", "Invited", "Friends" };
-
+	@Override
+	public void onCreate(Bundle savedInstanceState) {
+		
+		super.onCreate(savedInstanceState);
+		getActivity().setTitle(R.string.invitations);
+	}
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
@@ -88,6 +93,7 @@ public class InvitationBaseFragment extends Fragment implements
 	@Override
 	public void onResume() {
 		actionBar = getActivity().getActionBar();
+		getActivity().setTitle(R.string.invitations);
 		actionBar.removeAllTabs();
 		actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
 		for (String tab_name : tabs) {

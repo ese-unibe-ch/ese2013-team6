@@ -158,7 +158,9 @@ public class InvitedFragment extends Fragment {
 				acceptRequestButton.setOnClickListener(new AnswerInviteListener(invite, true));
 			}
 		}
-
+		private void refresh(){
+			SocialManager.getInstance().loadInvites();
+		}
 		@Override
 		public int getCount() {
 			return invitations.size();

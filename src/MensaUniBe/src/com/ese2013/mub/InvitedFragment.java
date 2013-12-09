@@ -26,7 +26,11 @@ import com.ese2013.mub.social.Invitation;
 import com.ese2013.mub.social.LoginService;
 import com.ese2013.mub.social.SocialManager;
 import com.ese2013.mub.util.Observer;
-
+/**
+ * 
+ * Page of the {@link InvitationBaseFragment}, shows where you are invited.
+ *
+ */
 public class InvitedFragment extends Fragment {
 
 	private ListView invitedList;
@@ -84,7 +88,11 @@ public class InvitedFragment extends Fragment {
 			menuItem.setActionView(null);
 		}
 	}
-
+	/**
+	 * Adapter for the invitedList ListView.
+	 * shows unanswered requests and accepted requests 
+	 * 
+	 */
 	private class InvitedListAdapter extends BaseAdapter implements Observer {
 		private LayoutInflater inflater;
 		private List<Invitation> invitations = new ArrayList<Invitation>();

@@ -29,9 +29,7 @@ import com.ese2013.mub.util.Observer;
 import com.ese2013.mub.util.SharedPrefsHandler;
 
 /**
- * Fragment which shows the result of the criteria defined in the settings.
- * 
- * @author Cédric
+ * Fragment which shows the result of the criteria defined in the settings matched with the menus of today.
  * 
  */
 public class NotificationFragment extends Fragment implements Observer {
@@ -84,6 +82,7 @@ public class NotificationFragment extends Fragment implements Observer {
 	/**
 	 * 
 	 * Adapter for filling the ListView of the NotificationFragment
+	 * Creates a View for a Criteria with menu and mensas
 	 * 
 	 */
 	private class NotificationAdapter extends BaseAdapter implements IAdapter {
@@ -121,6 +120,22 @@ public class NotificationFragment extends Fragment implements Observer {
 
 		private void displayMenu(LinearLayout layout, Criteria criteria,
 				Menu menu) {
+			setUpMenuHeader(layout, menu);
+			for (Mensa mensa : criteria.getMap().get(menu)) {
+				RelativeLayout rel = (RelativeLayout) inflater.inflate(
+						R.layout.daily_section_title_bar, null);
+				TextView text = (TextView) rel.getChildAt(0);
+				text.setOnClickListener(new MensaListFieldListener(mensa, this));
+				text.setText(mensa.getName());
+				setUpMapButton(mensa, rel);
+				ImageButton inviteButton = (ImageButton) rel.getChildAt(3);
+				inviteButton.setOnClickListener(new InvitationButtonListener(
+						mensa, new Day(new Date()), NotificationFragment.this));
+				layout.addView(rel);
+			}
+		}
+
+		private void setUpMenuHeader(LinearLayout layout, Menu menu) {
 			TextView menuHeader = new TextView(getActivity());
 			menuHeader.setText(R.string.givenMenu);
 			layout.addView(menuHeader);
@@ -128,25 +143,22 @@ public class NotificationFragment extends Fragment implements Observer {
 			TextView mensaHeader = new TextView(getActivity());
 			mensaHeader.setText(R.string.servedInMensa);
 			layout.addView(mensaHeader);
-			for (Mensa mensa : criteria.getMap().get(menu)) {
-				RelativeLayout rel = (RelativeLayout) inflater.inflate(
-						R.layout.daily_section_title_bar, null);
-				TextView text = (TextView) rel.getChildAt(0);
-				text.setOnClickListener(new AddressTextListener(mensa, this));
-				text.setText(mensa.getName());
-				ImageButton favoriteButton = (ImageButton) rel.getChildAt(1);
-				favoriteButton.setOnClickListener(new FavoriteButtonListener(
-						mensa, favoriteButton));
-				favoriteButton.setImageResource(mensa.isFavorite()? R.drawable.ic_fav : R.drawable.ic_fav_grey);
-				ImageButton mapButton = (ImageButton) rel.getChildAt(2);
-				mapButton.setImageResource(R.drawable.ic_map);
-				mapButton.setOnClickListener(new MapButtonListener(mensa,
-						NotificationFragment.this));
-				ImageButton inviteButton = (ImageButton) rel.getChildAt(3);
-				inviteButton.setOnClickListener(new InvitationButtonListener(
-						mensa, new Day(new Date()), NotificationFragment.this));
-				layout.addView(rel);
-			}
+		}
+
+		private void setUpMapButton(Mensa mensa, RelativeLayout rel) {
+			ImageButton mapButton = setUpFavoriteButton(mensa, rel);
+			mapButton.setImageResource(R.drawable.ic_map);
+			mapButton.setOnClickListener(new MapButtonListener(mensa,
+					NotificationFragment.this));
+		}
+
+		private ImageButton setUpFavoriteButton(Mensa mensa, RelativeLayout rel) {
+			ImageButton favoriteButton = (ImageButton) rel.getChildAt(1);
+			favoriteButton.setOnClickListener(new FavoriteButtonListener(
+					mensa, favoriteButton));
+			favoriteButton.setImageResource(mensa.isFavorite()? R.drawable.ic_fav : R.drawable.ic_fav_grey);
+			ImageButton mapButton = (ImageButton) rel.getChildAt(2);
+			return mapButton;
 		}
 
 		@Override

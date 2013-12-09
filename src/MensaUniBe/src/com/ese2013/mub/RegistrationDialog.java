@@ -13,7 +13,10 @@ import com.ese2013.mub.social.LoginService;
 import com.ese2013.mub.util.SharedPrefsHandler;
 import com.google.android.gms.auth.GoogleAuthUtil;
 import com.google.android.gms.common.AccountPicker;
-
+/**
+ * Start Dialog for Registering for the InvitationFeature with a Google Account
+ *
+ */
 public class RegistrationDialog {
 	private static final int PICK_ACCOUNT_REQUEST = 1;
 	private Activity parentActivity;

@@ -15,22 +15,33 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-public class InvitationBaseFragment extends Fragment implements ActionBar.TabListener {
+/**
+ * 
+ * Base Fragment for the Invitations and Friends. It displays Fragments in a
+ * ViewPager and makes them accessible through the ActionBar.NAVIGATION_MODE_TABS
+ * 
+ */
+public class InvitationBaseFragment extends Fragment implements
+		ActionBar.TabListener {
 	private ViewPager viewPager;
 	private ActionBar actionBar;
 	private String[] tabs = { "Invites", "Invited", "Friends" };
 
 	@Override
-	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+	public View onCreateView(LayoutInflater inflater, ViewGroup container,
+			Bundle savedInstanceState) {
 
-		View view = inflater.inflate(R.layout.fragment_base_invitations, container, false);
+		View view = inflater.inflate(R.layout.fragment_base_invitations,
+				container, false);
 		viewPager = (ViewPager) view.findViewById(R.id.invitation_pager);
-		viewPager.setAdapter(new InvitationPageAdapter(getChildFragmentManager()));
+		viewPager.setAdapter(new InvitationPageAdapter(
+				getChildFragmentManager()));
 
 		actionBar = getActivity().getActionBar();
 		actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
 		for (String tab_name : tabs) {
-			actionBar.addTab(actionBar.newTab().setText(tab_name).setTabListener(this));
+			actionBar.addTab(actionBar.newTab().setText(tab_name)
+					.setTabListener(this));
 		}
 		viewPager.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
 
@@ -80,7 +91,8 @@ public class InvitationBaseFragment extends Fragment implements ActionBar.TabLis
 		actionBar.removeAllTabs();
 		actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
 		for (String tab_name : tabs) {
-			actionBar.addTab(actionBar.newTab().setText(tab_name).setTabListener(this));
+			actionBar.addTab(actionBar.newTab().setText(tab_name)
+					.setTabListener(this));
 		}
 		super.onResume();
 	}
@@ -92,12 +104,16 @@ public class InvitationBaseFragment extends Fragment implements ActionBar.TabLis
 		onDestroyOptionsMenu();
 		super.onDestroy();
 	}
-
+	
 	public void setPagerToFriends() {
 		viewPager.setCurrentItem(2);
 		actionBar.selectTab(actionBar.getTabAt(2));
 	}
-
+	/**
+	 * 
+	 * Pager adapter for the {@link InvitationBaseFragment} viewPager.
+	 * adds statically the three to be displayed Fragments to the Pager.
+	 */
 	private static class InvitationPageAdapter extends FragmentPagerAdapter {
 		private List<Fragment> fragments = new ArrayList<Fragment>();
 

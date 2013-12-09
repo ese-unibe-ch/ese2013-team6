@@ -229,9 +229,11 @@ public class MensaDataSource {
 	}
 
 	/**
-	 * Returns the week of the stored menus.
+	 * Returns the minimum week of the stored menus.
 	 * 
-	 * @return Number of week of the menus.
+	 * @return Minimum number of week of the menus. This means if there are
+	 *         menus from week 42 and 43 it will return 42.The return value is
+	 *         -1 if the database is empty.
 	 */
 	public int getWeekOfStoredMenus() {
 		Cursor c = database.query(MenusMensasTable.TABLE_MENUS_MENSAS, new String[] { MenusMensasTable.COL_DATE }, null,
@@ -267,7 +269,6 @@ public class MensaDataSource {
 	public void cleanUpAllTables() {
 		database.delete(MensasTable.TABLE_MENSAS, null, null);
 		database.delete(FavoritesTable.TABLE_FAV_MENSAS, null, null);
-		database.delete(MenusTable.TABLE_MENUS, null, null);
-		database.delete(MenusMensasTable.TABLE_MENUS_MENSAS, null, null);
+		deleteMenus();
 	}
 }

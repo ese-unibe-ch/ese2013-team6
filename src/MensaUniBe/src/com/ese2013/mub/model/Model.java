@@ -178,7 +178,7 @@ public class Model extends Observable implements ModelCreationTaskCallback, Tran
 	 * Initiates asynchronous saving of the whole Model, this means saving
 	 * Mensas and their Menus to the local database.
 	 */
-	public void saveModel() {
+	private void saveModel() {
 		ModelSavingTask savingTask = new ModelSavingTask(mensas, dataSource);
 		savingTask.execute();
 	}

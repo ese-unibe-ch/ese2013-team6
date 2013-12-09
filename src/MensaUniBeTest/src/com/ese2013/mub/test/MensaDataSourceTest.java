@@ -102,6 +102,11 @@ public class MensaDataSourceTest extends AndroidTestCase {
 		assertEquals(dataSource.getWeekOfStoredMenus(), plans.get(1).getWeekNumber());
 	}
 
+	public void testGetWeekOfStoredMenusIfDatabaseIsEmpty() {
+		dataSource.cleanUpAllTables();
+		assertEquals(-1, dataSource.getWeekOfStoredMenus());
+	}
+
 	private static ArrayList<Mensa> createMensaList() {
 		ArrayList<Mensa> mensas = new ArrayList<Mensa>();
 		Mensa.MensaBuilder builder = new Mensa.MensaBuilder();

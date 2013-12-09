@@ -14,11 +14,12 @@ import android.widget.TextView;
 import com.ese2013.mub.map.MapButtonListener;
 import com.ese2013.mub.model.Mensa;
 import com.ese2013.mub.model.Model;
+
 /**
- * Creates a Row for the MensaListFragment
- * and sets up buttons for going to the map, make mensa favorite and invites
- * it delegates important handling back to the Fragment
- *
+ * Creates a Row for the MensaListFragment and sets up buttons for going to the
+ * map, make mensa favorite and invites it delegates important handling back to
+ * the Fragment
+ * 
  */
 public class MensaListAdapter extends BaseAdapter implements IAdapter {
 	private Context context;
@@ -48,19 +49,19 @@ public class MensaListAdapter extends BaseAdapter implements IAdapter {
 		return view;
 	}
 
-	public void setUpMapButton(View view, final Mensa mensa) {
+	private void setUpMapButton(View view, final Mensa mensa) {
 		ImageButton mapButton = (ImageButton) view.findViewById(R.id.mensa_list_map_button);
 		mapButton.setImageResource(R.drawable.ic_map);
 		mapButton.setOnClickListener(new MapButtonListener(mensa, target));
 	}
 
-	public void setUpFavoriteButton(View view, Mensa mensa) {
+	private void setUpFavoriteButton(View view, Mensa mensa) {
 		ImageButton favorite = (ImageButton) view.findViewById(R.id.mensa_list_fav_button);
 		favorite.setImageResource((mensa.isFavorite()) ? R.drawable.ic_fav : R.drawable.ic_fav_grey);
 		favorite.setOnClickListener(new FavoriteButtonListener(mensa, favorite));
 	}
 
-	public void setUpAdressTextView(View view, Mensa mensa) {
+	private void setUpAdressTextView(View view, Mensa mensa) {
 		TextView adressView = (TextView) view.findViewById(R.id.mensa_adress_view);
 		adressView.setText(mensa.getName() + "\n" + mensa.getStreet() + "\n" + mensa.getZip());
 		adressView.setOnClickListener(new MensaListFieldListener(mensa, this));

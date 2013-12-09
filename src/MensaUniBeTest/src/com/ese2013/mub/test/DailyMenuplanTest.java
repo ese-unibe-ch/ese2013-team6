@@ -15,14 +15,16 @@ public class DailyMenuplanTest extends TestCase {
 		plan = new DailyMenuplan(new Day(23, 11, 2013));
 	}
 
-	public void testAddMenu() {
+	public void testAddMenuAndContains() {
 		Menu menu = new MenuBuilder().setTitle("some title").setDescription("some desc.").setId("a").build();
 		assertNotNull(plan.getMenus());
 		assertEquals(plan.getMenus().size(), 0);
-
+		assertFalse(plan.contains(menu));
+		
 		plan.add(menu);
 		assertEquals(plan.getMenus().size(), 1);
 		assertEquals(plan.getMenus().get(0), menu);
+		assertTrue(plan.contains(menu));
 	}
 
 	public void testAddMultipleMenus() {
@@ -33,8 +35,8 @@ public class DailyMenuplanTest extends TestCase {
 		plan.add(menu1);
 		plan.add(menu2);
 		assertEquals(plan.getMenus().size(), 2);
-		assertTrue(plan.getMenus().contains(menu1));
-		assertTrue(plan.getMenus().contains(menu2));
+		assertTrue(plan.contains(menu1));
+		assertTrue(plan.contains(menu2));
 	}
 
 	public void testEquals() {

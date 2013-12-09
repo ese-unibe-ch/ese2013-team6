@@ -148,6 +148,11 @@ public class CurrentUser extends User {
 	/**
 	 * Checks if the CurrentUser has already rated a certain Menu.
 	 * 
+	 * Before this method can be used, the method setRatedMenuIds() has to be
+	 * used to set the list of rated menus. (the rated menus are always
+	 * retrieved from the server, thus this method has no use if they were not
+	 * retrieved).
+	 * 
 	 * @param menu
 	 *            Menu to be checked. Must not be null and must have a valid id.
 	 * @return true if the Menu has already been rated, false otherwise.
@@ -158,6 +163,11 @@ public class CurrentUser extends User {
 
 	/**
 	 * Adds a Menu's id to the list of rated Menus.
+	 * 
+	 * Before this method can be used, the method setRatedMenuIds() has to be
+	 * used to set the list of rated menus. (the rated menus are always
+	 * retrieved from the server, thus this method has no use if they were not
+	 * retrieved).
 	 * 
 	 * @param menu
 	 *            Menu to be added. Must not be null and have a valid id.

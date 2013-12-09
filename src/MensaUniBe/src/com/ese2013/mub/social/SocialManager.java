@@ -93,11 +93,11 @@ public class SocialManager extends Observable implements GetSentInvitationsTaskC
 	 *            Parse-Server and not be null.
 	 * @param response
 	 *            Response to send. Must not be null and must not be "UNKNOWN".
-	 * @throws ParseException
-	 *             if the Invitation can't be answered for some reasen (e.g.
-	 *             Server not available).
 	 */
-	public void answerInvitation(Invitation invitation, Response response) throws ParseException {
+	public void answerInvitation(Invitation invitation, Response response) {
+		if (response == Response.DECLINED)
+			receivedInvitations.remove(invitation);
+		invitation.setResponseOf(currentUser(), response);
 		onlineDBHandler.answerInvitation(invitation, response, currentUser());
 		notifyChanges();
 	}

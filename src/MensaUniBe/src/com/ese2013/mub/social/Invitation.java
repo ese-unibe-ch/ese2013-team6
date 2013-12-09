@@ -10,7 +10,7 @@ import java.util.Map;
  * Represents an invitation from one User to a group of Users for a given Mensa
  * and time. Also stores the responses of the addressees.
  */
-public class Invitation {
+public class Invitation implements Comparable<Invitation> {
 	private User from;
 	private Map<User, Response> to;
 	private String id, message;
@@ -118,7 +118,29 @@ public class Invitation {
 		return to.get(user);
 	}
 
+	/**
+	 * Sets the response of a given User.
+	 * 
+	 * @param user
+	 *            User who answers. Must not be null.
+	 * @param response
+	 *            Response of the User. Must not be UNKNOWN or null.
+	 */
+	public void setResponseOf(User user, Response response) {
+		if (getTo().contains(user))
+			to.put(user, response);
+	}
+
 	public static enum Response {
 		UNKNOWN, ACCEPTED, DECLINED;
 	}
+
+	/**
+	 * Sort by the time when the invitation is due.
+	 */
+	@Override
+	public int compareTo(Invitation other) {
+		return getTime().compareTo(other.getTime());
+	}
+
 }

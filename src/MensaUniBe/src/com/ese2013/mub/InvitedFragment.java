@@ -26,10 +26,11 @@ import com.ese2013.mub.social.Invitation;
 import com.ese2013.mub.social.LoginService;
 import com.ese2013.mub.social.SocialManager;
 import com.ese2013.mub.util.Observer;
+
 /**
  * 
  * Page of the {@link InvitationBaseFragment}, shows where you are invited.
- *
+ * 
  */
 public class InvitedFragment extends Fragment {
 
@@ -81,6 +82,7 @@ public class InvitedFragment extends Fragment {
 		super.onDestroy();
 		SocialManager.getInstance().removeObserver(adapter);
 	}
+
 	/**
 	 * changes the progressbar in the ActionBar back to not loading
 	 */
@@ -90,9 +92,10 @@ public class InvitedFragment extends Fragment {
 			menuItem.setActionView(null);
 		}
 	}
+
 	/**
-	 * Adapter for the invitedList ListView.
-	 * shows unanswered requests and accepted requests 
+	 * Adapter for the invitedList ListView. shows unanswered requests and
+	 * accepted requests
 	 * 
 	 */
 	private class InvitedListAdapter extends BaseAdapter implements Observer {
@@ -123,9 +126,9 @@ public class InvitedFragment extends Fragment {
 		private void setUpWhenTextView(View view, Invitation invite) {
 			TextView whenTextView = (TextView) view.findViewById(R.id.when_text_field);
 			Day day = new Day(invite.getTime());
-			
+
 			SimpleDateFormat today = new SimpleDateFormat("HH:mm", Locale.getDefault());
-			SimpleDateFormat notToday = new SimpleDateFormat("dd.MM.yyyy HH:mm",Locale.getDefault());
+			SimpleDateFormat notToday = new SimpleDateFormat("dd.MM.yyyy HH:mm", Locale.getDefault());
 			if (day.equals(Day.today()))
 				whenTextView.setText("today: " + today.format(invite.getTime()));
 			else
@@ -158,9 +161,7 @@ public class InvitedFragment extends Fragment {
 				acceptRequestButton.setOnClickListener(new AnswerInviteListener(invite, true));
 			}
 		}
-		private void refresh(){
-			SocialManager.getInstance().loadInvites();
-		}
+
 		@Override
 		public int getCount() {
 			return invitations.size();
@@ -178,7 +179,7 @@ public class InvitedFragment extends Fragment {
 
 		@Override
 		public void onNotifyChanges(Object... message) {
-			this.invitations = SocialManager.getInstance().getReceivedInvitations();
+			invitations = SocialManager.getInstance().getReceivedInvitations();
 			notifyDataSetChanged();
 			loadingFinished();
 		}

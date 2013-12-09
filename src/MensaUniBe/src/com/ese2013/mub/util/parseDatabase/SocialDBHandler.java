@@ -117,14 +117,14 @@ public class SocialDBHandler {
 		ParseObject friendship = new ParseObject(FriendshipTable.TABLE_NAME);
 		friendship.put(FriendshipTable.USER_1, ParseObject.createWithoutData(UserTable.TABLE_NAME, user1.getId()));
 		friendship.put(FriendshipTable.USER_2, user2);
-		friendship.saveEventually();
+		friendship.saveInBackground();
 	}
 
 	private void addFriendship(User user1, User user2) {
 		ParseObject friendship = new ParseObject(FriendshipTable.TABLE_NAME);
 		friendship.put(FriendshipTable.USER_1, ParseObject.createWithoutData(UserTable.TABLE_NAME, user1.getId()));
 		friendship.put(FriendshipTable.USER_2, ParseObject.createWithoutData(UserTable.TABLE_NAME, user2.getId()));
-		friendship.saveEventually();
+		friendship.saveInBackground();
 	}
 
 	/**
@@ -144,7 +144,7 @@ public class SocialDBHandler {
 			public void done(List<ParseObject> objects, ParseException e) {
 				if (e == null) {
 					for (ParseObject p : objects)
-						p.deleteEventually();
+						p.deleteInBackground();
 				}
 			}
 		});
@@ -225,14 +225,14 @@ public class SocialDBHandler {
 		i.put(InvitationTable.MENSA, invitation.getMensa());
 		i.put(InvitationTable.FROM, ParseObject.createWithoutData(UserTable.TABLE_NAME, invitation.getFrom().getId()));
 		i.put(InvitationTable.TIME, invitation.getTime());
-		i.saveEventually();
+		i.saveInBackground();
 
 		for (User u : invitation.getTo()) {
 			ParseObject p = new ParseObject(InvitationUserTable.TABLE_NAME);
 			p.put(InvitationUserTable.INVITEE, ParseObject.createWithoutData(UserTable.TABLE_NAME, u.getId()));
 			p.put(InvitationUserTable.RESPONSE, invitation.getResponseOf(u).ordinal());
 			p.put(InvitationUserTable.INVITATION, i);
-			p.saveEventually();
+			p.saveInBackground();
 		}
 		sendPushNotfication(invitation);
 	}
@@ -345,7 +345,7 @@ public class SocialDBHandler {
 				ParseObject.createWithoutData(UserTable.TABLE_NAME, request.getFrom().getId()));
 		parseRequest
 				.put(FriendRequestTable.TO, ParseObject.createWithoutData(UserTable.TABLE_NAME, request.getTo().getId()));
-		parseRequest.saveEventually();
+		parseRequest.saveInBackground();
 	}
 
 	/**

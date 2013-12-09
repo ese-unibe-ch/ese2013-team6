@@ -3,6 +3,14 @@ var moment = require('moment');
 
 var tok = '?tok=6112255ca02b3040711015bbbda8d955';
 
+/*
+This code is run directly on the parse server as so called "Cloud Code".
+*/
+
+
+/*
+Deletes the content of the given table.
+*/
 function dropTable(name) {
 	var query = new Parse.Query(name);
 	query.find({
@@ -14,9 +22,12 @@ function dropTable(name) {
 	});
 }
 
+/*
+Downloads the menu plans for the given mensas.
+*/
 function getMenuPlan(mensaList) {
 	console.log("getting menu plans...");
-	
+
 	var promise = Parse.Promise.as();
 	var menuList = new Array();
 	var menusMensas = new Array();
@@ -85,6 +96,9 @@ function getMenuPlan(mensaList) {
 	return promise;
 }
 
+/*
+Update job which is run periodically on the Parse server to update the menus and mensas on the server.
+*/
 Parse.Cloud.job("menuUpdate", function(request, status) {
 		
 	dropTable("Mensa");
@@ -120,6 +134,9 @@ Parse.Cloud.job("menuUpdate", function(request, status) {
 	});
 });
 
+/*
+Executed when a new friendship is saved to ensure uniqueness.
+*/
 Parse.Cloud.beforeSave("Friendship", function(request, response) {
 	var query = new Parse.Query("Friendship");
 	var ct = 0;
@@ -147,6 +164,42 @@ Parse.Cloud.beforeSave("Friendship", function(request, response) {
 	});
 });
 
+
+/*
+Executed when a new friendRequest is saved to ensure uniqueness.
+*/
+Parse.Cloud.beforeSave("FriendRequest", function(request, response) {
+	var query = new Parse.Query("FriendRequest");
+	var ct = 0;
+	var existing;
+	query.find({
+		  success: function(results) {
+			_.each(results, function(result) {
+				if ((request.object.get("From").id == result.get("From").id && 
+					 request.object.get("To").id == result.get("To").id)) {
+
+					result.destroy();
+					ct += 1;
+				}
+			});
+			if (ct == 1) {
+				console.log("Added already existing FriendRequest");
+			}
+			if (ct > 1){
+				console.log("FriendRequest more than once in database, should not happen!");
+			}
+			response.success();
+		  },
+		  error: function(error) {
+			response.error("Saving failed");
+		  }
+	});
+});
+
+/*
+Update job which is run periodically on the Parse server to remove outdated invitations 
+(older than one day).
+*/
 Parse.Cloud.job("invitationsUpdate", function(request, status) {
 	var query = new Parse.Query("Invitation");
 	var now = moment();

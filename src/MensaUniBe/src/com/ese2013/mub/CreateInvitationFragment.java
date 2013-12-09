@@ -35,7 +35,11 @@ import com.ese2013.mub.social.Invitation;
 import com.ese2013.mub.social.LoginService;
 import com.ese2013.mub.social.SocialManager;
 import com.ese2013.mub.social.User;
-
+/**
+ * 
+ * Allows a user to select time, date, friends and a text Message for invites 
+ *
+ */
 public class CreateInvitationFragment extends Fragment implements OnClickListener, OnDateSetListener, OnTimeSetListener {
 	private static final String DATE_KEY = "date";
 	public static final String MENSA_INDEX = "mensaIndex", DATE_FROM_VIEW = "DateFromView";
@@ -212,7 +216,11 @@ public class CreateInvitationFragment extends Fragment implements OnClickListene
 			break;
 		}
 	}
-
+	/**
+	 * 
+	 * Allows user to Select a Date for the Invites
+	 *
+	 */
 	public static class DatePickerFragment extends DialogFragment {
 		private OnDateSetListener listener;
 
@@ -243,7 +251,11 @@ public class CreateInvitationFragment extends Fragment implements OnClickListene
 			return datePickerDialog;
 		}
 	}
-
+	/**
+	 * 
+	 * Allows a User to select a Date for the Invite
+	 *
+	 */
 	public static class TimePickerFragment extends DialogFragment {
 		private OnTimeSetListener listener;
 
@@ -269,7 +281,11 @@ public class CreateInvitationFragment extends Fragment implements OnClickListene
 			return new TimePickerDialog(getActivity(), listener, hours, minutes, true);
 		}
 	}
-
+	/**
+	 * 
+	 * DialogeField with checkBoxes for adding one or more friends to the Invite
+	 *
+	 */
 	public static class RecipientsPickerFragment extends DialogFragment implements
 			DialogInterface.OnMultiChoiceClickListener {
 		private OnClickListener listener;

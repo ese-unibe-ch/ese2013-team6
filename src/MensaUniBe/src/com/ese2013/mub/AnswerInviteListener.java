@@ -8,7 +8,7 @@ import com.ese2013.mub.social.SocialManager;
 import com.parse.ParseException;
 /**
  * Listener for the Invite answerButtons,
- * works for accept and decline requests
+ * Works for accepting and declining InvitationRequests
  *
  */
 public class AnswerInviteListener implements OnClickListener {

@@ -20,6 +20,15 @@ import com.ese2013.mub.util.Observer;
 import com.ese2013.mub.util.SharedPrefsHandler;
 import com.ese2013.mub.util.database.MensaDataSource;
 
+/**
+ * 
+ * Service which runs in the same thread as the {@link DrawerMenuActivity}.
+ * Matches the in the Application's Settings defined criteria with either the
+ * list of all mensas or the favorites only, which needs also be defined in the
+ * Appliaction's Settings as well. The Service is only to be called if it is
+ * defined so in the Application's Settings
+ * 
+ */
 public class NotificationService extends Service implements Observer {
 
 	public static final String START_FROM_N = "com.ese2013.mub.service.startFromN";
@@ -37,6 +46,7 @@ public class NotificationService extends Service implements Observer {
 		model.addObserver(this);
 		return START_STICKY;
 	}
+
 	/**
 	 * Builds a Notification and displays it on the Device
 	 */
@@ -91,8 +101,10 @@ public class NotificationService extends Service implements Observer {
 	public List<Criteria> getCriteraData() {
 		return criteriaList;
 	}
+
 	/**
 	 * Loads the necessary Data and gives them to the CriteriaMatcher
+	 * 
 	 * @return the list of Criteria matched by the CriteriaMatcher
 	 */
 	private List<Criteria> createCriteriaList() {

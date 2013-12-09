@@ -5,7 +5,7 @@ import android.view.View;
 import android.view.View.OnClickListener;
 /**
  * 
- * Listener wich sets the visability 
+ * Listener which sets the viability of a view from visible to gone and vice versa
  *
  */
 public class ToggleListener implements OnClickListener {

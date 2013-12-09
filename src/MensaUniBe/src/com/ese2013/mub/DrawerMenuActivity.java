@@ -314,6 +314,14 @@ public class DrawerMenuActivity extends FragmentActivity implements LoginTaskCal
 		return true;
 	}
 
+	/**
+	 * goes to weeklyplan view and sets the pager to the mensa on this position
+	 * The position in the list of the mensa in the model must be consistent at
+	 * runtime.
+	 * 
+	 * @param position
+	 *            position of the fragment to go to
+	 */
 	public void launchByMensaAtGivenPage(int position) {
 		HomeFragment frag = new HomeFragment();
 		Bundle args = new Bundle();
@@ -327,6 +335,10 @@ public class DrawerMenuActivity extends FragmentActivity implements LoginTaskCal
 		setDisplayedFragment(frag, true);
 	}
 
+	/**
+	 * Restart the HomeFragment on the FavoriteView. 
+	 * 
+	 */
 	public void refreshHomeActivity() {
 		HomeFragment frag = new HomeFragment();
 		frag.setShowDailyPlans(true);
@@ -336,6 +348,12 @@ public class DrawerMenuActivity extends FragmentActivity implements LoginTaskCal
 		setDisplayedFragment(frag, true);
 	}
 
+	/**
+	 * Start the map and selects given mensa
+	 * 
+	 * @param mensa
+	 *            mensa to be selected
+	 */
 	public void displayMapAtMensa(Mensa mensa) {
 		MapFragment mapFragment = new MapFragment();
 		Bundle args = new Bundle();
@@ -352,7 +370,11 @@ public class DrawerMenuActivity extends FragmentActivity implements LoginTaskCal
 			outState.putInt(POSITION, selectedPosition);
 		super.onSaveInstanceState(outState);
 	}
-
+	/**
+	 * creates an Invitation and gives them as arguments to the CreationFragment
+	 * @param mensa argument for the CreateInvitationFragment
+	 * @param day argument for the CreateInvitationFragment
+	 */
 	public void createInvitation(Mensa mensa, Day day) {
 		CreateInvitationFragment frag = new CreateInvitationFragment();
 		Bundle args = new Bundle();
@@ -363,7 +385,9 @@ public class DrawerMenuActivity extends FragmentActivity implements LoginTaskCal
 		selectItem(NOTHING_INDEX, false);
 		setDisplayedFragment(frag, true);
 	}
-
+	/**
+	 * creates an CreationInvitationFragment without giving arguments to it
+	 */
 	public void createInvitation() {
 		CreateInvitationFragment frag = new CreateInvitationFragment();
 

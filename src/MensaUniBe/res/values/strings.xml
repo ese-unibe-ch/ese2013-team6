@@ -91,5 +91,11 @@
 	<string name="settings_registration_button">Register</string>
 	<string name="refresh_content">Refresh content</string>
 	<string name="toast_refreshing_msg">Refreshing...</string>
+	<string name="invitations">Invitations</string>
+	<string name="mensa_list">Mensa List</string>
+	<string name="map">Map</string>
+	<string name="notification">Notifications</string>
+	<string name="settings">Settings</string>
+	<string name="invite">New Invite</string>
 	
 </resources>

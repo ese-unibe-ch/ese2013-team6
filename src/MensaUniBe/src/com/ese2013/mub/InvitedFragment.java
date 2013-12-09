@@ -1,6 +1,6 @@
 package com.ese2013.mub;
 
-import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
@@ -81,7 +81,9 @@ public class InvitedFragment extends Fragment {
 		super.onDestroy();
 		SocialManager.getInstance().removeObserver(adapter);
 	}
-
+	/**
+	 * changes the progressbar in the ActionBar back to not loading
+	 */
 	private void loadingFinished() {
 		if (menuItem != null) {
 			menuItem.collapseActionView();
@@ -121,12 +123,13 @@ public class InvitedFragment extends Fragment {
 		private void setUpWhenTextView(View view, Invitation invite) {
 			TextView whenTextView = (TextView) view.findViewById(R.id.when_text_field);
 			Day day = new Day(invite.getTime());
-			DateFormat dateFormat = DateFormat.getDateInstance(DateFormat.SHORT, Locale.getDefault());
-			DateFormat dateFormat2 = DateFormat.getDateInstance(DateFormat.MEDIUM, Locale.getDefault());
+			
+			SimpleDateFormat today = new SimpleDateFormat("HH:mm", Locale.getDefault());
+			SimpleDateFormat notToday = new SimpleDateFormat("dd.MM.yyyy HH:mm",Locale.getDefault());
 			if (day.equals(Day.today()))
-				whenTextView.setText(dateFormat.format(invite.getTime()));
+				whenTextView.setText("today: " + today.format(invite.getTime()));
 			else
-				whenTextView.setText(dateFormat2.format(invite.getTime()));
+				whenTextView.setText(notToday.format(invite.getTime()));
 		}
 
 		private void setUpFromTextView(View view, Invitation invite) {
@@ -155,7 +158,9 @@ public class InvitedFragment extends Fragment {
 				acceptRequestButton.setOnClickListener(new AnswerInviteListener(invite, true));
 			}
 		}
-
+		private void refresh(){
+			SocialManager.getInstance().loadInvites();
+		}
 		@Override
 		public int getCount() {
 			return invitations.size();

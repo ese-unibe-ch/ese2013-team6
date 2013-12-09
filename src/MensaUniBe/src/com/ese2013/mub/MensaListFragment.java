@@ -17,7 +17,12 @@ import com.ese2013.mub.model.Mensa;
 public class MensaListFragment extends Fragment {
 	private MensaListAdapter adapter;
 	private ListView mensaListView;
+	@Override
+	public void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+		getActivity().setTitle(R.string.mensa_list);
 
+	}
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 		adapter = new MensaListAdapter(getActivity(), android.R.layout.simple_list_item_1, this);
@@ -50,6 +55,7 @@ public class MensaListFragment extends Fragment {
 
 	@Override
 	public void onResume() {
+		getActivity().setTitle(R.string.mensa_list);
 		super.onResume();
 	}
 

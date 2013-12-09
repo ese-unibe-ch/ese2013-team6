@@ -40,6 +40,7 @@ public class NotificationFragment extends Fragment implements Observer {
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		Model.getInstance().addObserver(this);
+		getActivity().setTitle(R.string.notification);
 	}
 
 	@Override
@@ -63,6 +64,7 @@ public class NotificationFragment extends Fragment implements Observer {
 	@Override
 	public void onResume() {
 		super.onResume();
+		getActivity().setTitle(R.string.notification);
 	}
 
 	@Override

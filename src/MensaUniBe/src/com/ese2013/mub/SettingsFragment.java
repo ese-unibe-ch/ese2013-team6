@@ -42,6 +42,7 @@ public class SettingsFragment extends Fragment {
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		getActivity().setTitle(R.string.settings);
 
 	}
 	@Override
@@ -165,5 +166,10 @@ public class SettingsFragment extends Fragment {
 						}
 					}).setView(view).show();
 		}
+	}
+	@Override
+	public void onResume() {
+		super.onResume();
+		getActivity().setTitle(R.string.settings);
 	}
 }

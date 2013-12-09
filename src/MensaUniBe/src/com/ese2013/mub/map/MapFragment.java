@@ -62,7 +62,11 @@ public class MapFragment extends Fragment {
 	private Spinner locationSpinner;
 	private Model model;
 	private String travelMode = TRAVEL_MODE_WALKING;
-
+	@Override
+	public void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+		getActivity().setTitle(R.string.map);
+	}
 	/**
 	 * Sets up the map view, listeners and default values.
 	 */
@@ -388,5 +392,10 @@ public class MapFragment extends Fragment {
 		Fragment fragment = fm.findFragmentById(R.id.map);
 		if (fragment != null)
 			fm.beginTransaction().remove(fragment).commitAllowingStateLoss();
+	}
+	@Override
+	public void onResume() {
+		super.onResume();
+		getActivity().setTitle(R.string.map);
 	}
 }

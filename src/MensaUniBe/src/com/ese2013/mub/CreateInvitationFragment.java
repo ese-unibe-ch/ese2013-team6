@@ -46,6 +46,11 @@ public class CreateInvitationFragment extends Fragment implements OnClickListene
 	private int mensaIndex;
 
 	@Override
+	public void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+		getActivity().setTitle(R.string.invite);
+	}
+	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 		View view = inflater.inflate(R.layout.fragment_create_invitation, container, false);
 		if (getArguments() != null) {

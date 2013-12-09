@@ -66,7 +66,7 @@ function getMenuPlan(mensaList) {
 							if (menuMap[desc]) {
 							 menu = menuMap[desc];
 							} else {
-								menu = new Menu
+								menu = new Menu();
 								menu.set("title", menuJson.title);
 								menu.set("description", desc);
 								menu.set("ratingSum", 0);

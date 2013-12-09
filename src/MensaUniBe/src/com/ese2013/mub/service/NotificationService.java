@@ -99,7 +99,7 @@ public class NotificationService extends Service implements Observer {
 		SharedPrefsHandler pref = new SharedPrefsHandler(this);
 
 		Set<String> criteria = pref.getNotificationListItems();
-		boolean allMensas = pref.getNotificationMensas() == 0 ? true : false;
+		boolean allMensas = pref.getDoNotificationsForAllMensas();
 		CriteriaMatcher criteriaMatcher = new CriteriaMatcher();
 		List<Mensa> mensas = allMensas ? Model.getInstance().getMensas() : Model.getInstance().getFavoriteMensas();
 

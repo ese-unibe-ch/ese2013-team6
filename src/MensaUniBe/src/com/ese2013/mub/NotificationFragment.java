@@ -189,8 +189,7 @@ public class NotificationFragment extends Fragment implements Observer {
 					NotificationFragment.this.getActivity());
 
 			Set<String> criteria = pref.getNotificationListItems();
-			boolean allMensas = pref.getNotificationMensas() == 0 ? true
-					: false;
+			boolean allMensas = pref.getDoNotificationsForAllMensas();
 
 			List<Mensa> mensas = allMensas ? Model.getInstance().getMensas()
 					: Model.getInstance().getFavoriteMensas();

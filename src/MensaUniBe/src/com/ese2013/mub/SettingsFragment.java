@@ -45,6 +45,7 @@ public class SettingsFragment extends Fragment {
 		getActivity().setTitle(R.string.settings);
 
 	}
+
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 		setHasOptionsMenu(true);
@@ -57,7 +58,7 @@ public class SettingsFragment extends Fragment {
 		Switch notificationSwitch = (Switch) view.findViewById(R.id.notification_switch);
 		notificationSwitch.setChecked(prefs.getDoNotification());
 		Spinner notificationSpinner = (Spinner) view.findViewById(R.id.notification_spinner);
-		notificationSpinner.setSelection(prefs.getNotificationMensas());
+		notificationSpinner.setSelection(prefs.getDoNotificationsForAllMensas() ? 0 : 1);
 
 		addReregisterButton(view);
 		setUpOnChangeListener(languageSwitch);
@@ -72,7 +73,7 @@ public class SettingsFragment extends Fragment {
 
 	@Override
 	public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-		for (int i = 0; i< menu.size(); i++)
+		for (int i = 0; i < menu.size(); i++)
 			menu.getItem(i).setVisible(false);
 	}
 
@@ -88,11 +89,11 @@ public class SettingsFragment extends Fragment {
 		registerTitle.setVisibility(View.VISIBLE);
 		button.setVisibility(View.VISIBLE);
 		line.setVisibility(View.VISIBLE);
-		if (LoginService.isLoggedIn()){
+		if (LoginService.isLoggedIn()) {
 			registerTitle.setVisibility(View.GONE);
 			button.setVisibility(View.GONE);
 			line.setVisibility(View.GONE);
-		}else{
+		} else {
 			button.setOnClickListener(new OnClickListener() {
 				@Override
 				public void onClick(View v) {
@@ -102,11 +103,12 @@ public class SettingsFragment extends Fragment {
 				}
 			});
 		}
-		
+
 	}
 
 	/**
-	 * Starts translation if the @param languageSwitch is checked and if it is not already available.
+	 * Starts translation if the @param languageSwitch is checked and if it is
+	 * not already available.
 	 * 
 	 */
 	private void setUpOnChangeListener(Switch languageSwitch) {
@@ -115,13 +117,10 @@ public class SettingsFragment extends Fragment {
 				if (isChecked) {
 					Model.getInstance().getMenuManager().setTranslationsEnabled(true);
 					if (!Model.getInstance().getMenuManager().translationsAvailable()) {
-						TranslationTask transTask = new TranslationTask(Model
-								.getInstance().getMenuManager(),
+						TranslationTask transTask = new TranslationTask(Model.getInstance().getMenuManager(),
 								Language.ENGLISH, Model.getInstance());
 						transTask.execute();
-						Toast.makeText(getActivity(),
-								R.string.translation_started,
-								Toast.LENGTH_SHORT).show();
+						Toast.makeText(getActivity(), R.string.translation_started, Toast.LENGTH_SHORT).show();
 					}
 				} else {
 					Model.getInstance().getMenuManager().setTranslationsEnabled(false);
@@ -135,7 +134,9 @@ public class SettingsFragment extends Fragment {
 		super.onPause();
 		prefs.setDoTranslation(((Switch) getView().findViewById(R.id.language_switch)).isChecked());
 		prefs.setDoNotification(((Switch) getView().findViewById(R.id.notification_switch)).isChecked());
-		prefs.setNotificationMensas(((Spinner) getView().findViewById(R.id.notification_spinner)).getSelectedItemPosition());
+		boolean notificationsForAllMensas = ((Spinner) getView().findViewById(R.id.notification_spinner))
+				.getSelectedItemPosition() == 0;
+		prefs.setDoNotificationsForAllMensas(notificationsForAllMensas);
 		prefs.setNotificationListItems(new TreeSet<String>(notificationListItems));
 	}
 
@@ -167,6 +168,7 @@ public class SettingsFragment extends Fragment {
 					}).setView(view).show();
 		}
 	}
+
 	@Override
 	public void onResume() {
 		super.onResume();

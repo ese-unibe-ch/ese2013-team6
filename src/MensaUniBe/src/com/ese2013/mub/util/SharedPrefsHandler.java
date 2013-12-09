@@ -5,97 +5,86 @@ import java.util.TreeSet;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
 
 /**
  * Encapsulates access to shared preferences. Needs a context to get the shared
  * preferences of the application.
  */
 public class SharedPrefsHandler {
-	private static final String FIRST_TIME = "first_time", USERMAIL = "usermail", NOTIFICATION_FOOD = "notificationFood",
-			NOTIFICATION_MENSAS = "notificationMensas", DO_NOTIFICATION = "doNotification", LANGUAGE = "language",
+	private static final String FIRST_TIME = "first_time", USERMAIL = "usermail",
+			NOTIFICATIONS_FOR_ALL_MENSAS = "notificationsForAllMensas", DO_NOTIFICATION = "doNotification",
 			DO_TRANSLATION = "doTranslation", TRANSLATION_AVAIL = "translationAvail", CRITERIA_SET = "citeriaSet";
 
+	public static final String PREFS_FILE_NAME = "MUBPrefsFile";
 	private Context context;
 
 	public SharedPrefsHandler(Context context) {
 		this.context = context;
 	}
 
-	private static SharedPreferences getPrefs(Context context) {
-		return context.getSharedPreferences("MUBPrefsFile", Context.MODE_PRIVATE);
+	private SharedPreferences getPrefs() {
+		return context.getSharedPreferences(PREFS_FILE_NAME, Context.MODE_PRIVATE);
+	}
+
+	private Editor getEditPrefs() {
+		return getPrefs().edit();
 	}
 
 	public boolean getDoTranslation() {
-		return getPrefs(context).getBoolean(DO_TRANSLATION, false);
-	}
-
-	public boolean getTranslationAvialable() {
-		return getPrefs(context).getBoolean(TRANSLATION_AVAIL, false);
-	}
-
-	public int getLanguage() {
-		return getPrefs(context).getInt(LANGUAGE, 0);
-	}
-
-	public boolean getDoNotification() {
-		return getPrefs(context).getBoolean(DO_NOTIFICATION, false);
-	}
-
-	public int getNotificationMensas() {
-		return getPrefs(context).getInt(NOTIFICATION_MENSAS, 0);
-	}
-
-	public String getNotificationFood() {
-		return getPrefs(context).getString(NOTIFICATION_FOOD, "");
-	}
-
-	public Set<String> getNotificationListItems() {
-		return getPrefs(context).getStringSet(CRITERIA_SET, new TreeSet<String>());
+		return getPrefs().getBoolean(DO_TRANSLATION, false);
 	}
 
 	public void setDoTranslation(boolean doTranslation) {
-		getPrefs(context).edit().putBoolean(DO_TRANSLATION, doTranslation).commit();
+		getEditPrefs().putBoolean(DO_TRANSLATION, doTranslation).commit();
+	}
+
+	public boolean getTranslationAvialable() {
+		return getPrefs().getBoolean(TRANSLATION_AVAIL, false);
 	}
 
 	public void setTranslationAvailable(boolean translationAvailable) {
-		getPrefs(context).edit().putBoolean(TRANSLATION_AVAIL, translationAvailable).commit();
+		getEditPrefs().putBoolean(TRANSLATION_AVAIL, translationAvailable).commit();
 	}
 
-	public void setLanguage(int language) {
-		getPrefs(context).edit().putInt(LANGUAGE, language).commit();
+	public boolean getDoNotification() {
+		return getPrefs().getBoolean(DO_NOTIFICATION, false);
 	}
 
 	public void setDoNotification(boolean doNotification) {
-		getPrefs(context).edit().putBoolean(DO_NOTIFICATION, doNotification).commit();
+		getEditPrefs().putBoolean(DO_NOTIFICATION, doNotification).commit();
 	}
 
-	public void setNotificationMensas(int notificationMensas) {
-		getPrefs(context).edit().putInt(NOTIFICATION_MENSAS, notificationMensas).commit();
-	}
-
-	public void setNotificationFood(String notificationFood) {
-		getPrefs(context).edit().putString(NOTIFICATION_FOOD, notificationFood).commit();
+	public Set<String> getNotificationListItems() {
+		return getPrefs().getStringSet(CRITERIA_SET, new TreeSet<String>());
 	}
 
 	public void setNotificationListItems(Set<String> notificationListItems) {
-		getPrefs(context).edit().putStringSet(CRITERIA_SET, notificationListItems).commit();
+		getEditPrefs().putStringSet(CRITERIA_SET, notificationListItems).commit();
+	}
 
+	public boolean getDoNotificationsForAllMensas() {
+		return getPrefs().getBoolean(NOTIFICATIONS_FOR_ALL_MENSAS, true);
+	}
+
+	public void setDoNotificationsForAllMensas(boolean notificationsForAllMensas) {
+		getEditPrefs().putBoolean(NOTIFICATIONS_FOR_ALL_MENSAS, notificationsForAllMensas).commit();
 	}
 
 	public String getUserEmail() {
-		return getPrefs(context).getString(USERMAIL, null);
+		return getPrefs().getString(USERMAIL, null);
 	}
 
 	public void setUserEmail(String usermail) {
-		getPrefs(context).edit().putString(USERMAIL, usermail).commit();
+		getEditPrefs().putString(USERMAIL, usermail).commit();
 	}
 
 	public boolean isFirstTime() {
-		return getPrefs(context).getBoolean(FIRST_TIME, true);
+		return getPrefs().getBoolean(FIRST_TIME, true);
 	}
 
 	public void setIsFirstTime(boolean firstTime) {
-		getPrefs(context).edit().putBoolean(FIRST_TIME, firstTime).commit();
+		getEditPrefs().putBoolean(FIRST_TIME, firstTime).commit();
 	}
 
 	public boolean isUserRegistred() {

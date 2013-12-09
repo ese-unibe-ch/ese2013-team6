@@ -74,7 +74,7 @@ public class HomeFragment extends Fragment implements Observer {
 		this.showOnlyFavorites = showOnlyFavorites;
 	}
 
-	public void handleGivenArguments() {
+	private void handleGivenArguments() {
 		if (getArguments() != null) {
 			Bundle bundle = getArguments();
 			int pos = bundle.getInt(POSITION, 0);
@@ -86,7 +86,7 @@ public class HomeFragment extends Fragment implements Observer {
 	 * A {@link FragmentPagerAdapter} that returns a fragment corresponding to
 	 * one of the sections/tabs/pages.
 	 */
-	public class MensaSectionsPagerAdapter extends FragmentStatePagerAdapter {
+	private class MensaSectionsPagerAdapter extends FragmentStatePagerAdapter {
 		private List<Mensa> mensas = Model.getInstance().getMensas();
 
 		public MensaSectionsPagerAdapter(FragmentManager fm) {
@@ -124,7 +124,7 @@ public class HomeFragment extends Fragment implements Observer {
 
 	}
 
-	public class MenuSectionsPagerAdapter extends FragmentStatePagerAdapter {
+	private class MenuSectionsPagerAdapter extends FragmentStatePagerAdapter {
 		private ArrayList<Day> days;
 		private Model model = Model.getInstance();
 
@@ -133,7 +133,7 @@ public class HomeFragment extends Fragment implements Observer {
 			if (model.noMensasLoaded())
 				days = new ArrayList<Day>();
 			else
-				days = new ArrayList<Day>(model.getMensas().get(0).getMenuplan().getDays());
+				days = getDays();
 		}
 
 		/**
@@ -162,8 +162,12 @@ public class HomeFragment extends Fragment implements Observer {
 		@Override
 		public void notifyDataSetChanged() {
 			if (!model.noMensasLoaded())
-				days = new ArrayList<Day>(model.getMensas().get(0).getMenuplan().getDays());
+				days = getDays();
 			super.notifyDataSetChanged();
+		}
+
+		private ArrayList<Day> getDays() {
+			return new ArrayList<Day>(model.getMensas().get(0).getMenuplan().getDays());
 		}
 	}
 

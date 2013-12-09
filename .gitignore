@@ -1,6 +1,8 @@
 #ignore some android specific files
 bin/
 gen/
+ucdetector_reports/
+src/MensaUniBe/reports
 
 
 # Java compiled code

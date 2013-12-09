@@ -48,7 +48,7 @@ public class SettingsListAdapter extends BaseAdapter {
 		return rowView;
 	}
 
-	public boolean delete(String element) {
+	private boolean delete(String element) {
 		return itemsArrayList.remove(element);
 	}
 

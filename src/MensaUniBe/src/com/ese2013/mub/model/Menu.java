@@ -132,7 +132,7 @@ public class Menu {
 	 * attributes.
 	 */
 	public static class MenuBuilder {
-		public int ratingSum, ratingCount;
+		private int ratingSum, ratingCount;
 		private static final String INVALID_ID = "INVALID", DEFAULT = "N//A";
 		private String id = INVALID_ID, title = DEFAULT, description = DEFAULT, translTitle = "", translDesc = "";
 

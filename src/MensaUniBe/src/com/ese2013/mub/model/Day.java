@@ -27,7 +27,7 @@ public class Day implements Comparable<Day> {
 	}
 
 	/**
-	 * Creates a Day given day, month and year as int.
+	 * Creates a Day given day, month and year as int. (only used in tests).
 	 * 
 	 * @param day
 	 *            int containing the number of the day in the month. Must be

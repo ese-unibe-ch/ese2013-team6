@@ -19,7 +19,7 @@ import com.ese2013.mub.util.database.tables.MenusTable;
  */
 public class SqlDatabaseHelper extends SQLiteOpenHelper {
 
-	public static final String DATABASE_NAME = "mensas.db";
+	private static final String DATABASE_NAME = "mensas.db";
 	private static final int DATABASE_VERSION = 19;
 
 	private List<AbstractTable> tables = new ArrayList<AbstractTable>(4);

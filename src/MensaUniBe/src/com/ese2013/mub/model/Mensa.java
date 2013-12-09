@@ -144,7 +144,7 @@ public class Mensa implements Comparable<Mensa> {
 	 * a Mensa object.
 	 */
 	public static class MensaBuilder {
-		public boolean isFavorite = false;
+		private boolean isFavorite = false;
 		private static final String DEFAULT = "N//A";
 		private String name = DEFAULT, street = DEFAULT, zip = DEFAULT;
 		private double longitude, latitude;

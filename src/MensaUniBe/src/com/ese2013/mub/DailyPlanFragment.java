@@ -119,13 +119,13 @@ public class DailyPlanFragment extends Fragment {
 		}
 	}
 
-	public void setUpFavoriteButton(RelativeLayout rel, Mensa mensa) {
+	private void setUpFavoriteButton(RelativeLayout rel, Mensa mensa) {
 		ImageButton favorite = (ImageButton) rel.getChildAt(1);
 		favorite.setImageResource((mensa.isFavorite()) ? R.drawable.ic_fav : R.drawable.ic_fav_grey);
 		favorite.setOnClickListener(new FavoriteButtonListener(mensa, favorite, this, showOnlyFavorites));
 	}
 
-	public void setUpMapButton(RelativeLayout rel, Mensa mensa) {
+	private void setUpMapButton(RelativeLayout rel, Mensa mensa) {
 		ImageButton map = (ImageButton) rel.getChildAt(2);
 		map.setOnClickListener(new MapButtonListener(mensa, this));
 		map.setImageResource(R.drawable.ic_map);

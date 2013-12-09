@@ -87,7 +87,7 @@ public class NotificationService extends Service implements Observer {
 		return criteriaList;
 	}
 
-	public List<Criteria> createCriteriaList() {
+	private List<Criteria> createCriteriaList() {
 		SharedPrefsHandler pref = new SharedPrefsHandler(this);
 
 		Set<String> criteria = pref.getNotificationListItems();

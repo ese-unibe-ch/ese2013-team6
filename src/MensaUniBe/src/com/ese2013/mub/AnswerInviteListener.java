@@ -6,7 +6,11 @@ import android.view.View.OnClickListener;
 import com.ese2013.mub.social.Invitation;
 import com.ese2013.mub.social.SocialManager;
 import com.parse.ParseException;
-
+/**
+ * Listener for the Invite answerButtons,
+ * works for accept and decline requests
+ *
+ */
 public class AnswerInviteListener implements OnClickListener {
 	private Invitation invite;
 	private boolean isAccepted;

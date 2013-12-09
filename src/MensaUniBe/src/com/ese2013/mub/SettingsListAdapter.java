@@ -10,7 +10,11 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageButton;
 import android.widget.TextView;
-
+/**
+ * 
+ * Adpater for the NotifiactionList in the SettingsFragment
+ *
+ */
 public class SettingsListAdapter extends BaseAdapter {
 
 	private final Context context;

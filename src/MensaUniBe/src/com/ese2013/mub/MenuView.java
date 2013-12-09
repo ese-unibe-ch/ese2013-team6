@@ -20,7 +20,11 @@ import com.ese2013.mub.social.CurrentUser;
 import com.ese2013.mub.social.LoginService;
 import com.ese2013.mub.util.ViewUtil;
 import com.ese2013.mub.util.parseDatabase.MensaDBHandler;
-
+/**
+ * Is the View for a single Menu
+ * it contains a colored header, a description and a RatingBar, 
+ *
+ */
 public class MenuView extends LinearLayout {
 	private Menu menu;
 	private Day day;

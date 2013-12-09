@@ -15,6 +15,12 @@ import com.ese2013.mub.map.MapButtonListener;
 import com.ese2013.mub.model.Mensa;
 import com.ese2013.mub.model.Model;
 
+/**
+ * Creates a Row for the MensaListFragment and sets up buttons for going to the
+ * map, make mensa favorite and invites it delegates important handling back to
+ * the Fragment
+ * 
+ */
 public class MensaListAdapter extends BaseAdapter implements IAdapter {
 	private Context context;
 	private List<Mensa> menus = new ArrayList<Mensa>();
@@ -58,7 +64,7 @@ public class MensaListAdapter extends BaseAdapter implements IAdapter {
 	private void setUpAdressTextView(View view, Mensa mensa) {
 		TextView adressView = (TextView) view.findViewById(R.id.mensa_adress_view);
 		adressView.setText(mensa.getName() + "\n" + mensa.getStreet() + "\n" + mensa.getZip());
-		adressView.setOnClickListener(new AddressTextListener(mensa, this));
+		adressView.setOnClickListener(new MensaListFieldListener(mensa, this));
 	}
 
 	@Override

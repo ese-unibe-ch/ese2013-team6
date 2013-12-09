@@ -15,7 +15,12 @@ import android.widget.TextView;
 
 import com.ese2013.mub.social.Invitation;
 import com.ese2013.mub.social.User;
-
+/**
+ * 
+ * Listens to the ShowInvided Button in the {@link InvitesFragment}
+ * and shows them in a Dialog with the Responses
+ *
+ */
 public class ShowInvitedListener implements OnClickListener {
 	private Invitation invite;
 	private Context context;
@@ -30,7 +35,11 @@ public class ShowInvitedListener implements OnClickListener {
 		new AlertDialog.Builder(context).setTitle("Responses").setAdapter(new ResponsesListAdapter(), null)
 				.setPositiveButton(android.R.string.ok, null).show();
 	}
-
+	/**
+	 * creates a row for the AlarmDialog in the {@link ShowInvitedListener}.
+	 * It shows the name of the Invited and his/her response
+	 *
+	 */
 	private class ResponsesListAdapter extends BaseAdapter {
 		private List<User> invitedFriends = new ArrayList<User>();
 		private LayoutInflater inflater;

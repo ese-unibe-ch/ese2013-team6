@@ -40,7 +40,13 @@ public class SettingsFragment extends Fragment {
 	private Button editCriteriaButton;
 
 	@Override
+	public void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+
+	}
+	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+		setHasOptionsMenu(true);
 		prefs = new SharedPrefsHandler(getActivity().getApplicationContext());
 		View view = inflater.inflate(R.layout.fragment_settings, container, false);
 

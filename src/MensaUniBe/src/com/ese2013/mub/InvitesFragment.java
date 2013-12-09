@@ -27,10 +27,15 @@ import com.ese2013.mub.social.Invitation;
 import com.ese2013.mub.social.LoginService;
 import com.ese2013.mub.social.SocialManager;
 import com.ese2013.mub.util.Observer;
-
+/**
+ * 
+ * Page of the {@link InvitationBaseFragment}.
+ * Shows a List of all your invites.
+ *
+ */
 public class InvitesFragment extends Fragment {
 
-	private ListView invitedList;
+	private ListView invitesList;
 	private InvitesListAdapter adapter;
 	private MenuItem menuItem;
 
@@ -38,7 +43,7 @@ public class InvitesFragment extends Fragment {
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 		adapter = new InvitesListAdapter();
 		View view = inflater.inflate(R.layout.fragment_invites, null);
-		invitedList = (ListView) view.findViewById(R.id.invites_list);
+		invitesList = (ListView) view.findViewById(R.id.invites_list);
 		TextView showMessage = (TextView) view.findViewById(R.id.show_message);
 
 		if (LoginService.isLoggedIn())
@@ -46,15 +51,20 @@ public class InvitesFragment extends Fragment {
 		else
 			showMessage.setText(R.string.not_loged_in);
 
-		invitedList.setEmptyView(showMessage);
-		invitedList.setAdapter(adapter);
+		invitesList.setEmptyView(showMessage);
+		invitesList.setAdapter(adapter);
 		setHasOptionsMenu(true);
 		return view;
 	}
-
+	@Override
+	public void onPause() {
+		super.onPause();
+		onDestroyOptionsMenu();
+	}
 	@Override
 	public void onDestroy() {
 		super.onDestroy();
+		onDestroyOptionsMenu();
 		SocialManager.getInstance().removeObserver(adapter);
 	}
 
@@ -88,7 +98,11 @@ public class InvitesFragment extends Fragment {
 			menuItem.setActionView(null);
 		}
 	}
-
+	/**
+	 * Adapter for the {@link InvitesListAdapter} ListView.
+	 * Creates rows in witch you can check the state of your invite
+	 *
+	 */
 	private class InvitesListAdapter extends BaseAdapter implements Observer {
 
 		private LayoutInflater inflater;

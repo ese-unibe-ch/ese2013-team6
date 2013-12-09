@@ -23,6 +23,11 @@ import com.ese2013.mub.model.Menu;
 import com.ese2013.mub.model.Model;
 import com.ese2013.mub.social.LoginService;
 
+/**
+ * 
+ * Part of the apps HomeFragment, shows all mensas or favorites for a day
+ * 
+ */
 public class DailyPlanFragment extends Fragment {
 	private Day day;
 	private boolean showOnlyFavorites;
@@ -38,7 +43,19 @@ public class DailyPlanFragment extends Fragment {
 		this.showOnlyFavorites = showOnlyFavorites;
 	}
 
-	public static DailyPlanFragment newInstance(Day day, boolean showOnlyFavorites) {
+	/**
+	 * Creates a new Instance of this Class for a given day. It is either for
+	 * the favorites or for all mensas
+	 * 
+	 * @param day
+	 *            the Day you want to be shown in the Fragment
+	 * @param showOnlyFavorites
+	 *            boolean indication if you want only the favorites or all
+	 *            mensas
+	 * @return instance of this class with the instantiated view.
+	 */
+	public static DailyPlanFragment newInstance(Day day,
+			boolean showOnlyFavorites) {
 		DailyPlanFragment frag = new DailyPlanFragment();
 		frag.setDay(day);
 		frag.setShowOnlyFavorites(showOnlyFavorites);
@@ -46,9 +63,12 @@ public class DailyPlanFragment extends Fragment {
 	}
 
 	@Override
-	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-		View rootView = inflater.inflate(R.layout.fragment_home_scrollable_content, container, false);
-		LinearLayout layout = (LinearLayout) rootView.findViewById(R.id.section_linear_layout);
+	public View onCreateView(LayoutInflater inflater, ViewGroup container,
+			Bundle savedInstanceState) {
+		View rootView = inflater.inflate(
+				R.layout.fragment_home_scrollable_content, container, false);
+		LinearLayout layout = (LinearLayout) rootView
+				.findViewById(R.id.section_linear_layout);
 
 		Model model = Model.getInstance();
 		List<Mensa> mensas;
@@ -58,11 +78,13 @@ public class DailyPlanFragment extends Fragment {
 			mensas = model.getMensas();
 
 		TextView textDateOfDayOfWeek = new TextView(container.getContext());
-		textDateOfDayOfWeek.setText(day.format(new SimpleDateFormat("dd. MMMM yyyy", Locale.getDefault())));
+		textDateOfDayOfWeek.setText(day.format(new SimpleDateFormat(
+				"dd. MMMM yyyy", Locale.getDefault())));
 		layout.addView(textDateOfDayOfWeek);
 
 		if (mensas.isEmpty()) {
-			TextView noFavoriteMensasChosen = new TextView(container.getContext());
+			TextView noFavoriteMensasChosen = new TextView(
+					container.getContext());
 			noFavoriteMensasChosen.setText(R.string.no_favorite_mensa);
 			layout.addView(noFavoriteMensasChosen);
 		}
@@ -71,14 +93,18 @@ public class DailyPlanFragment extends Fragment {
 		return rootView;
 	}
 
-	private void createMenuViewForAllMensas(List<Mensa> mensas, ViewGroup container, LinearLayout layout) {
+	private void createMenuViewForAllMensas(List<Mensa> mensas,
+			ViewGroup container, LinearLayout layout) {
 		for (Mensa mensa : mensas)
 			createMenuView(mensa, container, layout);
 	}
 
-	private void createMenuView(Mensa mensa, ViewGroup container, LinearLayout layout) {
-		LayoutInflater inf = (LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-		RelativeLayout relativeLayout = (RelativeLayout) inf.inflate(R.layout.daily_section_title_bar, null);
+	private void createMenuView(Mensa mensa, ViewGroup container,
+			LinearLayout layout) {
+		LayoutInflater inf = (LayoutInflater) getActivity().getSystemService(
+				Context.LAYOUT_INFLATER_SERVICE);
+		RelativeLayout relativeLayout = (RelativeLayout) inf.inflate(
+				R.layout.daily_section_title_bar, null);
 		TextView text = (TextView) relativeLayout.getChildAt(0);
 		text.setText(mensa.getName());
 
@@ -93,7 +119,8 @@ public class DailyPlanFragment extends Fragment {
 
 		if (dailyPlan != null) {
 			for (Menu menu : dailyPlan.getMenus())
-				menuLayout.addView(new MenuView(container.getContext(), menu, day));
+				menuLayout.addView(new MenuView(container.getContext(), menu,
+						day));
 		} else {
 			TextView noMenusText = new TextView(getActivity());
 			noMenusText.setText(R.string.dailyplanfragment_no_menus_available);
@@ -104,16 +131,20 @@ public class DailyPlanFragment extends Fragment {
 		if (!showOnlyFavorites)
 			menuLayout.setVisibility(View.GONE);
 
-		relativeLayout.setOnClickListener(new ToggleListener(menuLayout, container.getContext()));
+		relativeLayout.setOnClickListener(new ToggleListener(menuLayout,
+				container.getContext()));
 
 		layout.addView(relativeLayout);
 		layout.addView(menuLayout);
 	}
 
-	private void setUpInvitationButton(RelativeLayout relativeLayout, Mensa mensa, Day dayOfInvitation) {
-		ImageButton invitationButton = (ImageButton) relativeLayout.getChildAt(3);
+	private void setUpInvitationButton(RelativeLayout relativeLayout,
+			Mensa mensa, Day dayOfInvitation) {
+		ImageButton invitationButton = (ImageButton) relativeLayout
+				.getChildAt(3);
 		if (LoginService.isLoggedIn()) {
-			invitationButton.setOnClickListener(new InvitationButtonListener(mensa, dayOfInvitation, this));
+			invitationButton.setOnClickListener(new InvitationButtonListener(
+					mensa, dayOfInvitation, this));
 		} else {
 			invitationButton.setVisibility(View.GONE);
 		}
@@ -121,8 +152,10 @@ public class DailyPlanFragment extends Fragment {
 
 	private void setUpFavoriteButton(RelativeLayout rel, Mensa mensa) {
 		ImageButton favorite = (ImageButton) rel.getChildAt(1);
-		favorite.setImageResource((mensa.isFavorite()) ? R.drawable.ic_fav : R.drawable.ic_fav_grey);
-		favorite.setOnClickListener(new FavoriteButtonListener(mensa, favorite, this, showOnlyFavorites));
+		favorite.setImageResource((mensa.isFavorite()) ? R.drawable.ic_fav
+				: R.drawable.ic_fav_grey);
+		favorite.setOnClickListener(new FavoriteButtonListener(mensa, favorite,
+				this, showOnlyFavorites));
 	}
 
 	private void setUpMapButton(RelativeLayout rel, Mensa mensa) {

@@ -9,6 +9,7 @@ import com.ese2013.mub.social.CurrentUser;
 import com.ese2013.mub.social.FriendRequest;
 import com.ese2013.mub.social.Invitation;
 import com.ese2013.mub.social.User;
+import com.ese2013.mub.social.Invitation.Response;
 import com.ese2013.mub.util.parseDatabase.tables.FriendRequestTable;
 import com.ese2013.mub.util.parseDatabase.tables.FriendshipTable;
 import com.ese2013.mub.util.parseDatabase.tables.InvitationTable;
@@ -263,7 +264,9 @@ public class SocialDBHandler {
 	}
 
 	/**
-	 * Downloads the (upcoming) Invitations the given User has retrieved.
+	 * Downloads the (upcoming) Invitations the given User has retrieved. (the
+	 * declined invitations are not downloaded, the user does not care about
+	 * those).
 	 * 
 	 * @param user
 	 *            User to get retrieved invitations. Must not be null and must
@@ -275,6 +278,8 @@ public class SocialDBHandler {
 	public List<Invitation> getRetrievedInvitations(User user) throws ParseException {
 		ParseQuery<ParseObject> query = ParseQuery.getQuery(InvitationUserTable.TABLE_NAME);
 		query.whereEqualTo(InvitationUserTable.INVITEE, ParseObject.createWithoutData(UserTable.TABLE_NAME, user.getId()));
+		query.whereNotEqualTo(InvitationUserTable.RESPONSE, Response.DECLINED.ordinal());
+
 		query.include(InvitationUserTable.INVITATION);
 		query.include(InvitationUserTable.INVITATION + "." + InvitationTable.FROM);
 		List<ParseObject> parseInvitations = query.find();
@@ -404,7 +409,7 @@ public class SocialDBHandler {
 	 * @throws ParseException
 	 *             if the invitation can't be answered.
 	 */
-	public void answerInvitation(Invitation invitation, final Invitation.Response response, User user) throws ParseException {
+	public void answerInvitation(Invitation invitation, final Invitation.Response response, User user) {
 		ParseQuery<ParseObject> query = ParseQuery.getQuery(InvitationUserTable.TABLE_NAME);
 		query.whereEqualTo(InvitationUserTable.INVITATION,
 				ParseObject.createWithoutData(InvitationTable.TABLE_NAME, invitation.getId()));

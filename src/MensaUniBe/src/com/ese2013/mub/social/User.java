@@ -3,7 +3,7 @@ package com.ese2013.mub.social;
 /**
  * Represents a simple user by storing an id, email and nickname.
  */
-public class User {
+public class User implements Comparable<User> {
 	private String id, email, nick;
 
 	/**
@@ -74,5 +74,10 @@ public class User {
 	@Override
 	public String toString() {
 		return nick;
+	}
+
+	@Override
+	public int compareTo(User another) {
+		return another.getNick().compareTo(this.getNick());
 	}
 }

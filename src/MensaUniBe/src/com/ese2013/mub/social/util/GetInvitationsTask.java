@@ -1,6 +1,7 @@
 package com.ese2013.mub.social.util;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import com.ese2013.mub.social.CurrentUser;
@@ -24,7 +25,9 @@ public class GetInvitationsTask extends AbstractAsyncTask<CurrentUser, Void, Lis
 	@Override
 	protected List<Invitation> doInBackground(CurrentUser... user) {
 		try {
-			return new SocialDBHandler().getRetrievedInvitations(user[0]);
+			List<Invitation> invitations = new SocialDBHandler().getRetrievedInvitations(user[0]);
+			Collections.sort(invitations);
+			return invitations;
 		} catch (ParseException e) {
 			setException(e);
 		}

@@ -1,6 +1,7 @@
 package com.ese2013.mub.social.util;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import com.ese2013.mub.social.CurrentUser;
@@ -31,6 +32,7 @@ public class GetFriendsTask extends AbstractAsyncTask<CurrentUser, Void, Void> {
 			currentUser = user[0];
 			requests = new SocialDBHandler().getFriendRequests(currentUser);
 			friends = new SocialDBHandler().getFriends(currentUser);
+			Collections.sort(friends);
 		} catch (ParseException e) {
 			requests = new ArrayList<FriendRequest>();
 			friends = new ArrayList<User>();

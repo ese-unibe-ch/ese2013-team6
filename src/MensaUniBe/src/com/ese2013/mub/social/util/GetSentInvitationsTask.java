@@ -1,6 +1,7 @@
 package com.ese2013.mub.social.util;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import com.ese2013.mub.social.CurrentUser;
@@ -10,8 +11,8 @@ import com.ese2013.mub.util.parseDatabase.SocialDBHandler;
 import com.parse.ParseException;
 
 /**
- * Downloads the sent invitations of the passed in user asynchronously and
- * makes a callback to the given interface when the download is done.
+ * Downloads the sent invitations of the passed in user asynchronously and makes
+ * a callback to the given interface when the download is done.
  */
 public class GetSentInvitationsTask extends AbstractAsyncTask<CurrentUser, Void, List<Invitation>> {
 
@@ -24,7 +25,9 @@ public class GetSentInvitationsTask extends AbstractAsyncTask<CurrentUser, Void,
 	@Override
 	protected List<Invitation> doInBackground(CurrentUser... user) {
 		try {
-			return new SocialDBHandler().getSentInvitations(user[0]);
+			List<Invitation> invitations = new SocialDBHandler().getSentInvitations(user[0]);
+			Collections.sort(invitations);
+			return invitations;
 		} catch (ParseException e) {
 			setException(e);
 		}

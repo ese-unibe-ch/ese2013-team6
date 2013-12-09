@@ -182,7 +182,7 @@ public class InvitesFragment extends Fragment {
 		}
 		@Override
 		public void notifyDataSetChanged() {
-			this.invitations = SocialManager.getInstance().getSentInvitations();
+			invitations = SocialManager.getInstance().getSentInvitations();
 			super.notifyDataSetChanged();
 		}
 	}

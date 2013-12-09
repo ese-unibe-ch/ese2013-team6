@@ -21,12 +21,15 @@ public class CriteriaMatcher {
 	}
 
 	/**
+	 * Matches a Set of criteria to each Menu of the Day and returns a List of
+	 * Criteria objects, including the criteria as name, and a HashMap of all
+	 * the Menus and the Mensa the Menu is served in
 	 * 
 	 * @param criteriaSet
 	 *            String set of criterias you want to match with.
 	 * @param mensas
 	 *            List of Mensas you want to match the criterias with.
-	 * @return List of Criteria Object wich stores the matching menus and the
+	 * @return List of Criteria Objects which stores the matching menus and the
 	 *         mensa in which the menu is served in.
 	 */
 	public List<Criteria> match(Set<String> criteriaSet, List<Mensa> mensas) {
@@ -38,8 +41,9 @@ public class CriteriaMatcher {
 				DailyMenuplan daily = weekly.getDailymenuplan(Day.today());
 				if (daily != null) {
 					for (Menu menu : daily.getMenus()) {
-						if ((menu.getDescription().toLowerCase(Locale.getDefault())).contains(criteria.toLowerCase(Locale
-								.getDefault()))) {
+						if ((menu.getDescription().toLowerCase(Locale
+								.getDefault())).contains(criteria
+								.toLowerCase(Locale.getDefault()))) {
 
 							if (!container.contains(crit))
 								container.add(crit);

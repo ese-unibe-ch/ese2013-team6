@@ -6,7 +6,7 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 /**
  * A utility class used for the toggle animation slide_down and slide_up
- * @author Cédric
+ * 
  *
  */
 public class ToggleAnimation {

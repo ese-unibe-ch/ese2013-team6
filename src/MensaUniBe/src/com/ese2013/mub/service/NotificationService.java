@@ -37,7 +37,9 @@ public class NotificationService extends Service implements Observer {
 		model.addObserver(this);
 		return START_STICKY;
 	}
-
+	/**
+	 * Builds a Notification and displays it on the Device
+	 */
 	private void push() {
 		if (!criteriaList.isEmpty()) {
 
@@ -68,6 +70,9 @@ public class NotificationService extends Service implements Observer {
 	}
 
 	@Override
+	/**
+	 * Returns an Interface for Binding the Service
+	 */
 	public IBinder onBind(Intent arg0) {
 		return nBinder;
 	}
@@ -86,8 +91,11 @@ public class NotificationService extends Service implements Observer {
 	public List<Criteria> getCriteraData() {
 		return criteriaList;
 	}
-
-	public List<Criteria> createCriteriaList() {
+	/**
+	 * Loads the necessary Data and gives them to the CriteriaMatcher
+	 * @return the list of Criteria matched by the CriteriaMatcher
+	 */
+	private List<Criteria> createCriteriaList() {
 		SharedPrefsHandler pref = new SharedPrefsHandler(this);
 
 		Set<String> criteria = pref.getNotificationListItems();

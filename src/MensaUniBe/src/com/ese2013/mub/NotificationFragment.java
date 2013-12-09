@@ -137,9 +137,9 @@ public class NotificationFragment extends Fragment implements Observer {
 				ImageButton favoriteButton = (ImageButton) rel.getChildAt(1);
 				favoriteButton.setOnClickListener(new FavoriteButtonListener(
 						mensa, favoriteButton));
-				favoriteButton.setImageResource(R.id.favorite_button);
+				favoriteButton.setImageResource(mensa.isFavorite()? R.drawable.ic_fav : R.drawable.ic_fav_grey);
 				ImageButton mapButton = (ImageButton) rel.getChildAt(2);
-				mapButton.setImageResource(R.id.map_button);
+				mapButton.setImageResource(R.drawable.ic_map);
 				mapButton.setOnClickListener(new MapButtonListener(mensa,
 						NotificationFragment.this));
 				ImageButton inviteButton = (ImageButton) rel.getChildAt(3);

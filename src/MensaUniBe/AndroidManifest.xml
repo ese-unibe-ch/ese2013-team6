@@ -48,7 +48,8 @@
 
         <service android:name="com.ese2013.mub.service.NotificationService" >
         </service>
-        <service android:name="com.parse.PushService" />
+        <service android:name="com.parse.PushService" >
+        </service>
 
         <receiver android:name="com.parse.ParseBroadcastReceiver" >
             <intent-filter>

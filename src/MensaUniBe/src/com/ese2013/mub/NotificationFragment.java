@@ -28,14 +28,15 @@ import com.ese2013.mub.service.CriteriaMatcher;
 import com.ese2013.mub.util.Observer;
 import com.ese2013.mub.util.SharedPrefsHandler;
 
+/**
+ * Fragment which shows the result of the criteria defined in the settings.
+ * 
+ * @author Cédric
+ * 
+ */
 public class NotificationFragment extends Fragment implements Observer {
 	private NotificationAdapter notificationAdapter;
 	private ListView list;
-
-	@Override
-	public void onStart() {
-		super.onStart();
-	}
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -44,8 +45,10 @@ public class NotificationFragment extends Fragment implements Observer {
 	}
 
 	@Override
-	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-		View view = inflater.inflate(R.layout.fragment_notification, container, false);
+	public View onCreateView(LayoutInflater inflater, ViewGroup container,
+			Bundle savedInstanceState) {
+		View view = inflater.inflate(R.layout.fragment_notification, container,
+				false);
 		notificationAdapter = new NotificationAdapter();
 		list = (ListView) view.findViewById(R.id.notification_list);
 		list.setAdapter(notificationAdapter);
@@ -74,9 +77,15 @@ public class NotificationFragment extends Fragment implements Observer {
 	}
 
 	public void sendListToMenusIntent(Mensa mensa) {
-		((DrawerMenuActivity) getActivity()).launchByMensaAtGivenPage(mensa.getId());
+		((DrawerMenuActivity) getActivity()).launchByMensaAtGivenPage(mensa
+				.getId());
 	}
 
+	/**
+	 * 
+	 * Adapter for filling the ListView of the NotificationFragment
+	 * 
+	 */
 	private class NotificationAdapter extends BaseAdapter implements IAdapter {
 		private LayoutInflater inflater;
 		private List<Criteria> adapterList;
@@ -91,14 +100,18 @@ public class NotificationFragment extends Fragment implements Observer {
 		public View getView(int position, View convertView, ViewGroup parent) {
 			View view = convertView;
 			if (inflater == null)
-				inflater = (LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+				inflater = (LayoutInflater) getActivity().getSystemService(
+						Context.LAYOUT_INFLATER_SERVICE);
 
 			view = inflater.inflate(R.layout.notification_list_element, null);
-			LinearLayout layout = (LinearLayout) view.findViewById(R.id.notification_list_sublayout);
+			LinearLayout layout = (LinearLayout) view
+					.findViewById(R.id.notification_list_sublayout);
 
 			Criteria criteria = adapterList.get(position);
-			TextView criteriaTitle = (TextView) view.findViewById(R.id.criteria_title);
-			criteriaTitle.setText(criteria.getName().toUpperCase(Locale.getDefault()));
+			TextView criteriaTitle = (TextView) view
+					.findViewById(R.id.criteria_title);
+			criteriaTitle.setText(criteria.getName().toUpperCase(
+					Locale.getDefault()));
 
 			for (Menu menu : criteria.getMap().keySet()) {
 				displayMenu(layout, criteria, menu);
@@ -106,7 +119,8 @@ public class NotificationFragment extends Fragment implements Observer {
 			return view;
 		}
 
-		private void displayMenu(LinearLayout layout, Criteria criteria, Menu menu) {
+		private void displayMenu(LinearLayout layout, Criteria criteria,
+				Menu menu) {
 			TextView menuHeader = new TextView(getActivity());
 			menuHeader.setText(R.string.givenMenu);
 			layout.addView(menuHeader);
@@ -115,19 +129,22 @@ public class NotificationFragment extends Fragment implements Observer {
 			mensaHeader.setText(R.string.servedInMensa);
 			layout.addView(mensaHeader);
 			for (Mensa mensa : criteria.getMap().get(menu)) {
-				RelativeLayout rel = (RelativeLayout) inflater.inflate(R.layout.daily_section_title_bar, null);
+				RelativeLayout rel = (RelativeLayout) inflater.inflate(
+						R.layout.daily_section_title_bar, null);
 				TextView text = (TextView) rel.getChildAt(0);
 				text.setOnClickListener(new AddressTextListener(mensa, this));
 				text.setText(mensa.getName());
 				ImageButton favoriteButton = (ImageButton) rel.getChildAt(1);
-				favoriteButton.setOnClickListener(new FavoriteButtonListener(mensa, favoriteButton));
+				favoriteButton.setOnClickListener(new FavoriteButtonListener(
+						mensa, favoriteButton));
 				favoriteButton.setImageResource(R.id.favorite_button);
 				ImageButton mapButton = (ImageButton) rel.getChildAt(2);
 				mapButton.setImageResource(R.id.map_button);
-				mapButton.setOnClickListener(new MapButtonListener(mensa, NotificationFragment.this));
-				ImageButton inviteButton = (ImageButton) rel.getChildAt(3);
-				inviteButton.setOnClickListener(new InvitationButtonListener(mensa, new Day(new Date()),
+				mapButton.setOnClickListener(new MapButtonListener(mensa,
 						NotificationFragment.this));
+				ImageButton inviteButton = (ImageButton) rel.getChildAt(3);
+				inviteButton.setOnClickListener(new InvitationButtonListener(
+						mensa, new Day(new Date()), NotificationFragment.this));
 				layout.addView(rel);
 			}
 		}
@@ -154,18 +171,22 @@ public class NotificationFragment extends Fragment implements Observer {
 		}
 
 		private List<Criteria> createList() {
-			SharedPrefsHandler pref = new SharedPrefsHandler(NotificationFragment.this.getActivity());
+			SharedPrefsHandler pref = new SharedPrefsHandler(
+					NotificationFragment.this.getActivity());
 
 			Set<String> criteria = pref.getNotificationListItems();
-			boolean allMensas = pref.getNotificationMensas() == 0 ? true : false;
+			boolean allMensas = pref.getNotificationMensas() == 0 ? true
+					: false;
 
-			List<Mensa> mensas = allMensas ? Model.getInstance().getMensas() : Model.getInstance().getFavoriteMensas();
+			List<Mensa> mensas = allMensas ? Model.getInstance().getMensas()
+					: Model.getInstance().getFavoriteMensas();
 			return criteriaMatcher.match(criteria, mensas);
 		}
 
 		@Override
 		public void sendListToMenusIntent(Mensa mensa) {
-			((DrawerMenuActivity) getActivity()).launchByMensaAtGivenPage(mensa.getId());
+			((DrawerMenuActivity) getActivity()).launchByMensaAtGivenPage(mensa
+					.getId());
 		}
 
 		public void fill() {

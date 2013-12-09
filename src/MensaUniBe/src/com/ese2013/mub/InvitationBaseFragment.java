@@ -70,6 +70,7 @@ public class InvitationBaseFragment extends Fragment implements ActionBar.TabLis
 	public void onPause() {
 		actionBar.removeAllTabs();
 		actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
+		onDestroyOptionsMenu();
 		super.onPause();
 	}
 
@@ -88,6 +89,7 @@ public class InvitationBaseFragment extends Fragment implements ActionBar.TabLis
 	public void onDestroy() {
 		actionBar.removeAllTabs();
 		actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
+		onDestroyOptionsMenu();
 		super.onDestroy();
 	}
 

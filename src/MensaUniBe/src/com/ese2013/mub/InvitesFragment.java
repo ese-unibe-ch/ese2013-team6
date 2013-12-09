@@ -51,10 +51,15 @@ public class InvitesFragment extends Fragment {
 		setHasOptionsMenu(true);
 		return view;
 	}
-
+	@Override
+	public void onPause() {
+		super.onPause();
+		onDestroyOptionsMenu();
+	}
 	@Override
 	public void onDestroy() {
 		super.onDestroy();
+		onDestroyOptionsMenu();
 		SocialManager.getInstance().removeObserver(adapter);
 	}
 

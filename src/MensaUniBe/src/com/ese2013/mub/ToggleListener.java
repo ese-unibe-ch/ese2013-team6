@@ -3,7 +3,11 @@ package com.ese2013.mub;
 import android.content.Context;
 import android.view.View;
 import android.view.View.OnClickListener;
-
+/**
+ * 
+ * Listener wich sets the visability 
+ *
+ */
 public class ToggleListener implements OnClickListener {
 	private View toToggle;
 	private Context ctx;

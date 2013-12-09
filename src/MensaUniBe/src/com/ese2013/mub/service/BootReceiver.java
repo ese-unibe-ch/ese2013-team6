@@ -12,7 +12,11 @@ import android.content.Intent;
 import com.ese2013.mub.util.SharedPrefsHandler;
 
 public class BootReceiver extends BroadcastReceiver {
-
+	/**
+	 * Receives BootUpComplete Broadcast and sets an AlarmManager with an Intent
+	 * for the AlarmReceiver Depends on the predefined values made in the
+	 * Settings, if there are now settings made, it does nothing
+	 */
 	@Override
 	public void onReceive(Context context, Intent intent) {
 		SharedPrefsHandler pref = new SharedPrefsHandler(context);
@@ -22,7 +26,8 @@ public class BootReceiver extends BroadcastReceiver {
 			AlarmManager alarm = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
 			PendingIntent operation = PendingIntent.getBroadcast(context, 0, new Intent(context, AlarmReceiver.class),
 					PendingIntent.FLAG_CANCEL_CURRENT);
-			alarm.setInexactRepeating(AlarmManager.RTC, tenOClock.getTimeInMillis(), AlarmManager.INTERVAL_DAY, operation);
+			alarm.setInexactRepeating(AlarmManager.RTC, tenOClock.getTimeInMillis(), AlarmManager.INTERVAL_DAY,
+					operation);
 		}
 	}
 }

@@ -6,6 +6,14 @@ import java.util.List;
 import com.ese2013.mub.model.Mensa;
 import com.ese2013.mub.model.Menu;
 
+/**
+ * 
+ * Criteria object, contains the criteria itself as a String and a HashMap<Menu,
+ * List<Mensa> containing all the Menus and the belonging Mensas. The HashMap is
+ * easy accessible in order to allow the CriteriaMatcher algorithm to fill the
+ * map continuously
+ * 
+ */
 public class Criteria {
 
 	private HashMap<Menu, List<Mensa>> map;

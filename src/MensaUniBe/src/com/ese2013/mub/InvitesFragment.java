@@ -1,6 +1,6 @@
 package com.ese2013.mub;
 
-import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
@@ -138,12 +138,12 @@ public class InvitesFragment extends Fragment {
 			TextView whenTextView = (TextView) view.findViewById(R.id.when_text_field);
 			Day day = new Day(invite.getTime());
 
-			DateFormat dateFormat = DateFormat.getDateInstance(DateFormat.SHORT, Locale.getDefault());
-			DateFormat dateFormat2 = DateFormat.getDateInstance(DateFormat.MEDIUM, Locale.getDefault());
+			SimpleDateFormat today = new SimpleDateFormat("HH:mm", Locale.getDefault());
+			SimpleDateFormat notToday = new SimpleDateFormat("dd.MM.yyyy HH:mm",Locale.getDefault());
 			if (day.equals(Day.today()))
-				whenTextView.setText(dateFormat.format(invite.getTime()));
+				whenTextView.setText("today: " + today.format(invite.getTime()));
 			else
-				whenTextView.setText(dateFormat2.format(invite.getTime()));
+				whenTextView.setText(notToday.format(invite.getTime()));
 		}
 
 		private void setUpWhereTextView(View view, Invitation invite) {

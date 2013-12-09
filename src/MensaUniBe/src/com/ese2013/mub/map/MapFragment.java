@@ -45,6 +45,8 @@ import com.google.android.gms.maps.model.Marker;
  * if one exists. If no closest or favorite Mensa are available, just the first
  * Mensa in the Mensa List is selected. The path to the selected mensa is drawn
  * if possible.
+ * When the MENSA_ID_LOCATION argument is given for the fragment the map view
+ * will zoom to that mensa.
  * 
  */
 public class MapFragment extends Fragment {
@@ -91,6 +93,10 @@ public class MapFragment extends Fragment {
 		return view;
 	}
 
+	/**
+	 * Sets up initial zoom and sets spinner to the selected mensa if @this has 
+	 * been called with an MENSA_ID_LOCATION argument.
+	 */
 	private void setupInitValues(View view) {
 		Location rawLocation = getLocation();
 		if (rawLocation != null)
@@ -105,7 +111,6 @@ public class MapFragment extends Fragment {
 			if (mensaId != null) {
 				selectedLocation = namedLocations.getNamedLocation(mensaId);
 				setSpinnerTo(selectedLocation);
-				// onClickDirectionsButton(view.findViewById(R.id.get_directions_button));
 			}
 		}
 	}
@@ -129,7 +134,11 @@ public class MapFragment extends Fragment {
 		}
 		setSpinnerTo(selectedLocation);
 	}
-
+	
+	
+	/**
+	 * Creates a MarkerClickListener to select a mensa location by clicking on it.
+	 */
 	private void setMarkerClickListener() {
 		map.setOnMarkerClickListener(new OnMarkerClickListener() {
 			@Override
@@ -142,7 +151,11 @@ public class MapFragment extends Fragment {
 			}
 		});
 	}
-
+	
+	/**
+	 * Creates listener for clicks on travelmode radio buttons
+	 * @param view
+	 */
 	private void setRadioGroupListener(View view) {
 		RadioGroup radioGroup = (RadioGroup) view.findViewById(R.id.rg_modes);
 		radioGroup.setOnCheckedChangeListener(new OnCheckedChangeListener() {
@@ -166,6 +179,10 @@ public class MapFragment extends Fragment {
 		});
 	}
 
+	/**
+	 * Creates listerner to @param spinFocus to select Locations from the spinner.
+	 * @param spinFocus
+	 */
 	private void setSpinnerItemSelectionListener(Spinner spinFocus) {
 		spinFocus.setOnItemSelectedListener(new OnItemSelectedListener() {
 			@Override
@@ -236,7 +253,7 @@ public class MapFragment extends Fragment {
 		updateSelectedLocation(namedLoc);
 		locationSpinner.setSelection(namedLocationsAdapter.getPosition(namedLoc));
 	}
-
+	
 	private void updateSelectedLocation(NamedLocation namedLoc) {
 		if (namedLoc == null)
 			return;
@@ -270,7 +287,14 @@ public class MapFragment extends Fragment {
 		else
 			zoomOnContent(namedLocations.getList());
 	}
-
+	
+	/**
+	 * Zooms to the two locations @param loc1 and @param loc2
+	 * @param loc1 
+	 * 			Must be valid location.
+	 * @param loc2 	
+	 * 			Must be valid location.
+	 */
 	private void zoomOnContent(NamedLocation loc1, NamedLocation loc2) {
 		List<NamedLocation> list = new ArrayList<NamedLocation>();
 		list.add(loc1);
@@ -278,6 +302,11 @@ public class MapFragment extends Fragment {
 		zoomOnContent(list);
 	}
 
+	/**
+	 * Zooms defined by bounds including all @param locations and the currentLocation when available
+	 * @param locations 
+	 * 			All locations which should be zoomed to. Must be valid locations
+	 */
 	private void zoomOnContent(List<NamedLocation> locations) {
 		LatLngBounds.Builder bounds = new LatLngBounds.Builder();
 		for (NamedLocation l : locations)
@@ -332,7 +361,9 @@ public class MapFragment extends Fragment {
 	private Location getLocation() {
 		return locationManager.getLastKnownLocation(locationManager.getBestProvider(new Criteria(), true));
 	}
-
+	/**
+	 * Disables the selection of travel modes if there is no GPS location found.
+	 */
 	private void updateRadioGroup() {
 		RadioGroup radioGroup = (RadioGroup) getView().findViewById(R.id.rg_modes);
 		for (int i = 0; i < radioGroup.getChildCount(); i++)

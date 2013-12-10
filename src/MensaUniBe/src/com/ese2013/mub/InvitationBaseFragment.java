@@ -18,35 +18,33 @@ import android.view.ViewGroup;
 /**
  * 
  * Base Fragment for the Invitations and Friends. It displays Fragments in a
- * ViewPager and makes them accessible through the ActionBar.NAVIGATION_MODE_TABS
+ * ViewPager and makes them accessible through the
+ * ActionBar.NAVIGATION_MODE_TABS
  * 
  */
-public class InvitationBaseFragment extends Fragment implements
-		ActionBar.TabListener {
+public class InvitationBaseFragment extends Fragment implements ActionBar.TabListener {
 	private ViewPager viewPager;
 	private ActionBar actionBar;
-	private String[] tabs = {"Invited","Invites", "Friends" };
+	private String[] tabs;
+
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
-		
 		super.onCreate(savedInstanceState);
 		getActivity().setTitle(R.string.invitations);
 	}
-	@Override
-	public View onCreateView(LayoutInflater inflater, ViewGroup container,
-			Bundle savedInstanceState) {
 
-		View view = inflater.inflate(R.layout.fragment_base_invitations,
-				container, false);
+	@Override
+	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+
+		View view = inflater.inflate(R.layout.fragment_base_invitations, container, false);
 		viewPager = (ViewPager) view.findViewById(R.id.invitation_pager);
-		viewPager.setAdapter(new InvitationPageAdapter(
-				getChildFragmentManager()));
+		viewPager.setAdapter(new InvitationPageAdapter(getChildFragmentManager()));
 
 		actionBar = getActivity().getActionBar();
 		actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
+		tabs = getActivity().getResources().getStringArray(R.array.invitation_tabs_titles);
 		for (String tab_name : tabs) {
-			actionBar.addTab(actionBar.newTab().setText(tab_name)
-					.setTabListener(this));
+			actionBar.addTab(actionBar.newTab().setText(tab_name).setTabListener(this));
 		}
 		viewPager.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
 
@@ -97,8 +95,7 @@ public class InvitationBaseFragment extends Fragment implements
 		actionBar.removeAllTabs();
 		actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
 		for (String tab_name : tabs) {
-			actionBar.addTab(actionBar.newTab().setText(tab_name)
-					.setTabListener(this));
+			actionBar.addTab(actionBar.newTab().setText(tab_name).setTabListener(this));
 		}
 		super.onResume();
 	}
@@ -110,23 +107,24 @@ public class InvitationBaseFragment extends Fragment implements
 		onDestroyOptionsMenu();
 		super.onDestroy();
 	}
-	
+
 	public void setPagerToFriends() {
 		viewPager.setCurrentItem(2);
 		actionBar.selectTab(actionBar.getTabAt(2));
 	}
+
 	/**
 	 * 
-	 * Pager adapter for the {@link InvitationBaseFragment} viewPager.
-	 * adds statically the three to be displayed Fragments to the Pager.
+	 * Pager adapter for the {@link InvitationBaseFragment} viewPager. adds
+	 * statically the three to be displayed Fragments to the Pager.
 	 */
 	private static class InvitationPageAdapter extends FragmentPagerAdapter {
 		private List<Fragment> fragments = new ArrayList<Fragment>();
 
 		public InvitationPageAdapter(FragmentManager fm) {
 			super(fm);
-			fragments.add(new InvitedFragment());
-			fragments.add(new InvitesFragment());
+			fragments.add(InvitedFragment.newInstance(new InvitedListAdapter()));
+			fragments.add(InvitedFragment.newInstance(new InvitesListAdapter()));
 			fragments.add(new FriendsListFragment());
 		}
 

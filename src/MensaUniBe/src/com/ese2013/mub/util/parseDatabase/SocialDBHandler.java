@@ -5,6 +5,8 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 
+import android.util.Log;
+
 import com.ese2013.mub.social.CurrentUser;
 import com.ese2013.mub.social.FriendRequest;
 import com.ese2013.mub.social.Invitation;
@@ -277,23 +279,31 @@ public class SocialDBHandler {
 	 */
 	public List<Invitation> getRetrievedInvitations(User user) throws ParseException {
 		ParseQuery<ParseObject> query = ParseQuery.getQuery(InvitationUserTable.TABLE_NAME);
-		query.whereEqualTo(InvitationUserTable.INVITEE, ParseObject.createWithoutData(UserTable.TABLE_NAME, user.getId()));
+		query.whereEqualTo(InvitationUserTable.INVITEE,
+				ParseObject.createWithoutData(UserTable.TABLE_NAME, user.getId()));
 		query.whereNotEqualTo(InvitationUserTable.RESPONSE, Response.DECLINED.ordinal());
 
 		query.include(InvitationUserTable.INVITATION);
 		query.include(InvitationUserTable.INVITATION + "." + InvitationTable.FROM);
 		List<ParseObject> parseInvitations = query.find();
 		List<Invitation> invitations = new ArrayList<Invitation>();
-		for (ParseObject invitation : parseInvitations) {
-			ParseObject parseInv = invitation.getParseObject(InvitationUserTable.INVITATION);
-			ParseObject parseFrom = parseInv.getParseObject(InvitationTable.FROM);
-			HashMap<User, Invitation.Response> responses = new HashMap<User, Invitation.Response>();
-			responses.put(user, Invitation.Response.values()[invitation.getInt(InvitationUserTable.RESPONSE)]);
-			invitations.add(new Invitation(parseInv.getObjectId(), parseUser(parseFrom), responses, parseInv
-					.getString(InvitationTable.MESSAGE), parseInv.getInt(InvitationTable.MENSA), parseInv
-					.getDate(InvitationTable.TIME))
-
-			);
+		for (ParseObject invitationUser : parseInvitations) {
+			ParseObject parseInv = invitationUser.getParseObject(InvitationUserTable.INVITATION);
+			if (parseInv != null) {
+				ParseObject parseFrom = parseInv.getParseObject(InvitationTable.FROM);
+				HashMap<User, Invitation.Response> responses = new HashMap<User, Invitation.Response>();
+				responses.put(user, Invitation.Response.values()[invitationUser.getInt(InvitationUserTable.RESPONSE)]);
+				invitations.add(new Invitation(parseInv.getObjectId(), parseUser(parseFrom), responses, parseInv
+						.getString(InvitationTable.MESSAGE), parseInv.getInt(InvitationTable.MENSA), parseInv
+						.getDate(InvitationTable.TIME)));
+			} else {
+				Log.i("Parse",
+						"Parse database contains invitationUser object: "
+								+ invitationUser.getObjectId()
+								+ " where invitation misses (can happen if cloud code to clean up the tables was not executed completely)");
+				// just remove the broken database entry. Should not happen usually, but you never know...
+				invitationUser.deleteEventually();
+			}
 		}
 		return invitations;
 	}
@@ -316,8 +326,8 @@ public class SocialDBHandler {
 		List<Invitation> invitations = new ArrayList<Invitation>();
 		for (ParseObject parseInvite : parseInvitations)
 			invitations.add(new Invitation(parseInvite.getObjectId(), user, getInviteesAndResponses(parseInvite),
-					parseInvite.getString(InvitationTable.MESSAGE), parseInvite.getInt(InvitationTable.MENSA), parseInvite
-							.getDate(InvitationTable.TIME)));
+					parseInvite.getString(InvitationTable.MESSAGE), parseInvite.getInt(InvitationTable.MENSA),
+					parseInvite.getDate(InvitationTable.TIME)));
 
 		return invitations;
 	}
@@ -348,8 +358,8 @@ public class SocialDBHandler {
 		ParseObject parseRequest = ParseObject.create(FriendRequestTable.TABLE_NAME);
 		parseRequest.put(FriendRequestTable.FROM,
 				ParseObject.createWithoutData(UserTable.TABLE_NAME, request.getFrom().getId()));
-		parseRequest
-				.put(FriendRequestTable.TO, ParseObject.createWithoutData(UserTable.TABLE_NAME, request.getTo().getId()));
+		parseRequest.put(FriendRequestTable.TO,
+				ParseObject.createWithoutData(UserTable.TABLE_NAME, request.getTo().getId()));
 		parseRequest.saveInBackground();
 	}
 
@@ -413,7 +423,8 @@ public class SocialDBHandler {
 		ParseQuery<ParseObject> query = ParseQuery.getQuery(InvitationUserTable.TABLE_NAME);
 		query.whereEqualTo(InvitationUserTable.INVITATION,
 				ParseObject.createWithoutData(InvitationTable.TABLE_NAME, invitation.getId()));
-		query.whereEqualTo(InvitationUserTable.INVITEE, ParseObject.createWithoutData(UserTable.TABLE_NAME, user.getId()));
+		query.whereEqualTo(InvitationUserTable.INVITEE,
+				ParseObject.createWithoutData(UserTable.TABLE_NAME, user.getId()));
 		query.getFirstInBackground(new GetCallback<ParseObject>() {
 			@Override
 			public void done(ParseObject invitationUser, ParseException e) {

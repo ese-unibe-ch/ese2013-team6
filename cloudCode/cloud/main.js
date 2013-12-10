@@ -13,12 +13,8 @@ Deletes the content of the given table.
 */
 function dropTable(name) {
 	var query = new Parse.Query(name);
-	query.find({
-	  success: function(results) {
-		Parse.Object.destroyAll(results);
-	  },
-	  error: function(error) {
-	  }
+	return query.find().then(function (results) {
+		return Parse.Object.destroyAll(results);
 	});
 }
 
@@ -33,26 +29,27 @@ function getMenuPlan(mensaList) {
 	var menusMensas = new Array();
 	var menuMap = {};
 	var currentMenusTable;
+	var query = new Parse.Query("Menu");
+	
 	promise = promise.then(function() {
-		var query = new Parse.Query("Menu");
-		return query.find({
-		  success: function(results) {
-			_.each(results, function(result) {
-				menuMap[result.get("description")] = result;
-			});
-		  },
-		  error: function(error) {
-		  }
-		});
+		return query.find();
 	});
+	promise = promise.then(function(results) {
+		_.each(results, function(result) {
+			menuMap[result.get("description")] = result;
+		});
+		console.log("found ALL existing menus");
+	});
+	
 	_.each(mensaList, function(mensa) {
 				promise = promise.then(function() {
-				menuList = new Array();
-				menusMensas = new Array();
-				var weeklyPlanUrl = 'http://mensa.xonix.ch/v1/mensas/' + mensa.get("mensaId") + '/weeklyplan' + tok;
-				return Parse.Cloud.httpRequest({
-					url: weeklyPlanUrl,
-					success: function(httpResponse) {
+					console.log("initaiting http request for a menu plan");
+					menuList = new Array();
+					menusMensas = new Array();
+					var weeklyPlanUrl = 'http://mensa.xonix.ch/v1/mensas/' + mensa.get("mensaId") + '/weeklyplan' + tok;
+					return Parse.Cloud.httpRequest({url: weeklyPlanUrl});
+				}).then( function(httpResponse) {
+					console.log("http response got");
 					if (parseInt(httpResponse.data.result.code) == 200) {
 						var menus = httpResponse.data.result.content.menus;
 						for (var i = 0; i < menus.length; ++i) {
@@ -82,17 +79,12 @@ function getMenuPlan(mensaList) {
 							menusMensas.push(menuMensa);
 						}
 					}
-					},
-					error: function(httpResponse) {
-					console.log("Error retrieving menus");
-					}
 				}).then( function() {
 					return Parse.Object.saveAll(menuList);
 				}).then( function() {
 					return Parse.Object.saveAll(menusMensas);
 				});
 		});
-	});
 	return promise;
 }
 
@@ -100,13 +92,11 @@ function getMenuPlan(mensaList) {
 Update job which is run periodically on the Parse server to update the menus and mensas on the server.
 */
 Parse.Cloud.job("menuUpdate", function(request, status) {
-		
-	dropTable("Mensa");
-	dropTable("MenuMensa");
+	dropTable("Mensa")
 	var mensaList = new Array();
-	Parse.Cloud.httpRequest({
-      url: 'http://mensa.xonix.ch/v1/mensas' + tok,
-      success: function(httpResponse) {
+	dropTable("MenuMensa").then(function() {
+		return Parse.Cloud.httpRequest({url: 'http://mensa.xonix.ch/v1/mensas' + tok});
+	}).then( function(httpResponse) {
 		if (parseInt(httpResponse.data.result.code) == 200) {
 			var mensas = httpResponse.data.result.content;
 			for (var i = 0; i < mensas.length; ++i) {
@@ -121,16 +111,13 @@ Parse.Cloud.job("menuUpdate", function(request, status) {
 				m.set("lon", mensaJson.lon);
 				mensaList[i] = m;
 			}
+			Parse.Object.saveAll(mensaList);
+			return getMenuPlan(mensaList);
+		} else {
+			status.error("failed to download");
 		}
-		Parse.Object.saveAll(mensaList);
-      },
-      error: function(httpResponse) {
-        status.success('Request failed with response code ' + httpResponse.status);
-      }
-    }).then(function() {
-		getMenuPlan(mensaList).then(function() {
-			status.success("succeeded")
-		});
+	}).then(function() {
+		status.success("succeeded");
 	});
 });
 
@@ -206,15 +193,10 @@ Parse.Cloud.job("invitationsUpdate", function(request, status) {
 	now.subtract('days', 1);
 	query.lessThan("Time", now.toDate());
 	var invitations = new Array();
-	query.find({
-		  success: function(results) {
-			_.each(results, function(result) {
-				invitations.push(result);
-			});
-		  },
-		  error: function(error) {
-			status.error("Outer query failed");
-		  }
+	query.find().then( function(results) {
+		_.each(results, function(result) {
+			invitations.push(result);
+		});
 	}).then( function() {
 		var promise = Parse.Promise.as();
 		_.each(invitations, function(invite) {				
@@ -233,7 +215,7 @@ Parse.Cloud.job("invitationsUpdate", function(request, status) {
 		});
 		promise = promise.then(function() {
 			Parse.Object.destroyAll(invitations)
-			status.success();
+			status.success("done updating table");
 		});
 	});
 });

@@ -1,4 +1,4 @@
-package com.ese2013.mub;
+package com.ese2013.mub.social;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -12,21 +12,22 @@ import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
+import com.ese2013.mub.R;
 import com.ese2013.mub.model.Day;
 import com.ese2013.mub.model.Model;
-import com.ese2013.mub.social.Invitation;
-import com.ese2013.mub.social.LoginService;
-import com.ese2013.mub.social.SocialManager;
+import com.ese2013.mub.social.model.Invitation;
+import com.ese2013.mub.social.model.LoginService;
+import com.ese2013.mub.social.model.SocialManager;
 
 /**
  * Adapter for the invitedList ListView. shows unanswered requests and accepted
  * requests
  */
-public class InvitedListAdapter extends InvitationsBaseAdapter {
+public class RetrievedInvitationsAdapter extends InvitationsBaseAdapter {
 	private LayoutInflater inflater;
 	private List<Invitation> invitations = new ArrayList<Invitation>();
 
-	public InvitedListAdapter() {
+	public RetrievedInvitationsAdapter() {
 		onNotifyChanges();
 	}
 

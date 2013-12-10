@@ -1,4 +1,4 @@
-package com.ese2013.mub;
+package com.ese2013.mub.social;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -12,15 +12,17 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.ese2013.mub.social.LoginService;
-import com.ese2013.mub.social.SocialManager;
+import com.ese2013.mub.DrawerMenuActivity;
+import com.ese2013.mub.R;
+import com.ese2013.mub.social.model.LoginService;
+import com.ese2013.mub.social.model.SocialManager;
 import com.ese2013.mub.util.Observer;
 
 /**
- * Page of the {@link InvitationBaseFragment}, shows where you are invited or
+ * Page of the {@link SocialFragment}, shows where you are invited or
  * the sent invitations.
  */
-public class InvitedFragment extends Fragment implements Observer {
+public class InvitationsFragment extends Fragment implements Observer {
 
 	private ListView invitedList;
 	private InvitationsBaseAdapter adapter;
@@ -28,11 +30,13 @@ public class InvitedFragment extends Fragment implements Observer {
 
 	/**
 	 * Creates a new instance of InvitedFragment using the given adapter.
+	 * 
 	 * @param adapter
-	 * @return
+	 *            The InvitationsBaseAdapter to be used. Must not be null.
+	 * @return the newly created InvitedFragment.
 	 */
 	public static Fragment newInstance(InvitationsBaseAdapter adapter) {
-		InvitedFragment frag = new InvitedFragment();
+		InvitationsFragment frag = new InvitationsFragment();
 		frag.setAdapter(adapter);
 		return frag;
 	}

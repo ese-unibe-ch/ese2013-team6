@@ -7,11 +7,11 @@ import java.util.List;
 
 import android.util.Log;
 
-import com.ese2013.mub.social.CurrentUser;
-import com.ese2013.mub.social.FriendRequest;
-import com.ese2013.mub.social.Invitation;
-import com.ese2013.mub.social.User;
-import com.ese2013.mub.social.Invitation.Response;
+import com.ese2013.mub.social.model.CurrentUser;
+import com.ese2013.mub.social.model.FriendRequest;
+import com.ese2013.mub.social.model.Invitation;
+import com.ese2013.mub.social.model.User;
+import com.ese2013.mub.social.model.Invitation.Response;
 import com.ese2013.mub.util.parseDatabase.tables.FriendRequestTable;
 import com.ese2013.mub.util.parseDatabase.tables.FriendshipTable;
 import com.ese2013.mub.util.parseDatabase.tables.InvitationTable;

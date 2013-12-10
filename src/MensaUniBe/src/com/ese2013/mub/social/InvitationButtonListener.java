@@ -1,9 +1,10 @@
-package com.ese2013.mub;
+package com.ese2013.mub.social;
 
 import android.support.v4.app.Fragment;
 import android.view.View;
 import android.view.View.OnClickListener;
 
+import com.ese2013.mub.DrawerMenuActivity;
 import com.ese2013.mub.model.Day;
 import com.ese2013.mub.model.Mensa;
 

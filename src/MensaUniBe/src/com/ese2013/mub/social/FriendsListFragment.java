@@ -1,4 +1,4 @@
-package com.ese2013.mub;
+package com.ese2013.mub.social;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,17 +20,16 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.ese2013.mub.social.FriendRequest;
-import com.ese2013.mub.social.LoginService;
-import com.ese2013.mub.social.SocialManager;
-import com.ese2013.mub.social.User;
+import com.ese2013.mub.R;
+import com.ese2013.mub.social.model.FriendRequest;
+import com.ese2013.mub.social.model.LoginService;
+import com.ese2013.mub.social.model.SocialManager;
+import com.ese2013.mub.social.model.User;
 import com.ese2013.mub.util.Observer;
 
 /**
- * 
  * Page of the InvitationBaseFragment viewPager, shows your friends and friend
  * Requests
- * 
  */
 public class FriendsListFragment extends Fragment {
 
@@ -76,7 +75,7 @@ public class FriendsListFragment extends Fragment {
 			builder.setView(dialogView);
 			builder.setTitle(R.string.add_friend);
 			builder.setNegativeButton(android.R.string.cancel, null);
-			builder.setPositiveButton(android.R.string.ok, new PositiveButtonListener(edit, getActivity()));
+			builder.setPositiveButton(android.R.string.ok, new AddFriendButtonListener(edit, getActivity()));
 			builder.create().show();
 			return true;
 

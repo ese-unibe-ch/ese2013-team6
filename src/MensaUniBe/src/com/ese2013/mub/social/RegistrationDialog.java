@@ -1,4 +1,4 @@
-package com.ese2013.mub;
+package com.ese2013.mub.social;
 
 import android.accounts.AccountManager;
 import android.app.Activity;
@@ -8,14 +8,16 @@ import android.content.Intent;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import com.ese2013.mub.social.CurrentUser;
-import com.ese2013.mub.social.LoginService;
+import com.ese2013.mub.R;
+import com.ese2013.mub.social.model.CurrentUser;
+import com.ese2013.mub.social.model.LoginService;
 import com.ese2013.mub.util.SharedPrefsHandler;
 import com.google.android.gms.auth.GoogleAuthUtil;
 import com.google.android.gms.common.AccountPicker;
+
 /**
  * Start Dialog for Registering for the InvitationFeature with a Google Account
- *
+ * 
  */
 public class RegistrationDialog {
 	private static final int PICK_ACCOUNT_REQUEST = 1;

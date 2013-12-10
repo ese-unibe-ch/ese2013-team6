@@ -16,8 +16,8 @@ import com.ese2013.mub.model.Day;
 import com.ese2013.mub.model.Menu;
 import com.ese2013.mub.model.MenuManager;
 import com.ese2013.mub.model.Model;
-import com.ese2013.mub.social.CurrentUser;
-import com.ese2013.mub.social.LoginService;
+import com.ese2013.mub.social.model.CurrentUser;
+import com.ese2013.mub.social.model.LoginService;
 import com.ese2013.mub.util.ViewUtil;
 import com.ese2013.mub.util.parseDatabase.MensaDBHandler;
 /**

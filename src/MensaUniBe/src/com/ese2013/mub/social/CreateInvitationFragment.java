@@ -1,4 +1,4 @@
-package com.ese2013.mub;
+package com.ese2013.mub.social;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -29,16 +29,18 @@ import android.widget.Spinner;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
+import com.ese2013.mub.R;
 import com.ese2013.mub.model.Mensa;
 import com.ese2013.mub.model.Model;
-import com.ese2013.mub.social.Invitation;
-import com.ese2013.mub.social.LoginService;
-import com.ese2013.mub.social.SocialManager;
-import com.ese2013.mub.social.User;
+import com.ese2013.mub.social.model.Invitation;
+import com.ese2013.mub.social.model.LoginService;
+import com.ese2013.mub.social.model.SocialManager;
+import com.ese2013.mub.social.model.User;
+
 /**
  * 
- * Allows a user to select time, date, friends and a text Message for invites 
- *
+ * Allows a user to select time, date, friends and a text Message for invites
+ * 
  */
 public class CreateInvitationFragment extends Fragment implements OnClickListener, OnDateSetListener, OnTimeSetListener {
 	private static final String DATE_KEY = "date";
@@ -54,6 +56,7 @@ public class CreateInvitationFragment extends Fragment implements OnClickListene
 		super.onCreate(savedInstanceState);
 		getActivity().setTitle(R.string.invite);
 	}
+
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 		View view = inflater.inflate(R.layout.fragment_create_invitation, container, false);
@@ -216,10 +219,11 @@ public class CreateInvitationFragment extends Fragment implements OnClickListene
 			break;
 		}
 	}
+
 	/**
 	 * 
 	 * Allows user to Select a Date for the Invites
-	 *
+	 * 
 	 */
 	public static class DatePickerFragment extends DialogFragment {
 		private OnDateSetListener listener;
@@ -251,10 +255,11 @@ public class CreateInvitationFragment extends Fragment implements OnClickListene
 			return datePickerDialog;
 		}
 	}
+
 	/**
 	 * 
 	 * Allows a User to select a Date for the Invite
-	 *
+	 * 
 	 */
 	public static class TimePickerFragment extends DialogFragment {
 		private OnTimeSetListener listener;
@@ -281,10 +286,11 @@ public class CreateInvitationFragment extends Fragment implements OnClickListene
 			return new TimePickerDialog(getActivity(), listener, hours, minutes, true);
 		}
 	}
+
 	/**
 	 * 
 	 * DialogeField with checkBoxes for adding one or more friends to the Invite
-	 *
+	 * 
 	 */
 	public static class RecipientsPickerFragment extends DialogFragment implements
 			DialogInterface.OnMultiChoiceClickListener {

@@ -1,4 +1,4 @@
-package com.ese2013.mub;
+package com.ese2013.mub.social;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -13,8 +13,9 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.ese2013.mub.social.Invitation;
-import com.ese2013.mub.social.User;
+import com.ese2013.mub.R;
+import com.ese2013.mub.social.model.Invitation;
+import com.ese2013.mub.social.model.User;
 /**
  * 
  * Listens to the ShowInvided Button in the {@link InvitesFragment}

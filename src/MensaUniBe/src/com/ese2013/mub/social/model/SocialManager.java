@@ -1,9 +1,9 @@
-package com.ese2013.mub.social;
+package com.ese2013.mub.social.model;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import com.ese2013.mub.social.Invitation.Response;
+import com.ese2013.mub.social.model.Invitation.Response;
 import com.ese2013.mub.social.util.GetFriendsTask;
 import com.ese2013.mub.social.util.GetFriendsTaskCallback;
 import com.ese2013.mub.social.util.GetInvitationsTask;

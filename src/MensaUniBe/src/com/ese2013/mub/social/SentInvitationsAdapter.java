@@ -1,4 +1,4 @@
-package com.ese2013.mub;
+package com.ese2013.mub.social;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -12,23 +12,24 @@ import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
+import com.ese2013.mub.R;
 import com.ese2013.mub.model.Day;
 import com.ese2013.mub.model.Mensa;
 import com.ese2013.mub.model.Model;
-import com.ese2013.mub.social.Invitation;
-import com.ese2013.mub.social.SocialManager;
+import com.ese2013.mub.social.model.Invitation;
+import com.ese2013.mub.social.model.SocialManager;
 
 /**
- * Adapter for the {@link InvitesListAdapter} ListView. Creates rows in witch
+ * Adapter for the {@link SentInvitationsAdapter} ListView. Creates rows in witch
  * you can check the state of your invite
  * 
  */
-public class InvitesListAdapter extends InvitationsBaseAdapter {
+public class SentInvitationsAdapter extends InvitationsBaseAdapter {
 
 	private LayoutInflater inflater;
 	private List<Invitation> invitations = new ArrayList<Invitation>();
 
-	public InvitesListAdapter() {
+	public SentInvitationsAdapter() {
 		onNotifyChanges();
 	}
 

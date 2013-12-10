@@ -11,9 +11,7 @@ import android.widget.BaseAdapter;
 import android.widget.ImageButton;
 import android.widget.TextView;
 /**
- * 
- * Adpater for the NotifiactionList in the SettingsFragment
- *
+ * Adapter for the NotifiactionList in the SettingsFragment, responsible for deleting entries per button
  */
 public class SettingsListAdapter extends BaseAdapter {
 

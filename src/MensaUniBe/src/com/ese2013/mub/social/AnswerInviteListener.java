@@ -7,14 +7,9 @@ import com.ese2013.mub.social.model.Invitation;
 import com.ese2013.mub.social.model.SocialManager;
 
 /**
-<<<<<<< HEAD
- * Listener for the Invite answerButtons, works for accept and decline requests
+ * Listener for the Invite answerButtons, works for accept and decline
+ * InvitationRequests
  * 
-=======
- * Listener for the Invite answerButtons,
- * Works for accepting and declining InvitationRequests
- *
->>>>>>> 9824c229e777ab8b58ad4d9cde344749a5ff0480
  */
 public class AnswerInviteListener implements OnClickListener {
 	private Invitation invite;

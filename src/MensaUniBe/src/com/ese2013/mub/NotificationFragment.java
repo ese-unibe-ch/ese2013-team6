@@ -86,7 +86,7 @@ public class NotificationFragment extends Fragment implements Observer {
 	 * View for a Criteria with menu and mensas
 	 * 
 	 */
-	private class NotificationAdapter extends BaseAdapter implements IAdapter {
+	private class NotificationAdapter extends BaseAdapter implements MensaFieldAdapter {
 		private LayoutInflater inflater;
 		private List<Criteria> adapterList;
 		private CriteriaMatcher criteriaMatcher = new CriteriaMatcher();
@@ -107,7 +107,7 @@ public class NotificationFragment extends Fragment implements Observer {
 
 			Criteria criteria = adapterList.get(position);
 			TextView criteriaTitle = (TextView) view.findViewById(R.id.criteria_title);
-			criteriaTitle.setText(criteria.getName().toUpperCase(Locale.getDefault()));
+			criteriaTitle.setText(criteria.getCriteraName().toUpperCase(Locale.getDefault()));
 
 			for (Menu menu : criteria.getMap().keySet()) {
 				displayMenu(layout, criteria, menu);

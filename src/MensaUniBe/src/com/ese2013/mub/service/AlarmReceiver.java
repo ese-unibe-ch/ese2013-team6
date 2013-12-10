@@ -4,10 +4,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 /**
- * 
- * Receives a BroadCast to start the Notification Service
- * 
- *
+ * Receives a BroadCast and starts the Notification Service.
  */
 public class AlarmReceiver extends BroadcastReceiver {
 

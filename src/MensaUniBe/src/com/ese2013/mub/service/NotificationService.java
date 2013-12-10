@@ -8,7 +8,6 @@ import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
-import android.os.Binder;
 import android.os.IBinder;
 import android.support.v4.app.NotificationCompat;
 
@@ -26,13 +25,12 @@ import com.ese2013.mub.util.database.MensaDataSource;
  * Matches the in the Application's Settings defined criteria with either the
  * list of all mensas or the favorites only, which needs also be defined in the
  * Appliaction's Settings as well. The Service is only to be called if it is
- * defined so in the Application's Settings
+ * defined so in the Application's Settings.
  * 
  */
 public class NotificationService extends Service implements Observer {
 
 	public static final String START_FROM_N = "com.ese2013.mub.service.startFromN";
-	private final IBinder nBinder = new NBinder();
 	private List<Criteria> criteriaList;
 	private boolean hasPushed;
 
@@ -58,7 +56,7 @@ public class NotificationService extends Service implements Observer {
 			for (Criteria crit : criteriaList) {
 				sb.append(prefix);
 				prefix = ", ";
-				sb.append(crit.getName());
+				sb.append(crit.getCriteraName());
 			}
 			String criteriaString = sb.toString();
 			NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(this).setContentTitle(
@@ -81,25 +79,10 @@ public class NotificationService extends Service implements Observer {
 
 	@Override
 	/**
-	 * Returns an Interface for Binding the Service
+	 * Returns null thus binding to the service is not possible
 	 */
 	public IBinder onBind(Intent arg0) {
-		return nBinder;
-	}
-
-	/**
-	 * Only Used for binding purposes
-	 * 
-	 */
-	public class NBinder extends Binder {
-
-		public NotificationService getService() {
-			return NotificationService.this;
-		}
-	}
-
-	public List<Criteria> getCriteraData() {
-		return criteriaList;
+		return null;
 	}
 
 	/**

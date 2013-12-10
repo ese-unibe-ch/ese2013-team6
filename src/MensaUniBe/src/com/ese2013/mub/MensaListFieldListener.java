@@ -12,9 +12,9 @@ import com.ese2013.mub.model.Mensa;
  */
 public class MensaListFieldListener implements OnClickListener {
 	private Mensa mensa;
-	private IAdapter adapt;
+	private MensaFieldAdapter adapt;
 
-	public MensaListFieldListener(Mensa mensa, IAdapter adapt) {
+	public MensaListFieldListener(Mensa mensa, MensaFieldAdapter adapt) {
 		this.mensa = mensa;
 		this.adapt = adapt;
 	}

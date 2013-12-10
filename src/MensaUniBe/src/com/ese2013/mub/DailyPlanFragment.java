@@ -25,7 +25,7 @@ import com.ese2013.mub.social.LoginService;
 
 /**
  * 
- * Part of the apps HomeFragment, shows all mensas or favorites for a day
+ * Part of the Applications HomeFragment, shows all mensas or favorites for a day
  * 
  */
 public class DailyPlanFragment extends Fragment {
@@ -45,7 +45,7 @@ public class DailyPlanFragment extends Fragment {
 
 	/**
 	 * Creates a new Instance of this Class for a given day. It is either for
-	 * the favorites or for all mensas
+	 * the favorites or for all mensas.
 	 * 
 	 * @param day
 	 *            the Day you want to be shown in the Fragment
@@ -163,7 +163,10 @@ public class DailyPlanFragment extends Fragment {
 		map.setOnClickListener(new MapButtonListener(mensa, this));
 		map.setImageResource(R.drawable.ic_map);
 	}
-
+	/**
+	 * calls the {@link DrawerMenuActivity} for a refresh of its View.
+	 * called after a {@link Mensa} has been unfavorited.
+	 */
 	public void refreshFavoriteView() {
 		((DrawerMenuActivity) getActivity()).refreshHomeActivity();
 	}

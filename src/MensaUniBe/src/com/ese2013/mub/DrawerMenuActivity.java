@@ -46,7 +46,8 @@ public class DrawerMenuActivity extends FragmentActivity implements LoginTaskCal
 	private ListView drawerList;
 	private Spinner spinner;
 	private int selectedPosition = NOTHING_INDEX;
-	private static final int HOME_INDEX = 0, MAP_INDEX = 2, NOTIFICATION_INDEX = 3, NOTHING_INDEX = -1;
+	private static final int HOME_INDEX = 0, MAP_INDEX = 2, INVITATIONS_INDEX = 3, NOTIFICATION_INDEX = 4,
+			NOTHING_INDEX = -1;
 	private static final String POSITION = "com.ese2013.mub.position";
 	private Model model;
 	private RegistrationDialog registrationDialog;
@@ -69,6 +70,8 @@ public class DrawerMenuActivity extends FragmentActivity implements LoginTaskCal
 
 		createActionBar();
 		createDrawerMenu(savedInstanceState);
+
+		handleArguments();
 	}
 
 	private void handleLogin() {
@@ -84,6 +87,18 @@ public class DrawerMenuActivity extends FragmentActivity implements LoginTaskCal
 		registrationDialog = new RegistrationDialog(this);
 	}
 
+	private void handleArguments() {
+		if (getIntent().getBooleanExtra(PushNotificationCallbackActivity.SHOW_INVITES, false))
+			showReceivedInvitations();
+	}
+
+	@Override
+	protected void onNewIntent(Intent intent) {
+		super.onNewIntent(intent);
+		setIntent(intent);
+		handleArguments();
+	}
+
 	@Override
 	public void onTaskFinished(LoginTask task) {
 		if (!task.hasSucceeded())
@@ -97,7 +112,7 @@ public class DrawerMenuActivity extends FragmentActivity implements LoginTaskCal
 	private void subscribeToPush() {
 		if (LoginService.isLoggedIn()) {
 			String channelId = "user_" + LoginService.getLoggedInUser().getId();
-			PushService.subscribe(this, channelId, DrawerMenuActivity.class);
+			PushService.subscribe(getApplicationContext(), channelId, PushNotificationCallbackActivity.class);
 		}
 	}
 
@@ -369,6 +384,10 @@ public class DrawerMenuActivity extends FragmentActivity implements LoginTaskCal
 
 		selectItem(NOTHING_INDEX, false);
 		setDisplayedFragment(frag, true);
+	}
+
+	private void showReceivedInvitations() {
+		selectItem(DrawerMenuActivity.INVITATIONS_INDEX, true);
 	}
 
 	private void displaySettings() {

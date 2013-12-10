@@ -25,7 +25,7 @@ public class InvitationBaseFragment extends Fragment implements
 		ActionBar.TabListener {
 	private ViewPager viewPager;
 	private ActionBar actionBar;
-	private String[] tabs = { "Invites", "Invited", "Friends" };
+	private String[] tabs = {"Invited","Invites", "Friends" };
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		
@@ -125,8 +125,8 @@ public class InvitationBaseFragment extends Fragment implements
 
 		public InvitationPageAdapter(FragmentManager fm) {
 			super(fm);
-			fragments.add(new InvitesFragment());
 			fragments.add(new InvitedFragment());
+			fragments.add(new InvitesFragment());
 			fragments.add(new FriendsListFragment());
 		}
 

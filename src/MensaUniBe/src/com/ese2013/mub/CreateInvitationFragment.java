@@ -35,10 +35,13 @@ import com.ese2013.mub.social.Invitation;
 import com.ese2013.mub.social.LoginService;
 import com.ese2013.mub.social.SocialManager;
 import com.ese2013.mub.social.User;
+
 /**
  * 
- * Allows a user to select time, date, friends and a text Message for invites 
- *
+ * Allows a user to select time, date, friends and a text Message for invites.
+ * It is responsible to check all fields are filled and call teh SocialManager
+ * to send the complete invitation
+ * 
  */
 public class CreateInvitationFragment extends Fragment implements OnClickListener, OnDateSetListener, OnTimeSetListener {
 	private static final String DATE_KEY = "date";
@@ -54,6 +57,7 @@ public class CreateInvitationFragment extends Fragment implements OnClickListene
 		super.onCreate(savedInstanceState);
 		getActivity().setTitle(R.string.invite);
 	}
+
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 		View view = inflater.inflate(R.layout.fragment_create_invitation, container, false);
@@ -111,7 +115,8 @@ public class CreateInvitationFragment extends Fragment implements OnClickListene
 		selectRecipientsButton.setOnClickListener(new android.view.View.OnClickListener() {
 			@Override
 			public void onClick(View button) {
-				DialogFragment newFragment = RecipientsPickerFragment.newInstance(CreateInvitationFragment.this, recipients);
+				DialogFragment newFragment = RecipientsPickerFragment.newInstance(CreateInvitationFragment.this,
+						recipients);
 				newFragment.show(getActivity().getSupportFragmentManager(), "recipientsPicker");
 			}
 		});
@@ -171,8 +176,8 @@ public class CreateInvitationFragment extends Fragment implements OnClickListene
 				mensa = m;
 		}
 
-		ArrayAdapter<Mensa> dataAdapter = new ArrayAdapter<Mensa>(this.getActivity(), android.R.layout.simple_spinner_item,
-				list);
+		ArrayAdapter<Mensa> dataAdapter = new ArrayAdapter<Mensa>(this.getActivity(),
+				android.R.layout.simple_spinner_item, list);
 		dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 		spinner.setAdapter(dataAdapter);
 
@@ -216,10 +221,11 @@ public class CreateInvitationFragment extends Fragment implements OnClickListene
 			break;
 		}
 	}
+
 	/**
 	 * 
 	 * Allows user to Select a Date for the Invites
-	 *
+	 * 
 	 */
 	public static class DatePickerFragment extends DialogFragment {
 		private OnDateSetListener listener;
@@ -251,10 +257,11 @@ public class CreateInvitationFragment extends Fragment implements OnClickListene
 			return datePickerDialog;
 		}
 	}
+
 	/**
 	 * 
 	 * Allows a User to select a Date for the Invite
-	 *
+	 * 
 	 */
 	public static class TimePickerFragment extends DialogFragment {
 		private OnTimeSetListener listener;
@@ -281,10 +288,11 @@ public class CreateInvitationFragment extends Fragment implements OnClickListene
 			return new TimePickerDialog(getActivity(), listener, hours, minutes, true);
 		}
 	}
+
 	/**
 	 * 
 	 * DialogeField with checkBoxes for adding one or more friends to the Invite
-	 *
+	 * 
 	 */
 	public static class RecipientsPickerFragment extends DialogFragment implements
 			DialogInterface.OnMultiChoiceClickListener {

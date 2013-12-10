@@ -13,9 +13,11 @@ import com.ese2013.mub.util.SharedPrefsHandler;
 
 public class BootReceiver extends BroadcastReceiver {
 	/**
-	 * Receives BootUpComplete Broadcast and sets an AlarmManager with an Intent
-	 * for the AlarmReceiver Depends on the predefined values made in the
-	 * Settings, if there are now settings made, it does nothing
+	 * Receives BootUpComplete Broadcast and sets an {@link AlarmManager} with
+	 * an Intent for the {@link AlarmReceiver}. Its actions depend on the
+	 * predefined values made in the Settings, if there are now settings made,
+	 * it does nothing else it sets an daily repeating AlarmManager, starting
+	 * the AlarmReceiver.
 	 */
 	@Override
 	public void onReceive(Context context, Intent intent) {

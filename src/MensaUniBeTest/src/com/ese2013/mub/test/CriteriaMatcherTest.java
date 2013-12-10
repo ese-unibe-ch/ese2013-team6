@@ -74,7 +74,7 @@ public class CriteriaMatcherTest extends TestCase {
 
 		// Tests for crit1
 		Criteria crit1 = matchedCriterias.get(0);
-		assertEquals("Schnitzel", crit1.getName());
+		assertEquals("Schnitzel", crit1.getCriteraName());
 
 		assertTrue(crit1.getMap().keySet().size() == 2);
 
@@ -97,7 +97,7 @@ public class CriteriaMatcherTest extends TestCase {
 
 		// Tests for crit2
 		Criteria crit2 = matchedCriterias.get(1);
-		assertEquals("Fleisch", crit2.getName());
+		assertEquals("Fleisch", crit2.getCriteraName());
 
 		// assert containing menus for crit2
 		assertFalse(crit2.getMap().containsKey(menu1));
@@ -118,7 +118,7 @@ public class CriteriaMatcherTest extends TestCase {
 
 		// Tests for crit3
 		Criteria crit3 = matchedCriterias.get(2);
-		assertEquals("Pommes", crit3.getName());
+		assertEquals("Pommes", crit3.getCriteraName());
 
 		// assert containing menus for crit1
 		assertTrue(crit3.getMap().containsKey(menu1));
@@ -132,11 +132,11 @@ public class CriteriaMatcherTest extends TestCase {
 
 	public void testCriteriaEquals() {
 		Criteria crit1 = new Criteria();
-		crit1.setName("Fleisch");
+		crit1.setCriteriaName("Fleisch");
 		Criteria crit2 = new Criteria();
-		crit2.setName("Fleisch");
+		crit2.setCriteriaName("Fleisch");
 		Criteria crit3 = new Criteria();
-		crit3.setName("schielF");
+		crit3.setCriteriaName("schielF");
 
 		assertEquals(crit1, crit2);
 		assertNotEquals(crit1, crit3);

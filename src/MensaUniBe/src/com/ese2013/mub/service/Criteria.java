@@ -24,15 +24,22 @@ public class Criteria {
 		criteria = null;
 	}
 
-	public String getName() {
+	
+	public String getCriteraName() {
 		return criteria;
 	}
 
+	/**
+	 * Gives access to the HashMap. This HashMap needs to be
+	 * mutable in order for the CriteriaMatcher Algorithm to work properly.
+	 * 
+	 * @return Representation of the HashMap with all the <Menu, List<Mensa>> entries.
+	 */
 	public HashMap<Menu, List<Mensa>> getMap() {
 		return map;
 	}
 
-	public void setName(String name) {
+	public void setCriteriaName(String name) {
 		this.criteria = name;
 	}
 
@@ -42,7 +49,7 @@ public class Criteria {
 			Criteria other = (Criteria) object;
 			if (object == this)
 				return true;
-			if (!other.getName().equals(criteria))
+			if (!other.getCriteraName().equals(criteria))
 				return false;
 			return true;
 		} else

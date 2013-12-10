@@ -11,6 +11,10 @@ import com.ese2013.mub.model.Mensa;
 import com.ese2013.mub.model.Menu;
 import com.ese2013.mub.model.WeeklyMenuplan;
 
+/**
+ * 
+ * This class works the CriteriaMatcher Algoritm and ensures 
+ */
 public class CriteriaMatcher {
 	private List<Criteria> container;
 	private List<Mensa> temp;
@@ -21,28 +25,30 @@ public class CriteriaMatcher {
 	}
 
 	/**
-	 * Matches a Set of criteria to each Menu of the Day and returns a List of
-	 * Criteria objects, including the criteria as name, and a HashMap of all
-	 * the Menus and the Mensa the Menu is served in
+	 * Matches a Set of criteria to each {@link Menu} of the current day and returns a
+	 * List of {@link Criteria} objects. The List contains a Criteria object for each
+	 * matching criteria of the criteriaSet. The Algorithm also fills this
+	 * Criteria object with all the Menus the String is matching and the mensas
+	 * this Menu is served in. If criteriaSet or mensas are empty, an empty list is returned.
+	 * Is either criteriaSet or mensas are null a {@link NullPointerException} may be thrown.
 	 * 
 	 * @param criteriaSet
 	 *            String set of criterias you want to match with.
 	 * @param mensas
-	 *            List of Mensas you want to match the criterias with.
+	 *            List of {@link Mensa}s you want to match the criterias with.
 	 * @return List of Criteria Objects which stores the matching menus and the
 	 *         mensa in which the menu is served in.
 	 */
 	public List<Criteria> match(Set<String> criteriaSet, List<Mensa> mensas) {
 		for (String criteria : criteriaSet) {
 			Criteria crit = new Criteria();
-			crit.setName(criteria);
+			crit.setCriteriaName(criteria);
 			for (Mensa mensa : mensas) {
 				WeeklyMenuplan weekly = mensa.getMenuplan();
 				DailyMenuplan daily = weekly.getDailymenuplan(Day.today());
 				if (daily != null) {
 					for (Menu menu : daily.getMenus()) {
-						if ((menu.getDescription().toLowerCase(Locale
-								.getDefault())).contains(criteria
+						if ((menu.getDescription().toLowerCase(Locale.getDefault())).contains(criteria
 								.toLowerCase(Locale.getDefault()))) {
 
 							if (!container.contains(crit))

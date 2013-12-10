@@ -36,7 +36,7 @@ public class MubApplication extends android.app.Application {
 	 */
 	private void initParseService() {
 		Parse.initialize(this, "ZmdQMR7FctP2XgMJN5lvj98Aj9IA2Bf8mJrny11n", "yVVh3GiearTRsRXZqgm2FG6xfWvcQPjINX6dGJNu");
-		PushService.setDefaultPushCallback(this, DrawerMenuActivity.class);
+		PushService.setDefaultPushCallback(this, PushNotificationCallbackActivity.class);
 		ParseInstallation.getCurrentInstallation().saveInBackground();
 	}
 }

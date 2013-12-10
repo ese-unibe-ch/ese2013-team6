@@ -35,9 +35,13 @@
             android:screenOrientation="portrait" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
+                <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+        </activity>
+        <activity
+            android:name="PushNotificationCallbackActivity"
+            android:label="@string/app_name"
+            android:theme="@android:style/Theme.NoDisplay" >
         </activity>
 
         <receiver android:name="com.ese2013.mub.service.BootReceiver" >
@@ -62,6 +66,7 @@
         <meta-data
             android:name="com.google.android.maps.v2.API_KEY"
             android:value="AIzaSyBmZu5WhJqljiGf7TgwTXNZGiMHqZHVkLI" />
+
     </application>
 
 </manifest>

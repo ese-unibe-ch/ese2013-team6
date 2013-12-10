@@ -1,7 +1,8 @@
 package com.ese2013.mub;
 
 import com.ese2013.mub.model.Model;
-import com.ese2013.mub.social.SocialManager;
+import com.ese2013.mub.social.PushNotificationCallbackActivity;
+import com.ese2013.mub.social.model.SocialManager;
 import com.ese2013.mub.util.database.MensaDataSource;
 import com.parse.Parse;
 import com.parse.ParseInstallation;

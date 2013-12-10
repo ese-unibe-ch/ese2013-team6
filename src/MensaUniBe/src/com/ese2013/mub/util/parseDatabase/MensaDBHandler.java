@@ -12,7 +12,7 @@ import com.ese2013.mub.model.Mensa.MensaBuilder;
 import com.ese2013.mub.model.Menu;
 import com.ese2013.mub.model.MenuManager;
 import com.ese2013.mub.model.WeeklyMenuplan;
-import com.ese2013.mub.social.User;
+import com.ese2013.mub.social.model.User;
 import com.ese2013.mub.util.parseDatabase.tables.MensaTable;
 import com.ese2013.mub.util.parseDatabase.tables.MenuMensaTable;
 import com.ese2013.mub.util.parseDatabase.tables.MenuTable;

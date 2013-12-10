@@ -6,8 +6,8 @@ import java.util.List;
 import junit.framework.TestCase;
 
 import com.ese2013.mub.model.Menu;
-import com.ese2013.mub.social.CurrentUser;
-import com.ese2013.mub.social.User;
+import com.ese2013.mub.social.model.CurrentUser;
+import com.ese2013.mub.social.model.User;
 
 public class CurrentUserTest extends TestCase {
 

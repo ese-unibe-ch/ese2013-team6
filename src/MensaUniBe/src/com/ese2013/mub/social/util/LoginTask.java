@@ -1,6 +1,6 @@
 package com.ese2013.mub.social.util;
 
-import com.ese2013.mub.social.LoginService;
+import com.ese2013.mub.social.model.LoginService;
 import com.ese2013.mub.util.AbstractAsyncTask;
 import com.parse.ParseException;
 

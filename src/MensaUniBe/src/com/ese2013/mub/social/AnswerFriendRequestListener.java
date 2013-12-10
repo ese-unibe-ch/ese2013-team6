@@ -1,10 +1,10 @@
-package com.ese2013.mub;
+package com.ese2013.mub.social;
 
 import android.view.View;
 import android.view.View.OnClickListener;
 
-import com.ese2013.mub.social.FriendRequest;
-import com.ese2013.mub.social.SocialManager;
+import com.ese2013.mub.social.model.FriendRequest;
+import com.ese2013.mub.social.model.SocialManager;
 /**
  * 
  * Listener for accepting and declining friendReqests

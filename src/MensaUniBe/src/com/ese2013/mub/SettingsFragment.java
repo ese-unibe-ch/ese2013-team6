@@ -28,7 +28,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.ese2013.mub.model.Model;
-import com.ese2013.mub.social.LoginService;
+import com.ese2013.mub.social.model.LoginService;
 import com.ese2013.mub.util.SharedPrefsHandler;
 import com.ese2013.mub.util.TranslationTask;
 import com.memetix.mst.language.Language;

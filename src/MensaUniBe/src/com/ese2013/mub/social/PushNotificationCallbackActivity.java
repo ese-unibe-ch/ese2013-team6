@@ -1,4 +1,6 @@
-package com.ese2013.mub;
+package com.ese2013.mub.social;
+
+import com.ese2013.mub.DrawerMenuActivity;
 
 import android.app.Activity;
 import android.content.Intent;

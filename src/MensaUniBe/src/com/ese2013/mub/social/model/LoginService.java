@@ -1,4 +1,4 @@
-package com.ese2013.mub.social;
+package com.ese2013.mub.social.model;
 
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;

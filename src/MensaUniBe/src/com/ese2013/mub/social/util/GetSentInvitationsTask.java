@@ -4,8 +4,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import com.ese2013.mub.social.CurrentUser;
-import com.ese2013.mub.social.Invitation;
+import com.ese2013.mub.social.model.CurrentUser;
+import com.ese2013.mub.social.model.Invitation;
 import com.ese2013.mub.util.AbstractAsyncTask;
 import com.ese2013.mub.util.parseDatabase.SocialDBHandler;
 import com.parse.ParseException;

@@ -1,4 +1,4 @@
-package com.ese2013.mub;
+package com.ese2013.mub.social;
 
 import android.content.Context;
 import android.widget.BaseAdapter;

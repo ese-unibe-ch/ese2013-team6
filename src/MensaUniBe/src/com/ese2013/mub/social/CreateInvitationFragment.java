@@ -1,4 +1,4 @@
-package com.ese2013.mub;
+package com.ese2013.mub.social;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -29,12 +29,14 @@ import android.widget.Spinner;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
+import com.ese2013.mub.R;
 import com.ese2013.mub.model.Mensa;
 import com.ese2013.mub.model.Model;
-import com.ese2013.mub.social.Invitation;
-import com.ese2013.mub.social.LoginService;
-import com.ese2013.mub.social.SocialManager;
-import com.ese2013.mub.social.User;
+import com.ese2013.mub.social.model.Invitation;
+import com.ese2013.mub.social.model.LoginService;
+import com.ese2013.mub.social.model.SocialManager;
+import com.ese2013.mub.social.model.User;
+
 
 /**
  * 

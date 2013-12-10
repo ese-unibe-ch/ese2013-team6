@@ -1,4 +1,4 @@
-package com.ese2013.mub.social;
+package com.ese2013.mub.social.model;
 
 /**
  * This class represents a FriendRequest from one user to another user.

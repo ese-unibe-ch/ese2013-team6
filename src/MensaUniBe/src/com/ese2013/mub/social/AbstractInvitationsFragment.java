@@ -1,7 +1,4 @@
-package com.ese2013.mub;
-
-import com.ese2013.mub.social.LoginService;
-import com.ese2013.mub.social.SocialManager;
+package com.ese2013.mub.social;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -14,6 +11,11 @@ import android.view.ViewGroup;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.ese2013.mub.DrawerMenuActivity;
+import com.ese2013.mub.R;
+import com.ese2013.mub.social.model.LoginService;
+import com.ese2013.mub.social.model.SocialManager;
 
 /**
  * This simple abstract class has the functionality which is common for both

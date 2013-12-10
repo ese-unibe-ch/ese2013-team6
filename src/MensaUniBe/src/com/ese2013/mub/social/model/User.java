@@ -1,4 +1,4 @@
-package com.ese2013.mub.social;
+package com.ese2013.mub.social.model;
 
 /**
  * Represents a simple user by storing an id, email and nickname.

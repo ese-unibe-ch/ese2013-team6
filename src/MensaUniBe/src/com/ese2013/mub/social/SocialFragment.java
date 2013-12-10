@@ -1,4 +1,4 @@
-package com.ese2013.mub;
+package com.ese2013.mub.social;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -15,14 +15,14 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.ese2013.mub.R;
+
 /**
- * 
  * Base Fragment for the Invitations and Friends. It displays Fragments in a
  * ViewPager and makes them accessible through the
  * ActionBar.NAVIGATION_MODE_TABS
- * 
  */
-public class InvitationBaseFragment extends Fragment implements ActionBar.TabListener {
+public class SocialFragment extends Fragment implements ActionBar.TabListener {
 	private ViewPager viewPager;
 	private ActionBar actionBar;
 	private String[] tabs;
@@ -115,7 +115,7 @@ public class InvitationBaseFragment extends Fragment implements ActionBar.TabLis
 
 	/**
 	 * 
-	 * Pager adapter for the {@link InvitationBaseFragment} viewPager. adds
+	 * Pager adapter for the {@link SocialFragment} viewPager. adds
 	 * statically the three to be displayed Fragments to the Pager.
 	 */
 	private static class InvitationPageAdapter extends FragmentPagerAdapter {
@@ -123,8 +123,8 @@ public class InvitationBaseFragment extends Fragment implements ActionBar.TabLis
 
 		public InvitationPageAdapter(FragmentManager fm) {
 			super(fm);
-			fragments.add(InvitedFragment.newInstance(new InvitedListAdapter()));
-			fragments.add(InvitedFragment.newInstance(new InvitesListAdapter()));
+			fragments.add(InvitationsFragment.newInstance(new RetrievedInvitationsAdapter()));
+			fragments.add(InvitationsFragment.newInstance(new SentInvitationsAdapter()));
 			fragments.add(new FriendsListFragment());
 		}
 

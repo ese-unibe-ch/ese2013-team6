@@ -133,7 +133,7 @@ public class DrawerMenuActivity extends FragmentActivity implements LoginTaskCal
 		drawerLayout.setDrawerShadow(R.drawable.drawer_shadow, GravityCompat.START);
 		drawerList = (ListView) findViewById(R.id.left_drawer);
 
-		String[] menuItemNames = { "Home", "Mensa List", "Map", "Invitations", "Notifications" };
+		String[] menuItemNames = getResources().getStringArray(R.array.drawer_menu_items);
 		drawerList.setAdapter(new ArrayAdapter<String>(this, R.layout.drawer_list_item, menuItemNames));
 
 		if (savedInstanceState != null)
@@ -351,7 +351,7 @@ public class DrawerMenuActivity extends FragmentActivity implements LoginTaskCal
 	}
 
 	/**
-	 * Restart the HomeFragment on the FavoriteView. 
+	 * Restart the HomeFragment on the FavoriteView.
 	 * 
 	 */
 	public void refreshHomeActivity() {
@@ -385,10 +385,14 @@ public class DrawerMenuActivity extends FragmentActivity implements LoginTaskCal
 			outState.putInt(POSITION, selectedPosition);
 		super.onSaveInstanceState(outState);
 	}
+
 	/**
 	 * creates an Invitation and gives them as arguments to the CreationFragment
-	 * @param mensa argument for the CreateInvitationFragment
-	 * @param day argument for the CreateInvitationFragment
+	 * 
+	 * @param mensa
+	 *            argument for the CreateInvitationFragment
+	 * @param day
+	 *            argument for the CreateInvitationFragment
 	 */
 	public void createInvitation(Mensa mensa, Day day) {
 		CreateInvitationFragment frag = new CreateInvitationFragment();
@@ -400,6 +404,7 @@ public class DrawerMenuActivity extends FragmentActivity implements LoginTaskCal
 		selectItem(NOTHING_INDEX, false);
 		setDisplayedFragment(frag, true);
 	}
+
 	/**
 	 * creates an CreationInvitationFragment without giving arguments to it
 	 */

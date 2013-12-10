@@ -1,5 +1,8 @@
 package com.ese2013.mub;
 
+import com.ese2013.mub.social.LoginService;
+import com.ese2013.mub.social.SocialManager;
+
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -12,43 +15,29 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.ese2013.mub.social.LoginService;
-import com.ese2013.mub.social.SocialManager;
-import com.ese2013.mub.util.Observer;
-
 /**
- * Page of the {@link InvitationBaseFragment}, shows where you are invited or
- * the sent invitations.
+ * This simple abstract class has the functionality which is common for both
+ * Invited and Sent Invites Fragment.
  */
-public class InvitedFragment extends Fragment implements Observer {
-
+public abstract class AbstractInvitationsFragment extends Fragment {
 	private ListView invitedList;
 	private InvitationsBaseAdapter adapter;
 	private MenuItem menuItem;
 
-	/**
-	 * Creates a new instance of InvitedFragment using the given adapter.
-	 * @param adapter
-	 * @return
-	 */
-	public static Fragment newInstance(InvitationsBaseAdapter adapter) {
-		InvitedFragment frag = new InvitedFragment();
-		frag.setAdapter(adapter);
-		return frag;
-	}
-
-	private void setAdapter(InvitationsBaseAdapter adapter) {
-		SocialManager.getInstance().addObserver(adapter);
-		this.adapter = adapter;
-	}
-
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-		SocialManager.getInstance().addObserver(this);
-		adapter.setContext(getActivity());
+		adapter = createAdapter();
 		View view = inflater.inflate(R.layout.fragment_invited, null);
 		invitedList = (ListView) view.findViewById(R.id.invited_list);
+		setUpEmptyView(view);
+		invitedList.setAdapter(adapter);
+		setHasOptionsMenu(true);
+		return view;
+	}
 
+	protected abstract InvitationsBaseAdapter createAdapter();
+
+	protected void setUpEmptyView(View view) {
 		TextView showMessage = (TextView) view.findViewById(R.id.show_message);
 		if (LoginService.isLoggedIn())
 			showMessage.setText(R.string.no_invites);
@@ -56,9 +45,6 @@ public class InvitedFragment extends Fragment implements Observer {
 			showMessage.setText(R.string.not_loged_in);
 
 		invitedList.setEmptyView(showMessage);
-		invitedList.setAdapter(adapter);
-		setHasOptionsMenu(true);
-		return view;
 	}
 
 	@Override
@@ -88,26 +74,16 @@ public class InvitedFragment extends Fragment implements Observer {
 	@Override
 	public void onDestroy() {
 		super.onDestroy();
-		SocialManager socialMgr = SocialManager.getInstance();
-		socialMgr.removeObserver(this);
-		socialMgr.removeObserver(adapter);
-	}
-
-	@Override
-	public void onNotifyChanges(Object... message) {
-		// the social manager does callbacks only in such cases, so no need to
-		// handle any other case (at the moment),
-		loadingFinished();
+		SocialManager.getInstance().removeObserver(adapter);
 	}
 
 	/**
 	 * changes the progressbar in the ActionBar back to not loading
 	 */
-	public void loadingFinished() {
+	protected void loadingFinished() {
 		if (menuItem != null) {
 			menuItem.collapseActionView();
 			menuItem.setActionView(null);
 		}
 	}
-
 }

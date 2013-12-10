@@ -26,7 +26,6 @@
     <string name="loading_failure">Could not load any menus, please make sure you have internet connection</string>
     <string name="map_travelmode_driving">Driving</string>
     <string name="map_travelmode_bicycle">Bicycle</string>
-
     <string name="title_translation">Translation</string>
     <string name="language_switch">Translate menus to English</string>
     <string name="language_spinner">Choose language</string>
@@ -53,43 +52,55 @@
     <string name="user_name">Name</string>
     <string name="user_logged_in">Logged in with existing account. Welcome back!</string>
     <string name="user_login_failed">Failed to login.</string>
-	<string name="add_friend">add Friend</string>
+    <string name="add_friend">add Friend</string>
     <string name="invitation_new_message">"New invitation from "</string>
-    
     <string name="cancel_request">cancel_request</string>
     <string name="accept_request">accept_request</string>
     <string name="delete_friend">delete friend</string>
     <string name="dailyplanfragment_no_menus_available">No menus available for this day.</string>
-	<string name="today">today</string>
-	<string name="show_invited">show invited</string>
-	<string name="no_invites">You have no Invitations! You can Invite now someone to go to lunch!</string>
-	<string name="not_loged_in">You are not Loged in! Please Log in to use this feature!</string>
-	<string name="no_friends">You have no Friends yet! You can add friends by clicking the addButton on Top!</string>
-	<string name="enter_friend">Enter E-Mail</string>
-	<string name="search_friend">search friend</string>
-	<string name="title_registration">Register to use social functionality.</string>
-	<string name="invitation_create_cancel">Cancel</string>
-	<string name="invitation_create_send">Send Invitation</string>
-	<string name="invitation_create_title">Create new Invitation</string>
-	<string name="invitation_create_select_recipients">Select recipients...</string>
-	<string name="rating_msg_from_future">You cannot rate a menu from the future</string>
-	<string name="rating_msg_not_logged_in">You have to be logged in to rate a menu.</string>
-	<string name="responses_image_view_description">Shows response of a friend to an invite</string>
-	<string name="settings_remove_notification_criteria">Remove notification criteria</string>
-	<string name="settings_add_new_critera">Adds the newly entered criteria to the set of criterias.</string>
-	<string name="invitation_create_enter_message_hint">Enter a message...</string>
-	<string name="settings_add_criteria">Add Criteria...</string>
-	<string name="settings_edit_criteria">Edit Criteria...</string>
-	<string name="settings_edit_notification_criteria_title">Edit Notification Criteria</string>
-	<string name="translation_started">Translation started and will be displayed as soon as it is available.</string>
-	<string name="settings_registration_button">Register</string>
-	<string name="refresh_content">Refresh content</string>
-	<string name="toast_refreshing_msg">Refreshing...</string>
-	<string name="invitations">Invitations</string>
-	<string name="mensa_list">Mensa List</string>
-	<string name="map">Map</string>
-	<string name="notification">Notifications</string>
-	<string name="settings">Settings</string>
-	<string name="invite">New Invite</string>
-	
+    <string name="today">today</string>
+    <string name="show_invited">show invited</string>
+    <string name="no_invites">You have no Invitations! You can Invite now someone to go to lunch!</string>
+    <string name="not_loged_in">You are not Loged in! Please Log in to use this feature!</string>
+    <string name="no_friends">You have no Friends yet! You can add friends by clicking the addButton on Top!</string>
+    <string name="enter_friend">Enter E-Mail</string>
+    <string name="search_friend">search friend</string>
+    <string name="title_registration">Register to use social functionality.</string>
+    <string name="invitation_create_cancel">Cancel</string>
+    <string name="invitation_create_send">Send Invitation</string>
+    <string name="invitation_create_title">Create new Invitation</string>
+    <string name="invitation_create_select_recipients">Select Recipients&#8230;</string>
+    <string name="rating_msg_from_future">You cannot rate a menu from the future</string>
+    <string name="rating_msg_not_logged_in">You have to be logged in to rate a menu.</string>
+    <string name="responses_image_view_description">Shows response of a friend to an invite</string>
+    <string name="settings_remove_notification_criteria">Remove notification criteria</string>
+    <string name="settings_add_new_critera">Adds the newly entered criteria to the set of criteria.</string>
+    <string name="invitation_create_enter_message_hint">Enter a message&#8230;</string>
+    <string name="settings_add_criteria">Add Criteria&#8230;</string>
+    <string name="settings_edit_criteria">Edit Criteria&#8230;</string>
+    <string name="settings_edit_notification_criteria_title">Edit Notification Criteria</string>
+    <string name="translation_started">Translation started and will be displayed as soon as it is available.</string>
+    <string name="settings_registration_button">Register</string>
+    <string name="refresh_content">Refresh content</string>
+    <string name="toast_refreshing_msg">Refreshing&#8230;</string>
+    <string name="invitations">Invitations</string>
+    <string name="mensa_list">Mensa List</string>
+    <string name="map">Map</string>
+    <string name="notification">Notifications</string>
+    <string name="settings">Settings</string>
+    <string name="invite">New Invite</string>
+
+    <string-array name="invitation_tabs_titles">
+        <item>Invited</item>
+        <item>Invites</item>
+        <item>Friends</item>
+    </string-array>
+    <string-array name="drawer_menu_items">
+        <item>Home</item>
+        <item>Mensa List</item>
+        <item>Map</item>
+        <item>Invitations</item>
+        <item>Notifications</item>
+    </string-array>
+
 </resources>

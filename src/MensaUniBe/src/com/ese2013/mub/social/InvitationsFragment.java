@@ -79,6 +79,7 @@ public class InvitationsFragment extends Fragment implements Observer {
 			return true;
 		case R.id.refresh:
 			SocialManager.getInstance().loadInvites();
+			SocialManager.getInstance().loadSentInvites();
 			menuItem = item;
 			menuItem.setActionView(R.layout.progress_bar);
 			menuItem.expandActionView();
